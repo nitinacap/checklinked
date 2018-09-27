@@ -1,0 +1,33 @@
+{
+  "name": "NgModel",
+  "description": "A ExtJS inspired modellayer for AngularJS",
+  "main": "src/NgModel.js",
+  "homepage": "https://github.com/ayecue/NgModel",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ayecue/NgModel.git"
+  },
+  "devDependencies": {
+    "jasmine": "*",
+    "angular": "*",
+    "angular-mocks": "*"
+  },
+  "keywords": [
+    "angularjs",
+    "modellayer",
+    "extjs"
+  ],
+  "authors": [
+    "ayecue <sorenwehmeier@googlemail.com>"
+  ],
+  "_release": "3062d7b76f",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "3062d7b76fb9383152ab7cea1d636acbe506b040"
+  },
+  "_source": "https://github.com/ayecue/NgModel.git",
+  "_target": "*",
+  "_originalSource": "NgModel"
+}

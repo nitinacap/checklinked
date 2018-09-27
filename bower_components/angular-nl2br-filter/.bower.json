@@ -1,0 +1,37 @@
+{
+  "name": "angular-nl2br-filter",
+  "description": "Angular 1.x filter that converts newlines to `<br>`-tags.",
+  "main": "index.js",
+  "authors": [
+    "Stefan Dietz <dev@stefan-dietz.eu>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "newline",
+    "linebreak"
+  ],
+  "homepage": "https://github.com/sdvg/angular-nl2br-filter",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "demo.html",
+    "karma.conf.js",
+    "package.json",
+    "tests.js"
+  ],
+  "dependencies": {
+    "angular": ">=1.4.0"
+  },
+  "version": "1.0.3",
+  "_release": "1.0.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.3",
+    "commit": "10a7e40c0aa915b0fcd103204fac31b778a56b69"
+  },
+  "_source": "https://github.com/sdvg/angular-nl2br-filter.git",
+  "_target": "^1.0.3",
+  "_originalSource": "angular-nl2br-filter"
+}
