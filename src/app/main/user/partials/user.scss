@@ -1,0 +1,13 @@
+#user {
+
+
+
+}
+
+// RESPONSIVE
+@media screen and (max-width: $layout-breakpoint-xs) {
+
+  .page-layout.simple.tabbed > .content > md-tabs > md-tabs-content-wrapper > md-tab-content{
+    padding: 0px !important;
+  }
+}

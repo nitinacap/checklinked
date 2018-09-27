@@ -1,0 +1,37 @@
+<md-dialog class="dialog" aria-label="">
+  <form name="checklistForm" class="md-inline-form" novalidate>
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">Edit Heading</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content ms-scroll>
+      <md-input-container class="md-block">
+        <label translate="CHECKLIST.HEADING.NAME">{{vm.heading.name}} Name</label>
+        <input name="name" ng-model="vm.heading.name" required md-autofocus>
+        <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
+          <div ng-message="required">
+            <span translate="CHECKLIST.ERRORS.HEADER_NAME_REQUIRED">Header Name field is required</span>
+          </div>
+        </div>
+      </md-input-container>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="start center">
+        <md-button type="submit"
+                   ng-click="vm.saveHeading()"
+                   class="md-raised md-accent"
+                   ng-disabled="checklistForm.$invalid || checklistForm.$pristine"
+                   aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">
+          SAVE
+        </md-button>
+      </div>
+
+    </md-dialog-actions>
+  </form>
+</md-dialog>

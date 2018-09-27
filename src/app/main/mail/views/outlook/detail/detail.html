@@ -1,0 +1,244 @@
+<div ng-if="!vm.currentThread" class="no-thread-selected" layout="column" layout-align="center center" flex>
+  <md-icon md-font-icon="icon-email" class="s120 grey-400-fg"></md-icon>
+</div>
+
+<div ng-if="vm.currentThread">
+
+  <div class="thread-header" layout="row" layout-align="space-between center">
+    <div>
+      <div class="subject" flex>{{vm.currentThread.subject}}</div>
+
+      <div class="labels">
+        <div class="label" ng-repeat="labelId in vm.currentThread.labels track by $index"
+             ng-class="vm.getLabelColor(labelId)">{{vm.getLabelTitle(labelId)}}
+        </div>
+      </div>
+    </div>
+
+    <div class="actions" layout="row" layout-align="start center">
+    </div>
+
+  </div>
+
+  <div class="thread-content">
+    <div class="info" layout="row" layout-align="space-between start">
+
+      <div layout="column" layout-align="start start">
+
+        <div layout="row" layout-align="start start">
+          <div layout="column" layout-align="start start">
+            <div class="name">
+              {{vm.currentThread.user.name}}
+            </div>
+
+            <div class="to" layout="row" layout-align="start center">
+              <div class="to-text" translate="MAIL.INFO.TO">to</div>
+              <div>{{user.name.full}}</div>
+            </div>
+          </div>
+        </div>
+
+        <a class="toggle-details md-accent-color" ng-hide="vm.selectedMailShowDetails"
+           ng-click="vm.selectedMailShowDetails = !vm.selectedMailShowDetails" translate="MAIL.SHOW_DETAILS">
+          Show Details
+        </a>
+        <a class="toggle-details md-accent-color" ng-show="vm.selectedMailShowDetails"
+           ng-click="vm.selectedMailShowDetails = !vm.selectedMailShowDetails" translate="MAIL.HIDE_DETAILS">
+          Hide Details
+        </a>
+
+        <div ng-show="vm.selectedMailShowDetails" class="details" layout="row" layout-align="start start">
+          <div layout="column">
+            <span class="title" translate="MAIL.DETAILS.FROM">From:</span>
+            <span class="title" translate="MAIL.DETAILS.ORGANIZATION" ng-if="vm.currentThread.user.organization">Organization:</span>
+            <span class="title" translate="MAIL.DETAILS.DATE">Date:</span>
+          </div>
+
+          <div layout="column">
+            <span class="detail">{{vm.currentThread.user.name}} </span>
+            <span class="detail"
+                  ng-if="vm.currentThread.user.organization">{{vm.currentThread.user.organization}} </span>
+            <span class="detail">{{vm.currentThread.timestamp  | date : "short"}} </span>
+          </div>
+        </div>
+
+        <!--Checklist Output-->
+        <div ng-if="vm.currentThread.checklist && !vm.currentThread.message"
+             class="details"
+             layout="row"
+             ng-switch="vm.currentThread.reason"
+             layout-align="start start">
+
+
+          <div layout="column" ng-switch-when="create">
+
+            <div ng-if="vm.currentThread.type == 'notification'">
+
+              <div layout="row"
+                   layout-align="start start">
+
+                <span
+                  class="details ">A new {{vm.currentThread.item.type}} has been added to one of your checklists.</span>
+              </div>
+
+
+              <div layout="row"
+                   layout-align="start start">
+                <span class="details pr-8 font-weight-900">Checklist: </span>
+                <span class="details" ng-show="vm.currentThread.item.type == 'checklist'"><a ng-click="vm.passChecklistPostings(vm.currentThread.item.idCHK, vm.currentThread.specific.id_parent, vm.currentThread.item.id, vm.currentThread.item.type, vm.currentThread.checklist.name, vm.currentThread.type)">{{vm.currentThread.checklist.name}}</a></span>
+                <span class="details" ng-hide="vm.currentThread.item.type == 'checklist'"><a ng-click="vm.passChecklistPostings(vm.currentThread.item.idCHK, vm.currentThread.specific.id_parent, vm.currentThread.item.id, vm.currentThread.item.type, vm.currentThread.specific.name, vm.currentThread.type)">{{vm.currentThread.checklist.name}}</a></span>
+              </div>
+
+              <div layout="row"
+                   layout-align="start start">
+
+                <span class="details font-weight-900 pr-8">{{vm.upperCaseFirst(vm.currentThread.item.type)}}: </span>
+
+                <span class="details">{{vm.currentThread.item.text}}</span>
+              </div>
+
+            </div>
+
+
+            <div ng-if="vm.currentThread.type == 'post'">
+
+              <div layout="row"
+                   layout-align="start start">
+
+                <span class="details" ng-if="vm.currentThread.item.type !== 'checklist'">A new Conversation has been added to a {{vm.currentThread.item.type}} in one of your checklists.</span>
+                <span class="details" ng-if="vm.currentThread.item.type == 'checklist'">A new Conversation has been added to one of your checklists.</span>
+              </div>
+
+              <div layout="row"
+                   layout-align="start start">
+                <span class="details pr-8 font-weight-900">Checklist: </span>
+                <span class="details" ng-show="vm.currentThread.item.type == 'checklist'"><a ng-click="vm.passChecklistPostings(vm.currentThread.item.idCHK, vm.currentThread.specific.id_parent, vm.currentThread.item.id, vm.currentThread.item.type, vm.currentThread.checklist.name, vm.currentThread.type)">{{vm.currentThread.checklist.name}}</a></span>
+                <span class="details" ng-hide="vm.currentThread.item.type == 'checklist'"><a ng-click="vm.passChecklistPostings(vm.currentThread.item.idCHK, vm.currentThread.specific.id_parent, vm.currentThread.item.id, vm.currentThread.item.type, vm.currentThread.specific.name, vm.currentThread.type)">{{vm.currentThread.checklist.name}}</a></span>
+              </div>
+
+              <div ng-if="vm.currentThread.item.type !== 'checklist'"
+                   layout="row"
+                   layout-align="start start">
+                <span class="details font-weight-900 pr-8">{{vm.upperCaseFirst(vm.currentThread.item.type)}}: </span>
+                <span class="details">{{vm.currentThread.specific.name}}</span>
+              </div>
+
+              <div layout="row"
+                   layout-align="start start">
+
+                <span class="details font-weight-900 pr-8">Conversation: </span>
+
+                <span class="details">{{vm.currentThread.item.text}}</span>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div layout="column" ng-switch-when="edit">
+            <div layout="row"
+                 layout-align="start start">
+
+
+              <span class="details" ng-if="vm.currentThread.item.type !== 'checklist'">There has been an edit made to a {{vm.currentThread.item.type}} in one of your checklists.</span>
+              <span class="details" ng-if="vm.currentThread.item.type == 'checklist'">There has been an edit made to one of your checklists.</span>
+
+            </div>
+
+            <div layout="row"
+                 layout-align="start start">
+
+              <span class="details font-weight-900 pr-8">Checklist: </span>
+
+              <span class="details" ng-show="vm.currentThread.item.type == 'checklist'"><a ng-click="vm.passChecklistPostings(vm.currentThread.item.idCHK, vm.currentThread.specific.id_parent, vm.currentThread.item.id, vm.currentThread.item.type, vm.currentThread.checklist.name, vm.currentThread.type)">{{vm.currentThread.checklist.name}}</a></span>
+              <span class="details" ng-hide="vm.currentThread.item.type == 'checklist'"><a ng-click="vm.passChecklistPostings(vm.currentThread.item.idCHK, vm.currentThread.specific.id_parent, vm.currentThread.item.id, vm.currentThread.item.type, vm.currentThread.specific.name, vm.currentThread.type)">{{vm.currentThread.checklist.name}}</a></span>
+            </div>
+
+            <div ng-if="vm.currentThread.item.type !== 'checklist'"
+                 layout="row"
+                 layout-align="start start">
+
+              <span class="details font-weight-900 pr-8">{{vm.upperCaseFirst(vm.currentThread.item.type)}}: </span>
+
+              <span class="details">{{vm.currentThread.item.text}}</span>
+            </div>
+          </div>
+
+
+          <div ng-switch-when="">
+
+            <div layout="row"
+                 layout-align="start start">
+              <span class="details">{{vm.currentThread.item.text}}</span>
+            </div>
+
+            <div layout="row"
+                 layout-align="start start">
+              <span class="details font-weight-900 pr-8">Checklist:</span>
+              <span class="details"><a href="/checklist/detail/{{vm.currentThread.item.idCHK}}">{{vm.currentThread.checklist.name}}</a></span>
+            </div>
+          </div>
+        </div>
+
+
+        <!--Message Output-->
+        <div ng-if="vm.currentThread.type=='message'" class="details">
+          <span class="details" ng-bind-html="vm.currentThread.item.text"></span>
+          <span class="details"><a ng-click="vm.passMessages(vm.currentThread.user.id)">View Messages</a></span>
+        </div>
+
+        <!--Posting Output-->
+        <div ng-if="vm.currentThread.type=='invited'" class="details">
+          <span class="details" ng-bind-html="vm.currentThread.item.text"></span>
+          <span class="details"><a ng-click="vm.passContacts(vm.currentThread.item.id)">View Request</a></span>
+        </div>
+
+        <!--Invitation Output-->
+        <div ng-if="vm.currentThread.type=='invite'" class="details">
+          <span class="details" ng-bind-html="vm.currentThread.item.text"></span>
+          <span class="details"><a ng-click="vm.passInvitations(vm.currentThread.item.id, vm.currentThread.item.type)">View Invitation</a></span>
+        </div>
+
+        <!--Invitation Output-->
+        <div ng-if="vm.currentThread.type=='accepted'" class="details">
+          <span class="details" ng-bind-html="vm.currentThread.item.text"></span>
+        </div>
+
+      </div>
+
+      <md-menu>
+        <md-button aria-label="More" class="md-icon-button"
+                   ng-click="$mdOpenMenu($event)"
+                   translate translate-aria-label="MAIL.MORE">
+          <md-icon md-font-icon="icon-dots-vertical"></md-icon>
+        </md-button>
+
+        <md-menu-content width="3">
+
+          <md-menu-item ng-if="vm.currentThread.type=='message'"">
+            <md-button aria-label="Reply" translate-aria-label="MAIL.REPLY"
+                       ng-click="vm.passMessages(vm.currentThread.user.id)">
+              <md-icon class="md-accent-fg s18" md-font-icon="icon-reply"></md-icon>
+              <span translate="MAIL.REPLY">Reply</span>
+            </md-button>
+          </md-menu-item>
+
+
+
+          <md-menu-item>
+            <md-button aria-label="Delete" translate-aria-label="MAIL.DELETE"
+                       ng-click="vm.deleteFeed($event, vm.currentThread)">
+              <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+              <span translate="MAIL.DELETE">Delete</span>
+            </md-button>
+          </md-menu-item>
+
+        </md-menu-content>
+
+      </md-menu>
+    </div>
+
+  </div>
+
+</div>

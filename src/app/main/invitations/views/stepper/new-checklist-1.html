@@ -1,0 +1,31 @@
+<div layout="row" flex>
+  <md-input-container flex="70">
+    <md-select ng-model="vm.verticalStepper.step1.folderID" name="folderID" aria-label="Select Project"
+               placeholder="Select Existing Project" md-autofocus required>
+      <md-option ng-repeat="folder in vm.folders" value="{{folder.id}}"
+                 ng-selected="folder.id == vm.verticalStepper.newFolderID"
+                 ng-click="vm.fetchGroups(folder.id)">
+        {{folder.name}}
+      </md-option>
+    </md-select>
+    <div ng-messages="vm.verticalStepper.step1.folderID.$error"
+         role="alert">
+      <div ng-message="required">
+        <span>Project is required.</span>
+      </div>
+    </div>
+  </md-input-container>
+
+  <md-input-container flex="30" layout="row" layout-align="center center">
+
+
+    <md-button class="md-raised md-accent"
+               ng-click="vm.openFolderInput()"
+               aria-label="Create New Project"
+               translate-attr-aria-label="CHECKLIST.ADD_NEW_PROJECT">
+NEW PROJECT
+    </md-button>
+
+  </md-input-container>
+
+</div>

@@ -1,0 +1,103 @@
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
+
+  <table class="simple row-border hover">
+    <thead>
+
+    <tr>
+      <th>
+        <span ng-if="!vm.folders.length">You do not have any projects</span>
+      </th>
+
+
+
+      <th class="text-right">
+        <md-menu>
+
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="Sort" translate
+                     translate-attr-aria-label="CONTACTS.SORT">
+            <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event)">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                <span translate="">Add New Project</span>
+              </md-button>
+            </md-menu-item>
+
+          </md-menu-content>
+
+        </md-menu>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--<tr
+      ng-repeat="folder in vm.folders | orderBy:vm.folderOrder:vm.folderOrderDescending | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
+      <td>
+        <a ng-href="/groups/{{folder.id}}">
+          {{folder.name}}
+        </a>
+      </td>
+    -->
+<tr ng-repeat="folder in vm.folders | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
+  <td>
+    <a ng-href="/groups/{{folder.id}}">
+      {{folder.title}}
+    </a>
+  </td>
+
+      <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
+          class="text-right">
+
+        <md-menu>
+
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="More" translate
+                     translate-attr-aria-label="FOLDER.MORE">
+            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+            <md-menu-item>
+              <md-button ng-click="vm.deleteFolder(folder, $event)" aria-label="Delete Folder"
+                         translate-attr-aria-label="FOLDER.DELETE_FOLDER">
+                <md-icon class="red-600-fg s18"
+                         md-font-icon="icon-trash"></md-icon>
+                <span translate="FOLDER.DELETE_FOLDER">Delete Folder</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event, folder)" aria-label="Edit Folder"
+                         translate-attr-aria-label="FOLDER.EDIT_FOLDER">
+                <md-icon class="md-accent-fg s18"
+                         md-font-icon="icon-pencil"></md-icon>
+                <span translate="FOLDER.EDIT_FOLDER">Edit Folder</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-divider class="md-default-theme"></md-divider>
+
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Add New Folder"
+                         translate-attr-aria-label="FOLDER.ADD_NEW_FOLDER">
+                <md-icon class="md-accent-fg s18"
+                         md-font-icon="icon-plus-circle-outline"></md-icon>
+                <span translate="FOLDER.ADD_NEW_FOLDER">Add New Folder</span>
+              </md-button>
+            </md-menu-item>
+
+          </md-menu-content>
+        </md-menu>
+
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>

@@ -1,0 +1,67 @@
+<!-- DIALOG -->
+<md-dialog class="dialog" aria-label="New Task">
+
+  <form name="contactForm" class="md-inline-form" novalidate
+        ng-switch="(which = vm.showWhichInviteContactData(vm.contact))">
+
+    <!-- DIALOG TOOLBAR -->
+    <md-toolbar class="md-accent md-hue-2 md-tall" layout="column">
+       
+      <!-- TOOLBAR TOP -->
+      <div class="md-toolbar-tools md-toolbar-tools-top" layout="row" layout-align="space-between center">
+        <span class="title">{{vm.role.name}}</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog" translate
+                   translate-attr-aria-label="CONTACTS.CLOSE_DIALOG">
+          <md-icon md-font-icon="icon-close"></md-icon>
+        </md-button>
+      </div>
+      <!-- / TOOLBAR TOP -->
+     
+    </md-toolbar>
+    <!-- / DIALOG TOOLBAR -->
+     <!-- {{vm.role|json}}  -->
+    <!-- DIALOG CONTENT -->
+    <md-dialog-content ms-scroll>
+
+      <md-input-container class="md-icon-float md-block">
+        <label >Name</label>
+        <input ng-model="vm.role.name" type="text" disabled>
+      </md-input-container>
+
+      <md-input-container class="md-icon-float md-block">
+        <label>Assigned</label>
+
+        <input ng-model="vm.role.assigned" type="text" disabled>
+      </md-input-container>
+
+      <md-input-container class="md-block">
+        <label>Subscribed</label>
+
+        <input ng-model="vm.role.subscribed" type="text" placeholder="Company" disabled>
+      </md-input-container>
+
+
+      <md-input-container class="md-block">
+        <label>Available</label>
+
+        <input ng-model="vm.role.available" type="text" placeholder="Phone number" disabled>
+      </md-input-container>
+
+      <!-- <md-input-container class="md-block">
+        <label translate="CONTACTS.EMAIL">Email Address</label>
+
+        <input ng-model="vm.contact.contacts[which].email" type="email" placeholder="Email Address" disabled>
+      </md-input-container> -->
+
+
+    </md-dialog-content>
+    <!-- / DIALOG CONTENT -->
+
+    <!-- DIALOG ACTIONS -->
+
+    <!-- / DIALOG ACTIONS -->
+
+  </form>
+
+</md-dialog>
+<!-- / DIALOG -->

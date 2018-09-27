@@ -1,0 +1,32 @@
+.DS_Store
+dist/
+<<<<<<< Updated upstream
+!dist/.htaccess
+=======
+!dist/includes/php
+>>>>>>> Stashed changes
+.tmp/
+.idea/
+.sass-cache/
+coverage/
+bower_components/
+node_modules/
+/bower_components/
+/node_modules/
+/vendor/
+/test.php
+/test.xml
+/composer.lock
+/plugins.php
+/includes/php/config.php
+/includes/php/connections.php
+/nbproject
+nbproject
+nbproject/
+/nbproject/
+/src/app/.DS_Store
+src/app/core/directives/ms-file/
+
+src/pdf/
+
+sandbox/

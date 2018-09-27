@@ -1,0 +1,101 @@
+<div class="form-wrapper  md-whiteframe-1dp flex">
+
+  <form name="form" ng-disabled='vm.inviting' class="md-inline-form"
+        ng-submit="vm.memberInvites.invite.send.execute()"
+        novalidate>
+
+    <div layout="column" layout-gt-sm="row">
+      <md-input-container class="mb-10" flex>
+        <input type="email" name="email" ng-model="vm.memberInvites.invite.send.email" placeholder="Email Address"
+               ng-pattern="/^.+@.+\..+$/" autofocus required>
+        <div ng-messages="form.email.$error"
+             role="alert" multiple="multiple">
+          <div ng-message="required" style="opacity: 1; margin-top: 0px;">
+            <span>Email address field is required</span>
+          </div>
+          <div ng-message="pattern" style="opacity: 1; margin-top: 0px;">
+            <span>Email address must be a valid e-mail address</span>
+          </div>
+        </div>
+      </md-input-container>
+
+    </div>
+
+    <md-button type="submit"
+               class="md-raised md-accent" aria-label="Submit"
+               ng-disabled="form.$invalid || form.$pristine || vm.inviting">
+      <span ng-hide='vm.inviting'>Invite</span>
+      <span ng-show='vm.inviting'>Inviting...</span>
+    </md-button>
+  </form>
+</div>
+
+
+<div class="simple-table-container md-background-bg md-whiteframe-1dp" ng-show="vm.memberInvites.invites.length>0">
+
+  <table class="simple row-border hover">
+    <thead>
+    <tr>
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">Name</span>
+        </div>
+      </th>
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">Email</span>
+        </div>
+      </th>
+      <th class="secondary-text hide-xs">
+        <div class="table-header">
+          <span class="column-title">Oraganization</span>
+        </div>
+      </th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="invite in vm.memberInvites.invites | orderBy: 'name.full'">
+      <td>
+        {{invite.contact.name.full}}
+      </td>
+      <td>
+        {{invite.email}}
+      </td>
+
+      <td class="hide-xs">
+        {{invite.contact.org}}
+      </td>
+
+      <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
+          class="text-right">
+
+        <md-menu>
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="More" translate
+                     translate-attr-aria-label="">
+            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+            <md-menu-item ng-hide="withdrawing">
+              <md-button ng-click="vm.memberInvites.invite.withdraw.execute(invite)"
+                         ng-disabled="withdrawing"
+                         translate-attr-aria-label="TEAMMEMBERS.RESCIND_INVITATION">
+                <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                <span translate="TEAMMEMBERS.RESCIND_INVITATION">Rescind Invitation</span>
+              </md-button>
+            </md-menu-item>
+
+          </md-menu-content>
+        </md-menu>
+
+
+
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>

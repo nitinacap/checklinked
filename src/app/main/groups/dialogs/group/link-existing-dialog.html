@@ -1,0 +1,77 @@
+<!-- DIALOG -->
+<md-dialog class="dialog" aria-label="New Task">
+
+    <form ng-submit="vm.link(vm.selected.checklists)" ng-disabled="linking" class="modal-content">
+
+        <!-- DIALOG TOOLBAR -->
+        <md-toolbar class="md-accent md-hue-2" layout="column">
+
+            <!-- TOOLBAR TOP -->
+            <div class="md-toolbar-tools md-toolbar-tools-top" layout="row" layout-align="space-between center">
+                <span class="title">Link to Existing Checklist</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog" translate
+                           translate-attr-aria-label="CHECKLIST.CLOSE_DIALOG">
+                    <md-icon md-font-icon="icon-close"></md-icon>
+                </md-button>
+            </div>
+            <!-- / TOOLBAR TOP -->
+
+        </md-toolbar>
+        <!-- / DIALOG TOOLBAR -->
+
+        <!-- DIALOG CONTENT -->
+        <md-dialog-content ms-scroll>
+        <ul>
+        	<li ng-show="error" class="list-group-item list-group-item-danger">
+						<h4 class="list-group-item-heading">Error {{vm.error}}</h4>
+						<p class="list-group-item-text">{{vm.message}}</p>
+					</li>
+        </ul>
+        <table class="simple" ng-if="vm.checklists[0]" ms-responsive-table>
+                <thead>
+                    <tr>
+                        <th>Checklist Name</th>
+                        <th class="text-right">Link to Group</th>
+                    </tr>
+                </thead>
+
+                <tfoot>
+                    <tr>
+					          <td></td>
+                    </tr>
+                  </tfoot>
+
+                <tbody>
+                    <tr ng-repeat="checklist in vm.checklists">
+                        <td class="name">{{checklist.name}}</td>
+                        <!--<td class="name">{{res.email}}</td>-->
+                        <td class="text-right" ng-switch="link.status">
+							<button type="button" ng-click="vm.selected.toggle(checklist)" ng-disabled="vm.linking" class="btn btn-link checkbox pull-right">
+								<i ng-hide="checklist.isSelected" class="icon-checkbox-blank-outline"></i>
+								<i ng-show="checklist.isSelected" class="icon-checkbox-marked-outline"></i>
+							</button>
+						</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </md-dialog-content>
+
+        <!-- DIALOG ACTIONS -->
+        <md-dialog-actions layout="row" layout-align="space-between center" ng-hide="vm.error || vm.loading">
+
+
+			<div layout="row" layout-align="start center">
+                <md-button
+                  type="submit"
+                  class="text-left button-dialog"
+                  aria-label="">
+                    LINK TO SELECTED
+                </md-button>
+            </div>
+        </md-dialog-actions>
+        <!-- / DIALOG ACTIONS -->
+
+    </form>
+</md-dialog>
+<!-- / DIALOG -->

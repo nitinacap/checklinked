@@ -1,0 +1,71 @@
+<div layout="row" layout-align="start center">
+    <div layout="row" layout-align="start center" flex>
+
+
+
+        <md-button id="navigation-toggle" class="md-icon-button" ng-click="vm.toggleSidenav('navigation')"
+                   hide-gt-sm aria-label="Toggle navigation" translate
+                   translate-attr-aria-label="TOOLBAR.TOGGLE_NAVIGATION">
+            <md-icon md-font-icon="icon-menu" class="icon"></md-icon>
+        </md-button>
+
+        <md-button class="md-icon-button navigation-fold-toggle"
+                   hide show-gt-sm aria-label="Toggle navigation fold"
+                   translate translate-attr-aria-label="TOOLBAR.TOGGLE_NAVIGATION_FOLD"
+                   ng-click="vm.toggleMsNavigationFolded()">
+            <md-icon class="s18" md-font-icon="icon-backburger"></md-icon>
+        </md-button>
+
+    </div>
+
+    <div layout="row" layout-align="start center">
+        <md-progress-circular id="toolbar-progress" ng-if="$root.loadingProgress" class="md-accent"
+                              md-mode="indeterminate" md-diameter="32">
+        </md-progress-circular>
+
+        <md-menu-bar id="user-menu">
+            <md-menu md-position-mode="left bottom">
+                <md-button class="user-button" ng-click="$mdOpenMenu()"
+                           aria-label="User settings"
+                           translate translate-attr-aria-label="TOOLBAR.USER_SETTINGS">
+                    <div layout="row" layout-align="space-between end">
+                        <div>
+
+                            <md-icon md-font-icon="icon-dots-horizontal" ng-class="vm.userStatus.icon"
+
+                                     class="icon">
+                            </md-icon>
+                        </div>
+                        <span class="username" hide-xs>{{ user.name.full }}</span>
+                        <md-icon md-font-icon="icon-chevron-down"
+                                 class="icon" hide-xs></md-icon>
+                    </div>
+                </md-button>
+        
+                <md-menu-content width="3">
+                    <md-menu-item class="md-indent" ui-sref="app.user">
+                        <md-icon md-font-icon="icon-account" class="icon"></md-icon>
+                        <md-button>My Profile</md-button>
+                    </md-menu-item>
+
+                    <md-menu-item class="md-indent" ui-sref="app.organization">
+                        <md-icon md-font-icon="icon-people" class="icon"></md-icon>
+                        <md-button>Organization</md-button>
+                    </md-menu-item>
+
+
+                    <md-menu-divider></md-menu-divider>
+
+                    <md-menu-item class="md-indent" ui-sref="app.logout">
+                        <md-icon md-font-icon="icon-logout" class="icon"></md-icon>
+                        <md-button>Logout</md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
+        </md-menu-bar>
+
+      <ms-search-bar on-search="vm.search(query)" on-result-click="vm.searchResultClick(item)"
+                     debounce="300"></ms-search-bar>
+
+    </div>
+</div>

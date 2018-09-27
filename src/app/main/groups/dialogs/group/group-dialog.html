@@ -1,0 +1,52 @@
+<md-dialog class="dialog" aria-label="">
+  <form name="groupForm" class="md-inline-form" novalidate>
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">{{vm.title}}</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content ms-scroll>
+      <md-input-container class="md-block mb-0">
+        <label translate="GROUP.NAME">Group Name</label>
+        <input name="name" ng-model="vm.group.name" required md-autofocus>
+        <div ng-messages="groupForm.name.$error" ng-show="groupForm.name.$touched" role="alert">
+          <div ng-message="required">
+            <span translate="GROUP.ERRORS.GROUP_NAME_REQUIRED">Group Name field is required</span>
+          </div>
+        </div>
+      </md-input-container>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="start center">
+        <md-button type="submit" ng-if="!vm.newGroup" ng-click="vm.saveGroup()"
+                   class="md-raised md-accent"
+                   ng-disabled="groupForm.$invalid || groupForm.$pristine"
+                   aria-label="Save" translate="GROUP.SAVE" translate-attr-aria-label="GROUP.SAVE">
+          SAVE GROUP
+        </md-button>
+
+        <md-button type="submit" ng-if="vm.newGroup" ng-click="vm.addNewGroup(vm.folderID, $event)"
+                   class="md-raised md-accent"
+                   ng-disabled="groupForm.$invalid || groupForm.$pristine"
+                   aria-label="Save" translate="GROUP.SAVE" translate-attr-aria-label="GROUP.SAVE">
+          ADD GROUP
+        </md-button>
+
+      </div>
+
+      <div layout="row">
+        <md-button ng-if="!vm.newGroup" class="md-icon-button" ng-click="vm.deleteGroup($event, vm.group)"
+                   aria-label="Delete" translate
+                   translate-attr-aria-label="GROUP.DELETE">
+          <md-icon md-font-icon="icon-delete"></md-icon>
+          <md-tooltip><span translate="GROUP.DELETE">DELETE</span></md-tooltip>
+        </md-button>
+      </div>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

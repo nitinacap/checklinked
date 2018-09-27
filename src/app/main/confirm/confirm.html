@@ -1,0 +1,36 @@
+<div id="register" class="flex-scrollable" layout="column" ms-scroll>
+  <div id="register-form-wrapper" layout="column" layout-align="center center">
+    <div id="register-form" class="md-whiteframe-8dp">
+      <div class="logo md-accent-bg">
+        <span>CL</span>
+      </div>
+
+      <div class="title" translate="CONFIRM.TITLE">Confirm Account</div>
+
+      <div ng-if="vm.message">
+        <p>{{vm.message}}</p>
+      </div>
+
+
+
+        <form name="registerForm" novalidate action="/logout/">
+
+          <md-button type="submit"
+                     class="md-raised md-accent submit-button"
+                     aria-label="CREATE MY ACCOUNT"
+                     translate="CONFIRM.LOGIN"
+                     translate-attr-aria-label="CONFIRM.LOGIN">
+            LOGIN
+          </md-button>
+        </form>
+
+
+    </div>
+
+
+
+  </div>
+
+
+
+

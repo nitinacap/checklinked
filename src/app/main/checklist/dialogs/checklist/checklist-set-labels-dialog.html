@@ -1,0 +1,124 @@
+<md-dialog class="dialog" aria-label="">
+  <form name="checklistForm" class="md-inline-form" ng-submit="vm.labels.create.save()" novalidate>
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">Select Label</span>
+        <md-button class="md-icon-button" ng-click="closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <!-- DIALOG CONTENT -->
+    <md-dialog-content ms-scroll>
+
+
+      <div class="simple-table-container">
+
+        <table class="simple" ms-responsive-table>
+          <thead>
+          <tr>
+            <th>User</th>
+            <th>Label</th>
+            <th>Description</th>
+            <th class="text-center">Select</th>
+            <th></th>
+          </tr>
+          </thead>
+
+          <tfoot>
+          </tfoot>
+
+          <tbody>
+          <tr ng-repeat="label in vm.labels.selectable">
+            <td>{{label.contact.name}}</td>
+            <td>{{label.name}}</td>
+            <td>{{label.explanation}}</td>
+            <td class="text-center" ng-switch="(selected=vm.labels.isSelected(label))">
+              <md-button type="button"
+                         ng-click="vm.labels.toggle(label)"
+                         class="icon-button">
+                <md-icon ng-hide="selected"
+                         md-font-icon="icon-checkbox-blank-outline"
+                         class="md-accent-fg s18"></md-icon>
+                <md-icon ng-show="selected"
+                         md-font-icon="icon-checkbox-marked-outline"
+                         class="md-accent-fg s18"></md-icon>
+              </md-button>
+            </td>
+
+            <td class="text-right">
+              <md-button ng-click="vm.labels.hide(label)"
+                         class="icon-button">
+                <md-icon md-font-icon="icon-trash"
+                         class="red-600-fg s18"></md-icon>
+              </md-button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <div ng-show="vm.labels.create.entering" class="modal-body">
+        <md-input-container class="md-icon-float md-block">
+          <label>Name</label>
+          <input name="name" ng-model="vm.labels.create.name" required md-autofocus>
+          <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
+            <div ng-message="required">
+              <span>Name field is required</span>
+            </div>
+          </div>
+        </md-input-container>
+
+        <md-input-container class="md-block mb-0">
+          <label>Explanation</label>
+          <input name="explanation" ng-model="vm.labels.create.explanation">
+          <div ng-messages="checklistForm.explanation.$error" ng-show="checklistForm.explanation.$touched" role="alert">
+          </div>
+        </md-input-container>
+      </div>
+
+    </md-dialog-content>
+
+
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="start center">
+        <md-button type="button"
+                   ng-click="vm.labels.create.enter()"
+                   class="md-raised md-accent"
+                   ng-hide="vm.labels.create.entering"
+                   aria-label="Add New Label" translate="CHECKLIST.ADD_LABEL"
+                   translate-attr-aria-label="CHECKLIST.ADD_LABEL">
+          ADD NEW LABEL
+        </md-button>
+
+
+        <md-button
+          type="submit"
+          class="md-raised md-accent"
+          ng-show="vm.labels.create.entering"
+          ng-disabled="vm.labels.create.saving"
+          aria-label="Add New Label" translate="CHECKLIST.SAVE_NEW_LABEL"
+          translate-attr-aria-label="CHECKLIST.SAVE_NEW_LABEL">
+          <span ng-hide="vm.labels.create.saving">Submit</span><span
+          ng-show="vm.labels.create.saving">Submitting...</span>
+        </md-button>
+
+
+        <md-button type="button"
+                   class="md-raised md-accent"
+                   ng-click="vm.labels.save()"
+                   aria-label="Save Labels" translate="CHECKLIST.SAVE_LABELS"
+                   translate-attr-aria-label="CHECKLIST.SAVE_LABELS">
+          SAVE LABELS
+        </md-button>
+
+      </div>
+  </form>
+
+  </md-dialog-actions>
+  <!-- / DIALOG ACTIONS -->
+
+</md-dialog>
+<!-- / DIALOG -->

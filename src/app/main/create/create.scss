@@ -1,0 +1,140 @@
+
+.bg-white{
+    background-color: #FFFFFF !important;
+}
+
+.border-blue{
+border: 2px solid #6D8FB8 !important;
+}
+#register {
+    height: 100%;
+    background-color: rgba(0,0,0,0.12);
+    background-size: cover;
+
+    #register-form-wrapper {
+        flex: 1 0 auto;
+        padding: 32px;
+
+        #register-form {
+            width: 22%;
+            max-width: 384px;
+            padding: 15px;
+            background: #FFFFFF;
+            text-align: center;
+
+            .logo {
+                width: 23%;
+                height: 128px;
+                max-width: 100% !important;
+                line-height: 128px;
+                font-size: 86px;
+                font-weight: 500;
+                margin: 32px auto;
+                color: #FFFFFF;
+                border-radius: 2px;
+            }
+          input{
+       border-bottom-color: #6D8FB8;
+       font-size: 12px;
+
+   }
+   md-input-container .md-errors-spacer {
+    min-height: 15px !important;
+
+}
+.ng-scope{
+    font-size: 12px;
+}
+            md-input-container{
+                    padding: 0px !important;
+                    margin: 0px 0  !important;
+            }
+
+            .title {
+                margin: 16px 0 15px 0;
+                font-size: 17px;
+                color: black;
+            }
+            .thank p{
+                font-size: 16px;
+            }
+
+            form {
+                width: 100%;
+                text-align: left;
+
+                md-checkbox {
+                    margin: 0;
+                }
+
+                .terms {
+                    font-size: 13px;
+                    margin: 16px 0 15px 0;
+
+                    a {
+                        margin-left: 4px;
+                    }
+                }
+
+                .submit-button {
+                   width: 120px;
+                    margin: 0px auto;
+                    display: block;
+                    text-transform: initial;
+                }
+            }
+
+            .login {
+                margin: 32px auto 24px auto;
+                width: 250px;
+                font-weight: 500;
+
+                .text {
+                    margin-right: 8px;
+                }
+
+                .link {
+
+                }
+            }
+        }
+    }
+}
+.font-12{
+    font-size: 12px;
+}
+.font-11{
+    font-size: 11px;
+}
+
+
+// RESPONSIVE
+@media screen and (max-width: $layout-breakpoint-xs) {
+
+    #register {
+
+        #register-form-wrapper {
+            padding: 16px;
+
+            #register-form {
+                padding: 24px;
+                width: 100%;
+
+                form {
+
+                    .md-button {
+                        width: 90%;
+                    }
+                }
+            }
+        }
+    }
+
+}
+.bg-white{
+    background-color: #FFFFFF;
+}
+
+.border-blue{
+border: 1px solid #431d93;
+}

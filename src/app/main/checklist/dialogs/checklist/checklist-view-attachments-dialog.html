@@ -1,0 +1,36 @@
+<md-dialog class="dialog" aria-label="">
+
+        <md-toolbar class="md-accent md-hue-2">
+            <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+                <span class="title">{{vm.title}}</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+                    <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <md-input-container class="md-block">
+                <input id="AWSFileUploadInput" ng-model="vm.file" name="file" type="file" class="add-file-button md-fab md-warn"/>
+            </md-input-container>
+        </md-dialog-content>
+
+		<md-dialog-content ms-scroll>
+		<md-input-container class="md-block">
+			  <md-progress-linear md-mode="determinate" value="{{vm.uploadProgress}}"></md-progress-linear>
+			  {{ vm.uploadProgress == 0 ? '' : vm.uploadProgress + '%' }}
+			  </md-input-container>
+		</md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="start center">
+                <md-button type="button"
+                           ng-click="vm.uploadAttachment()"
+                           class="md-raised md-accent"
+                           aria-label="Upload Attachment" translate="CHECKLIST.UPLOAD_ATTACHMENT" translate-attr-aria-label="CHECKLIST.UPLOAD_ATTACHMENT">
+                    UPLOAD
+                </md-button>
+             </div>
+        </md-dialog-actions>
+
+</md-dialog>

@@ -1,0 +1,73 @@
+<div class="simple-table-container md-background-bg md-whiteframe-1dp">
+
+  <table class="simple row-border hover">
+    <thead>
+    <tr ng-if="vm.invites.sent.length">
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">Checklist</span>
+        </div>
+      </th>
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">Recipient</span>
+        </div>
+      </th>
+      <th class="secondary-text hide-xs">
+        <div class="table-header">
+          <span class="column-title">Oraganization</span>
+        </div>
+      </th>
+      <th></th>
+    </tr>
+    <tr ng-if="!vm.invites.sent.length">
+      <th class="secondary-text">
+        <div class="table-header">
+          <!-- <span class="column-title">(0) Invitations Pending</span> -->
+          <span class="column-title">(0) Links Pending</span>
+        </div>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="invite in vm.invites.sent | filter: globalSearch.searchTerm | orderBy: 'created'">
+      <td>
+        {{invite.name}}
+      </td>
+      <td>
+        {{invite.users.recipient.name}}
+      </td>
+
+      <td class="hide-xs">
+        {{invite.users.recipient.organization}}
+      </td>
+
+      <td class="text-right">
+
+        <md-menu>
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="More" translate
+                     translate-attr-aria-label="">
+            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+
+            <md-menu-item ng-hide="viewAs.notMe || vm.invite.destroying">
+              <md-button ng-click="vm.inviteControl.destroy('sent', invite)"
+                         translate-attr-aria-label="INVITATIONS.REJECT_INVITATION">
+                <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                <span translate="INVITATIONS.RESCIND_INVITATION">Rescind Invitation</span>
+              </md-button>
+            </md-menu-item>
+
+          </md-menu-content>
+        </md-menu>
+
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>

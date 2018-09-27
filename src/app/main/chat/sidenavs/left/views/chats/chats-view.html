@@ -1,0 +1,113 @@
+<!-- CHATS TOOLBAR -->
+<md-toolbar class="md-tall">
+
+    <!-- TOOLBAR TOP -->
+    <div class="md-toolbar-tools md-toolbar-tools-top">
+
+        <!-- USER AVATAR WRAPPER -->
+        <div class="avatar-wrapper">
+
+            <!-- USER AVATAR -->
+            <!-- <img ng-click="vm.toggleLeftSidenavView('user')" ng-src="assets/images/avatars/profile.jpg" class="md-avatar avatar"
+                 alt="{{vm.user.name.full}}"/> -->
+            <!-- / USER AVATAR -->
+
+        </div>
+        <!-- / USER AVATAR -->
+
+        <md-menu md-position-mode="target-right target">
+
+            <!-- <md-button class="md-icon-button" ng-click="$mdOpenMenu()"
+                       aria-label="more">
+                <md-icon md-font-icon="icon-dots-vertical"></md-icon>
+            </md-button> -->
+
+            <!-- <md-menu-content width="3">
+                <md-menu-item>
+                    <md-button ng-click="vm.toggleLeftSidenavView('user')" translate="CHAT.PROFILE">
+                        Profile
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content> -->
+
+        </md-menu>
+
+    </div>
+    <!-- / TOOLBAR TOP -->
+
+    <!-- TOOLBAR BOTTOM -->
+    <div class="md-toolbar-tools md-toolbar-tools-bottom">
+
+        <!-- SEARCH -->
+        <div class="search-wrapper md-whiteframe-1dp" layout="row" layout-align="start center" flex>
+
+            <div class="search" flex layout="row" layout-align="start center">
+
+                <md-icon md-font-icon="icon-magnify" class="icon s18">
+                </md-icon>
+
+                <input flex ng-model="vm.chatSearch" type="text" placeholder="Search or start new chat" translate=""
+                       translate-attr-placeholder="CHAT.CHAT_SEARCH_PLACEHOLDER">
+
+            </div>
+        </div>
+        <!-- / SEARCH -->
+
+    </div>
+    <!-- / TOOLBAR BOTTOM -->
+
+</md-toolbar>
+<!-- / CHATS TOOLBAR -->
+
+<!-- CHATS CONTENT -->
+<md-content flex ms-scroll>
+
+    <!-- CHATS LIST-->
+    <md-list class="chat-list">
+
+        <div ng-show="vm.chatSearch && filteredChat.length > 0" class="md-accent-fg subheader"
+             ng-style="{'transform':'translate3d(0px, 0px, 0px)', 'z-index': filteredChat.length + filteredContact.length }"
+             translate="CHAT.CHATS">
+            CONTACTS
+        </div>
+
+        <md-list-item class="contact md-3-line"
+                      ng-style="{'transform': ( vm.chatSearch && filteredChat.length > 0 ) ?'translate3d(0px, '+($index + 1)* 100+'%, 0px)': 'translate3d(0px, '+$index* 100+'%, 0px)', 'z-index': filteredChat.length + filteredContact.length - $index}"
+                      ng-repeat="contact in vm.contacts  | orderBy:'accepted':true |  filter: {name:{full:vm.chatSearch}}  |  filter:query as filteredChat"
+                      ng-click="vm.openConversation(contact.contact_id, 'message', contact.name, contact)" ng-class="{'unread':contact.unread}">
+
+            <!-- <div class="avatar-wrapper">
+                <img ng-src="assets/images/avatars/profile.jpg" class="md-avatar avatar" alt="{{contact.name}}"/>
+                <i class="icon icon- s16 status" ng-class="contact.status"></i>
+            </div> -->
+
+            <div class="md-list-item-text">
+                <h3 class="name">{{contact.name.first}} {{contact.name.last}}</h3>
+                <p class="last-message">{{contact.organization}}</p>
+            </div>
+
+            <div layout="column" layout-align="center end">
+                <!--<div class="last-message-time">{{contact.lastMessage.time | altDate}}</div>-->
+                <!--<div ng-if="contact.unread" class="md-accent-bg unread-message-count">{{contact.unread}}</div>-->
+            </div>
+
+            <md-divider></md-divider>
+
+    </md-list>
+    <!-- / CHATS LIST-->
+
+    <!-- NO RESULTS MESSAGE -->
+    <div ng-hide="(filteredChat.length + filteredContact.length) > 0" class="no-results-message"
+         translate="CHAT.NO_RESULTS">
+        No results..
+    </div>
+    <!-- NO RESULTS MESSAGE-->
+
+</md-content>
+<!-- / CHATS CONTENT -->
+
+<!-- CONTACTS BUTTON -->
+<md-button class="md-fab contacts-button" ng-click="vm.toggleLeftSidenavView('contacts')" aria-label="contacts button">
+    <md-icon md-font-icon="icon-plus"></md-icon>
+</md-button>
+<!-- / CONTACTS BUTTON -->
