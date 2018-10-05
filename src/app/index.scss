@@ -23,3 +23,8 @@ md-tab-data{
         background-color:black !important; 
         color:#fff !important;
 }
+
+[md-theme="default"] .md-accent-bg {
+    background-color: #282D38;
+    color: rgba(255,255,255,1);
+}

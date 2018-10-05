@@ -46,7 +46,7 @@
 <tr ng-repeat="folder in vm.folders | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
   <td>
     <a ng-href="/groups/{{folder.id}}">
-      {{folder.title}}
+      {{folder.name}}
     </a>
   </td>
 

@@ -160,7 +160,8 @@
 
     /* Dialog Methods */
     function openFolderDialog(ev, folder) {
-
+      console.log(folder);
+      console.log("hello");
       vm.folder = folder;
       vm.title = 'Edit Project Name';
       vm.newFolder = false;
@@ -214,7 +215,7 @@
      // vm.folder.order += vm.folders.length;
       var datas = {
         type: 'folder',
-        title: vm.folder.name,
+        name: vm.folder.name,
         description: vm.folder.description,
         order: 1,
         token: $rootScope.token,

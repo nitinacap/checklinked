@@ -208,7 +208,7 @@
       },
       
       edit: function (editPack) {
-        return $http.post('https://checklinked.com/ajax/coe-edit.php', {
+        return $http.post(BASE_URL + 'update-project/'+1, {
           pack: editPack
         }, {
           headers: {
