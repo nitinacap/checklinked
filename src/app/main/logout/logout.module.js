@@ -9,8 +9,8 @@
     /** @ngInject */
     function config($stateProvider)
     {
-      //  $stateProvider.state('app.logout', {
-         //   url    : '/logout'
-        //});
+        $stateProvider.state('app.logout', {
+            url    : '/logout'
+        });
     }
 })();

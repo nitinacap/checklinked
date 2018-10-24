@@ -864,7 +864,7 @@
       var checklist;
 
       vm.loading = true;
-      return $http.get("https://checklinked.com/ajax/coe-get.php?t=checklist&idCHK=" + idCHK).success(function (res) {
+      return $http.get(BASEURL + "coe-get.php?t=checklist&idCHK=" + idCHK).success(function (res) {
         if (res === void 0 || res === null || res === '') {
           console.log('Error loading checklist: ', res);
 
@@ -912,7 +912,7 @@
       var sections;
 
       vm.loading = true;
-      return $http.get("https://checklinked.com/ajax/coe-get.php?t=section&idCHK=" + idCHK).success(function (res) {
+      return $http.get(BASEURL + "coe-get.php?t=section&idCHK=" + idCHK).success(function (res) {
         if (res === void 0 || res === null || res === '') {
           console.log('Error loading sections: ', res);
 
@@ -962,7 +962,7 @@
       var headings;
 
       vm.loading = true;
-      return $http.get("https://checklinked.com/ajax/coe-get.php?t=heading&idCHK=" + idCHK).success(function (res) {
+      return $http.get(BASEURL + "coe-get.php?t=heading&idCHK=" + idCHK).success(function (res) {
         if (res === void 0 || res === null || res === '') {
           console.log('Error loading headings: ', res);
 
@@ -1012,7 +1012,7 @@
       var items;
 
       vm.loading = true;
-      return $http.get("https://checklinked.com/ajax/coe-get.php?t=item&idCHK=" + idCHK).success(function (res) {
+      return $http.get(BASEURL + "coe-get.php?t=item&idCHK=" + idCHK).success(function (res) {
         if (res === void 0 || res === null || res === '') {
           console.log('Error loading headings: ', res);
 
@@ -1056,7 +1056,7 @@
       var checklist;
 
       vm.loading = true;
-      return $http.get("https://checklinked.com/ajax/coe-get.php?t=checklist&idCHK=" + idCHK).success(function (res) {
+      return $http.get(BASEURL + "coe-get.php?t=checklist&idCHK=" + idCHK).success(function (res) {
         if (res === void 0 || res === null || res === '') {
           console.log('Error loading checklist: ', res);
 

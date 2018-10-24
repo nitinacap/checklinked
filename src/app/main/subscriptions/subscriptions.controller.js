@@ -197,9 +197,9 @@
 debugger;
 
     if (((vm.ref = $rootScope.user) != null ? vm.ref.authenticated : void 0) && $rootScope.user.btClientID !== void 0 && $rootScope.user.btClientID !== null && $rootScope.user.btClientID !== '') {
-      vm.grabClientToken = $http.get("https://checklinked.com/ajax/braintree_clientID-get.php?cID=" + $rootScope.user.btClientID);
+      vm.grabClientToken = $http.get(BASEURL + "braintree_clientID-get.php?cID=" + $rootScope.user.btClientID);
     } else {
-      vm.grabClientToken = $http.get("https://checklinked.com/ajax/braintree_clientID-get.php");
+      vm.grabClientToken = $http.get(BASEURL + "braintree_clientID-get.php");
     }
     vm.grabClientToken.success(function (res) {
 

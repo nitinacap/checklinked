@@ -15,9 +15,9 @@
 
 #vertical-navigation {
     background-color:black;
-    width: $navigationWidth;
-    min-width: $navigationWidth;
-    max-width: $navigationWidth;
+        width: 85px;
+    min-width: 85px;
+    max-width: 85px;
     overflow-x: hidden;
     transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2), width 0.1s linear, min-width 0.1s linear, max-width 0.1s linear;
     //box-shadow: $whiteframe-shadow-6dp;
@@ -115,9 +115,8 @@
 
             #vertical-navigation {
                 position: absolute;
-                width: $navigationFoldedWidth;
-                min-width: $navigationFoldedWidth;
-                max-width: $navigationFoldedWidth;
+           
+                max-width: 85px;;
 
                 .navigation-header {
                     padding: 0 16px;

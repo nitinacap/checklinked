@@ -6,13 +6,14 @@
     .controller('UserController', UserController);
 
   /** @ngInject */
-  function UserController($rootScope, $http, $scope, api, $mdSidenav) {
+  function UserController($rootScope, $http, $state,  $scope, api, $mdSidenav) {
 
     var vm = this;
+    console.log('Hello');
+
     vm.updateUser = updateUser;
-    if ($rootScope.user){
-      $scope.userInfo = $rootScope.user;
-      console.log($scope.userInfo.first_name);
+    if (!$rootScope.token){
+       $state.go('app.login');
     }
     vm.update = {
       editable: false,
@@ -23,12 +24,13 @@
       },
       send: function () {
         this.sending = true;
-        return api.account.update(this.info).error(function (res) {
+        return api.account.update(this.info, $rootScope.token).error(function (res) {
           return $rootScope.message('Server not responsing properly.', 'warning');
         }).success(function (res) {
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Error talking to server', 'warning');
           } else if (res.code) {
+            $rootScope.user = res.user;
             return $rootScope.message(res.message, 'warning');
           } else {
             $rootScope.user = res.user;
@@ -60,7 +62,8 @@
         },
         email: u.email,
         password: u.password,
-        phone: u.phone
+        phone: u.phone,
+        token: $rootScope.token
       };
     };
 

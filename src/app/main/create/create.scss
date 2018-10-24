@@ -76,12 +76,7 @@ border: 2px solid #6D8FB8 !important;
                     }
                 }
 
-                .submit-button {
-                   width: 120px;
-                    margin: 0px auto;
-                    display: block;
-                    text-transform: initial;
-                }
+            
             }
 
             .login {
@@ -137,4 +132,12 @@ border: 2px solid #6D8FB8 !important;
 
 .border-blue{
 border: 1px solid #431d93;
+}
+
+
+.submit-button {
+    width: auto !important;
+    margin: 0px auto;
+    display: block;
+    text-transform: initial;
 }

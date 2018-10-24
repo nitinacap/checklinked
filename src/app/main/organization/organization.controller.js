@@ -62,7 +62,7 @@
     function update() {
       console.log('vm.orgTmp', vm.orgTmp);
       vm.updating = true;
-      return $http.post('https://checklinked.com/ajax/organization-update-post.php', {
+      return $http.post(BASEURL + 'organization-update-post.php', {
         org: vm.orgTmp
       }, {
         headers: {
@@ -93,7 +93,7 @@
       vm.creating = true;
       console.log('org id', vm.orgTmp);
       send = vm.orgTmp;
-      return $http.post('https://checklinked.com/ajax/organization-create-post.php', {
+      return $http.post(BASEURL + 'organization-create-post.php', {
         org: send
       }, {
         headers: {

@@ -8,9 +8,9 @@
     "EMAIL": "Email",
     "PASSWORD": "Password",
     "PASSWORD_CONFIRM": "Password (Confirm)",
-    "READ_ACCEPT": "I have read and accepted the",
+    "READ_ACCEPT": "I read and accept",
     "TERMS_COND": "terms and conditions",
-    "CREATE_ACCOUNT": "Create My Account",
+    "CREATE_ACCOUNT": "CREATE MY ACCOUNT",
     "ALREADY_HAVE": "Already have an account?",
     "LOGIN": "Log in",
     "ERRORS": {

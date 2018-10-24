@@ -5,13 +5,17 @@ Array.prototype.remove = function (e) {
   }
 };
 
-var BASE_URL = "http://localhost:8000/api/";
 
 Array.prototype.diff = function (a) {
   return this.filter(function (i) {
     return a.indexOf(i) < 0;
   });
 };
+
+/*var BASE_URL = "http://localhost:8000/api/";
+*/
+
+ var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
 
 
 (function () {
@@ -56,7 +60,7 @@ Array.prototype.diff = function (a) {
      
           return $state.go(toState.name);
         }
-        /*
+      
          else if (!$rootScope.userSubscribed() && module[1] !== 'user' && module[1] !== 'organization' && module[1] !== 'subscriptions' && module[1] !== 'teammembers') {
          console.log('WTF');
          if (path != null) {
@@ -65,7 +69,7 @@ Array.prototype.diff = function (a) {
          $state.go('app.login');
          //return $state.go('app.user');
          }
-         */
+      
 
         else {
           api.cache.local.remove('navTo');
@@ -86,6 +90,10 @@ Array.prototype.diff = function (a) {
           break;
         case 'create':
           console.log('navigating to create.  return true');
+          return true;
+          break;
+        case 'term':
+          console.log('navigating to term.  return true');
           return true;
           break;
         case 'confirm':
@@ -122,7 +130,8 @@ Array.prototype.diff = function (a) {
             return true;
           } else if ($rootScope.user === void 0) {
             console.log('user not defined, pulling now');
-            return $http.get('https://checklinked.com/ajax/login-authCheck.php', {
+            //return $http.get(BASEURL + 'login-authCheck.php', {
+            return $http.get(BASEURL + 'login-authCheck.php', {
               cache: false
             }).then(
               function (d) { //success
@@ -350,7 +359,7 @@ Array.prototype.diff = function (a) {
       getAvailable: function () {
         var self;
         self = this;
-        return $http.get('https://checklinked.com/ajax/organization_members-get.php').then(function (d) {
+        return $http.get(BASEURL + 'organization_members-get.php').then(function (d) {
           var res;
           if (typeof d !== 'object') {
             return false;
@@ -397,7 +406,7 @@ Array.prototype.diff = function (a) {
         }
         this.loading = contact.idCON;
         self = this;
-        return $http.get("https://checklinked.com/ajax/userByID-get.php?idCON=" + contact.idCON + "&viewAs=1").then(function (d) {
+        return $http.get(BASEURL + "userByID-get.php?idCON=" + contact.idCON + "&viewAs=1").then(function (d) {
           var res;
           if (typeof d !== 'object') {
             return $rootScope.message("Server not responding properly.", 'warning');
@@ -469,7 +478,7 @@ Array.prototype.diff = function (a) {
     $rootScope.resetFeed();
 
     $rootScope.addUserData = function (type, data) {
-      return $http.post('https://checklinked.com/ajax/realtime-adjustUser-post.php', {
+      return $http.post(BASEURL + 'realtime-adjustUser-post.php', {
         w: type,
         d: data
       }, {
@@ -964,9 +973,10 @@ Array.prototype.diff = function (a) {
       if (mod[1] === 'login') {
         //console.log('is the login');
       } else if (mod[1] === 'logout') {
-        debugger;
-
-        $http.post('https://checklinked.com/ajax/logout.php').then(
+        var token = { token: $rootScope.token }; 
+       // debugger;
+  
+        $http.post(BASEURL + 'logout.php', token).then(
           function (d) { //success
             //$rootScope.socketio.disconnect();
             $rootScope.user = void 0;

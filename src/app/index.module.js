@@ -80,6 +80,12 @@
       // Dassboard Module
       'app.dashboard',
 
+      // Term Module
+
+      //Create Term,
+ 
+      'app.term',
+
       // Dassboard Module
       //'app.todo',
 

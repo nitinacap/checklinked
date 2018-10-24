@@ -1,7 +1,7 @@
 {
     "CONFIRM": {
         "TITLE": "Confirm new account",
-        "CREATE_ACCOUNT": "Create My Account",
+        "CREATE_ACCOUNT": "CREATE MY ACCOUNT",
         "ALREADY_HAVE": "Already have an account?",
         "LOGIN": "Log in"
     }

@@ -10,7 +10,7 @@
         "WITH_GOOGLE": "Log in with Google",
         "WITH_FACEBOOK": "Log in with Facebook",
         "DONT_HAVE_ACCOUNT": "Don't have an account?",
-        "CREATE_ACCOUNT": "Create An Account",
+        "CREATE_ACCOUNT": "Create an account",
         "ERRORS": {
             "EMAIL_REQUIRED": "Email field is required",
             "EMAIL_MUST_VALID": "Email must be a valid e-mail address",

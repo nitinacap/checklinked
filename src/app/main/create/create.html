@@ -34,7 +34,7 @@
                     </div>
                 </md-input-container>
 
-				<md-input-container class="md-block" md-no-float>
+                <md-input-container class="md-block" md-no-float>
                     <input name="phone" ng-model="vm.create.reg.phone" placeholder="Phone Number"
                            translate translate-attr-placeholder="REGISTER.PHONE"
                            required>
@@ -77,11 +77,11 @@
                 </md-input-container>
 
                 <md-input-container class="md-block" md-no-float>
-                    <input type="password" name="password_confirmation" ng-model="vm.create.reg.password_confirmation"
+                    <input type="password" name="password2" ng-model="vm.create.reg.password2"
                            placeholder="Password (Confirm)"
                            translate translate-attr-placeholder="REGISTER.PASSWORD_CONFIRM"
                            required>
-                    <div ng-messages="registerForm.password_confirmation.$error" role="alert">
+                    <div ng-messages="registerForm.password2.$error" role="alert">
                         <div ng-message="required">
                             <span translate="REGISTER.ERRORS.PASSWORD_CONFIRM_REQUIRED">Password (Confirm) field is required</span>
                         </div>
@@ -100,7 +100,7 @@
                 </div>
 <div layout="column">
     <div layout="row">
-                <md-button type="submit" class="md-raised md-accent submit-button" aria-label="CREATE MY ACCOUNT"
+                <md-button style="" type="submit" class="md-raised md-accent submit-button" aria-label="CREATE MY ACCOUNT"
                            ng-disabled="registerForm.$invalid || registerForm.$pristine"
                            translate="REGISTER.CREATE_ACCOUNT"
                            translate-attr-aria-label="REGISTER.CREATE_ACCOUNT">
@@ -123,9 +123,9 @@
 
 
      <!--  <div ng-if="vm.create.success">
-       		<p>Your registration has been received, and is pending; we have sent a confirmation email to the email address you provided.</p>
-				<p>To complete your registration, please click the confirmation link in the email we sent.</p>
-		</div>
+            <p>Your registration has been received, and is pending; we have sent a confirmation email to the email address you provided.</p>
+                <p>To complete your registration, please click the confirmation link in the email we sent.</p>
+        </div>
     -->
     <div class="row thank" layout-padding ng-if="vm.create.success">
         <img alt="Checklinked Logo"  src="/assets/images/logos/checklinked.png">
@@ -133,7 +133,7 @@
         <p>You will receive an email shortly with a link for confirmation.</p>
         <p>To see our introductory video and other help to get you started, <a href="">click HERE.</a></p>
     </div>
-		</div>
+        </div>
 
     </div>
 </div>
@@ -141,4 +141,7 @@
 
         </div>
     </div>
+</div>
+<div class="bd-loader" ng-if="vm.isLoader">
+    <md-progress-circular md-diameter="40"></md-progress-circular>
 </div>

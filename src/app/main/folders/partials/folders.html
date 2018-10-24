@@ -6,6 +6,7 @@
     <tr>
       <th>
         <span ng-if="!vm.folders.length">You do not have any projects</span>
+        <span ng-if="vm.folders.length">Total projects <strong>({{ vm.folders.length }}) </strong></span>
       </th>
 
 
@@ -35,20 +36,14 @@
     </tr>
     </thead>
     <tbody>
-    <!--<tr
+    <tr
       ng-repeat="folder in vm.folders | orderBy:vm.folderOrder:vm.folderOrderDescending | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
       <td>
         <a ng-href="/groups/{{folder.id}}">
           {{folder.name}}
         </a>
       </td>
-    -->
-<tr ng-repeat="folder in vm.folders | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
-  <td>
-    <a ng-href="/groups/{{folder.id}}">
-      {{folder.name}}
-    </a>
-  </td>
+
 
       <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
           class="text-right">

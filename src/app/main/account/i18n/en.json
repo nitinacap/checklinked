@@ -1,7 +1,7 @@
 {
     "ACCOUNT": {
         "TITLE": "Accept Invitation",
-        "CREATE_ACCOUNT": "Create My Account",
+        "CREATE_ACCOUNT": "create my account",
         "ALREADY_HAVE": "Already have an account?",
         "INVITE": "accept invite",
         "FIRST": "First Name",

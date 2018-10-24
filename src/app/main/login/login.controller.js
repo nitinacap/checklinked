@@ -6,28 +6,44 @@
     .controller('LoginController', LoginController);
 
   /** @ngInject */
-  function LoginController($rootScope, $scope, $http, $state, api, $httpParamSerializer, $stateParams) {
+  function LoginController($rootScope,$scope,$stateParams, $http, $state, api,$httpParamSerializer) 
+  {
     var vm = this;
 
-    if ($stateParams.token){
+    vm.isLoader = false;
+  if ($stateParams.token){
       var token = $stateParams.token;
       activateAccount(token);
     }
 
     function activateAccount(token){
-      $http.get(BASE_URL + 'signup/activate/' + token).success(function (res) {
+
+      $http.get(BASEURL +'account-create-confirm.php?token=' + token).success(function (res) {
+        if(res.code==1){
+           $scope.errtoken =  res.message
+        }
+        else if(res.code==0){
         $scope.successtoken = "Your account has been confirmed and you can now log in.";
-      }).error(function (err) {
-        $scope.errtoken = err.message;
+        console.log($scope.successtoken);
+        }
+      }).error(function (res) {
+        $scope.errtoken = res.message;
+  
       })
     }
+/*    =========
+
+    ======*/
     // Methods
     vm.login = login;
     vm.logout = logout;
 
-/** Old code  
+
 function login() {
-  $http.post("https://checklinked.com/ajax/login-doAuth.php", {
+
+
+  vm.isLoader =true;
+  $http.post(BASEURL + "login-doAuth.php", {
     user: vm.email,
     pass: vm.form.password
   }, {
@@ -36,59 +52,49 @@ function login() {
     },
     cache: false
   }).success(function (res) {
-    debugger;
-    var organizationError = res.user.organizationError;
+    vm.isLoader = false;
+    if(res.code==1){
+      console.log(res);
+      $scope.login_error = "Please enter correct username and password";    
 
-    if (organizationError !== null) {
-      var destination = 'app.organization';
-    } else {
-      var destination = 'app.user';
     }
+    else if(res.code==0){
+        $rootScope.token = res.user.token;
+        $rootScope.user = res.user;
+      console.log($rootScope.token);
+  console.log(res.user.token);
+     //var organizationError = res.user.organizationError;
+     ///var destination;
+     var destination = 'app.user';
+   // if (organizationError !== null) {
+  // //    destination = 'app.organization';
+   // } else {
+   //  destination = 'app.user';
+   // }
 
     $state.go(destination);
-
-  }).error(function (err) {
-  })
-
-} **/
-
-  /** new code  */
- 
-    function login() {
-      $http.post(BASE_URL + "login", $httpParamSerializer({"email":vm.email,"password":vm.form.password}), {
-        withCredentials: false
-      }).success(function (res) {
-  
-        $rootScope.token = res.token;
-        $rootScope.user = res.user;
-        var organizationError = res.user.organizationError;
-        if ($rootScope.user.notification ==1){
-          var destination = 'app.user';
-          firstLogin(destination);
-        }else{
-          var destination = 'app.organization';
-          $state.go(destination);
-
-        }
-
-      }).error(function (err) {
-        $scope.login_error = "Please enter correct username and password";
-      })
+    
 
     }
-    function firstLogin(destination){
-      $scope.firstLogin=true;
-      $state.go(destination);
+    
    
 
-    }
+
+  }).error(function (err) {
+     $scope.login_error = "Please enter correct username and password";
+  })
+
+} 
+
+  /** new code  */
+   
 
     /** End new code  */
 
     function logout() {
 
       debugger;
-      $http.get('https://checklinked.com/ajax/logout.php')
+      $http.get(BASEURL + 'logout.php')
         .then(
           function (res) {
           },

@@ -58,7 +58,7 @@
             this.inProgress = true;
             this.error = '';
             process = this.processMember;
-						return $http.get("https://checklinked.com/ajax/organization_members-get.php").success(function (res) {
+						return $http.get(BASEURL + "organization_members-get.php").success(function (res) {
               if (res === void 0 || res === null || res === '') {
                 console.log('Error loading team members: ', res);
                 return vm.members.load.error = 'Error loading Team Members! (Server not responding properly.)';
@@ -86,7 +86,7 @@
               var self;
               this.setting.push(role);
               self = this;
-							return $http.post("https://checklinked.com/ajax/organization_member_role_set-post.php", {
+							return $http.post(BASEURL + "organization_member_role_set-post.php", {
                 idCON: raw.idCON,
                 role: role,
                 setTo: willHave
@@ -136,7 +136,7 @@
           this.inProgress = true;
           this.error = '';
           process = this.processTemplate;
-					return $http.get("https://checklinked.com/ajax/templates-get.php?org=1&noXML=1").success(function (res) {
+					return $http.get(BASEURL + "templates-get.php?org=1&noXML=1").success(function (res) {
             if (res === void 0 || res === null || res === '') {
               console.log('Error loading templates: ', res);
               return vm.templates.load.error = 'Error loading Templates! (Server not responding properly.)';
@@ -168,7 +168,7 @@
               console.log('deleting template', template);
               this.deleting = true;
               template = this;
-							return $http.post("https://checklinked.com/ajax/template_delete-post.php", {
+							return $http.post(BASEURL + "template_delete-post.php", {
                 template: template
               }, {
                 headers: {
@@ -207,7 +207,7 @@
           this.inProgress = true;
           this.error = '';
           process = this.processInvite;
-					return $http.get("https://checklinked.com/ajax/checklist_invites-get.php?queue=1").success(function (res) {
+					return $http.get(BASEURL + "checklist_invites-get.php?queue=1").success(function (res) {
             if (res === void 0 || res === null || res === '') {
               console.log('Error loading invites: ', res);
               return vm.templates.load.error = 'Error loading Invites! (Server not responding properly.)';
@@ -241,7 +241,7 @@
               }
               this.rejecting = true;
               invite = this;
-							return $http.post("https://checklinked.com/ajax/checklist_invite-destroy.php", {
+							return $http.post(BASEURL + "checklist_invite-destroy.php", {
                 idINVITE: invite.id,
                 type: invite.type
               }, {
@@ -278,7 +278,7 @@
           this.inProgress = true;
           console.log('assigning', this);
           self = this;
-					return $http.post("https://checklinked.com/ajax/checklist_invite-assign.php", {
+					return $http.post(BASEURL + "checklist_invite-assign.php", {
             idCON: self.contact.idCON,
             idINVITE: self.invite.id,
             type: self.invite.type

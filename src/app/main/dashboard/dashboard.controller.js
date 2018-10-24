@@ -12,7 +12,7 @@
     {
      /*   old code for login
      var vm = this;
-      vm.url = 'https://checklinked.com/ajax/dashboard-login.php';
+      vm.url = BASEURL + 'dashboard-login.php';
       window.open(vm.url);
       */
 

@@ -6,12 +6,14 @@
     .factory('api', apiService);
 
   /** @ngInject */
-  function apiService($rootScope, $cacheFactory, $resource, $http, $location, $httpParamSerializer) {
+  function apiService($rootScope, $cacheFactory,  $resource, $http, $location) {
 
     var api = {};
 
     // Base Url
     api.baseUrl = 'app/data/';
+
+    var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
 
     // api.sample = $resource(api.baseUrl + 'sample/sample.json');
     api.generateCacheLocal = function () {
@@ -87,7 +89,7 @@
 
       doAuth: function (creds) {
        
-        return $http.post('https://checklinked.com/ajax/login-doAuth.php', creds, {
+        return $http.post(BASEURL+'login-doAuth.php', creds, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
@@ -130,16 +132,18 @@
           phone: reg.phone,
           notification: reg.notifications,
           password: reg.password,
-          password_confirmation: reg.password_confirmation,
+          c_password: reg.password2,
           first_name: reg.name.first,
           last_name: reg.name.last,
           base_url: reg.baseURL
         };
 
-        return $http.post(BASE_URL + 'signup', $httpParamSerializer(rdata) , {
+
+
+        return $http.post(BASEURL+'account-create.php', rdata , {
           headers: {
-            //'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
           },
           withCredentials: false
         })
@@ -152,7 +156,7 @@
 
       validate: function (validateId) {
         console.log('validateId', validateId);
-        return $http.post('https://checklinked.com/ajax/account-create-confirm.php', {
+        return $http.post(BASEURL+'account-create-confirm.php', {
           key: validateId
         }, {
           headers: {
@@ -167,7 +171,7 @@
     api.account = {
 
       update: function (info) {
-        return $http.post("https://checklinked.com/ajax/account-update-post.php", {
+        return $http.post(BASEURL+"account-update-post.php", {
           info: info
         }, {
           headers: {
@@ -186,30 +190,18 @@
     ////////////////////// FOLDERS
     api.folders = {
 
-      /*get: function () {
-        return $http.get('https://checklinked.com/ajax/coe-get.php?t=folder');
-      }
-      */
       get: function (token) {
-      //  return $http.post(BASE_URL + 'project', {
-        return $http.post(BASE_URL + 'project', $httpParamSerializer(token)
-       );
-
-        },
-      add: function (datas) {
-
-        return $http.post(BASE_URL + 'create-project', $httpParamSerializer(datas), {
-          headers: {
-            //'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-         
-        });
+        return $http.get(BASEURL+'coe-get.php?t=folder&token='+token);
       },
-      
-      edit: function (editPack) {
-        return $http.post(BASE_URL + 'update-project/'+1, {
-          pack: editPack
+      add: function (name, description, order, token) {
+        //return $http.post(BASEURL+'coe-post.php', {
+
+        return $http.post(BASEURL+'coe-post.php', {
+          type: 'folder',
+          name: name,
+          description: description,
+          order: order,
+          token: token
         }, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -217,10 +209,22 @@
           cache: false
         });
       },
-      destroy: function (id) {
-        return $http.post('https://checklinked.com/ajax/coe-destroy.php', {
+      edit: function (editPack,token) {
+        return $http.post(BASEURL+'coe-edit.php', {
+          pack: editPack,
+          token:token
+        }, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          cache: false
+        });
+      },
+      destroy: function (id,token) {
+        return $http.post(BASEURL+'coe-destroy.php', {
           type: 'folder',
-          id: id
+          id: id,
+          token: token
         }, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -234,8 +238,8 @@
     ////////////////////// GROUPS
     api.groups = {
 
-      get: function (idCFC) {
-        return $http.get("https://checklinked.com/ajax/coe-get.php?t=group&p=" + idCFC, {
+      get: function (idCFC,token) {
+        return $http.get(BASEURL+"coe-get.php?t=group&p=" + idCFC + "&token=" + token, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -243,12 +247,13 @@
           return res.groups;
         });
       },
-      add: function (name, order, to) {
-        return $http.post('https://checklinked.com/ajax/coe-post.php', {
+      add: function (name, order, to, token) {
+        return $http.post(BASEURL+'coe-post.php', {
           type: 'group',
           name: name,
           order: order,
-          parentID: to
+          parentID: to,
+          token: token
         }, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -256,9 +261,10 @@
           cache: false
         });
       },
-      edit: function (editPack) {
-        return $http.post('https://checklinked.com/ajax/coe-edit.php', {
-          pack: editPack
+      edit: function (editPack, token) {
+        return $http.post(BASEURL+'coe-edit.php', {
+          pack: editPack,
+          token:token
         }, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -266,10 +272,11 @@
           cache: false
         });
       },
-      destroy: function (id) {
-        return $http.post('https://checklinked.com/ajax/coe-destroy.php', {
+      destroy: function (id,token) {
+        return $http.post(BASEURL+'coe-destroy.php', {
           type: 'group',
-          id: id
+          id: id,
+          token:token
         }, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -287,7 +294,7 @@
         if (idCHK == null) {
           idCHK = '';
         }
-        return $http.get("https://checklinked.com/ajax/coe-get.php?t=checklist&idCHK=" + idCHK, {
+        return $http.get(BASEURL+"coe-get.php?t=checklist&idCHK=" + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -295,11 +302,11 @@
           return res.checklists;
         });
       },
-      getGroup: function (idGROUP) {
+      getGroup: function (idGROUP, token) {
         if (idGROUP == null) {
           idGROUP = '';
         }
-        return $http.get("https://checklinked.com/ajax/coe-get.php?t=checklist&p=" + idGROUP, {
+        return $http.get(BASEURL + "coe-get.php?t=checklist&p=" + idGROUP + "&token=" + token, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -308,7 +315,7 @@
         });
       },
       add: function (name, order, to) {
-        return $http.post('https://checklinked.com/ajax/coe-post.php', {
+        return $http.post(BASEURL+'coe-post.php', {
           type: 'checklist',
           name: name,
           order: order,
@@ -321,7 +328,7 @@
         });
       },
       edit: function (editPack) {
-        return $http.post("https://checklinked.com/ajax/coe-edit.php", {
+        return $http.post(BASEURL+"coe-edit.php", {
           pack: editPack
         }, {
           headers: {
@@ -332,7 +339,7 @@
       },
       destroy: function (id) {
         console.log('item', id);
-        return $http.post('https://checklinked.com/ajax/coe-destroy.php', {
+        return $http.post(BASEURL+'coe-destroy.php', {
           type: 'checklist',
           id: id
         }, {
@@ -351,7 +358,7 @@
           pvt = false;
         }
         console.log('pvt', pvt);
-        return $http.post('https://checklinked.com/ajax/checklist-publish.php', {
+        return $http.post(BASEURL+'checklist-publish.php', {
           id: id,
           name: name,
           type: type,
@@ -365,12 +372,12 @@
       },
       searchForTemplates: function (criteria) {
         console.log('criteria', criteria);
-        return $http.get("https://checklinked.com/ajax/templates-get.php?n=" + criteria.name + "&o=" + criteria.organization + "&a=" + criteria.author + "&v=" + criteria.version + "&t=" + criteria.type, {
+        return $http.get(BASEURL+"templates-get.php?n=" + criteria.name + "&o=" + criteria.organization + "&a=" + criteria.author + "&v=" + criteria.version + "&t=" + criteria.type, {
           cache: false
         });
       },
       createFromTemplate: function (idCTMPL, idGRP, type) {
-        return $http.post('https://checklinked.com/ajax/checklist-post-fromTemplate.php', {
+        return $http.post(BASEURL+'checklist-post-fromTemplate.php', {
           idPARENT: idGRP,
           idCTMPL: idCTMPL,
           type: type
@@ -386,7 +393,7 @@
           complete = 'toggle';
         }
         console.log('toggling checklist complete', idCFC, complete);
-        return $http.post('https://checklinked.com/ajax/checklist-toggle_complete-post.php', {
+        return $http.post(BASEURL+'checklist-toggle_complete-post.php', {
           idCFC: idCFC,
           complete: complete
         }, {
@@ -397,7 +404,7 @@
         });
       },
       getOrgChecklists: function () {
-        return $http.get('https://checklinked.com/ajax/checklists_org-get.php').then(function (d) {
+        return $http.get(BASEURL+'checklists_org-get.php').then(function (d) {
           var res;
           if (d === void 0 || d === null || d === '') {
             res = {
@@ -410,8 +417,8 @@
           return res;
         });
       },
-      getLinkedUsers: function (idCHK) {
-        return $http.get("https://checklinked.com/ajax/checklist_linkedUsers-get.php?idCHK=" + idCHK).then(function (d) {
+      getLinkedUsers: function (idCHK, token) {
+        return $http.get(BASEURL + "checklist_linkedUsers-get.php?idCHK=" + idCHK + "&token=" + token).then(function (d) {
           var res;
           if (d === void 0 || d === null || d === '') {
             res = {
@@ -454,7 +461,7 @@
               type: type
             };
           }
-          return $http.post('https://checklinked.com/ajax/checklist_invite-post.php', pack, {
+          return $http.post(BASEURL+'checklist_invite-post.php', pack, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
             },
@@ -473,7 +480,7 @@
         accept: function (invite, idPARENT, name, order) {
           var id;
           id = invite.type === 'group' ? invite.id : invite.checklist.id;
-          return $http.post('https://checklinked.com/ajax/checklist_accept-post.php', {
+          return $http.post(BASEURL+'checklist_accept-post.php', {
             id: id,
             idPARENT: idPARENT,
             name: name,
@@ -499,14 +506,14 @@
           if (idCHK == null) {
             idCHK = '';
           }
-          return $http.get("https://checklinked.com/ajax/checklist_invites-get.php?idCHK=" + idCHK, {
+          return $http.get(BASEURL+"checklist_invites-get.php?idCHK=" + idCHK, {
             cache: false
           }).success(function (res) {
             return res;
           });
         },
         destroy: function (invite) {
-          return $http.post("https://checklinked.com/ajax/checklist_invite-destroy.php", {
+          return $http.post(BASEURL+"checklist_invite-destroy.php", {
             idINVITE: invite.id,
             type: invite.type,
             rid: invite.rid
@@ -533,7 +540,7 @@
     api.sections = {
 
       get: function (idCHK) {
-        return $http.get("https://checklinked.com/ajax/coe-get.php?t=section&idCHK=" + idCHK, {
+        return $http.get(BASEURL+"coe-get.php?t=section&idCHK=" + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -542,7 +549,7 @@
         });
       },
       add: function (name, order, to) {
-        return $http.post('https://checklinked.com/ajax/coe-post.php', {
+        return $http.post(BASEURL+'coe-post.php', {
           type: 'section',
           name: name,
           order: order,
@@ -555,7 +562,7 @@
         });
       },
       destroy: function (id) {
-        return $http.post('https://checklinked.com/ajax/coe-destroy.php', {
+        return $http.post(BASEURL+'coe-destroy.php', {
           type: 'section',
           id: id
         }, {
@@ -572,7 +579,7 @@
     api.headings = {
 
       get: function (idCHK) {
-        return $http.get("https://checklinked.com/ajax/coe-get.php?t=heading&idCHK=" + idCHK, {
+        return $http.get(BASEURL+"coe-get.php?t=heading&idCHK=" + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -580,8 +587,8 @@
           return res.headings;
         });
       },
-      getParent: function (id_parent) {
-        return $http.get("https://checklinked.com/ajax/coe-get.php?t=heading&p=" + id_parent, {
+      getParent: function (id_parent, token) {
+        return $http.get(BASEURL + "coe-get.php?t=heading&p=" + id_parent + "&token=" + token, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -590,7 +597,7 @@
         });
       },
       add: function (name, order, to) {
-        return $http.post('https://checklinked.com/ajax/coe-post.php', {
+        return $http.post(BASEURL+'coe-post.php', {
           type: 'heading',
           name: name,
           order: order,
@@ -603,7 +610,7 @@
         });
       },
       destroy: function (id) {
-        return $http.post('https://checklinked.com/ajax/coe-destroy.php', {
+        return $http.post(BASEURL+'coe-destroy.php', {
           type: 'heading',
           id: id
         }, {
@@ -620,7 +627,7 @@
     api.items = {
 
       get: function (idCHK) {
-        return $http.get("https://checklinked.com/ajax/coe-get.php?t=item&idCHK=" + idCHK, {
+        return $http.get(BASEURL+"coe-get.php?t=item&idCHK=" + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -643,8 +650,8 @@
           return results;
         });
       },
-      getParent: function (id_parent) {
-        return $http.get("https://checklinked.com/ajax/coe-get.php?t=item&p=" + id_parent, {
+      getParent: function (id_parent, token) {
+        return $http.get(BASEURL + "coe-get.php?t=item&p=" + id_parent + "&token=" + token, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -673,7 +680,7 @@
         if (info == null) {
           info = '';
         }
-        return $http.post('https://checklinked.com/ajax/coe-post.php', {
+        return $http.post(BASEURL+'coe-post.php', {
           type: 'item',
           name: name,
           info: info,
@@ -688,7 +695,7 @@
         });
       },
       destroy: function (id) {
-        return $http.post('https://checklinked.com/ajax/coe-destroy.php', {
+        return $http.post(BASEURL+'coe-destroy.php', {
           type: 'item',
           id: id
         }, {
@@ -704,7 +711,7 @@
         }
       },
       reorder: function (id, dropPosition, type, parentID) {
-        return $http.post('https://checklinked.com/ajax/coe-reorder.php', {
+        return $http.post(BASEURL+'coe-reorder.php', {
           id: id,
           dropPosition: dropPosition,
           type: type,
@@ -727,7 +734,7 @@
         if (idCON == null) {
           idCON = '';
         }
-        return $http.get("https://checklinked.com/ajax/checkboxes-get.php?idCHK=" + idCHK + "&u=" + idCON, {
+        return $http.get(BASEURL+"checkboxes-get.php?idCHK=" + idCHK + "&u=" + idCON, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -736,7 +743,7 @@
         });
       },
       toggle: function (idCLI, idCON, which) {
-        return $http.post('https://checklinked.com/ajax/checkbox-toggle.php', {
+        return $http.post(BASEURL+'checkbox-toggle.php', {
           idCLI: idCLI,
           idCON: idCON,
           which: which
@@ -761,7 +768,7 @@
     api.contacts = {
 
       get: function () {
-        return $http.get('https://checklinked.com/ajax/friendships-get.php', {
+        return $http.get(BASEURL+'friendships-get.php', {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -773,7 +780,7 @@
         if (q == null) {
           q = '';
         }
-        return $http.get("https://checklinked.com/ajax/contacts-find.php?q=" + q, {
+        return $http.get(BASEURL+"contacts-find.php?q=" + q, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -782,7 +789,7 @@
         });
       },
       add: function (name, order, to) {
-        return $http.post('https://checklinked.com/ajax/', {
+        return $http.post(BASEURL+'', {
           type: 'group',
           name: name,
           order: order,
@@ -795,7 +802,7 @@
         });
       },
       destroy: function (idCON) {
-        return $http.post('https://checklinked.com/ajax/friendship_invite-destroy.php', {
+        return $http.post(BASEURL+'friendship_invite-destroy.php', {
           idCON: idCON
         }, {
           headers: {
@@ -815,7 +822,7 @@
       },
       invite: {
         accept: function (idCON) {
-          return $http.post('https://checklinked.com/ajax/friendship_accept-post.php', {
+          return $http.post(BASEURL+'friendship_accept-post.php', {
             idCON: idCON
           }, {
             headers: {
@@ -836,7 +843,7 @@
           });
         },
         send: function (idCON) {
-          return $http.post('https://checklinked.com/ajax/friendship_invite-post.php', {
+          return $http.post(BASEURL+'friendship_invite-post.php', {
             idCON: idCON
           }, {
             headers: {
@@ -855,7 +862,7 @@
           });
         },
         remove: function (idCON) {
-          return $http.post('https://checklinked.com/ajax/friendship_invite-destroy.php', {
+          return $http.post(BASEURL+'friendship_invite-destroy.php', {
             idCON: idCON
           }, {
             headers: {
@@ -875,7 +882,7 @@
           });
         },
         reject: function (idCON) {
-          return $http.post('https://checklinked.com/ajax/friendship_invite-destroy.php', {
+          return $http.post(BASEURL+'friendship_invite-destroy.php', {
             idCON: idCON
           }, {
             headers: {
@@ -907,14 +914,14 @@
         if (chunk == null) {
           chunk = null;
         }
-        return $http.get("https://checklinked.com/ajax/feed-get.php", {
+        return $http.get(BASEURL+"feed-get.php", {
           cache: false
         }).success(function (res) {
           return res;
         });
       },
       destroy: function (idFDI) {
-          return $http.post('https://checklinked.com/ajax/fdi-destroy.php', {
+          return $http.post(BASEURL+'fdi-destroy.php', {
           idFDI: idFDI
         }, {
           headers: {
@@ -949,7 +956,7 @@
         if (skip == null) {
           skip = 0;
         }
-        return $http.get("https://checklinked.com/ajax/posts-get.php?id=" + id + "&s=" + skip, {
+        return $http.get(BASEURL+"posts-get.php?id=" + id + "&s=" + skip, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -958,7 +965,7 @@
         });
       },
       add: function (id, text, itemType, producerType) {
-        return $http.post('https://checklinked.com/ajax/posts-post.php', {
+        return $http.post(BASEURL+'posts-post.php', {
           id: id,
           text: text,
           itemType: itemType,
@@ -977,7 +984,7 @@
       },
       reply: function (idVIEW, text, producerType, itemType) {
         console.log('adding convo entry', text, producerType, itemType, idVIEW);
-        return $http.post('https://checklinked.com/ajax/posts-post.php', {
+        return $http.post(BASEURL+'posts-post.php', {
           id: idVIEW,
           text: text,
           itemType: itemType,
@@ -998,7 +1005,7 @@
         if (skip == null) {
           skip = 0;
         }
-        return $http.get("https://checklinked.com/ajax/posts-sent-get.php?id=" + id + "&s=" + skip, {
+        return $http.get(BASEURL+"posts-sent-get.php?id=" + id + "&s=" + skip, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1013,7 +1020,7 @@
 
       labels: {
         hide: function (idLBL) {
-          return $http.post('https://checklinked.com/ajax/dashboard_label_hide-post.php', {
+          return $http.post(BASEURL+'dashboard_label_hide-post.php', {
             idLBL: idLBL
           }, {
             headers: {
@@ -1026,7 +1033,7 @@
           console.log('type', type);
           console.log('name', name);
           console.log('explanation', explanation);
-          return $http.post('https://checklinked.com/ajax/dashboard_label-post.php', {
+          return $http.post(BASEURL+'dashboard_label-post.php', {
             type: type,
             name: name,
             explanation: explanation
@@ -1039,7 +1046,7 @@
         },
         update: function (idITEM, selected) {
           console.log('updating item labels', idITEM, selected);
-          return $http.post('https://checklinked.com/ajax/dashboard_updateItemLabels-post.php', {
+          return $http.post(BASEURL+'dashboard_updateItemLabels-post.php', {
             idITEM: idITEM,
             selected: selected
           }, {
@@ -1057,7 +1064,7 @@
     api.subscriptions = {
 
       getCurrentOffers: function () {
-        return $http.get("https://checklinked.com/ajax/subscription_offers-get.php", {
+        return $http.get(BASEURL+"subscription_offers-get.php", {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1066,7 +1073,7 @@
         });
       },
       getInvites: function (idSUB) {
-        return $http.get("https://checklinked.com/ajax/subscription_invites-get.php?idSUB=" + idSUB, {
+        return $http.get(BASEURL+"subscription_invites-get.php?idSUB=" + idSUB, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1075,7 +1082,7 @@
         });
       },
       getInvite: function (idSUI) {
-        return $http.get("https://checklinked.com/ajax/subscription_invite-get.php?idSUI=" + idSUI, {
+        return $http.get(BASEURL+"subscription_invite-get.php?idSUI=" + idSUI, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1084,7 +1091,7 @@
         });
       },
       finalize: function (offer, pmtMethod) {
-        return $http.post('https://checklinked.com/ajax/subscription_finalize-post.php', {
+        return $http.post(BASEURL+'subscription_finalize-post.php', {
           offer: offer,
           pmtMethod: pmtMethod
         }, {
@@ -1095,7 +1102,7 @@
         });
       },
       makeSubscriptionActive: function (idSUB) {
-        return $http.post('https://checklinked.com/ajax/subscription_makeActive-post.php', {
+        return $http.post(BASEURL+'subscription_makeActive-post.php', {
           idSUB: idSUB
         }, {
           headers: {
@@ -1106,7 +1113,7 @@
       },
       invite: function (email) {
         console.log('inviting', email);
-        return $http.post('https://checklinked.com/ajax/subscription_invite_send-post.php', {
+        return $http.post(BASEURL+'subscription_invite_send-post.php', {
           email: email
         }, {
           headers: {
@@ -1116,7 +1123,7 @@
         });
       },
       withdrawInvite: function (invite) {
-        return $http.post('https://checklinked.com/ajax/subscription_invite_withdraw-post.php', {
+        return $http.post(BASEURL+'subscription_invite_withdraw-post.php', {
           suiRID: invite.rid
         }, {
           headers: {
@@ -1126,7 +1133,7 @@
         });
       },
       offboardMember: function (member) {
-        return $http.post('https://checklinked.com/ajax/organization_member_offboard-post.php', {
+        return $http.post(BASEURL+'organization_member_offboard-post.php', {
           idCON: member.idCON
         }, {
           headers: {
@@ -1152,7 +1159,7 @@
             password: details.password
           };
         }
-        return $http.post('https://checklinked.com/ajax/subscription_invite_accept-post.php', pack, {
+        return $http.post(BASEURL+'subscription_invite_accept-post.php', pack, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
@@ -1166,7 +1173,7 @@
     api.attachments = {
 
       add: function (pID, pType, aws, name, size, label) {
-        return $http.post('https://checklinked.com/ajax/attachments-finish_upload-post.php', {
+        return $http.post(BASEURL+'attachments-finish_upload-post.php', {
           pID: pID,
           pType: pType,
           aws: aws,
@@ -1180,8 +1187,8 @@
           cache: false
         });
       },
-      parent: function (idPARENT) {
-        return $http.get("https://checklinked.com/ajax/attachments-get.php?t=group&p=" + idPARENT, {
+      parent: function (idPARENT, token) {
+        return $http.get(BASEURL + "attachments-get.php?t=group&p=" + idPARENT + "&token=" + token, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -1190,7 +1197,7 @@
         });
       },
       checklist: function (idCHK) {
-        return $http.get('https://checklinked.com/ajax/attachments-get.php?idCHK=' + idCHK, {
+        return $http.get(BASEURL+'attachments-get.php?idCHK=' + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -1201,7 +1208,7 @@
       },
       attachment: function (idATT) {
         console.log('idATT', idATT);
-        return $http.get('https://checklinked.com/ajax/attachments-get.php?idATT=' + idATT, {
+        return $http.get(BASEURL+'attachments-get.php?idATT=' + idATT, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -1262,14 +1269,14 @@
       },
       reports: {
         get: function () {
-          return $http.get('https://checklinked.com/ajax/conflictReports-get.php', {
+          return $http.get(BASEURL+'conflictReports-get.php', {
             cache: false
           }).success(function (res) {
             return res;
           });
         },
         request: function () {
-          return $http.post('https://checklinked.com/ajax/conflictReports-request-post.php', {
+          return $http.post(BASEURL+'conflictReports-request-post.php', {
             idsCHK: [],
             requestedAt: ''
           }, {
@@ -1288,7 +1295,7 @@
     api.teammembers = {
 
       get: function () {
-        return $http.get('https://checklinked.com/ajax/organization_members-get.php');
+        return $http.get(BASEURL+'organization_members-get.php');
       }
 
     }

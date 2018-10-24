@@ -119,7 +119,7 @@ var indexOf = [].indexOf || function (item) {
 
     vm.folders = [];
 
-    api.folders.get().then(function (d) {
+    api.folders.get($rootScope.token).then(function (d) {
       vm.folders = d.data.folders;
     });
 
@@ -142,18 +142,18 @@ var indexOf = [].indexOf || function (item) {
     if ($stateParams.id !== undefined && $stateParams.id != null) {
       //console.log('$stateParams.id not null/undefined', $stateParams);
       //console.log('$state', $state);
-       debugger;
+       //////debugger;
        console.log('myShowingUser',$rootScope.showingUsers)
       if ($stateParams.id == '') {
         console.log('$stateParams empty', $stateParams);
         console.log('$state', $state);
         $location.path('/checklist');
       } else if ($state.is('app.checklist.detail')) {
-        debugger;
+        //////debugger;
         console.log('stateParams', $stateParams);
         console.log('$state', $state);
         vm.passChecklist = [];
-        api.checklists.getGroup($stateParams.id).then(function (d) {
+        api.checklists.getGroup($stateParams.id,$rootScope.token).then(function (d) {
         vm.passChecklist = d.data.checklists;
 
         });
@@ -205,7 +205,7 @@ var indexOf = [].indexOf || function (item) {
         //console.log('stateParams', $stateParams);
         //console.log('$state', $state);
         vm.passChecklist = [];
-        api.checklists.getGroup($stateParams.id).then(function (d) {
+        api.checklists.getGroup($stateParams.id, $rootScope.token).then(function (d) {
           vm.passChecklist = d.data.checklists;
         });
         //console.log('$stateParams.id here', $stateParams.id);
@@ -256,7 +256,7 @@ var indexOf = [].indexOf || function (item) {
 
 
         vm.passChecklist = [];
-        api.checklists.getGroup($stateParams.idCHK).then(function (d) {
+        api.checklists.getGroup($stateParams.idCHK, $rootScope.token).then(function (d) {
           vm.passChecklist = d.data.checklists;
         });
 
@@ -310,9 +310,9 @@ var indexOf = [].indexOf || function (item) {
 
       }
       else {
-        debugger;
+        ////debugger;
         vm.checklists = [];
-        api.checklists.getGroup($stateParams.id).then(function (d) {
+        api.checklists.getGroup($stateParams.id, $rootScope.token).then(function (d) {
           vm.checklists = d.data.checklists;
           //console.log('vm.checklists', vm.checklists);
         });
@@ -429,7 +429,7 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.sections', vm.sections);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, $rootScope.token).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           if (res.code) {
@@ -562,7 +562,7 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.headings', vm.headings);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, $rootScope.token).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           if (res.code) {
@@ -699,7 +699,7 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.items', vm.items);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, $rootScope.token).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           var i, len, old, packet, ref1;
@@ -918,7 +918,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function toggle(what, which, parentID) {
-       debugger;
+       ////debugger;
       // vm.attachments=$rootScope.attachments12;
       console.log('function toggle');
       console.log('what', what);
@@ -952,7 +952,7 @@ var indexOf = [].indexOf || function (item) {
 
 
     function toggleComplete(checklist) {
-      api.checklists.toggleComplete(checklist.id).error(function (res) {
+      api.checklists.toggleComplete(checklist.id, $rootScope.token).error(function (res) {
         return $rootScope.message("Error toggling Complete. (Communication with Server)", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -1079,7 +1079,7 @@ var indexOf = [].indexOf || function (item) {
         //console.log('is linked');
         if (!vm.loaded.checklist) {
           //console.log('not loaded');
-          api.checklists.get(idCHK).success(function (res) {
+          api.checklists.get(idCHK, $rootScope.token).success(function (res) {
             console.log('res', res);
             var ref;
             if ((ref = res.checklists) != null ? ref.length : void 0) {
@@ -1100,7 +1100,7 @@ var indexOf = [].indexOf || function (item) {
         }
 
         if (!vm.loaded.sections) {
-          api.sections.get(idCHK).success(function (res) {
+          api.sections.get(idCHK, $rootScope.token).success(function (res) {
             var ref;
             if ((ref = res.sections) != null ? ref.length : void 0) {
               vm.sections = res.sections;
@@ -1145,7 +1145,7 @@ var indexOf = [].indexOf || function (item) {
 
         if (!vm.loaded.attachments) {
           //console.log('look for attachments');
-          api.attachments.checklist(idCHK).success(function (res) {
+          api.attachments.checklist(idCHK, $rootScope.token).success(function (res) {
             var ref;
             if ((ref = res.attachments) != null ? ref.length : void 0) {
               vm.attachments = vm.attachments.concat(res.attachments);
@@ -1303,7 +1303,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function createSegment(what, name, to, type, info) {
-      debugger;
+      ////debugger;
       console.log('what', what);
       console.log('name', name);
       console.log('to', to);
@@ -1420,7 +1420,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function add(what, to, ev, option) {
-      debugger;
+      ////debugger;
       var option;
       var title;
 
@@ -1523,7 +1523,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function displayUserCheckboxes(user) {
-      debugger;
+      ////debugger;
       var userID, userKey;
       userKey = vm.getUserKey(user);
       console.log('initial userKey check', userKey);
@@ -1535,7 +1535,7 @@ var indexOf = [].indexOf || function (item) {
       userID = user.idCON;
       if (!vm.userCheckboxes(userID).length) {
         vm.loading.checkboxes = true;
-        return api.checkbox.get(vm.idCHK, userID).error(function (res) {
+        return api.checkbox.get(vm.idCHK, userID, $rootScope.token).error(function (res) {
           return $rootScope.message('Error talking to server to find user checkboxes.', 'warning');
         }).success(function (res) {
           console.log('vm.checkboxes', vm.checkboxes);
@@ -1549,9 +1549,9 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function evaluateConflicts(item, operation) {
-      debugger;
+      ////debugger;
       var addConflicts, leftNonCompliant, ref1, ref2, rightNonCompliant;
-      item = api.summary.evaluateItem(item, item.checkbox);
+      item = api.summary.evaluateItem(item, item.checkbox, $rootScope.token);
       addConflicts = operation * +item.conflicts;
       vm.conflicts += addConflicts;
       if (((ref1 = item.checkbox) != null ? ref1[0] : void 0) !== void 0) {
@@ -1566,7 +1566,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function appendCheckboxesToItems(user) {
-      debugger;
+      ////debugger;
       var userKey;
       vm.nonCompliant = [0, 0];
       vm.conflicts = 0;
@@ -1645,9 +1645,9 @@ var indexOf = [].indexOf || function (item) {
     });
 
     function toggleCheckbox(item, which, userKey) {
-      debugger;
+      ////debugger;
       vm.evaluateConflicts(item, -1);
-      return api.checkbox.toggle(item.id, $rootScope.showingUsers[userKey].idCON, which).success(function (res) {
+      return api.checkbox.toggle(item.id, $rootScope.showingUsers[userKey].idCON, which, $rootScope.token).success(function (res) {
         if (item.checkbox === void 0) {
           item.checkbox = [];
         }
@@ -1726,7 +1726,7 @@ var indexOf = [].indexOf || function (item) {
         var ref1, ref2;
         if (((ref1 = vm.publish.idCHK) != null ? ref1.length : void 0) && ((ref2 = vm.publish.name) != null ? ref2.length : void 0)) {
           vm.publish.submitting = true;
-          return api.checklists.publish(vm.publish.idCHK, vm.publish.name, 'checklist', vm.publish.pvt).error(function (res) {
+          return api.checklists.publish(vm.publish.idCHK, vm.publish.name, 'checklist', vm.publish.pvt, $rootScope.token).error(function (res) {
             return $rootScope.message('Unknown error publishing Template.', 'warning');
           }).success(function (res) {
             if (res.code) {
@@ -1838,7 +1838,7 @@ var indexOf = [].indexOf || function (item) {
           vm.edit.stop(which);
           return false;
         }
-        return api.edit.attemptEdit(which).error(function (res) {
+        return api.edit.attemptEdit(which, $rootScope.token).error(function (res) {
           vm[whats][which.index].edit.error = res.code;
           return vm[whats][which.index].edit.message = res.message;
         }).success(function (res) {
@@ -2118,7 +2118,7 @@ var indexOf = [].indexOf || function (item) {
 
 
         vm.find.creating = true;
-        return api.checklists.createFromTemplate(idCTMPL, parentID, 'checklist').error(function (res) {
+        return api.checklists.createFromTemplate(idCTMPL, parentID, 'checklist', $rootScope.token).error(function (res) {
           return $rootScope.message('Unknown error creating Checklist from selected Template.', 'warning');
         }).success(function (res) {
           if (res.code) {
@@ -2148,7 +2148,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function addChecklistDialog(ev) {
-debugger;
+//////debugger;
       vm.verticalStepper = {
         step1: {},
         step2: {},
@@ -2158,7 +2158,7 @@ debugger;
       $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
           $scope.closeDialog = function () {
-            debugger
+           // debugger
             vm.wizard.newFolder = false;
             vm.wizard.newGroup = false;
             vm.wizard.newChecklist = false;
@@ -2193,7 +2193,7 @@ debugger;
 
 
     function openUploadAttachmentDialog(ev, pType, pID, index, attachments) {
-      debugger;
+     // ////debugger;
       vm.pType = pType;
       vm.pID = pID;
       vm.title = 'Attachments';
@@ -2279,7 +2279,7 @@ debugger;
         bucket.putObject(params, function (err, data) {
 
           api.attachments.add(vm.pID, vm.pType, vm.aws, vm.file.name, vm.file.size, vm.label).error(function (res) {
-            debugger;
+            ////debugger;
             return $rootScope.message("Error Uploading Attachment", 'warning');
           }).success(function (res) {
             if (res === void 0 || res === null || res === '') {
@@ -2378,7 +2378,7 @@ debugger;
 
 
     function openFolderInput() {
-      debugger;
+      ////debugger;
       vm.folder = '';
       vm.group = '';
       vm.wizard.newFolder = true;
@@ -2424,7 +2424,7 @@ debugger;
       vm.folder.order = 1;
       vm.folder.order += vm.folders.length;
 
-      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order).error(function (res) {
+      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order, $rootScope.token).error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -2467,7 +2467,7 @@ debugger;
       vm.group.text = groupName;
       vm.group.id_parent = folderID;
 
-      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent).error(function (res) {
+      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent, $rootScope.token).error(function (res) {
         return $rootScope.message("Error Adding Folder", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -2503,7 +2503,7 @@ debugger;
       vm.checklist.order += vm.checklists.length;
 
       //name, order, to
-      api.checklists.add(checklistName, vm.checklist.order, groupID).error(function (res) {
+      api.checklists.add(checklistName, vm.checklist.order, groupID, $rootScope.token).error(function (res) {
         return $rootScope.message("Error Adding Checklist", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -2682,11 +2682,9 @@ debugger;
     };
 
     function fetchGroups(id) {
-
+      ftchFolder(id)
       vm.groups = $rootScope.children('groups', id);
-      console.log('vm.groups pre organizeData id / vm.groups', id, vm.groups)
       $rootScope.organizeData();
-      console.log('fetching', id, vm.groups);
 
       if (!vm.groups.length > 0) {
         vm.wizard.switch = true;
@@ -2694,6 +2692,13 @@ debugger;
         vm.wizard.switch = false;
       }
     };
+
+      function ftchFolder(id){
+        api.groups.get(id).then(function (d) {
+          vm.groups = d.data.groups
+        });
+      }
+
 
     vm.loading = {
       checklist: false,
@@ -2750,7 +2755,7 @@ debugger;
       console.log('loading users', $scope);
       vm.setBlank();
       vm.loadingLinked = true;
-      return api.checklists.getLinkedUsers(vm.idCHK).then(function (res) {
+      return api.checklists.getLinkedUsers(vm.idCHK, $rootScope.token).then(function (res) {
         if (res === void 0 || res === null || res === '') {
           return vm.setError(-1, 'Server not responding properly.');
         } else if (res.code) {
@@ -2884,7 +2889,8 @@ debugger;
         'rid': vm.checklist.rid,
         'index': 0,
         'type': 'checklist',
-        'text': vm.checklist.name
+        'text': vm.checklist.name,
+        'token': $rootScope.token
       };
 
       console.log('vm.vars.message', vm.checklist.name);
@@ -2936,7 +2942,8 @@ debugger;
         'rid': vm.section.rid,
         'index': 0,
         'type': 'section',
-        'text': vm.section.name
+        'text': vm.section.name,
+        'token': $rootScope.token
       };
 
       api.checklists.edit(editPack).error(function (res) {
@@ -2983,7 +2990,8 @@ debugger;
         'rid': vm.heading.rid,
         'index': 0,
         'type': 'heading',
-        'text': vm.heading.name
+        'text': vm.heading.name,
+        'token': $rootScope.token
       };
 
       api.checklists.edit(editPack).error(function (res) {
@@ -3006,7 +3014,7 @@ debugger;
 
 
     function closeConfilicts(){
-      debugger;
+      ////debugger;
      if($rootScope.showingUsers.length>1) {
       $rootScope.showingUsers.splice(1, 1); 
       $state.go('app.summary');
@@ -3016,7 +3024,7 @@ debugger;
     }
 
     function openItemDialog(ev, item) {
- debugger;
+ ////debugger;
       vm.item = item;
       vm.title = 'Edit Checkbox Item';
 
@@ -3031,7 +3039,7 @@ debugger;
     }
 
     function openFormLineDialog(ev, item) {
-      debugger;
+      ////debugger;
       vm.item = item;
       vm.title = 'Edit Item';
 
@@ -3058,7 +3066,8 @@ debugger;
         'index': 0,
         'type': 'item',
         'info': vm.item.info,
-        'text': vm.item.name
+        'text': vm.item.name,
+        'token': $rootScope.token
       };
 
       api.checklists.edit(editPack).error(function (res) {
@@ -3080,7 +3089,7 @@ debugger;
     }
 
     function openConversationDialog(producerType, id, name, $event) {
-       debugger;
+       ////debugger;
       console.log('id', id);
       console.log('name', name);
       console.log('producerType', producerType);
@@ -3226,7 +3235,7 @@ debugger;
     };
 
     function downloadPDF(ev, idCHK, chkName) {
-     debugger;
+     ////debugger;
       vm.title = 'Download ' + chkName + ' To PDF';
 
 

@@ -101,7 +101,7 @@
 
     function link(checklists) {
       vm.linking = true;
-			return $http.post('https://checklinked.com/ajax/checklist_selfLink-post.php', {
+			return $http.post(BASEURL + 'checklist_selfLink-post.php', {
         idGRP: vm.group.id,
         order: '1',
         checklists: vm.selected.checklists

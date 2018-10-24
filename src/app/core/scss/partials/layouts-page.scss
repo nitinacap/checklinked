@@ -363,9 +363,8 @@ $card-header-spacer-height-xs: 0;
       > .header {
         height: $header-height;
         min-height: $header-height;
-        max-height:20px;
+        max-height: $header-height;
         padding: 24px;
-        background-color: red !important;
         /*background-image: url('/assets/images/backgrounds/header-bg.png');*/
         background-size: cover;
       }
@@ -435,10 +434,9 @@ $card-header-spacer-height-xs: 0;
           height: $header-height;
           min-height: $header-height;
           max-height: $header-height;
-          padding: 10px;
+          padding: 24px;
           /*background-image: url('/assets/images/backgrounds/header-bg.png');*/
           background-size: cover;
-          background-color: black !important;
         }
 
         .content {
@@ -531,22 +529,16 @@ $card-header-spacer-height-xs: 0;
     }
 
     // Tabbed
-    .md-accent-bg .h2{
-      font-size: 11px!important;
-
-    }
     &.tabbed {
       min-height: 100%;
 
       > .header {
-        height: 40px;
-        min-height: 30px;
-        max-height: 30px;
-        padding-left: 20px;
+        height: $header-height-tabbed;
+        min-height: $header-height-tabbed;
+        max-height: $header-height-tabbed;
+        padding: 24px;
         /*background-image: url('/assets/images/backgrounds/header-bg.png');*/
         background-size: cover;
-         background-color: #2D323E !important;
-         font-size: 1rem;
       }
 
       > .content {
@@ -559,23 +551,18 @@ $card-header-spacer-height-xs: 0;
             padding: 0 24px;
 
             md-tabs-canvas {
-              height: 26px;
+              height: 48px;
 
               md-pagination-wrapper {
                 height: 48px;
               }
 
               .md-tab {
-                padding-left: 5px;
+                padding: 12px 24px;
                 text-transform: none;
-                color: #fff !important;
-                font-size: 11px;
-                    padding: 3px 30px 7px 0px !important;
+                /*color: #fff;*/
               }
             }
-          }
-          md-pagination-wrapper{
-            width:100% !important;
           }
 
           &:not(.md-dynamic-height) {
@@ -741,10 +728,10 @@ $card-header-spacer-height-xs: 0;
         > .header {
           height: $header-height-xs;
           min-height: $header-height-xs;
-          max-height: 20px;
-          padding: 12px;
+          max-height: $header-height-xs;
+          padding: 24px;
+          /*background-image: url('/assets/images/backgrounds/header-bg.png');*/
           background-size: cover;
-          background-color: #2D323E  !important;
         }
       }
 

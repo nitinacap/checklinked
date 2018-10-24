@@ -15,7 +15,7 @@
       } else {
         vm.groups = [];
         vm.folder_id = $stateParams.id;
-        api.groups.get($stateParams.id).then(function (d) {
+        api.groups.get($stateParams.id,$rootScope.token).then(function (d) {
           vm.groups = d.data.groups;
         });
       }
@@ -192,7 +192,7 @@
       vm.group.order = 1;
       vm.group.order += vm.groups.length;
 
-      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId).error(function (res) {
+      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, $rootScope.token).error(function (res) {
         return $rootScope.message("Error Creating Folder", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -237,7 +237,8 @@
         'text': vm.group.name,
         'order': vm.group.order,
         'id': vm.group.id,
-        'rid': vm.group.rid
+        'rid': vm.group.rid,
+        'token': $rootScope.token
       };
 
       api.groups.edit(editPack).error(function (res) {
@@ -280,7 +281,7 @@
 
       $mdDialog.show(confirm).then(function () {
 
-        api.groups.destroy(vm.group.id).error(function (res) {
+        api.groups.destroy(vm.group.id, $rootScope.token).error(function (res) {
           return $rootScope.message("Error Deleteing Folder", 'warning');
         }).success(function (res) {
           if (res === void 0 || res === null || res === '') {

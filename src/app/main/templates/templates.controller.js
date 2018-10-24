@@ -88,7 +88,7 @@
       }
     };
 
-
+    fetchGroups(id);
     function openFolderInput() {
       vm.folder = '';
       vm.group = '';
@@ -303,7 +303,7 @@
           this.inProgress = true;
           this.error = '';
           process = this.processTemplate;
-          return $http.get("https://checklinked.com/ajax/templates-get.php?org=1&noXML=1").success(function (res) {
+          return $http.get(BASEURL + "templates-get.php?org=1&noXML=1").success(function (res) {
             if (res === void 0 || res === null || res === '') {
               console.log('Error loading templates: ', res);
               return vm.templates.load.error = 'Error loading Templates! (Server not responding properly.)';
@@ -360,7 +360,7 @@
 
               console.log(template);
 
-              return $http.post("https://checklinked.com/ajax/template_delete-post.php", {
+              return $http.post(BASEURL + "template_delete-post.php", {
 
                 template: template
               }, {

@@ -131,7 +131,7 @@
         }
         criteria = encodeURI(this.criteria);
         this.inProgress = true;
-				return $http.post("https://checklinked.com/ajax/links_find-post.php", {
+				return $http.post(BASEURL + "links_find-post.php", {
           criteria: criteria,
           idCHK: vm.idCHK
         }, {

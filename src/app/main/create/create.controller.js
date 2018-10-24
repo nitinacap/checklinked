@@ -10,7 +10,9 @@
     function CreateController($rootScope, $location, $http, $state, api, $scope)
     {
 		var vm = this;
- // Methods
+
+
+        // Methods
 		vm.sendInfo = sendInfo;
     
 		vm.create = {
@@ -22,7 +24,7 @@
 	      email: '',
 	      phone: '',
 	      notifications: 1,
-				baseURL: 'http://localhost:3000',
+	      baseURL: 'http://checklinked.com',
 	      password: '',
 	      password2: '',
 	      name: {
@@ -35,20 +37,21 @@
 			
 
 	    function sendInfo() {
-	      vm.create.sending = true;
+				vm.create.sending = true;
+				vm.isLoader = true;
 	      return api.create.register(vm.create.reg).success(function(res) {
-	        if (res) {
-						if (res.success) {
-							vm.create.sending = false;
-							vm.create = { success: true };
-
-						}
-						if (res.validation_error.email != undefined) {
-							$scope.error_message = "This email is alredy register try another";
-						}
-				
+		        if (res) {
+					if (res.success) {
+						vm.create.sending = false;
+						vm.create = { success: true };
+						vm.isLoader = false;
+					}
+					if (res.code == 1) {
+						vm.isLoader = false;
+						$scope.error_message = "This email is alredy register try another";
+					}				
 			
-				}
+				}			
 			
 					
 	      })["finally"](function() {

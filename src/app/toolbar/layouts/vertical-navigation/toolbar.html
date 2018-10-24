@@ -1,5 +1,5 @@
 <div layout="row" layout-align="start center" ng-class="{'md-primary-bg':viewAs.notMe==true}">
-<img alt="Checklinked Logo" class="pull-left" src="/assets/images/logos/checklinked-logo.png">
+<img alt="Checklinked Logo" hide-xs class="pull-left" src="/assets/images/logos/checklinked-logo.png">
   <div layout="row" layout-align="start center" flex ng-show="globalSearchCollapse">
     <md-button id="navigation-toggle" class="md-icon-button" ng-click="vm.toggleSidenav('navigation')" hide-gt-sm aria-label="Toggle navigation"
       translate translate-attr-aria-label="TOOLBAR.TOGGLE_NAVIGATION">
@@ -19,9 +19,11 @@
               <md-icon ng-if="vm.badgeData.friendships>0" md-font-icon ng-class="vm.userStatus.icon" ng-style="{'color': vm.userStatus.color }"
                 class="icon status s16">
               </md-icon>
+              <!--<md-icon md-font-icon="icon-menu" class="icon"></md-icon>-->
             </div>
-            <span class="username" hide show-gt-xs>{{ username }}</span>
-            <md-icon md-font-icon="icon-chevron-down" class="icon s16" hide-xs>
+           <!-- <span class="username" hide show-gt-xs>{{ username.full }}</span> -->
+          <span class="username">{{ username.full }}</span>
+            <md-icon md-font-icon="icon-chevron-down" class="icon s16">
             </md-icon>
           </div>
         </md-button>

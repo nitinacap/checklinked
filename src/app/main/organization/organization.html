@@ -1,7 +1,7 @@
 <div id="organization" class="page-layout simple tabbed" layout="column">
 
   <!-- HEADER -->
-  <div class="header md-accent-bg" layout="row" layout-align="start center">
+ <!-- <div class="header md-accent-bg" layout="row" layout-align="start center">
     <div class="white-fg" layout="row" layout-align="start center" flex>
       <div layout="column" layout-align="start start">
         <div class="h2">
@@ -10,6 +10,7 @@
       </div>
     </div>
   </div>
+-->
   <!-- / HEADER -->
 
   <!-- CONTENT -->
@@ -29,9 +30,11 @@
 
     <md-tabs md-dynamic-height class="" ng-hide="vm.createOrganization">
       <md-tab>
-        <md-tab-label>
+       <!-- <md-tab-label>
           <span translate="">Add Organization Details</span>
         </md-tab-label>
+      -->
+      
         <md-tab-body ng-hide="vm.createOrganization">
           <div ng-include="'app/main/organization/partials/create-organization.html'"></div>
         </md-tab-body>
