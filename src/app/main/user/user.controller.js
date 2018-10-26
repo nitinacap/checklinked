@@ -27,6 +27,7 @@
         return api.account.update(this.info, $rootScope.token).error(function (res) {
           return $rootScope.message('Server not responsing properly.', 'warning');
         }).success(function (res) {
+          $rootScope.username(res.user.name.full);
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Error talking to server', 'warning');
           } else if (res.code) {

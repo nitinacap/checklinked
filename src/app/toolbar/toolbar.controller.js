@@ -57,8 +57,19 @@
     // Select the first status as a default
     vm.userStatus = vm.userStatusOptions[0];
     if ($rootScope.user){
-    $scope.username = $rootScope.user.name;
+      $rootScope.username = function(username)
+      {
+       return  $scope.username = username;
+      }
+    
+     
     }
+    $rootScope.username($rootScope.user.name.full);
+
+
+
+    $rootScope.$broadcast('greeting', $scope.username);
+
     /**
      * Toggle sidenav
      *

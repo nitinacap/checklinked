@@ -23,11 +23,14 @@
 
     } else {
       vm.folders = [];
+      $scope.getFolder = function() {
       api.folders.get($rootScope.token).then(function (d) {
         vm.isLoader = false
         vm.folders = d.data.folders;
       });
+      }
     }
+    $scope.getFolder();
 
 
     // Tasks will be filtered against these models
@@ -160,7 +163,7 @@
     function openFolderDialog(ev, folder) {
 
       vm.folder = folder;
-      vm.title = 'Edit Project Name';
+      vm.title = 'Edit Project Name Title';
       vm.newFolder = false;
 
       if (!vm.folder) {
@@ -202,6 +205,9 @@
 
     function closeDialog() {
       $mdDialog.hide();
+      $scope.getFolder();
+
+
     }
 
     /* Add New Folder */
@@ -272,6 +278,7 @@
           $rootScope.message('Project Name Edited');
 
           vm.folder.sending = false;
+          
 
           //Close Dialog Window
           vm.closeDialog();
