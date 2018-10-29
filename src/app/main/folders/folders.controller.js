@@ -275,7 +275,7 @@
         } else {
 
           //Toaster Notification
-          $rootScope.message('Project Name Edited');
+          $rootScope.message('Project Name ' + vm.folder.name + ' Edited');
 
           vm.folder.sending = false;
           
@@ -294,7 +294,7 @@
 
       var confirm = $mdDialog.confirm()
         .title('Are you sure?')
-        .content('The Project will be deleted.')
+        .content('The Project ' + folder.name +  ' will be deleted.')
         .ariaLabel('Delete Project')
         .ok('Delete')
         .cancel('Cancel')
@@ -313,7 +313,7 @@
             /* Remove From Folders Object */
             vm.folders.splice(vm.folders.indexOf(folder), 1);
 
-            $rootScope.message('Project Deleted');
+            $rootScope.message('Project  ' + folder.name +  'has been deleted');
 
             vm.folder.sending = false;
           }
