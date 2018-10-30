@@ -42,7 +42,8 @@
     // Navigation
     msNavigationServiceProvider.saveItem('conversations.chat', {
       title: 'Messages',
-      icon: 'icon-hangouts',
+      //icon: 'icon-hangouts',
+      icon: 'chat',
       state: 'app.chat' ,
       weight: 2
     });

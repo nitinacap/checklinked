@@ -34,7 +34,8 @@
     // Navigation
     msNavigationServiceProvider.saveItem('reports.summary', {
       title: 'Reports',
-      icon: 'icon-credit-card',
+     // icon: 'icon-credit-card',
+      icon: 'add_comment',
       state: 'app.summary',
       weight: 1
     });

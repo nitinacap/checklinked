@@ -974,12 +974,14 @@ Array.prototype.diff = function (a) {
         //console.log('is the login');
       } else if (mod[1] === 'logout') {
         var token = { token: $rootScope.token }; 
+        $state.go('login', null, { reload: true });
        // debugger;
   
         $http.post(BASEURL + 'logout.php', token).then(
           function (d) { //success
-            //$rootScope.socketio.disconnect();
+            $rootScope.socketio.disconnect();
             $rootScope.user = void 0;
+            $state.go('login', null, { reload: true });
             var loginTime = '';
             loginCheck = $rootScope.checkLogin(event, toState);
             if (!loginCheck) {

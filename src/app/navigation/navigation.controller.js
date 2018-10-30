@@ -31,13 +31,14 @@
             vm.folded = !vm.folded;
             $rootScope.folded = vm.folded;
             if (vm.folded){
-            $('.title').hide();
+            $('.title, .menuheading').hide();
             $('md-sidenav').addClass('vertical-navigation-hide');
-                $('.admin-logo').attr('src','/assets/images/logos/small-logo.jpg').addClass('pl-20');
+            
+            $('.admin-logo').attr('src','/assets/images/logos/small-logo.jpg').addClass('pl-20 small');
         }else{
-            $('.title').show();
+            $('.title, .menuheading').show();
             $('md-sidenav').removeClass('vertical-navigation-hide');
-                $('.admin-logo').attr('src', '/assets/images/logos/checklinked.png');
+                $('.admin-logo').attr('src', '/assets/images/logos/checklinked.png').removeClass('pl-20 small');
         }
         }
 

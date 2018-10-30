@@ -26,7 +26,8 @@
     // Navigation
     msNavigationServiceProvider.saveItem('checklists.queue', {
       title: 'Assign Checklists',
-      icon: 'icon-clipboard-arrow-left',
+     // icon: 'icon-clipboard-arrow-left',
+      icon: 'queue',
       state: 'app.queue',
       weight: 4
     });

@@ -7,6 +7,7 @@
 
       // Common 3rd Party Dependencies
       'textAngular',
+    
 
       // Toastr
       'toastr',

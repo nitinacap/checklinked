@@ -1,9 +1,12 @@
 <div layout="row" layout-align="start center" ng-class="{'md-primary-bg':viewAs.notMe==true}">
-<img alt="Checklinked Logo" hide-xs class="pull-left" src="/assets/images/logos/checklinked-logo.png">
+<!--<img alt="Checklinked Logo" hide-xs class="pull-left" src="/assets/images/logos/checklinked-logo.png">
+-->
   <div layout="row" layout-align="start center" flex ng-show="globalSearchCollapse">
     <md-button id="navigation-toggle" class="md-icon-button" ng-click="vm.toggleSidenav('navigation')" hide-gt-sm aria-label="Toggle navigation"
       translate translate-attr-aria-label="TOOLBAR.TOGGLE_NAVIGATION">
-      <md-icon md-font-icon="icon-menu" class="icon"></md-icon>
+        <i class="material-icons custm-toggle" style="color:black;">
+        menu
+      </i>
     </md-button>
 
   </div>
@@ -23,8 +26,9 @@
             </div>
            <!-- <span class="username" hide show-gt-xs>{{ username.full }}</span> -->
           <span class="username">{{ username }}</span>
-            <md-icon md-font-icon="icon-chevron-down" class="icon s16">
-            </md-icon>
+        <i class="material-icons" style="color:black;">
+          expand_less
+        </i>
           </div>
         </md-button>
 

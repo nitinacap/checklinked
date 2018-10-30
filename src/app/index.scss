@@ -26,9 +26,9 @@ md-tab-data{
 
 #vertical-navigation {
     background-color:black;
-        width: 85px;
-    min-width: 85px;
-    max-width: 85px;
+    width: 185px;
+    min-width: 185px;
+    max-width: 185px;
 }
 
 
@@ -45,12 +45,12 @@ md-progress-circular.ng-isolate-scope._md-mode-indeterminate.md-default-theme sv
     stroke: rgb(255, 255, 255);
 }
 md-tabs-canvas{
-        height: 40px !important;
+        height: 30px !important;
 }
 .md-tab{
     color:#fff !important;
-   padding: 9px 0px 0px 20px !important; 
-   font-size: 12px;
+   padding: 3px 0px 0px 20px !important; 
+   font-size: 10px;
 }
 .md-accent{
     background-color: black;
@@ -63,7 +63,8 @@ md-tabs-canvas{
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
 }
-.ms-navigation .ms-navigation-node .ms-navigation-item > .ms-navigation-button {
+/*.ms-navigation .ms-navigation-node .ms-navigation-item > .ms-navigation-button {
     display:initial !important;
 }
+*/
 

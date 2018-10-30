@@ -89,7 +89,7 @@
 
     msNavigationServiceProvider.saveItem('checklists.checklist', {
       title: 'My Checklists',
-      icon: 'icon-folder-multiple',
+      icon: 'check_box',
       state: 'app.checklist',
       weight: 1
     });

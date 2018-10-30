@@ -36,7 +36,8 @@
     // Navigation
     msNavigationServiceProvider.saveItem('checklists.invitations', {
       title: 'Invitations',
-      icon: 'icon-google-circles-invite',
+      //icon: 'icon-google-circles-invite',
+      icon: 'person_add',
       state: 'app.invitations',
       badge: {
         color: '#F44336'

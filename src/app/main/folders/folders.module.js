@@ -25,7 +25,8 @@
     // Navigation
     msNavigationServiceProvider.saveItem('checklists.folders', {
       title: 'My Projects',
-      icon: 'icon-folder-multiple',
+     // icon: 'icon-folder-multiple',
+      icon: 'folder',
       state: 'app.folders',
       weight: 2
     });

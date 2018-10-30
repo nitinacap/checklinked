@@ -3,7 +3,8 @@
     <md-button class="ms-search-bar-expander md-icon-button" aria-label="Expand Search Bar"
                ng-click="MsSearchBar.expand()"
                ng-if="!MsSearchBar.resultsLoading || MsSearchBar.collapsed">
-      <md-icon md-font-icon="icon-magnify" class="icon s24"></md-icon>
+      <!--<md-icon md-font-icon="icon-magnify" class="icon s24"></md-icon>-->
+      <i class="material-icons s24"> search </i>
     </md-button>
     <div class="ms-search-bar-loader" layout="row" layout-align="center center"
          ng-if="MsSearchBar.resultsLoading && !MsSearchBar.collapsed">
@@ -16,7 +17,8 @@
          ng-keydown="MsSearchBar.handleKeydown($event)">
   <md-button class="ms-search-bar-collapser md-icon-button" ng-click="MsSearchBar.collapse()"
              aria-label="Collapse Search Bar">
-    <md-icon md-font-icon="icon-close" class="icon s24"></md-icon>
+    <!--<md-icon md-font-icon="icon-close" class="icon s24"></md-icon>-->
+      <i class="material-icons s24"> close </i>
   </md-button>
 
   <div class="ms-search-bar-results" ng-if="MsSearchBar.results" ms-scroll>

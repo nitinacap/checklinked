@@ -27,7 +27,7 @@
     // Navigation
     msNavigationServiceProvider.saveItem('checklists.templates', {
       title: 'Templates',
-      icon: 'icon-account-multiple',
+      icon: 'people',
       state: 'app.templates',
       weight: 3
     });
