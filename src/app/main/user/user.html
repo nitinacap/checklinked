@@ -1,65 +1,6 @@
 <div id="user" class="page-layout simple tabbed" layout="column">
-
-  <!-- HEADER -->
-  <!--<div class="header md-accent-bg" layout="row" layout-align="start center">
-    <div class="white-fg" layout="row" layout-align="start center" flex>
-      <div layout="column" layout-align="start start">
-        <div class="h2">
-          <span>Account Details</span>
-        </div>
-      </div>
-    </div>
+  <div class="content nav-fixed-top">
+  <page-toolbar datas="vm.submenu"> </page-toolbar>
   </div>
--->
-  <!-- / HEADER -->
-
-  <!-- CONTENT -->
-  <div class="content">
-    <md-tabs md-dynamic-height>
-
-      <md-tab>
-        <md-tab-label>
-          <span translate="">My Profile</span>
-        </md-tab-label>
-
-        <md-tab-body>
-          <div ng-include="'app/main/user/partials/user.html'"></div>
-        </md-tab-body>
-      </md-tab>
-
-      <md-tab>
-        <md-tab-label>
-          <span translate="">Contacts</span>
-        </md-tab-label>
-      
-        <md-tab-body>
-          <div ng-include="'app/main/organization/organization.html'"></div>
-        </md-tab-body>
-      </md-tab>
-<md-tab>
-  <md-tab-label>
-    <a class="link org" terget="_blank" ui-sref="app.organization"><span translate="">Organization</span></a>
-  </md-tab-label>
-
-  <md-tab-body>
-    <div ng-include="'app/main/organization/organization.html'"></div>
-  </md-tab-body>
-</md-tab>
-
-<md-tab>
-  <md-tab-label>
-    <span translate="">Account</span>
-  </md-tab-label>
-
-  <md-tab-body>
-    <div ng-include="'app/main/user/partials/account.html'"></div>
-  </md-tab-body>
-</md-tab>
-
-
-    </md-tabs>
-
-  </div>
-  <!-- / CONTENT -->
-
 </div>
+

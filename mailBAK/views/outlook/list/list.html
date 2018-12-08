@@ -46,7 +46,7 @@
         </div>
 
         <div layout="column" layout-align="space-between end">
-            <div class="time">{{thread.timestamp | date : "short"}}</div>
+            <div class="time">{{thread.timestamp * 1000 | date : "short"}}</div>
         </div>
     </div>
 </div>

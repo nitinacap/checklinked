@@ -1,0 +1,91 @@
+<!-- DIALOG -->
+<md-dialog class="dialog" aria-label="">
+  <form id="findLinkForm" name="findLinkForm" class="md-inline-form" ng-disabled="vm.find.inProgress" ng-submit="vm.find.submit()">
+    <!-- DIALOG TOOLBAR -->
+    <md-toolbar class="md-accent md-hue-2">
+      <!-- TOOLBAR TOP -->
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">Send Link Request</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+      <!-- / TOOLBAR TOP -->
+    </md-toolbar>
+    <!-- / DIALOG TOOLBAR -->
+
+    <!-- DIALOG CONTENT -->
+    <md-dialog-content>
+      <md-input-container class="md-block mb-0">
+        <label translate="CHECKLIST.SEARCH_USERS">Search</label>
+        <input id="findLinksQueryString" ng-model="vm.find.criteria" type="text">
+      </md-input-container>
+    </md-dialog-content>
+    <!-- / DIALOG CONTENT -->
+
+
+    <md-dialog-content class="padding-top-0 padding-bottom-0" ng-show="vm.found.length">
+
+      <table class="simple" ms-responsive-table>
+
+        <thead>
+        <tr>
+          <th>Organization</th>
+          <th>User</th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <tfoot>
+        </tfoot>
+
+        <tbody>
+        <tr ng-repeat="link in vm.found" ng-hide="link.id == vm.user.idCON">
+          <td class="name">{{link.organization}}</td>
+          <td class="salary">{{link.name.full}}</td>
+          <td class="text-right" ng-switch="link.status">
+
+            <button ng-switch-when="Linked" aria-label="Linked">
+              <md-icon md-font-icon="icon-google-circles"></md-icon>
+            </button>
+
+            <button class="md-icon-button" aria-label="Invite" ng-switch-when="Stranger" ng-click="link.request()"
+                    ng-disabled="link.requesting">
+              <md-icon md-font-icon="icon-google-circles-invite"></md-icon>
+            </button>
+
+            <button class="md-icon-button" aria-label="Withdraw" ng-switch-when="Sent" ng-click="link.withdraw()">
+              <md-icon md-font-icon="icon-google-circles"></md-icon>
+              <button>
+
+          </td>
+
+        </tr>
+        </tbody>
+      </table>
+
+    </md-dialog-content>
+
+    <!-- DIALOG ACTIONS -->
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="start center">
+
+      </div>
+
+      <div layout="row">
+        <md-button type="submit"
+                   class="md-raised md-accent"
+                   aria-label="SEARCH"
+                   ng-disabled="findLinkForm.$invalid || findLinkForm.$pristine"
+                   ng-disabled="vm.searching">
+          SEARCH
+        </md-button>
+
+      </div>
+
+    </md-dialog-actions>
+    <!-- / DIALOG ACTIONS -->
+
+  </form>
+</md-dialog>
+<!-- / DIALOG -->

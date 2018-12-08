@@ -1,0 +1,35 @@
+<div id="summary" class="page-layout simple tabbed" layout="column">
+
+    <!-- HEADER -->
+    <!--<div class="header md-accent-bg" layout="row" layout-align="start center">
+        <div class="white-fg" layout="row" layout-align="start center" flex>
+            <div layout="column" layout-align="start start">
+                <div class="h2">
+				<span>Checklist Summary</span>
+                </div>
+            </div>
+        </div>
+    </div>
+-->
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <div class="content">
+        <md-tabs md-dynamic-height>
+
+            <md-tab>
+                <md-tab-label>
+                    <span translate="">View Reports</span>
+           	   </md-tab-label>
+
+            <md-tab-body>
+                    <div ng-include="'app/main/summary/partials/summary.html'"></div>
+                </md-tab-body>
+            </md-tab>
+
+        </md-tabs>
+
+    </div>
+    <!-- / CONTENT -->
+
+</div>

@@ -6,15 +6,25 @@
     .controller('UserController', UserController);
 
   /** @ngInject */
-  function UserController($rootScope, $http, $state,  $scope, api, $mdSidenav) {
+  function UserController($rootScope, $location, $mdDialog, $document,  $http, $state, $scope, api, $mdSidenav) {
 
     var vm = this;
-    console.log('Hello');
+    vm.editDialog = editDialog;
+    vm.changePassword = changePassword;
+    vm.closeDialog = closeDialog;
 
     vm.updateUser = updateUser;
-    if (!$rootScope.token){
-       $state.go('app.login');
-    }
+    setTimeout(function(){
+      if (!$rootScope.user) {
+        $state.go('app.login');
+      }
+    }, 1000);
+    // console.log("types= " + $stateParams.type);
+    // if ($stateParams.type) {
+    //   vm.type = $stateParams.type
+
+    // }
+
     vm.update = {
       editable: false,
       sending: false,
@@ -27,7 +37,6 @@
         return api.account.update(this.info, $rootScope.token).error(function (res) {
           return $rootScope.message('Server not responsing properly.', 'warning');
         }).success(function (res) {
-          $rootScope.username(res.user.name.full);
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Error talking to server', 'warning');
           } else if (res.code) {
@@ -93,6 +102,51 @@
     });
 
     console.log('vm.update', vm.update);
+
+    //Change Password 
+
+    function editDialog(ev, type) {
+      console.log(type)
+      vm.title = type == 'changepassword' ? 'Change Password' : 'Edit Profile';
+      vm.newFolder = false;
+
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: type == 'changepassword' ? 'app/main/user/partials/changepassword.html' : 'app/main/user/partials/user.html',
+        parent: angular.element($document.find('#checklist')),
+        targetEvent: ev,
+        clickOutsideToClose: true
+      });
+    }
+
+
+    function closeDialog() {
+      $mdDialog.hide();
+      //$scope.getFolder();
+
+   }
+    function changePassword(){
+      vm.updating = true;
+      return $http.post(BASEURL + 'organization-update-post.php', {
+        user: vm.user
+      }, 
+      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          cache: false
+        }).error(function () {
+          return $rootScope.message('Error talking to server.', 'warning');
+        }).success(function (resp) {
+          return $rootScope.message('Password has been successfully', 'success');
+         
+        })
+    }
+
+   vm.submenu = [
+     { link: '', title: 'My Profile' },
+     { link: 'contacts', title: 'Contacts' },
+     { link:'organization', title: 'Organization' },
+     { link: 'account', title:'Account'}
+   ];
 
   }
 })();

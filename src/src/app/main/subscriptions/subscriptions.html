@@ -1,0 +1,55 @@
+<div id="subscriptions" class="page-layout simple tabbed" layout="column">
+
+    <!-- HEADER -->
+    <div class="header md-accent-bg" layout="row" layout-align="start center">
+        <div class="white-fg" layout="row" layout-align="start center" flex>
+            <div layout="column" layout-align="start start">
+                <div class="h2">
+				<span>Subscriptions</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <div class="content">
+        <md-tabs md-dynamic-height>
+
+            <md-tab ng-click="vm.clearcheck($event)">
+                <md-tab-label >
+                    <span translate="" ng-click="subscriptions.selected = null">License Pool</span>
+           	   </md-tab-label>
+
+            <md-tab-body>
+                    <div ng-include="'app/main/subscriptions/partials/license-pool.html'"></div>
+                </md-tab-body>
+            </md-tab>
+
+            <md-tab >
+                <md-tab-label>
+                    <span translate="">Add Subscription</span>
+           	   </md-tab-label>
+
+            <md-tab-body>
+                    <div ng-include="'app/main/subscriptions/partials/add-subscription.html'"></div>
+                </md-tab-body>
+            </md-tab>
+
+          <md-tab ng-click="vm.clearSelectSubscription($event)">
+            <md-tab-label>
+              <span translate="">Subscriptions</span>
+            </md-tab-label>
+
+            <md-tab-body>
+              <div ng-include="'app/main/subscriptions/partials/subscriptions.html'"></div>
+            </md-tab-body>
+          </md-tab>
+
+
+        </md-tabs>
+
+    </div>
+    <!-- / CONTENT -->
+
+</div>

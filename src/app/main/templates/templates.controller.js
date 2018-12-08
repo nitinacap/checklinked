@@ -9,8 +9,9 @@
   function TemplatesController($rootScope, $http, api, $mdSidenav, $mdDialog, $scope, $document, $state) {
 
     //console.log('$rootScope.user', $rootScope.user);
-
+   
     var vm = this;
+    vm.isLoader = true;
     vm.openAddChecklistTemplateDialog = openAddChecklistTemplateDialog;
     vm.openAddFolderTemplateDialog = openAddFolderTemplateDialog;
     vm.fetchGroups = fetchGroups;
@@ -64,7 +65,7 @@
     vm.filterOrderDescending = false;
 
     vm.folders = [];
-    api.folders.get().then(function (d) {
+    api.folders.get($rootScope.token).then(function (d) {
       console.log('d', d);
       vm.folders = d.data.folders;
     });
@@ -88,7 +89,7 @@
       }
     };
 
-    fetchGroups(id);
+
     function openFolderInput() {
       vm.folder = '';
       vm.group = '';
@@ -135,7 +136,7 @@
       vm.folder.order = 1;
       vm.folder.order += vm.folders.length;
 
-      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order).error(function (res) {
+      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order,$rootScope.token).error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -178,10 +179,11 @@
       vm.group.order += vm.groups.length;
       vm.group.text = groupName;
       vm.group.id_parent = folderID;
-
-      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent).error(function (res) {
+       
+      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent,$rootScope.token).error(function (res) {
         return $rootScope.message("Error Adding Folder", 'warning');
       }).success(function (res) {
+        vm.isLoader = false;
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Adding Folder", 'warning');
         } else if (res.code) {
@@ -206,7 +208,7 @@
     };
 
     function addNewChecklist(checklistName, groupID, folderID) {
-
+      vm.isLoader = true;
       //Set sending variable for buttons
       vm.checklist.sending = true;
 
@@ -215,9 +217,10 @@
       vm.checklist.order += vm.checklists.length;
 
       //name, order, to
-      api.checklists.add(checklistName, vm.checklist.order, groupID).error(function (res) {
+      api.checklists.add(checklistName, vm.checklist.order, groupID,$rootScope.token).error(function (res) {
         return $rootScope.message("Error Adding Checklist", 'warning');
       }).success(function (res) {
+        vm.isLoader = false;
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Adding Checklist", 'warning');
         } else if (res.code) {
@@ -225,9 +228,10 @@
         } else {
           //console.log('res checklist', res);
           //console.log('res.checklist.id', res.checklist.id);
-          api.sections.add('sections', 1, res.checklist.id).error(function (res) {
+          api.sections.add('sections', 1, res.checklist.id,$rootScope.token).error(function (res) {
             return $rootScope.message("Error Adding Section", 'warning');
           }).success(function (res) {
+            vm.isLoader = false;
             //console.log('res failed', res);
             if (res === void 0 || res === null || res === '') {
               return $rootScope.message("Error Adding Section", 'warning');
@@ -303,7 +307,9 @@
           this.inProgress = true;
           this.error = '';
           process = this.processTemplate;
+          console.log("templatetype=" + $scope.templatetype);
           return $http.get(BASEURL + "templates-get.php?org=1&noXML=1").success(function (res) {
+            vm.isLoader = false;
             if (res === void 0 || res === null || res === '') {
               console.log('Error loading templates: ', res);
               return vm.templates.load.error = 'Error loading Templates! (Server not responding properly.)';
@@ -329,9 +335,10 @@
             type: '*'
           };
 
-          return api.checklists.searchForTemplates(vm.criteria).error(function (res) {
+          return api.checklists.searchForTemplates(vm.criteria,$rootScope.token).error(function (res) {
             //return $rootScope.message('Unknown error finding Templates.', 'warning');
           }).success(function (res) {
+            vm.isLoader = false;
             if (res.code) {
               res.display = "Error finding Templates: (" + res.code + "): " + res.message;
               //$rootScope.message(res.display, 'warning');
@@ -409,9 +416,10 @@
         console.log('templateType', templateType);
 
         vm.download.creating = true;
-        return api.checklists.createFromTemplate(idCTMPL, parentID, templateType).error(function (res) {
+        return api.checklists.createFromTemplate(idCTMPL, parentID, templateType,$rootScope.token).error(function (res) {
           return $rootScope.message('Unknown error creating Checklist from selected Template.', 'warning');
         }).success(function (res) {
+          vm.isLoader = false;
           if (res.code) {
             return $rootScope.message("Error creating Checklist from Template: (" + res.code + "): " + res.message, 'warning');
           } else {
@@ -430,6 +438,18 @@
 
     vm.templates.load.start();
     vm.templates.load.startInternal();
+
+    // Content sub menu
+    vm.submenu = [
+      { link: 'folders', title: 'Projects' },
+      { link: 'checklist', title: 'Workflow' },
+      { link: 'checklist', title: 'Checklists' },
+      { link: '', title: 'Templates' },
+      { link: '#', title: 'Others' },
+      { link: '#', title: 'Archives' }
+
+    ];
+
   }
 
 })();

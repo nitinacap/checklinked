@@ -62,9 +62,206 @@ md-tabs-canvas{
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
+    z-index: 71;
 }
 /*.ms-navigation .ms-navigation-node .ms-navigation-item > .ms-navigation-button {
     display:initial !important;
 }
 */
 
+.page-layout.simple.tabbed > .content > md-tabs > md-tabs-content-wrapper > md-tab-content {
+ padding: 0px;
+}
+.pt5{
+    padding-top:5px;
+}
+.notactive{
+        color:#afa7a7 !important;
+        text-transform:capitalize !important;
+}
+.active{
+    color:#fff !important;
+}
+
+.terms {
+        font-size: 13px;
+        margin: 16px 0 15px 0;
+
+        a {
+            margin-left: 4px;
+        }
+    }
+.bb{
+    font-weight: bold !important;;
+    color:black !important;;
+}
+.blue{
+    color:#04cbd6;
+    font-size: 13px;
+}
+.white{
+    color: #fff !important;
+      font-size: 12px !important;
+}
+md-pagination-wrapper a.link.org, md-pagination-wrapper md-tab-item.md-active {
+    font-size: 13px;
+}
+
+
+//Design by designer 30-11-2018
+
+// md-pagination-wrapper > md-tab-item:first-child {
+//     padding-left: 0 !important;
+// }
+md-pagination-wrapper {
+    width: auto !important;
+}
+md-pagination-wrapper {
+    width: auto !important;
+}
+
+.bordered-table tbody td, .bordered-table thead th {
+    padding-left: 20px !important;
+}
+.md-whiteframe-4dp, .md-whiteframe-z2 {
+    box-shadow: none;
+    border: 1px solid #000;
+}
+
+md-menu-content.md-default-theme {
+    padding: 0;
+}
+small {
+    font-size: 11px;
+    color: #999;
+}
+.check-label .s18{
+    padding: 0px !important
+
+}
+.pl-15{
+    padding-left:15px;
+}
+.mh-0{
+    min-height: auto !important;
+}
+.mr-9 {
+    margin-right: 9px;
+}
+#vertical-navigation ms-navigation.ms-navigation {
+    margin-top: 22px;
+} 
+.plus{
+    color:#3a58fe;
+} 
+.textcolor{
+    color:#4472c4;
+} 
+.sidenext{
+    display: none;
+}
+.nav-fixed-top {
+    position: fixed;
+    z-index: 70;
+    width: 100%;
+    top: 48px;
+}
+
+.nav-fixed-top * {
+    text-transform: capitalize;
+}
+
+.topbar-nav {
+    background: #000;
+}
+
+.topbar-nav button {
+   // color: #fff !important;
+    text-transform: capitalize;
+    font-size: 12px;
+    margin: 0;
+}
+.topbar-nav .md-button {
+ line-height: 20px !important;
+}
+
+
+.topbar-nav {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#vertical-navigation .ms-navigation-button {
+    background-color: #000 !important;
+    opacity: 0.6;
+}
+
+#vertical-navigation .md-accent-bg {
+    background-color: #000 !important;
+    opacity: 1;
+}
+.subtab md-tabs-wrapper {
+    background: none !important;
+}
+
+.subtab md-tabs-wrapper * {
+    font-size: 13px !important;
+    color: #333;
+}
+
+.subtab md-tabs-wrapper md-pagination-wrapper {
+    width: 100% !important;
+}
+
+.subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2) {
+    float: right !important;
+    margin-right: 30px;
+}
+
+.side-toggle {
+    display: block !important;
+    margin-left: auto;
+    padding: 0;
+    padding-right: 30px;
+    margin-top: 8px;
+    font-size: 20px !important;
+    color: #fff !important;
+}
+md-sidenav#vertical-navigation {
+    margin-top: 48px !important;
+}
+.logo-icon{
+    height: 40px !important;
+margin-right: 8px;
+}
+.logo-holder {
+    position: fixed;
+    left: 20px;
+}
+.md-tab{
+    font-size: 13px !important;
+}
+.flex-1{
+    flex: 1;
+}
+    .active, .notactive span{
+        text-transform:capitalize !important;
+    }
+
+    .support-top-button {
+    position: fixed;
+    right: 0;
+    top: 48px;
+    height: 37px;
+    margin: 0 !important;
+    padding: 0 !important;
+    padding-left:30px !important;
+}
+
+.support-top-button * {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+ 
+  

@@ -34,16 +34,16 @@
     $translatePartialLoaderProvider.addPart('app/main/invitations');
 
     // Navigation
-    msNavigationServiceProvider.saveItem('checklists.invitations', {
-      title: 'Invitations',
-      //icon: 'icon-google-circles-invite',
-      icon: 'person_add',
-      state: 'app.invitations',
-      badge: {
-        color: '#F44336'
-      },
-      weight: 4
-    });
+    // msNavigationServiceProvider.saveItem('checklists.invitations', {
+    //   title: 'Invitations',
+    //   //icon: 'icon-google-circles-invite',
+    //   icon: 'codiepie',
+    //   state: 'app.invitations',
+    //   badge: {
+    //     color: '#F44336'
+    //   },
+    //   weight: 4
+    // });
 
   }
 

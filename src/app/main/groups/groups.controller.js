@@ -8,17 +8,25 @@
   /** @ngInject */
   function GroupsController($scope, $rootScope, api, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $state, $filter) {
     var vm = this;
-
+    vm.isLoader = true;
+    setTimeout(function () { 
     if ($stateParams.id !== undefined && $stateParams.id != null) {
       if ($stateParams.id == '') {
         $location.path('/folders');
       } else {
-        vm.groups = [];
-        vm.folder_id = $stateParams.id;
-        api.groups.get($stateParams.id,$rootScope.token).then(function (d) {
-          vm.groups = d.data.groups;
-        });
+        $scope.getGroups();
       }
+    }
+  },400);
+
+
+    $scope.getGroups = function () {
+      vm.groups = [];
+      vm.folder_id = $stateParams.id;
+      api.groups.get($stateParams.id, $rootScope.user ? $rootScope.user.token : '').then(function (d) {
+        vm.groups = d.data.groups;
+        vm.isLoader = false;
+      });
     }
 
     console.log('vm.groups', vm.groups);
@@ -63,7 +71,7 @@
     function openGroupDialog(ev, group) {
 
       vm.group = group;
-      vm.title = 'Edit Folder';
+      vm.title = 'Edit Workflow';
       vm.newGroup = false;
 
       if (!vm.group) {
@@ -74,7 +82,7 @@
           'order': '',
           'deleted': false
         };
-        vm.title = 'New Folder';
+        vm.title = 'New Workflow';
         vm.newGroup = true;
       }
 
@@ -92,7 +100,7 @@
     function addGroupDialog(ev, group) {
 
       vm.group = group;
-      vm.title = 'Edit Folder';
+      vm.title = 'Edit Workflow';
       vm.newGroup = false;
 
       if (!vm.group) {
@@ -102,7 +110,7 @@
           'order': '',
           'deleted': false
         };
-        vm.title = 'Create New Folder';
+        vm.title = 'Create New Workflow';
         vm.newGroup = true;
       }
 
@@ -119,7 +127,7 @@
 
     function openAddGroupTemplateDialog(ev) {
 
-      vm.title = 'Find Folder Templates';
+      vm.title = 'Find Workflow Templates';
 
       $mdDialog.show({
         scope: $scope,
@@ -190,13 +198,13 @@
       vm.group.parentId = $stateParams.id;
       vm.group.sending = true;
       vm.group.order = 1;
-      vm.group.order += vm.groups.length;
+      vm.group.order += vm.groups ? vm.groups.length : '';
 
-      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, $rootScope.token).error(function (res) {
-        return $rootScope.message("Error Creating Folder", 'warning');
+      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, $rootScope.user.token).error(function (res) {
+        return $rootScope.message("Error Creating Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
-          return $rootScope.message("Error Creating Folder", 'warning');
+          return $rootScope.message("Error Creating Workflow", 'warning');
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
@@ -211,15 +219,15 @@
           $rootScope.$broadcast('event:updateModels');
 
           //Toaster Notification
-          $rootScope.message('Folder Created');
-
+          $rootScope.message('Workflow Created');
+          $scope.getGroups();
+          vm.closeDialog();
           //Add New Group to Groups object
           vm.groups.unshift(vm.group);
 
           vm.group.sending = false;
 
           //Close Dialog Window
-          vm.closeDialog();
         }
       });
 
@@ -238,20 +246,20 @@
         'order': vm.group.order,
         'id': vm.group.id,
         'rid': vm.group.rid,
-        'token': $rootScope.token
+        'token': $rootScope.user.token
       };
 
       api.groups.edit(editPack).error(function (res) {
-        return $rootScope.message("Error Editing Folder", 'warning');
+        return $rootScope.message("Error Editing Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
-          return $rootScope.message("Error Editing Folder", 'warning');
+          return $rootScope.message("Error Editing Workflow", 'warning');
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
 
           //Toaster Notification
-          $rootScope.message('Folder Edited');
+          $rootScope.message('Workflow Edited');
 
           vm.group.sending = false;
 
@@ -273,19 +281,19 @@
 
       var confirm = $mdDialog.confirm()
         .title('Are you sure?')
-        .content('This Folder will be deleted.')
-        .ariaLabel('Delete Folder')
+        .content('This Workflow will be deleted.')
+        .ariaLabel('Delete Workflow')
         .ok('Delete')
         .cancel('Cancel')
         .targetEvent(event);
 
       $mdDialog.show(confirm).then(function () {
 
-        api.groups.destroy(vm.group.id, $rootScope.token).error(function (res) {
-          return $rootScope.message("Error Deleteing Folder", 'warning');
+        api.groups.destroy(vm.group.id, $rootScope.user.token).error(function (res) {
+          return $rootScope.message("Error Deleteing Workflow", 'warning');
         }).success(function (res) {
           if (res === void 0 || res === null || res === '') {
-            $rootScope.message("Error Deleteing Folder", 'warning');
+            $rootScope.message("Error Deleteing Workflow", 'warning');
           } else if (res.code) {
             $rootScope.message(res.message, 'warning');
           } else {
@@ -293,7 +301,7 @@
             /* Remove From Groups Object */
             vm.groups.splice(vm.groups.indexOf(group), 1);
 
-            $rootScope.message('Folder Deleted', 'success');
+            $rootScope.message('Workflow Deleted', 'success');
 
             vm.group.sending = false;
           }
@@ -373,7 +381,7 @@
 
             vm.closeDialog();
             vm.toggleSidenav('group-sidenav');
-            $rootScope.message('Folder Template Applied', 'success');
+            $rootScope.message('Workflow Template Applied', 'success');
             $rootScope.organizeData();
           }
         })["finally"](function () {
@@ -408,6 +416,17 @@
     }
 
     console.log('vm GroupController', vm);
+
+    // Content sub menu
+    vm.submenu = [
+      { link: 'folders', title: 'Projects' },
+      { link: 'checklist', title: 'Workflow' },
+      { link: '', title: 'Checklists' },
+      { link: 'templates', title: 'Templates' },
+      { link: 'organization', title: 'Others' },
+      { link: 'organization', title: 'Archives' }
+
+    ];
 
   }
 

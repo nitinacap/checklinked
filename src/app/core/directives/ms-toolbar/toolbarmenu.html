@@ -1,0 +1,14 @@
+  <div class="content nav-fixed-top">
+    <section layout="row" layout-sm="row" layout-align="center center" layout-wrap class="topbar-nav">
+
+ 
+  <md-button ui-sref="app.{{data.link}}" class="{{ data.link ? 'notactive' : 'active' }}" ui-sref="{{data.link}}" ng-repeat="data in datas">{{data.title}}</md-button>
+
+
+</section>
+
+</div>
+
+<!-- <md-button ui-sref="app.supports" class="active text-center text-left flex-1 support-buton">
+  <md-icon md-font-icon="fa fa-question-circle" class="fff"></md-icon>
+</md-button> -->

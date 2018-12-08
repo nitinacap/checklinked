@@ -1,5 +1,10 @@
 <!-- CHAT APP -->
-<div id="chat-app" class="page-layout carded fullwidth">
+
+
+        <page-toolbar datas="vm.submenu"> </page-toolbar>
+
+
+<div id="chat-app" class="page-layout carded fullwidth pt-38">
 
     <!-- TOP BACKGROUND -->
     <div class="top-bg md-accent-bg"></div>
@@ -108,7 +113,7 @@
                     <div class="chat-messages" data-ng-if="vm.chat">
 
                         <!-- MESSAGE -->
-                        <div layout="row" data-ng-repeat="dialog in vm.chat | orderBy:'timestamp':true" class="md-padding message-row"
+                        <div layout="row" data-ng-repeat="dialog in vm.chat | orderBy:'-timestamp':true" class="md-padding message-row"
                              data-ng-class="dialog.who">
 
                             <!-- <img src="assets/images/avatars/profile.jpg"
@@ -119,7 +124,7 @@
 
                             <div class="bubble">
                                 <div class="message">{{dialog.text}}</div>
-                                <div class="time secondary-text">{{dialog.timestamp |  date:'medium'}}</div>
+                                <div class="time secondary-text">{{ dialog.timestamp * 1000 | date : "medium" }}</div>
                             </div>
 
                         </div>

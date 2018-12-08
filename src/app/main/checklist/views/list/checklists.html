@@ -8,10 +8,12 @@
 
     <div layout="row" layout-align="start center" flex>
 
-      <div class="info" flex>
+      <div class="" flex>
         <div class="title">
-          <a href="/checklist/detail/{{checklist.idCHK}}">
+          <a href="/checklist/detail/{{checklist.idCHK ? checklist.idCHK : checklist.id_child }}">
             {{checklist.name}}
+
+  
           </a>
         </div>
       </div>
@@ -52,14 +54,14 @@
   </div>
 
 
-  <div class="todo-item" md-ink-ripple layout="row" layout-align="start center" ng-if="!vm.checklists.length"
+  <div class="" md-ink-ripple layout="row" layout-align="start center" ng-if="!vm.checklists.length"
        ng-class="{'starred': checklist.starred, 'selected': checklist.selected, 'completed': checklist.completed}">
 
 
     <div layout="row" layout-align="start center" flex>
 
-      <div class="info" flex>
-        <div class="title">
+      <div flex >
+        <div class="title" padding>
           You do not have any checklists in this folder
         </div>
       </div>

@@ -11,8 +11,8 @@
 
 
     vm.contacts = [];
-    vm.LinkList=[];
-    
+    vm.LinkList = [];
+
     api.contacts.get().then(function (d) {
       debugger;
       vm.contacts = d.data.friendships;
@@ -20,8 +20,8 @@
       vm.LinkList = $filter('filter')(vm.contacts, function (invite) {
         return (invite.contacts.originator.id !== me && invite.accepted == '');
       });
-       console.log("MUser",$rootScope.user);
-      if($stateParams.passID){
+      console.log("MUser", $rootScope.user);
+      if ($stateParams.passID) {
         vm.filterChange('invitations');
       }
       console.log('vm.contacts', vm.contacts);
@@ -216,14 +216,14 @@
     };
     function acceptConnectionInvitation(idCON, index) {
       debugger;
-      if(vm.LinkList.length>0){
-        for(var i=0;i<vm.LinkList.length;i++){
-          if(vm.LinkList[i].contacts.originator.id==idCON){
-          vm.LinkList.splice(i,1);
-          console.log(vm.LinkList);
-          break;
+      if (vm.LinkList.length > 0) {
+        for (var i = 0; i < vm.LinkList.length; i++) {
+          if (vm.LinkList[i].contacts.originator.id == idCON) {
+            vm.LinkList.splice(i, 1);
+            console.log(vm.LinkList);
+            break;
           }
-          }
+        }
       }
 
 
@@ -237,7 +237,7 @@
         if (!res.code) {
 
           vm.contacts.remove(friendship);
-          $state.go($state.current, {}, {reload: true});
+          $state.go($state.current, {}, { reload: true });
           //console.log('res.friendships[0]', res.friendships[0]);
 
           return vm.contacts.unshift(res.friendships[0]);
@@ -272,23 +272,23 @@
         results = [];
         for (i = 0, len = invites.length; i < len; i++) {
           invite = invites[i];
-          results.push(vm.contacts.splice(vm.contacts.indexOf($filter('filter')(vm.contacts, {id: invite.id}, true)[0]), 1));
+          results.push(vm.contacts.splice(vm.contacts.indexOf($filter('filter')(vm.contacts, { id: invite.id }, true)[0]), 1));
           console.log('removed invites[i]', invites, vm.contacts);
-        }  $state.go($state.current, {}, {reload: true});
+        } $state.go($state.current, {}, { reload: true });
         console.log('vm.contact removed', vm.contacts, results);
 
         return results;
       });
     };
     function showWhichInviteContactData(friend) {
-      
+
       var ref, ref1, ref2;
       if (((ref = $rootScope.user) != null ? ref.idCON : void 0) === (friend != null ? (ref1 = friend.contacts) != null ? (ref2 = ref1.accepter) != null ? ref2.id : void 0 : void 0 : void 0)) {
         return 'originator';
       }
       return 'accepter';
     };
-debugger;
+    debugger;
     function openContactDialog(ev, contact) {
 
       vm.contact = angular.copy(contact);
@@ -355,14 +355,14 @@ debugger;
      }
 
      */
-    
+
     function openDirectMessageDialog(contact, ev) {
 
       vm.contact = contact;
 
       vm.which = vm.showWhichInviteContactData(contact);
 
-      console.log('vm.which', vm.which);console.log('vm.which', vm.which);
+      console.log('vm.which', vm.which); console.log('vm.which', vm.which);
 
       $mdDialog.show({
         controller: 'DirectMessageDialogController',
@@ -416,6 +416,15 @@ debugger;
     function toggleSidenav(sidenavId) {
       $mdSidenav(sidenavId).toggle();
     }
+
+    vm.submenu = [
+      { link: 'user', title: 'My Profile' },
+      { link: '', title: 'Contacts' },
+      { link: 'organization', title: 'Organization' },
+      { link: 'account', title: 'Account' }
+    ];
+
+
 
   }
 })();

@@ -1,0 +1,24 @@
+<div ng-repeat="checklist in vm.checklists | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search track by $index">
+
+  <ul data-as-sortable="vm.dragControlListeners"  data-ng-model="checklist.sections">
+    <li data-ng-repeat="section in checklist.sections" data-as-sortable-item>
+      <div data-as-sortable-item-handle ng-click="vm.toggle('section',section); vm.fetchHeadingBlock(section, checklist.id)"> {{ section.name }}</div>
+
+
+    <ul data-as-sortable="vm.dragControlListeners"  data-ng-model="section.headings">
+      <li data-ng-repeat="heading in section.headings" data-as-sortable-item>
+        <div data-as-sortable-item-handle ng-click="vm.toggle('heading', heading); vm.fetchItemBlock(heading, checklist.id)"> {{ heading.name }}</div>
+
+        <ul data-as-sortable="vm.dragControlListeners"  data-ng-model="heading.items">
+          <li data-ng-repeat="item in heading.items" data-as-sortable-item>
+            <div data-as-sortable-item-handle> {{ item.name }}</div>
+          </li>
+        </ul>
+
+      </li>
+    </ul>
+    </li>
+
+  </ul>
+
+</div>

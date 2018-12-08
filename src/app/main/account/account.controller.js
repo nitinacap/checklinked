@@ -7,7 +7,7 @@
         .controller('AccountController', AccountController);
 
     /** @ngInject */
-    function AccountController($rootScope, $http, $state, api, $location, $stateParams, $scope) {
+  function AccountController($rootScope, $mdDialog, $document, $stateParams, $http, $scope, api, $mdSidenav) {
     	
 	var vm = this;
 	
@@ -179,7 +179,14 @@
     }   
      console.log('vm.invite', vm.invite);
     }
-	/* inviteAccount END */
+  /* inviteAccount END */
+  
+    vm.submenu = [
+      { link: '', title: 'My Profile' },
+      { link: 'contacts', title: 'Contacts' },
+      { link: 'organization', title: 'Organization' },
+      { link: 'account', title: 'Account' }
+    ];
 
     }
 })();

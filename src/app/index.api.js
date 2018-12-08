@@ -6,7 +6,7 @@
     .factory('api', apiService);
 
   /** @ngInject */
-  function apiService($rootScope, $cacheFactory,  $resource, $http, $location) {
+  function apiService($rootScope, $cacheFactory, $resource, $http, $location) {
 
     var api = {};
 
@@ -14,6 +14,9 @@
     api.baseUrl = 'app/data/';
 
     var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
+    //var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
+
+    //var BASEURL = 'http://localhost:8081/dist/ajax/';
 
     // api.sample = $resource(api.baseUrl + 'sample/sample.json');
     api.generateCacheLocal = function () {
@@ -88,8 +91,8 @@
     api.login = {
 
       doAuth: function (creds) {
-       
-        return $http.post(BASEURL+'login-doAuth.php', creds, {
+
+        return $http.post(BASEURL + 'login-doAuth.php', creds, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
@@ -98,13 +101,13 @@
           console.log('doAuth resp', resp);
           return $rootScope.message("Unknown error communicating with server. " + resp, 'warning');
         }).success(function (resp) {
-      
+
           var loginTime, path;
           if (resp.code || resp.type === 'error') {
             return $rootScope.message(resp.message, 'warning');
           } else {
             $rootScope.user = resp.user;
-            
+
             $rootScope.viewAs.set(resp.viewAs);
             $rootScope.orderThanksData = '';
             //path = CacheLocal.get('navTo');
@@ -127,7 +130,7 @@
 
       register: function (reg) {
 
-        var rdata={
+        var rdata = {
           email: reg.email,
           phone: reg.phone,
           notification: reg.notifications,
@@ -140,7 +143,7 @@
 
 
 
-        return $http.post(BASEURL+'account-create.php', rdata , {
+        return $http.post(BASEURL + 'account-create.php', rdata, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Accept': 'application/json',
@@ -156,14 +159,14 @@
 
       validate: function (validateId) {
         console.log('validateId', validateId);
-        return $http.post(BASEURL+'account-create-confirm.php', {
+        return $http.post(BASEURL + 'account-create-confirm.php', {
           key: validateId
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       }
     };
 
@@ -171,18 +174,18 @@
     api.account = {
 
       update: function (info) {
-        return $http.post(BASEURL+"account-update-post.php", {
+        return $http.post(BASEURL + "account-update-post.php", {
           info: info
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        }).error(function (res) {
-          return res;
-        }).success(function (res) {
-          return res;
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return res;
+          }).success(function (res) {
+            return res;
+          });
       }
     };
 
@@ -191,46 +194,46 @@
     api.folders = {
 
       get: function (token) {
-        return $http.get(BASEURL+'coe-get.php?t=folder&token='+token);
+        return $http.get(BASEURL + 'coe-get.php?t=folder&token=' + token);
       },
       add: function (name, description, order, token) {
         //return $http.post(BASEURL+'coe-post.php', {
 
-        return $http.post(BASEURL+'coe-post.php', {
+        return $http.post(BASEURL + 'coe-post.php', {
           type: 'folder',
           name: name,
           description: description,
           order: order,
           token: token
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
-      edit: function (editPack,token) {
-        return $http.post(BASEURL+'coe-edit.php', {
+      edit: function (editPack, token) {
+        return $http.post(BASEURL + 'coe-edit.php', {
           pack: editPack,
-          token:token
+          token: token
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
-      destroy: function (id,token) {
-        return $http.post(BASEURL+'coe-destroy.php', {
+      destroy: function (id, token) {
+        return $http.post(BASEURL + 'coe-destroy.php', {
           type: 'folder',
           id: id,
           token: token
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       }
     };
 
@@ -238,8 +241,8 @@
     ////////////////////// GROUPS
     api.groups = {
 
-      get: function (idCFC,token) {
-        return $http.get(BASEURL+"coe-get.php?t=group&p=" + idCFC + "&token=" + token, {
+      get: function (idCFC, token) {
+        return $http.get(BASEURL + "coe-get.php?t=group&p=" + idCFC + "&token=" + token, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -248,41 +251,41 @@
         });
       },
       add: function (name, order, to, token) {
-        return $http.post(BASEURL+'coe-post.php', {
+        return $http.post(BASEURL + 'coe-post.php', {
           type: 'group',
           name: name,
           order: order,
           parentID: to,
           token: token
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       edit: function (editPack, token) {
-        return $http.post(BASEURL+'coe-edit.php', {
+        return $http.post(BASEURL + 'coe-edit.php', {
           pack: editPack,
-          token:token
+          token: token
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
-      destroy: function (id,token) {
-        return $http.post(BASEURL+'coe-destroy.php', {
+      destroy: function (id, token) {
+        return $http.post(BASEURL + 'coe-destroy.php', {
           type: 'group',
           id: id,
-          token:token
+          token: token
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       }
 
     };
@@ -294,7 +297,7 @@
         if (idCHK == null) {
           idCHK = '';
         }
-        return $http.get(BASEURL+"coe-get.php?t=checklist&idCHK=" + idCHK, {
+        return $http.get(BASEURL + "coe-get.php?t=checklist&idCHK=" + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -314,40 +317,41 @@
           return res.checklists;
         });
       },
-      add: function (name, order, to) {
-        return $http.post(BASEURL+'coe-post.php', {
+      add: function (name, order, to, token) {
+        return $http.post(BASEURL + 'coe-post.php', {
           type: 'checklist',
           name: name,
           order: order,
-          parentID: to
+          parentID: to,
+          token: token
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       edit: function (editPack) {
-        return $http.post(BASEURL+"coe-edit.php", {
+        return $http.post(BASEURL + "coe-edit.php", {
           pack: editPack
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       destroy: function (id) {
         console.log('item', id);
-        return $http.post(BASEURL+'coe-destroy.php', {
+        return $http.post(BASEURL + 'coe-destroy.php', {
           type: 'checklist',
           id: id
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       publish: function (id, name, type, pvt) {
         console.log('id', id);
@@ -358,53 +362,53 @@
           pvt = false;
         }
         console.log('pvt', pvt);
-        return $http.post(BASEURL+'checklist-publish.php', {
+        return $http.post(BASEURL + 'checklist-publish.php', {
           id: id,
           name: name,
           type: type,
           pvt: pvt
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       searchForTemplates: function (criteria) {
         console.log('criteria', criteria);
-        return $http.get(BASEURL+"templates-get.php?n=" + criteria.name + "&o=" + criteria.organization + "&a=" + criteria.author + "&v=" + criteria.version + "&t=" + criteria.type, {
+        return $http.get(BASEURL + "templates-get.php?n=" + criteria.name + "&o=" + criteria.organization + "&a=" + criteria.author + "&v=" + criteria.version + "&t=" + criteria.type, {
           cache: false
         });
       },
       createFromTemplate: function (idCTMPL, idGRP, type) {
-        return $http.post(BASEURL+'checklist-post-fromTemplate.php', {
+        return $http.post(BASEURL + 'checklist-post-fromTemplate.php', {
           idPARENT: idGRP,
           idCTMPL: idCTMPL,
           type: type
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       toggleComplete: function (idCFC, complete) {
         if (complete == null) {
           complete = 'toggle';
         }
         console.log('toggling checklist complete', idCFC, complete);
-        return $http.post(BASEURL+'checklist-toggle_complete-post.php', {
+        return $http.post(BASEURL + 'checklist-toggle_complete-post.php', {
           idCFC: idCFC,
           complete: complete
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       getOrgChecklists: function () {
-        return $http.get(BASEURL+'checklists_org-get.php').then(function (d) {
+        return $http.get(BASEURL + 'checklists_org-get.php').then(function (d) {
           var res;
           if (d === void 0 || d === null || d === '') {
             res = {
@@ -461,7 +465,7 @@
               type: type
             };
           }
-          return $http.post(BASEURL+'checklist_invite-post.php', pack, {
+          return $http.post(BASEURL + 'checklist_invite-post.php', pack, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
             },
@@ -480,58 +484,58 @@
         accept: function (invite, idPARENT, name, order) {
           var id;
           id = invite.type === 'group' ? invite.id : invite.checklist.id;
-          return $http.post(BASEURL+'checklist_accept-post.php', {
+          return $http.post(BASEURL + 'checklist_accept-post.php', {
             id: id,
             idPARENT: idPARENT,
             name: name,
             order: order,
             type: invite.type
           }, {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            cache: false
-          }).success(function (res) {
-            if (res === void 0 || res === null || res === '') {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              cache: false
+            }).success(function (res) {
+              if (res === void 0 || res === null || res === '') {
 
-            } else if (res.code) {
+              } else if (res.code) {
 
-            } else {
-              $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, invite.type);
-              return res;
-            }
-          });
+              } else {
+                $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, invite.type);
+                return res;
+              }
+            });
         },
         get: function (idCHK) {
           if (idCHK == null) {
             idCHK = '';
           }
-          return $http.get(BASEURL+"checklist_invites-get.php?idCHK=" + idCHK, {
+          return $http.get(BASEURL + "checklist_invites-get.php?idCHK=" + idCHK, {
             cache: false
           }).success(function (res) {
             return res;
           });
         },
         destroy: function (invite) {
-          return $http.post(BASEURL+"checklist_invite-destroy.php", {
+          return $http.post(BASEURL + "checklist_invite-destroy.php", {
             idINVITE: invite.id,
             type: invite.type,
             rid: invite.rid
           }, {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            cache: false
-          }).success(function (res) {
-            if (res === void 0 || res === null || res === '') {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              cache: false
+            }).success(function (res) {
+              if (res === void 0 || res === null || res === '') {
 
-            } else if (res.code) {
+              } else if (res.code) {
 
-            } else {
-              $rootScope.sendInviteCountUpdatePing(invite.users.recipient.id, 'checklist');
-              return res;
-            }
-          });
+              } else {
+                $rootScope.sendInviteCountUpdatePing(invite.users.recipient.id, 'checklist');
+                return res;
+              }
+            });
         }
       }
     };
@@ -540,7 +544,7 @@
     api.sections = {
 
       get: function (idCHK) {
-        return $http.get(BASEURL+"coe-get.php?t=section&idCHK=" + idCHK, {
+        return $http.get(BASEURL + "coe-get.php?t=section&idCHK=" + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -549,28 +553,28 @@
         });
       },
       add: function (name, order, to) {
-        return $http.post(BASEURL+'coe-post.php', {
+        return $http.post(BASEURL + 'coe-post.php', {
           type: 'section',
           name: name,
           order: order,
           parentID: to
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       destroy: function (id) {
-        return $http.post(BASEURL+'coe-destroy.php', {
+        return $http.post(BASEURL + 'coe-destroy.php', {
           type: 'section',
           id: id
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       }
 
     };
@@ -579,7 +583,7 @@
     api.headings = {
 
       get: function (idCHK) {
-        return $http.get(BASEURL+"coe-get.php?t=heading&idCHK=" + idCHK, {
+        return $http.get(BASEURL + "coe-get.php?t=heading&idCHK=" + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -597,28 +601,28 @@
         });
       },
       add: function (name, order, to) {
-        return $http.post(BASEURL+'coe-post.php', {
+        return $http.post(BASEURL + 'coe-post.php', {
           type: 'heading',
           name: name,
           order: order,
           parentID: to
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       destroy: function (id) {
-        return $http.post(BASEURL+'coe-destroy.php', {
+        return $http.post(BASEURL + 'coe-destroy.php', {
           type: 'heading',
           id: id
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       }
     };
 
@@ -627,7 +631,7 @@
     api.items = {
 
       get: function (idCHK) {
-        return $http.get(BASEURL+"coe-get.php?t=item&idCHK=" + idCHK, {
+        return $http.get(BASEURL + "coe-get.php?t=item&idCHK=" + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -637,7 +641,7 @@
           items = [];
           ref = res.items;
           results = [];
-          for (item = i = 0, len = ref.length; i < len; item = ++i) {
+          for (item = i = 0, len = ref ? ref.length : 0; i < len; item = ++i) {
             key = ref[item];
             results.push(items.push($.extend({}, item, {
               checkbox: {
@@ -680,7 +684,7 @@
         if (info == null) {
           info = '';
         }
-        return $http.post(BASEURL+'coe-post.php', {
+        return $http.post(BASEURL + 'coe-post.php', {
           type: 'item',
           name: name,
           info: info,
@@ -688,22 +692,22 @@
           dataType: type,
           parentID: to
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       destroy: function (id) {
-        return $http.post(BASEURL+'coe-destroy.php', {
+        return $http.post(BASEURL + 'coe-destroy.php', {
           type: 'item',
           id: id
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       hasConflict: function (applies, complies) {
         if (applies === true && complies === !true) {
@@ -711,17 +715,17 @@
         }
       },
       reorder: function (id, dropPosition, type, parentID) {
-        return $http.post(BASEURL+'coe-reorder.php', {
+        return $http.post(BASEURL + 'coe-reorder.php', {
           id: id,
           dropPosition: dropPosition,
           type: type,
           parentID: parentID
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       }
 
     };
@@ -734,7 +738,7 @@
         if (idCON == null) {
           idCON = '';
         }
-        return $http.get(BASEURL+"checkboxes-get.php?idCHK=" + idCHK + "&u=" + idCON, {
+        return $http.get(BASEURL + "checkboxes-get.php?idCHK=" + idCHK + "&u=" + idCON, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -743,23 +747,23 @@
         });
       },
       toggle: function (idCLI, idCON, which) {
-        return $http.post(BASEURL+'checkbox-toggle.php', {
+        return $http.post(BASEURL + 'checkbox-toggle.php', {
           idCLI: idCLI,
           idCON: idCON,
           which: which
         }, {
-          headers: {
-            'Content-Type': 'applicatio/x-www-form-urlencoded'
-          },
-          cache: false
-        }).error(function (res) {
-          return $rootScope.message("Couldn't update checkbox. Unknown error", 'warning');
-        }).success(function (res) {
-          if (res.code) {
-            $rootScope.message("Couldn't update checkbox. Error: (" + code + "): " + message, 'warning');
-          }
-          return res;
-        });
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message("Couldn't update checkbox. Unknown error", 'warning');
+          }).success(function (res) {
+            if (res.code) {
+              $rootScope.message("Couldn't update checkbox. Error: (" + code + "): " + message, 'warning');
+            }
+            return res;
+          });
       }
 
     };
@@ -768,7 +772,7 @@
     api.contacts = {
 
       get: function () {
-        return $http.get(BASEURL+'friendships-get.php', {
+        return $http.get(BASEURL + 'friendships-get.php', {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -780,7 +784,7 @@
         if (q == null) {
           q = '';
         }
-        return $http.get(BASEURL+"contacts-find.php?q=" + q, {
+        return $http.get(BASEURL + "contacts-find.php?q=" + q, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -789,118 +793,118 @@
         });
       },
       add: function (name, order, to) {
-        return $http.post(BASEURL+'', {
+        return $http.post(BASEURL + '', {
           type: 'group',
           name: name,
           order: order,
           parentID: to
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       destroy: function (idCON) {
-        return $http.post(BASEURL+'friendship_invite-destroy.php', {
+        return $http.post(BASEURL + 'friendship_invite-destroy.php', {
           idCON: idCON
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        }).error(function (res) {
-          return $rootScope.message('Error removiong contact.  Unknown.', 'warning');
-        }).success(function (res) {
-          if (res.code) {
-            return $rootScope.message(res.message, 'warning');
-          } else {
-            return $rootScope.message('Contact Deleted');
-            return res;
-          }
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Error removiong contact.  Unknown.', 'warning');
+          }).success(function (res) {
+            if (res.code) {
+              return $rootScope.message(res.message, 'warning');
+            } else {
+              return $rootScope.message('Contact Deleted');
+              return res;
+            }
+          });
       },
       invite: {
         accept: function (idCON) {
-          return $http.post(BASEURL+'friendship_accept-post.php', {
+          return $http.post(BASEURL + 'friendship_accept-post.php', {
             idCON: idCON
           }, {
-            headers: {
-              'Content-Type': 'applicatio/x-www-form-urlencoded'
-            },
-            cache: false
-          }).error(function (res) {
-            return $rootScope.message('Error accepting invite.  Unknown.', 'warning');
-          }).success(function (res) {
-            if (res.code) {
-              return $rootScope.message(res.message, 'warning');
-            } else {
-              console.log('api.invite.accept = $rootScope.user.idCON', $rootScope.user.idCON);
-              $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, 'friendship');
-              $rootScope.message('Contact Invitation Accepted');
-              return res;
-            }
-          });
+              headers: {
+                'Content-Type': 'applicatio/x-www-form-urlencoded'
+              },
+              cache: false
+            }).error(function (res) {
+              return $rootScope.message('Error accepting invite.  Unknown.', 'warning');
+            }).success(function (res) {
+              if (res.code) {
+                return $rootScope.message(res.message, 'warning');
+              } else {
+                console.log('api.invite.accept = $rootScope.user.idCON', $rootScope.user.idCON);
+                $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, 'friendship');
+                $rootScope.message('Contact Invitation Accepted');
+                return res;
+              }
+            });
         },
         send: function (idCON) {
-          return $http.post(BASEURL+'friendship_invite-post.php', {
+          return $http.post(BASEURL + 'friendship_invite-post.php', {
             idCON: idCON
           }, {
-            headers: {
-              'Content-Type': 'applicatio/x-www-form-urlencoded'
-            },
-            cache: false
-          }).error(function (res) {
-            return $rootScope.message('Error sending invite.  Unknown.', 'warning');
-          }).success(function (res) {
-            if (res.code) {
-              return $rootScope.message(res.message, 'warning');
-            } else {
-              $rootScope.message('Contact Invitation Sent');
-              return res;
-            }
-          });
+              headers: {
+                'Content-Type': 'applicatio/x-www-form-urlencoded'
+              },
+              cache: false
+            }).error(function (res) {
+              return $rootScope.message('Error sending invite.  Unknown.', 'warning');
+            }).success(function (res) {
+              if (res.code) {
+                return $rootScope.message(res.message, 'warning');
+              } else {
+                $rootScope.message('Contact Invitation Sent');
+                return res;
+              }
+            });
         },
         remove: function (idCON) {
-          return $http.post(BASEURL+'friendship_invite-destroy.php', {
+          return $http.post(BASEURL + 'friendship_invite-destroy.php', {
             idCON: idCON
           }, {
-            headers: {
-              'Content-Type': 'applicatio/x-www-form-urlencoded'
-            },
-            cache: false
-          }).error(function (res) {
-            return $rootScope.message('Error removing invite.  Unknown.', 'warning');
-          }).success(function (res) {
-            if (res.code) {
-              return $rootScope.message(res.message, 'warning');
-            } else {
-              $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, 'friendship');
-              $rootScope.message('Invitation Withdrawn');
-              return res;
-            }
-          });
+              headers: {
+                'Content-Type': 'applicatio/x-www-form-urlencoded'
+              },
+              cache: false
+            }).error(function (res) {
+              return $rootScope.message('Error removing invite.  Unknown.', 'warning');
+            }).success(function (res) {
+              if (res.code) {
+                return $rootScope.message(res.message, 'warning');
+              } else {
+                $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, 'friendship');
+                $rootScope.message('Invitation Withdrawn');
+                return res;
+              }
+            });
         },
         reject: function (idCON) {
-          return $http.post(BASEURL+'friendship_invite-destroy.php', {
+          return $http.post(BASEURL + 'friendship_invite-destroy.php', {
             idCON: idCON
           }, {
-            headers: {
-              'Content-Type': 'applicatio/x-www-form-urlencoded'
-            },
-            cache: false
-          }).error(function (res) {
-            return $rootScope.message('Error removing invite.  Unknown.', 'warning');
-          }).success(function (res) {
-            if (res.code) {
-              return $rootScope.message(res.message, 'warning');
-            } else {
-              console.log('later gator');
-              $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, 'friendship');
-              return $rootScope.message('Invitation Rejected');
-              return res;
-            }
-          });
+              headers: {
+                'Content-Type': 'applicatio/x-www-form-urlencoded'
+              },
+              cache: false
+            }).error(function (res) {
+              return $rootScope.message('Error removing invite.  Unknown.', 'warning');
+            }).success(function (res) {
+              if (res.code) {
+                return $rootScope.message(res.message, 'warning');
+              } else {
+                console.log('later gator');
+                $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, 'friendship');
+                return $rootScope.message('Invitation Rejected');
+                return res;
+              }
+            });
 
         }
       }
@@ -914,30 +918,30 @@
         if (chunk == null) {
           chunk = null;
         }
-        return $http.get(BASEURL+"feed-get.php", {
+        return $http.get(BASEURL + "feed-get.php", {
           cache: false
         }).success(function (res) {
           return res;
         });
       },
       destroy: function (idFDI) {
-          return $http.post(BASEURL+'fdi-destroy.php', {
+        return $http.post(BASEURL + 'fdi-destroy.php', {
           idFDI: idFDI
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        }).error(function (res) {
-          return $rootScope.message('Error removing notification.  Unknown.', 'warning');
-        }).success(function (res) {
-          if (res.code) {
-            return $rootScope.message(res.message, 'warning');
-          } else {
-            return $rootScope.message('Notification Deleted');
-            return res;
-          }
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Error removing notification.  Unknown.', 'warning');
+          }).success(function (res) {
+            if (res.code) {
+              return $rootScope.message(res.message, 'warning');
+            } else {
+              return $rootScope.message('Notification Deleted');
+              return res;
+            }
+          });
       }
 
     }
@@ -956,7 +960,7 @@
         if (skip == null) {
           skip = 0;
         }
-        return $http.get(BASEURL+"posts-get.php?id=" + id + "&s=" + skip, {
+        return $http.get(BASEURL + "posts-get.php?id=" + id + "&s=" + skip, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -965,47 +969,47 @@
         });
       },
       add: function (id, text, itemType, producerType) {
-        return $http.post(BASEURL+'posts-post.php', {
+        return $http.post(BASEURL + 'posts-post.php', {
           id: id,
           text: text,
           itemType: itemType,
           producerType: producerType
         }, {
-          headers: {
-            'Content-Type': 'applicatio/x-www-form-urlencoded'
-          },
-          cache: false
-        }).error(function (res) {
-          return $rootScope.message('Could not send message. Unknown error.', 'warning');
-        }).success(function (res) {
-          $rootScope.message('Message Sent.', 'success');
-          return res;
-        });
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Could not send message. Unknown error.', 'warning');
+          }).success(function (res) {
+            $rootScope.message('Message Sent.', 'success');
+            return res;
+          });
       },
       reply: function (idVIEW, text, producerType, itemType) {
         console.log('adding convo entry', text, producerType, itemType, idVIEW);
-        return $http.post(BASEURL+'posts-post.php', {
+        return $http.post(BASEURL + 'posts-post.php', {
           id: idVIEW,
           text: text,
           itemType: itemType,
           producerType: producerType
         }, {
-          headers: {
-            'Content-Type': 'applicatio/x-www-form-urlencoded'
-          },
-          cache: false
-        }).error(function (res) {
-          return $rootScope.message('Could not send message. Unknown error.', 'warning');
-        }).success(function (res) {
-          $rootScope.message('Message Sent.', 'success');
-          return res;
-        });
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Could not send message. Unknown error.', 'warning');
+          }).success(function (res) {
+            $rootScope.message('Message Sent.', 'success');
+            return res;
+          });
       },
       sent: function (id, skip) {
         if (skip == null) {
           skip = 0;
         }
-        return $http.get(BASEURL+"posts-sent-get.php?id=" + id + "&s=" + skip, {
+        return $http.get(BASEURL + "posts-sent-get.php?id=" + id + "&s=" + skip, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1020,41 +1024,41 @@
 
       labels: {
         hide: function (idLBL) {
-          return $http.post(BASEURL+'dashboard_label_hide-post.php', {
+          return $http.post(BASEURL + 'dashboard_label_hide-post.php', {
             idLBL: idLBL
           }, {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            cache: false
-          });
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              cache: false
+            });
         },
         add: function (type, name, explanation) {
           console.log('type', type);
           console.log('name', name);
           console.log('explanation', explanation);
-          return $http.post(BASEURL+'dashboard_label-post.php', {
+          return $http.post(BASEURL + 'dashboard_label-post.php', {
             type: type,
             name: name,
             explanation: explanation
           }, {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            cache: false
-          });
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              cache: false
+            });
         },
         update: function (idITEM, selected) {
           console.log('updating item labels', idITEM, selected);
-          return $http.post(BASEURL+'dashboard_updateItemLabels-post.php', {
+          return $http.post(BASEURL + 'dashboard_updateItemLabels-post.php', {
             idITEM: idITEM,
             selected: selected
           }, {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            cache: false
-          });
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              cache: false
+            });
         }
       }
     }
@@ -1064,7 +1068,7 @@
     api.subscriptions = {
 
       getCurrentOffers: function () {
-        return $http.get(BASEURL+"subscription_offers-get.php", {
+        return $http.get(BASEURL + "subscription_offers-get.php", {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1073,7 +1077,7 @@
         });
       },
       getInvites: function (idSUB) {
-        return $http.get(BASEURL+"subscription_invites-get.php?idSUB=" + idSUB, {
+        return $http.get(BASEURL + "subscription_invites-get.php?idSUB=" + idSUB, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1082,7 +1086,7 @@
         });
       },
       getInvite: function (idSUI) {
-        return $http.get(BASEURL+"subscription_invite-get.php?idSUI=" + idSUI, {
+        return $http.get(BASEURL + "subscription_invite-get.php?idSUI=" + idSUI, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1091,56 +1095,56 @@
         });
       },
       finalize: function (offer, pmtMethod) {
-        return $http.post(BASEURL+'subscription_finalize-post.php', {
+        return $http.post(BASEURL + 'subscription_finalize-post.php', {
           offer: offer,
           pmtMethod: pmtMethod
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       makeSubscriptionActive: function (idSUB) {
-        return $http.post(BASEURL+'subscription_makeActive-post.php', {
+        return $http.post(BASEURL + 'subscription_makeActive-post.php', {
           idSUB: idSUB
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       invite: function (email) {
         console.log('inviting', email);
-        return $http.post(BASEURL+'subscription_invite_send-post.php', {
+        return $http.post(BASEURL + 'subscription_invite_send-post.php', {
           email: email
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       withdrawInvite: function (invite) {
-        return $http.post(BASEURL+'subscription_invite_withdraw-post.php', {
+        return $http.post(BASEURL + 'subscription_invite_withdraw-post.php', {
           suiRID: invite.rid
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       offboardMember: function (member) {
-        return $http.post(BASEURL+'organization_member_offboard-post.php', {
+        return $http.post(BASEURL + 'organization_member_offboard-post.php', {
           idCON: member.idCON
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       acceptInvite: function (idSUI, option, details) {
         var pack;
@@ -1159,7 +1163,7 @@
             password: details.password
           };
         }
-        return $http.post(BASEURL+'subscription_invite_accept-post.php', pack, {
+        return $http.post(BASEURL + 'subscription_invite_accept-post.php', pack, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
@@ -1173,7 +1177,7 @@
     api.attachments = {
 
       add: function (pID, pType, aws, name, size, label) {
-        return $http.post(BASEURL+'attachments-finish_upload-post.php', {
+        return $http.post(BASEURL + 'attachments-finish_upload-post.php', {
           pID: pID,
           pType: pType,
           aws: aws,
@@ -1181,11 +1185,11 @@
           size: size,
           label: label
         }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       },
       parent: function (idPARENT, token) {
         return $http.get(BASEURL + "attachments-get.php?t=group&p=" + idPARENT + "&token=" + token, {
@@ -1197,7 +1201,7 @@
         });
       },
       checklist: function (idCHK) {
-        return $http.get(BASEURL+'attachments-get.php?idCHK=' + idCHK, {
+        return $http.get(BASEURL + 'attachments-get.php?idCHK=' + idCHK, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -1208,7 +1212,7 @@
       },
       attachment: function (idATT) {
         console.log('idATT', idATT);
-        return $http.get(BASEURL+'attachments-get.php?idATT=' + idATT, {
+        return $http.get(BASEURL + 'attachments-get.php?idATT=' + idATT, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -1269,22 +1273,22 @@
       },
       reports: {
         get: function () {
-          return $http.get(BASEURL+'conflictReports-get.php', {
+          return $http.get(BASEURL + 'conflictReports-get.php', {
             cache: false
           }).success(function (res) {
             return res;
           });
         },
         request: function () {
-          return $http.post(BASEURL+'conflictReports-request-post.php', {
+          return $http.post(BASEURL + 'conflictReports-request-post.php', {
             idsCHK: [],
             requestedAt: ''
           }, {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            cache: false
-          });
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              cache: false
+            });
         }
       }
 
@@ -1295,7 +1299,7 @@
     api.teammembers = {
 
       get: function () {
-        return $http.get(BASEURL+'organization_members-get.php');
+        return $http.get(BASEURL + 'organization_members-get.php');
       }
 
     }

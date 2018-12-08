@@ -10,6 +10,7 @@
   function FoldersController($rootScope, api, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $scope) {
     var vm = this;
     vm.isLoader = true
+    setTimeout(function () { 
     if ($stateParams.id !== undefined && $stateParams.id != null) {
       if ($stateParams.id == '') {
         $location.path('/folders');
@@ -24,14 +25,16 @@
     } else {
       vm.folders = [];
       $scope.getFolder = function() {
-      api.folders.get($rootScope.token).then(function (d) {
+      api.folders.get($rootScope.user.token).then(function (d) {
         vm.isLoader = false
         vm.folders = d.data.folders;
       });
       }
     }
+    }, 400);
+    setTimeout(function () { 
     $scope.getFolder();
-
+    },500);
 
     // Tasks will be filtered against these models
     vm.folderFilters = {
@@ -215,16 +218,17 @@
     
       vm.folder.sending = true;
       vm.folder.order = 1;
-      vm.folder.order += vm.folders.length;
+      vm.folder.order += vm.folders ? vm.folders.length : 0;
 
 
-      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order, $rootScope.token).error(function (res) {
+      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order, $rootScope.user.token).error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Creating Project", 'warning');
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
+          vm.closeDialog();
         } else {
 
           /* Reset Folder Object */
@@ -262,10 +266,10 @@
         'order': vm.folder.order,
         'id': vm.folder.id,
         'rid': vm.folder.rid,
-        'token': $rootScope.token
+        'token': $rootScope.user.token
       };
 
-      api.folders.edit(editPack, $rootScope.token).error(function (res) {
+      api.folders.edit(editPack, $rootScope.user.token).error(function (res) {
         return $rootScope.message("Error Editing Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -301,7 +305,7 @@
         .targetEvent(event);
 
       $mdDialog.show(confirm).then(function () {
-        api.folders.destroy(vm.folder.id, $rootScope.token).error(function (res) {
+        api.folders.destroy(vm.folder.id, $rootScope.user.token).error(function (res) {
           return $rootScope.message("Error Deleteing Project", 'warning');
         }).success(function (res) {
           if (res === void 0 || res === null || res === '') {
@@ -344,6 +348,24 @@
       vm.showAllFolders = true;
       vm.folderFilters = angular.copy(vm.folderFiltersDefaults);
     }
+    $scope.IsVisibledesc = false;
+
+    $scope.ShowHideDescription = function () {
+      this.IsVisibledesc = this.IsVisibledesc ? false : true;
+    }
+
+    // Content sub menu
+    vm.submenu = [
+      { link: '', title: 'Projects' },
+      { link: 'checklist', title: 'Workflow' },
+      { link: 'checklist', title: 'Checklists' },
+      { link: 'templates', title: 'Templates' },
+      { link: '#', title: 'Others' },
+      { link: '#', title: 'Archives' }
+
+    ];
+
+  
 
   }
 

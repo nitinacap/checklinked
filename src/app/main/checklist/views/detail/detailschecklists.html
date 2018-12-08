@@ -1,9 +1,12 @@
+<page-toolbar datas="vm.submenu"> </page-toolbar>
+
+
 <div ng-show="vm.loaded.checklist && !vm.isLinked">
-  <div class="alert alert-warning"><strong>NOT LINKED!</strong>
+  <div class="alert alert-warning pt-40"><strong>NOT LINKED!</strong>
     <p>You are not linked to this Checklist.</p>
   </div>
 </div><!-- CHECKLIST LIST ITEMS -->
-<div class="checklist-items" id="checklist-details">
+<div class="checklist-items pt-32" id="checklist-details">
   <!--Checklists Iteration-->
  <div
     ng-repeat="checklist in vm.checklists | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search track by $index">
@@ -20,12 +23,12 @@
         </div>
        <div layout="row" flex="" layout-align="end center">
 
-          <md-icon md-font-icon="icon-paperclip" class="is-important indicator-icon s18"
+          <md-icon md-font-icon="icon-paperclip" class="is-important indicator-icon s18 white"
                    ng-click="vm.openUploadAttachmentDialog($event, 'checklist', checklist.idCHK, $index,vm.attachments)"
                    ng-if="vm.attachments.length>0">
           </md-icon>
 
-          <md-icon md-font-icon="icon-comment-text-outline" class="is-important indicator-icon  s18"
+          <md-icon md-font-icon="icon-comment-text-outline" class="is-important indicator-icon  s18 white"
                    ng-click="vm.openConversationDialog($event, 'checklist', checklist.idCHK, checklist.name)"
                    ng-if="checklist.postCount>0">
           </md-icon>
@@ -44,7 +47,7 @@
             <md-button ng-click="$mdOpenMenu($event)"
                        class="md-icon-button" aria-label="More" translate
                        translate-attr-aria-label="CHECKLIST.MORE">
-              <md-icon md-font-icon="icon-dots-vertical" class="s18"></md-icon>
+              <md-icon md-font-icon="icon-dots-vertical" class="s18 active"></md-icon>
             </md-button>
 
             <md-menu-content width="3" class="menu-height">
@@ -69,7 +72,15 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="permissions.has('inviteToChecklist')">
+              <!-- <md-menu-item ng-show="permissions.has('inviteToChecklist')">
+                <md-button ng-click="vm.sendLinkRequest($event, vm.idCHK)" aria-label="Send Link Request"
+                           translate-attr-aria-label="CHECKLIST.LINK_REQUEST">
+                  <md-icon class="md-accent-fg s18"
+                           md-font-icon="icon-account-plus"></md-icon>
+                  <span translate="CHECKLIST.SEND_LINK_REQUEST">Send Link Request</span>
+                </md-button>
+              </md-menu-item> -->
+              <md-menu-item>
                 <md-button ng-click="vm.sendLinkRequest($event, vm.idCHK)" aria-label="Send Link Request"
                            translate-attr-aria-label="CHECKLIST.LINK_REQUEST">
                   <md-icon class="md-accent-fg s18"
@@ -77,6 +88,7 @@
                   <span translate="CHECKLIST.SEND_LINK_REQUEST">Send Link Request</span>
                 </md-button>
               </md-menu-item>
+              
 
               <md-menu-item>
                 <md-button ng-click="vm.showLinkedUsers($event, checklist)" aria-label="Show Linked Users"
@@ -130,11 +142,19 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="permissions.has('publishTemplate')">
+              <!-- <md-menu-item ng-show="permissions.has('publishTemplate')">
                 <md-button ng-click="vm.publishTemplate($event, checklist.idCHK)" aria-label="Publish as Template"
                            translate-attr-aria-label="CHECKLIST.PUBLISH_TEMPLATE">
                   <md-icon class="md-accent-fg s18"
                            md-font-icon="icon-cloud-upload"></md-icon>
+                  <span translate="CHECKLIST.PUBLISH_TEMPLATE">Publish as Template</span>
+                </md-button>
+              </md-menu-item> -->
+
+              <md-menu-item >
+                <md-button ng-click="vm.publishTemplate($event, checklist.idCHK)" aria-label="Publish as Template"
+                  translate-attr-aria-label="CHECKLIST.PUBLISH_TEMPLATE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-upload"></md-icon>
                   <span translate="CHECKLIST.PUBLISH_TEMPLATE">Publish as Template</span>
                 </md-button>
               </md-menu-item>
@@ -162,9 +182,9 @@
               <md-menu-item>
                 <md-button ng-click="vm.toggleComplete(checklist)" aria-label="Complete Checklist"
                            translate-attr-aria-label="CHECKLIST.COMPLETE_CHECKLIST">
-                  <md-icon ng-show="checklist.complete" class="md-accent-fg s18"
+                  <md-icon ng-if="checklist.complete==0" class="md-accent-fg s18"
                            md-font-icon="icon-checkbox-marked-outline"></md-icon>
-                  <md-icon ng-hide="checklist.complete" class="md-accent-fg s18"
+                  <md-icon ng-if="checklist.complete==1" class="md-accent-fg s18"
                            md-font-icon="icon-checkbox-blank-outline"></md-icon>
                   <span translate="CHECKLIST.COMPLETE_CHECKLIST">Complete Checklist</span>
                 </md-button>
@@ -186,7 +206,6 @@
            data-ng-repeat="section in checklist.sections | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
 
         <div ng-include="'app/main/checklist/views/detail/detailsChecklistsSections.html'"></div>
-
         <div class="checklist-items"
              data-as-sortable="vm.dragControlListenersHeadings"
              data-ng-model="section.headings">

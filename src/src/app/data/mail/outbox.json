@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "unread": "all",
+      "name": "sent",
+      "title": "Sent Messages",
+      "icon": "icon-outbox",
+      "view": true
+    }
+  ]
+}

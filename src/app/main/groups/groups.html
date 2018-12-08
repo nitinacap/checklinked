@@ -14,22 +14,14 @@
   <!-- / HEADER -->
 
   <!-- CONTENT -->
-  <div class="content">
-    <md-tabs md-dynamic-height class="">
+ 
+  <page-toolbar datas="vm.submenu"> </page-toolbar>
+    <div ng-include="'app/main/groups/partials/groups.html'"></div>
+<div class="bd-loader" ng-if="vm.isLoader">
+  <md-progress-circular md-diameter="40"></md-progress-circular>
+     
+</div>
 
-      <md-tab>
-        <md-tab-label>
-          <span translate="">My Folders</span>
-        </md-tab-label>
-
-        <md-tab-body class="pad-0">
-          <div ng-include="'app/main/groups/partials/groups.html'"></div>
-        </md-tab-body>
-      </md-tab>
-
-    </md-tabs>
-
-  </div>
   <!-- / CONTENT -->
 
 </div>

@@ -1,11 +1,12 @@
-<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-45">
 
-  <table class="simple row-border hover">
+  <table class="simple row-border hover bordered-table">
     <thead>
 
     <tr>
       <th>
-        <span ng-if="!vm.groups.length">You do not have any folders</span>
+        <span ng-if="!vm.groups.length">You do not have any workflow</span>
+        <span ng-if="vm.groups.length">My workflow{{ vm.groups.length > 1 ? "s" : ''}}</span>
       </th>
 
 
@@ -24,7 +25,7 @@
             <md-menu-item>
               <md-button ng-click="vm.openGroupDialog($event)">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
-                <span translate="">Add New Folder</span>
+                <span translate="">Add New Workflow</span>
               </md-button>
             </md-menu-item>
 
@@ -39,7 +40,7 @@
       ng-repeat="group in vm.groups | orderBy:vm.groupOrder:vm.groupOrderDescending | filter: globalSearch.searchTerm | filter:vm.groupFilters.search track by $index">
       <td>
         <a href="/checklist/{{group.id}}">
-          {{group.name}}
+          {{group.name}} 
         </a>
       </td>
 
@@ -121,4 +122,7 @@
     </tbody>
   </table>
 
+
 </div>
+
+

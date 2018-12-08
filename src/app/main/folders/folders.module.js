@@ -23,13 +23,12 @@
     $translatePartialLoaderProvider.addPart('app/main/folders');
 
     // Navigation
-    msNavigationServiceProvider.saveItem('checklists.folders', {
-      title: 'My Projects',
-     // icon: 'icon-folder-multiple',
-      icon: 'folder',
-      state: 'app.folders',
-      weight: 2
-    });
+    // msNavigationServiceProvider.saveItem('checklists.folders', {
+    //   title: 'My Projects',
+    //   icon: 'folder',
+    //   state: 'app.folders',
+    //   weight: 2
+    // });
 
   }
 

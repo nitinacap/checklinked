@@ -1,0 +1,95 @@
+<div class="simple-table-container md-background-bg md-whiteframe-1dp">
+
+  <table class="simple row-border hover">
+    <thead>
+    <tr ng-if="vm.invites.received.length">
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">Checklist</span>
+        </div>
+      </th>
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">Type</span>
+        </div>
+      </th>
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">Sender</span>
+        </div>
+      </th>
+      <th class="secondary-text hide-xs">
+        <div class="table-header">
+          <span class="column-title">Oraganization</span>
+        </div>
+      </th>
+      <th></th>
+    </tr>
+    <tr ng-if="!vm.invites.received.length">
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">(0) Links Pending</span>
+        </div>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="invite in vm.invites.received | filter: globalSearch.searchTerm | orderBy: 'created'" ng-class="{'md-green-100-bg':vm.passID==invite.id}">
+    
+      <td>
+        {{invite.name}}
+      </td>
+      <td>{{invite.type}}</td>
+      <td>
+        {{invite.users.inviter.name}}
+      </td>
+<!-- //{{vm.passed.id}}// -->
+      <td class="hide-xs">
+        {{invite.users.inviter.organization}} 
+      </td>
+
+      <td class="text-right">
+
+        <md-menu>
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="More" translate
+                     translate-attr-aria-label="">
+            <i class="material-icons s18">more_vert</i>
+          </md-button>
+
+          <md-menu-content width="3">
+
+            <md-menu-item ng-hide="viewAs.notMe || vm.invite.destroying || vm.invite.accepting || invite.type=='group'">
+              <md-button ng-click="vm.inviteControl.acceptChecklist(invite, $event)"
+                         translate-attr-aria-label="INVITATIONS.ACCEPT_INVITATION">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-google-circles-invite"></md-icon>
+                <span translate="INVITATIONS.ACCEPT_INVITATION">Accept Invitation</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-show="invite.type=='group'" ng-hide="viewAs.notMe || vm.invite.destroying || vm.invite.accepting || invite.type=='checklist'">
+              <md-button ng-click="vm.inviteControl.acceptGroup(invite, $event)"
+                         translate-attr-aria-label="INVITATIONS.ACCEPT_INVITATION">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-google-circles-invite"></md-icon>
+                <span translate="INVITATIONS.ACCEPT_INVITATION">Accept Invitation</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-hide="viewAs.notMe || vm.invite.destroying || vm.invite.accepting">
+              <md-button ng-click="vm.inviteControl.destroy('received', invite)"
+                         translate-attr-aria-label="INVITATIONS.REJECT_INVITATION">
+                <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                <span translate="INVITATIONS.REJECT_INVITATION">Reject Invitation</span>
+              </md-button>
+            </md-menu-item>
+
+          </md-menu-content>
+        </md-menu>
+
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>

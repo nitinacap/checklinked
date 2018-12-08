@@ -13,7 +13,7 @@ var indexOf = [].indexOf || function (item) {
     .controller('checklistController', checklistController);
 
   /** @ngInject */
-  function checklistController($rootScope, $scope, api,$state, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $filter, $window) {
+  function checklistController($rootScope, $scope, $cookies, api,$state, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $filter, $window) {
     var vm = this;
     var ref;
 
@@ -116,10 +116,12 @@ var indexOf = [].indexOf || function (item) {
 
     //console.log('$stateParams', $stateParams, $state);
     vm.idCHK = $stateParams.id;
-
+      vm.isLoader = true;
     vm.folders = [];
-
-    api.folders.get($rootScope.token).then(function (d) {
+    var token = $cookies.get("token");
+   
+    api.folders.get(token).then(function (d) {
+      vm.isLoader = false;
       vm.folders = d.data.folders;
     });
 
@@ -153,8 +155,9 @@ var indexOf = [].indexOf || function (item) {
         console.log('stateParams', $stateParams);
         console.log('$state', $state);
         vm.passChecklist = [];
-        api.checklists.getGroup($stateParams.id,$rootScope.token).then(function (d) {
+        api.checklists.getGroup($stateParams.id,token).then(function (d) {
         vm.passChecklist = d.data.checklists;
+          vm.isLoader = false;
 
         });
         vm.setChecklistCtrlBlank();
@@ -205,8 +208,9 @@ var indexOf = [].indexOf || function (item) {
         //console.log('stateParams', $stateParams);
         //console.log('$state', $state);
         vm.passChecklist = [];
-        api.checklists.getGroup($stateParams.id, $rootScope.token).then(function (d) {
+        api.checklists.getGroup($stateParams.id, token).then(function (d) {
           vm.passChecklist = d.data.checklists;
+          vm.isLoader = false;
         });
         //console.log('$stateParams.id here', $stateParams.id);
         vm.setChecklistCtrlBlank();
@@ -256,8 +260,9 @@ var indexOf = [].indexOf || function (item) {
 
 
         vm.passChecklist = [];
-        api.checklists.getGroup($stateParams.idCHK, $rootScope.token).then(function (d) {
+        api.checklists.getGroup($stateParams.idCHK, token).then(function (d) {
           vm.passChecklist = d.data.checklists;
+          vm.isLoader = false;
         });
 
         //console.log('$stateParams.id here', $stateParams.id);
@@ -312,8 +317,9 @@ var indexOf = [].indexOf || function (item) {
       else {
         ////debugger;
         vm.checklists = [];
-        api.checklists.getGroup($stateParams.id, $rootScope.token).then(function (d) {
+        api.checklists.getGroup($stateParams.id, token).then(function (d) {
           vm.checklists = d.data.checklists;
+          vm.isLoader = false;
           //console.log('vm.checklists', vm.checklists);
         });
       }
@@ -429,13 +435,15 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.sections', vm.sections);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, $rootScope.token).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, token).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           if (res.code) {
+            vm.isLoader = false;
             return $rootScope.message("Error updating reorder information. (" + res.code + ": " + res.message + ")");
           } else {
 
+            vm.isLoader = false;
             $rootScope.message("Checklist has been modified");
 
             var itemIndex;
@@ -562,9 +570,10 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.headings', vm.headings);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, $rootScope.token).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, token).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
+          vm.isLoader = false;
           if (res.code) {
             return $rootScope.message("Error updating reorder information. (" + res.code + ": " + res.message + ")");
           } else {
@@ -699,7 +708,7 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.items', vm.items);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, $rootScope.token).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, token).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           var i, len, old, packet, ref1;
@@ -841,10 +850,7 @@ var indexOf = [].indexOf || function (item) {
       });
     };
     function expand(what, which, parentID) {
-      console.log('function expand');
-      console.log('what', what);
-      console.log('which', which);
-      console.log('vm.expanded', vm.expanded);
+
 
 
       var catalog, item, items, key, whats;
@@ -901,12 +907,7 @@ var indexOf = [].indexOf || function (item) {
       x = false;
 
       vm.isExpandedCounter++;
-      console.log('function isExpanded');
-      console.log('what', what);
-      console.log('which', which);
-      console.log('vm.expanded', vm.expanded);
-      console.log('vm.expanded[whats]', vm.expanded[whats]);
-      console.log(which.id);
+
       //console.log('indexOf', vm.expanded[whats].indexOf(which.id));
 
       for (i = 0; i < vm.expanded[whats].length; i++) {
@@ -918,13 +919,8 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function toggle(what, which, parentID) {
-       ////debugger;
-      // vm.attachments=$rootScope.attachments12;
-      console.log('function toggle');
-      console.log('what', what);
-      console.log('which', which);
-      //console.log('vm.expanded', vm.expanded);
-    //console.log('vm.isExpanded(what, which)', vm.isExpanded(what, which));
+     debugger;
+
 
       if (parentID == null) {
         parentID = null;
@@ -934,7 +930,6 @@ var indexOf = [].indexOf || function (item) {
       }
       if (what === 'references') {
         which.showReferences = !which.showReferences;
-        console.log('which.showReferences', which.showReferences);
         return false;
       }
       if (what === 'na') {
@@ -942,24 +937,33 @@ var indexOf = [].indexOf || function (item) {
         return false;
       }
       if (vm.isExpanded(what, which)) {
-        console.log('trying to collapse');
         return vm.collapse(what, which, parentID);
       } else {
-        console.log('trying to expand');
         return vm.expand(what, which, parentID);
       }
     };
 
 
     function toggleComplete(checklist) {
-      api.checklists.toggleComplete(checklist.id, $rootScope.token).error(function (res) {
+      api.checklists.toggleComplete(checklist.id).error(function (res) {
         return $rootScope.message("Error toggling Complete. (Communication with Server)", 'warning');
       }).success(function (res) {
-        if (res === void 0 || res === null || res === '') {
+
+        if (res && res.checklist && res.checklist.complete== 1){
+          $rootScope.message("Checklist marked not completed", 'success');
+        } else if (res && res.checklist && res.checklist.complete == 0) {
+          $rootScope.message("Checklist completed", 'success');
+        }
+       
+      if (res === void 0 || res === null || res === '') {
+        
           return $rootScope.message("Error toggling Complete. (No response.)", 'warning');
         } else if (res.code) {
+       
           return $rootScope.message(res.message, 'warning');
         } else {
+          
+       
           return vm.checklists.forEach(function (local) {
             var index, notifyItem;
             if (local.id === res.checklist.id) {
@@ -1041,23 +1045,25 @@ var indexOf = [].indexOf || function (item) {
 
     function organizeData() {
       vm.items.forEach(function (item) {
-        return item.attachments = vm.children('attachments', item.id);
+        return item.attachments = vm.children('attachments', item.id.toString());
       });
       vm.headings.forEach(function (heading) {
-        heading.items = vm.children('items', heading.id);
-        return heading.attachments = vm.children('attachments', heading.id);
+        heading.items = vm.children('items', heading.id.toString());
+        return heading.attachments = vm.children('attachments', heading.id.toString());
       });
       vm.sections.forEach(function (section) {
-        section.headings = vm.children('headings', section.id);
-        return section.attachments = vm.children('attachments', section.id);
+        var section_id = section.id.toString();
+        
+        section.headings = vm.children('headings', section_id);
+        return section.attachments = vm.children('attachments', section.id.toString());
       });
 
       vm.checklists.forEach(function (checklist) {
         checklist.sections = vm.children('sections', checklist.idCHK);
-        return checklist.attachments = vm.children('attachments', checklist.idCHK);
+        return checklist.attachments = vm.children('attachments', checklist.idCHK.toString());
       });
       //console.log('data organized', vm.checklists);
-    };
+    }
 
     function checkIfLinked(idCHK) {
       //console.log('cfc vm.checklists', $rootScope.checklists);
@@ -1072,21 +1078,25 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function loadChecklist(idCHK) {
+      vm.isLoader = true;
       //console.log('idCHK', idCHK);
       vm.setChecklistCtrlBlank();
       vm.checkIfLinked(idCHK);
-      if (vm.isLinked) {
+      if (vm.isLinked || !vm.isLinked) {
         //console.log('is linked');
         if (!vm.loaded.checklist) {
           //console.log('not loaded');
-          api.checklists.get(idCHK, $rootScope.token).success(function (res) {
-            console.log('res', res);
-            var ref;
+          api.checklists.get(idCHK, token).success(function (res) {
+             var ref;
+           
             if ((ref = res.checklists) != null ? ref.length : void 0) {
               vm.checklists = res.checklists;
+              vm.isLinked = true;
+              vm.isLoader = false;
               //console.log('vm.checklists', vm.checklists);
             } else {
               //console.log('problem');
+              vm.isLinked = false;
             }
 
             console.log('not sure');
@@ -1095,13 +1105,15 @@ var indexOf = [].indexOf || function (item) {
             console.log('broadcast event:checklistLoaded');
           })["finally"](function () {
             vm.loading.checklist = false;
+            vm.isLoader = false
             return vm.completeLoad();
           });
         }
 
         if (!vm.loaded.sections) {
-          api.sections.get(idCHK, $rootScope.token).success(function (res) {
+          api.sections.get(idCHK, token).success(function (res) {
             var ref;
+            vm.isLoader = false;
             if ((ref = res.sections) != null ? ref.length : void 0) {
               vm.sections = res.sections;
             }
@@ -1109,10 +1121,11 @@ var indexOf = [].indexOf || function (item) {
           })["finally"](function () {
             vm.loading.sections = false;
             return vm.completeLoad();
+            
           });
         }
 
-        /*
+        
          if(!vm.loaded.headings){
          api.headings.get(idCHK).success(function(res) {
          var ref;
@@ -1141,15 +1154,17 @@ var indexOf = [].indexOf || function (item) {
          return vm.completeLoad();
          });
          }
-         */
+        
 
         if (!vm.loaded.attachments) {
-          //console.log('look for attachments');
-          api.attachments.checklist(idCHK, $rootScope.token).success(function (res) {
+          console.log('look for attachments');
+          api.attachments.checklist(idCHK, token).success(function (res) {
             var ref;
+            console.log(res);
+            vm.isLoader = false;
             if ((ref = res.attachments) != null ? ref.length : void 0) {
               vm.attachments = vm.attachments.concat(res.attachments);
-              $rootScope.attachments12=res.attachments;
+              $rootScope.attachments=res.attachments;
               console.log("attachmentlength",res.attachments.length);
             }
             vm.loaded.attachments = true;
@@ -1203,6 +1218,7 @@ var indexOf = [].indexOf || function (item) {
           catalog = update.catalog;
           switch (update.type) {
             case 'add':
+            debugger;
               $scope[catalog] = $scope[catalog].concat(update.record);
               $rootScope.socketio.emit('feed_subscribe', {
                 idCON: $rootScope.user.idCON,
@@ -1303,12 +1319,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function createSegment(what, name, to, type, info) {
-      ////debugger;
-      console.log('what', what);
-      console.log('name', name);
-      console.log('to', to);
-      console.log('type', type);
-      console.log('info', info);
+      vm.isLoader = true;
 
       var count, order, ref1, svc, whats;
       if (to == null) {
@@ -1337,14 +1348,18 @@ var indexOf = [].indexOf || function (item) {
         }, true)) != null ? ref1 : [];
         order += count.length;
       }
-
+      vm.headingDialog = true;
       return svc.add(name, order, to, type, info).success(function (res) {
+        vm.headingDialog = false;
         var notifyItem, packet;
         if (res.code) {
+          vm.isLoader = false;
+          vm.closeDialog();
           return $rootScope.message(res.message, 'warning');
         } else {
 
-
+          vm.closeDialog();
+          vm.isLoader = false;
           vm[whats].push(res[what]);
           vm.organizeData();
           packet = {
@@ -1376,15 +1391,10 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function destroy(what, item) {
-      console.log('what', what);
-      console.log('item', item);
 
       var svc, whats;
       svc = vm.svc(what);
       whats = what + 's';
-
-      console.log('svc', svc);
-      console.log('whats', whats);
 
       return svc.destroy(item.rid).success(function (res) {
         var notifyItem, packet;
@@ -1420,7 +1430,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function add(what, to, ev, option) {
-      ////debugger;
+      debugger;
       var option;
       var title;
 
@@ -1535,9 +1545,10 @@ var indexOf = [].indexOf || function (item) {
       userID = user.idCON;
       if (!vm.userCheckboxes(userID).length) {
         vm.loading.checkboxes = true;
-        return api.checkbox.get(vm.idCHK, userID, $rootScope.token).error(function (res) {
+        return api.checkbox.get(vm.idCHK, userID, token).error(function (res) {
           return $rootScope.message('Error talking to server to find user checkboxes.', 'warning');
         }).success(function (res) {
+          vm.isLoader = false;
           console.log('vm.checkboxes', vm.checkboxes);
 
           vm.checkboxes = vm.checkboxes.concat(res.checkboxes);
@@ -1551,7 +1562,7 @@ var indexOf = [].indexOf || function (item) {
     function evaluateConflicts(item, operation) {
       ////debugger;
       var addConflicts, leftNonCompliant, ref1, ref2, rightNonCompliant;
-      item = api.summary.evaluateItem(item, item.checkbox, $rootScope.token);
+      item = api.summary.evaluateItem(item, item.checkbox, token);
       addConflicts = operation * +item.conflicts;
       vm.conflicts += addConflicts;
       if (((ref1 = item.checkbox) != null ? ref1[0] : void 0) !== void 0) {
@@ -1563,7 +1574,7 @@ var indexOf = [].indexOf || function (item) {
         vm.nonCompliant[1] += rightNonCompliant;
       }
       return item;
-    };
+    }
 
     function appendCheckboxesToItems(user) {
       ////debugger;
@@ -1619,6 +1630,8 @@ var indexOf = [].indexOf || function (item) {
 
     function showLinkedUsers(ev, item) {
 
+      console.log()
+
       vm.item = {
         'name': item.name
       }
@@ -1630,7 +1643,7 @@ var indexOf = [].indexOf || function (item) {
         },
         scope: $scope,
         preserveScope: true,
-        templateUrl: 'app/main/checklist/dialogs/checklist/checklist-show-linked-users-dialog.html',
+        templateUrl: '/app/main/checklist/dialogs/checklist/checklist-show-linked-users-dialog.html',
         parent: angular.element($document.find('#checklist')),
         targetEvent: ev,
         clickOutsideToClose: true
@@ -1645,12 +1658,15 @@ var indexOf = [].indexOf || function (item) {
     });
 
     function toggleCheckbox(item, which, userKey) {
-      ////debugger;
+      vm.isLoader = true;
+      debugger;
       vm.evaluateConflicts(item, -1);
-      return api.checkbox.toggle(item.id, $rootScope.showingUsers[userKey].idCON, which, $rootScope.token).success(function (res) {
+      return api.checkbox.toggle(item.id, $rootScope.showingUsers[userKey].idCON, which, token).success(function (res) {
+        vm.isLoader = false;
         if (item.checkbox === void 0) {
           item.checkbox = [];
         }
+      //  item.checkbox[userKey] = res.checkboxes[0];
         item.checkbox[userKey] = res.checkboxes[0];
         return vm.evaluateConflicts(item, +1);
       });
@@ -1726,9 +1742,10 @@ var indexOf = [].indexOf || function (item) {
         var ref1, ref2;
         if (((ref1 = vm.publish.idCHK) != null ? ref1.length : void 0) && ((ref2 = vm.publish.name) != null ? ref2.length : void 0)) {
           vm.publish.submitting = true;
-          return api.checklists.publish(vm.publish.idCHK, vm.publish.name, 'checklist', vm.publish.pvt, $rootScope.token).error(function (res) {
+          return api.checklists.publish(vm.publish.idCHK, vm.publish.name, 'checklist', vm.publish.pvt, token).error(function (res) {
             return $rootScope.message('Unknown error publishing Template.', 'warning');
           }).success(function (res) {
+            vm.isLoader = false;
             if (res.code) {
               return $rootScope.message("Error publishing Template. (" + res.code + ": " + res.message + ")", 'warning');
             } else {
@@ -1838,7 +1855,8 @@ var indexOf = [].indexOf || function (item) {
           vm.edit.stop(which);
           return false;
         }
-        return api.edit.attemptEdit(which, $rootScope.token).error(function (res) {
+        return api.edit.attemptEdit(which, token).error(function (res) {
+          vm.isLoader = false;
           vm[whats][which.index].edit.error = res.code;
           return vm[whats][which.index].edit.message = res.message;
         }).success(function (res) {
@@ -1970,10 +1988,11 @@ var indexOf = [].indexOf || function (item) {
         lbl.hiding = true;
         return api.dashboard.labels.hide(lbl.id).success(function (res) {
           var idx;
+          vm.isLoader = false;
           if (res === void 0 || res === null || res === "") {
             return $rootScope.message("Server not responding properly.", 'warning');
           } else if (res.code) {
-            return $rootScope.message(res.message, 'warning');
+            //return $rootScope.message(res.message, 'warning');
           } else {
             idx = $rootScope.user.dashboard.labels.indexOf(lbl);
             $rootScope.user.dashboard.labels.splice(idx, 1);
@@ -1987,8 +2006,10 @@ var indexOf = [].indexOf || function (item) {
         });
       },
       save: function () {
+        vm.isLoader = true;
         vm.labels.saving = true;
         return api.dashboard.labels.update(this.item.id, this.selected).success(function (res) {
+          vm.isLoader = false;
           var notifyItem, packet;
           if (res === void 0 || res === null || res === "") {
             return $rootScope.message("Server not responding properly.", 'warning');
@@ -2033,9 +2054,11 @@ var indexOf = [].indexOf || function (item) {
           return false;
         },
         save: function () {
+          vm.isLoader = true;
           vm.labels.create.saving = true;
           //console.log('adding new label', vm.labels.item, this.name, this.explanation);
           return api.dashboard.labels.add(vm.labels.item.type, this.name, this.explanation).success(function (res) {
+            vm.isLoader = false;
             if (res === void 0 || res === null || res === '') {
               return $rootScope.message("Server not responding properly.", 'warning');
             } else if (res.code) {
@@ -2089,6 +2112,7 @@ var indexOf = [].indexOf || function (item) {
         return null;
       },
       search: function () {
+        vm.isLoader = true;
         vm.find.searching = true;
         if (vm.find.template.criteria.name === '' && vm.find.template.criteria.organization === '' && vm.find.template.criteria.author === '' && vm.find.template.criteria.version === '') {
           $rootScope.message('Please provide Search Criteria', 'warning');
@@ -2101,6 +2125,7 @@ var indexOf = [].indexOf || function (item) {
         return api.checklists.searchForTemplates(vm.find.template.criteria).error(function (res) {
           return $rootScope.message('Unknown error finding Templates.', 'warning');
         }).success(function (res) {
+          vm.isLoader = false;
           if (res.code) {
             res.display = "Error finding Templates: (" + res.code + "): " + res.message;
             $rootScope.message(res.display, 'warning');
@@ -2115,12 +2140,13 @@ var indexOf = [].indexOf || function (item) {
       create: function (idCTMPL, parentID) {
         console.log('idCTMPL', idCTMPL);
         console.log('parentID', parentID);
-
+        vm.isLoader = true;
 
         vm.find.creating = true;
-        return api.checklists.createFromTemplate(idCTMPL, parentID, 'checklist', $rootScope.token).error(function (res) {
+        return api.checklists.createFromTemplate(idCTMPL, parentID, 'checklist', token).error(function (res) {
           return $rootScope.message('Unknown error creating Checklist from selected Template.', 'warning');
         }).success(function (res) {
+          vm.isLoader = false;
           if (res.code) {
             return $rootScope.message("Error creating Checklist from Template: (" + res.code + "): " + res.message, 'warning');
           } else {
@@ -2193,7 +2219,7 @@ var indexOf = [].indexOf || function (item) {
 
 
     function openUploadAttachmentDialog(ev, pType, pID, index, attachments) {
-     // ////debugger;
+    debugger;
       vm.pType = pType;
       vm.pID = pID;
       vm.title = 'Attachments';
@@ -2222,9 +2248,6 @@ var indexOf = [].indexOf || function (item) {
 
 
     function openConflictsDialog(ev) {
-
-      console.log('vm.conflicts', vm.conflicts);
-
 
       $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
@@ -2287,10 +2310,8 @@ var indexOf = [].indexOf || function (item) {
             } else if (res.code) {
               $rootScope.message(res.message, 'warning');
             } else {
-              console.log('vm[whats]', vm[whats]);
-              console.log('res', res.attachments[0]);
               vm[whats][index].attachments.push(res.attachments[0]);
-               console.log("hello", vm[whats])
+              
             }
           });
 
@@ -2323,11 +2344,9 @@ var indexOf = [].indexOf || function (item) {
         vm.loadChecklist(vm.idCHK);
         $rootScope.message('Please select a file to upload', 'warning');
       }
-
       vm.organizeData();
-
       vm.closeDialog();
-    };
+    }
 
     function uniqueString() {
       var text = "";
@@ -2337,7 +2356,7 @@ var indexOf = [].indexOf || function (item) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       }
       return text;
-    };
+    }
 
     vm.sizeLimit = 10585760; // 10MB in Bytes
     vm.uploadProgress = 0;
@@ -2384,26 +2403,24 @@ var indexOf = [].indexOf || function (item) {
       vm.wizard.newFolder = true;
       vm.wizard.newGroup = false;
       vm.wizard.newChecklist = false;
-      console.log('vm.wizard', vm.wizard);
+    
 
-    };
+    }
 
     function cancelFolderInput() {
       return vm.wizard.newFolder = false;
-      console.log('vm.wizard', vm.wizard);
-    };
+    }
 
     function cancelGroupInput() {
-      console.log('fff');
+    
       return vm.wizard.newGroup = false;
       return vm.wizard.switch = false;
-      console.log('vm.wizard', vm.wizard);
-    };
+    
+    }
 
     function cancelChecklistInput() {
       vm.closeDialog();
-      console.log('vm.wizard', vm.wizard);
-    };
+    }
 
     function openGroupInput() {
       vm.group = '';
@@ -2411,9 +2428,8 @@ var indexOf = [].indexOf || function (item) {
       vm.wizard.newChecklist = false;
       vm.wizard.newGroup = true;
       vm.wizard.switch = true;
-      console.log('vm.wizard', vm.wizard);
-    };
-
+     
+    }
 
     function addNewFolder() {
       //console.log('pre insert vm.folders', vm.folders);
@@ -2423,10 +2439,11 @@ var indexOf = [].indexOf || function (item) {
       //Set order variable for sql insert
       vm.folder.order = 1;
       vm.folder.order += vm.folders.length;
-
-      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order, $rootScope.token).error(function (res) {
+      vm.isLoader = true;
+      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order, token).error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
+        vm.isLoader = false;
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Creating Project", 'warning');
         } else if (res.code) {
@@ -2457,26 +2474,26 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function addNewGroup(groupName, folderID) {
-
+      vm.isLoader = true;
       //Set sending variable for buttons
       vm.group.sending = true;
 
       //Set order variable for sql insert
       vm.group.order = 1;
-      vm.group.order += vm.groups.length;
+      vm.group.order += vm.groups ? vm.groups.length : 0;
       vm.group.text = groupName;
       vm.group.id_parent = folderID;
 
-      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent, $rootScope.token).error(function (res) {
+      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent, token).error(function (res) {
         return $rootScope.message("Error Adding Folder", 'warning');
       }).success(function (res) {
+        vm.isLoader = false;
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Adding Folder", 'warning');
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
 
-          console.log('res.groups', res.groups);
           $rootScope.$broadcast('event:updateModels');
           vm.groups.push(res.group);
           $rootScope.organizeData();
@@ -2494,7 +2511,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function addNewChecklist(checklistName, groupID, folderID) {
-       
+      vm.isLoader = true;
       //Set sending variable for buttons
       vm.checklist.sending = true;
 
@@ -2503,19 +2520,23 @@ var indexOf = [].indexOf || function (item) {
       vm.checklist.order += vm.checklists.length;
 
       //name, order, to
-      api.checklists.add(checklistName, vm.checklist.order, groupID, $rootScope.token).error(function (res) {
+      api.checklists.add(checklistName, vm.checklist.order, groupID, token).error(function (res) {
         return $rootScope.message("Error Adding Checklist", 'warning');
       }).success(function (res) {
+        vm.isLoader = false;
+        vm.loadChecklist(vm.idCHK);
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Adding Checklist", 'warning');
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
+         
         } else {
           //console.log('res checklist', res);
           //console.log('res.checklist.id', res.checklist.id);
           api.sections.add('sections', 1, res.checklist.id).error(function (res) {
             return $rootScope.message("Error Adding Section", 'warning');
           }).success(function (res) {
+            vm.isLoader = false;
             //console.log('res failed', res);
             if (res === void 0 || res === null || res === '') {
               return $rootScope.message("Error Adding Section", 'warning');
@@ -2614,15 +2635,14 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function deleteItem(what, item, ev) {
-
+      vm.isLoader = true;
       var svc, whats;
       whats = what + 's';
 
       svc = vm.svc(what);
 
-      console.log()
-
       return svc.destroy(item.id).success(function (res) {
+        vm.isLoader = false;
         var notifyItem, packet;
         if (res.code) {
           return $rootScope.message(res.message, 'warning');
@@ -2752,16 +2772,20 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function loadLinkedUsers() {
-      console.log('loading users', $scope);
+      vm.isLoader = true;
+      console.log('loading users 2', $scope);
       vm.setBlank();
       vm.loadingLinked = true;
-      return api.checklists.getLinkedUsers(vm.idCHK, $rootScope.token).then(function (res) {
+      return api.checklists.getLinkedUsers(vm.idCHK, token).then(function (res) {
+        vm.isLoader = false;
         if (res === void 0 || res === null || res === '') {
           return vm.setError(-1, 'Server not responding properly.');
         } else if (res.code) {
           return vm.setError(res.code, res.message);
         } else {
-          res.checklists.forEach(function (cfc) {
+          var newcheckLists = res.checklists ? res.checklists : res.checkLists;
+          if (res && newcheckLists && newcheckLists.length > 0 && newcheckLists!=undefined)
+            newcheckLists.forEach(function (cfc) {
             var show, usr;
             usr = cfc.ownerDetails;
             usr.isShowing = $rootScope.userCheckboxesAreShowing(usr);
@@ -2890,7 +2914,7 @@ var indexOf = [].indexOf || function (item) {
         'index': 0,
         'type': 'checklist',
         'text': vm.checklist.name,
-        'token': $rootScope.token
+        'token': token
       };
 
       console.log('vm.vars.message', vm.checklist.name);
@@ -2934,7 +2958,7 @@ var indexOf = [].indexOf || function (item) {
     }
 
     function saveSection() {
-
+      vm.isLoader = true;
       var editPack;
 
       editPack = {
@@ -2943,10 +2967,11 @@ var indexOf = [].indexOf || function (item) {
         'index': 0,
         'type': 'section',
         'text': vm.section.name,
-        'token': $rootScope.token
+        'token': token
       };
 
       api.checklists.edit(editPack).error(function (res) {
+        vm.isLoader = false;
         $rootScope.message("Error Editing Section", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -2991,7 +3016,7 @@ var indexOf = [].indexOf || function (item) {
         'index': 0,
         'type': 'heading',
         'text': vm.heading.name,
-        'token': $rootScope.token
+        'token': token
       };
 
       api.checklists.edit(editPack).error(function (res) {
@@ -3067,7 +3092,7 @@ var indexOf = [].indexOf || function (item) {
         'type': 'item',
         'info': vm.item.info,
         'text': vm.item.name,
-        'token': $rootScope.token
+        'token': token
       };
 
       api.checklists.edit(editPack).error(function (res) {
@@ -3257,7 +3282,7 @@ var indexOf = [].indexOf || function (item) {
 
     function downloadXML(ev, idCHK, chkName) {
 
-      $window.location.href = ('https://checklinked.com/archive.php?idCHK=' + idCHK);
+      $window.location.href = ('http://wdc1.acapqa.net:8081/dist/ajax/archive.php?idCHK=' + idCHK);
     }
 
 
@@ -3269,28 +3294,22 @@ var indexOf = [].indexOf || function (item) {
 
     function fetchHeadingBlock(section, idCHK) {
 
-      console.log('section', section);
 
       var id_parent = section.id;
       var i;
       var x;
 
-      console.log('id_parent', id_parent);
 
 
       if (!section.headings.length && id_parent) {
 
-        console.log('say hello');
-
         api.headings.getParent(id_parent).success(function (res) {
 
-          console.log('res on getParent', res);
+         // console.log('res on getParent', res);
           console.log('id_parent', id_parent);
 
           var ref;
           if ((ref = res.headings) != null ? ref.length : void 0) {
-
-            console.log('pre result', vm.headings);
 
             if ((ref = vm.headings) != null ? vm.headings.length : void 0) {
               console.log('about to loop');
@@ -3301,10 +3320,9 @@ var indexOf = [].indexOf || function (item) {
               }
 
             } else {
-              console.log('first heading');
               vm.headings = res.headings;
             }
-
+            vm.headings
             console.log('heading data', vm.headings);
 
           }
@@ -3316,6 +3334,7 @@ var indexOf = [].indexOf || function (item) {
 
 
         api.attachments.checklist(idCHK).success(function (res) {
+
           var ref;
           if ((ref = res.attachments) != null ? ref.length : void 0) {
             vm.attachments = vm.attachments.concat(res.attachments);
@@ -3356,17 +3375,15 @@ var indexOf = [].indexOf || function (item) {
           var ref;
           if ((ref = res.headings) != null ? ref.length : void 0) {
 
-            console.log('existing vm.headings array', vm.headings);
 
             if ((ref = vm.headings) != null ? vm.headings.length : void 0) {
 
               for (i = 0; i < res.headings.length; i++) {
-                console.log('looping', i);
-                vm.headings.push(res.headings[i]);
+             
+                //vm.headings.push(res.headings[i]);
               }
 
             } else {
-              console.log('first heading');
               vm.headings = res.headings;
             }
 
@@ -3523,8 +3540,7 @@ var indexOf = [].indexOf || function (item) {
 
     }
 
-    console.log('vm.expanded end of controller', vm.expanded);
-    console.log('vm.checklist', vm.checklist);
+
 
     function closeDialog() {
       vm.wizard.newFolder = false;
@@ -3533,6 +3549,18 @@ var indexOf = [].indexOf || function (item) {
      vm.wizard.switch = false;     
       $mdDialog.hide();
     }
+
+// Content sub menu
+    vm.submenu = [
+      { link: 'folders', title: 'Projects' },
+      { link: 'checklist', title: 'Workflow' },
+      { link: '', title: 'Checklists' },
+      { link: 'templates', title: 'Templates' },
+      { link: '#', title: 'Others' },
+      { link: '#', title: 'Archives' }
+
+    ];
+
   }
 
 

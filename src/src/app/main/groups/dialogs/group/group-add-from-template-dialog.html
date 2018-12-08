@@ -1,0 +1,117 @@
+<!-- DIALOG -->
+<md-dialog class="dialog" aria-label="New Task">
+
+    <form id="findLinkForm" name="findLinkForm" class="md-inline-form" ng-disabled="vm.find.inProgress" ng-submit="vm.find.search()">
+
+        <!-- DIALOG TOOLBAR -->
+        <md-toolbar class="md-accent md-tall" layout="column">
+
+            <!-- TOOLBAR TOP -->
+            <div class="md-toolbar-tools md-toolbar-tools-top" layout="row" layout-align="space-between center">
+                <span class="title">{{vm.title}}</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog" translate
+                           translate-attr-aria-label="CHECKLIST.CLOSE_DIALOG">
+                    <md-icon md-font-icon="icon-close"></md-icon>
+                </md-button>
+            </div>
+            <!-- / TOOLBAR TOP -->
+
+        </md-toolbar>
+        <!-- / DIALOG TOOLBAR -->
+
+
+      <md-dialog-content ms-scroll ng-show="vm.find.searchCount">
+
+        <table class="simple" ms-responsive-table ng-show="vm.find.results.templates.length">
+          <thead>
+          <tr>
+            <th>Template Name</th>
+            <th hide-xs>Organization</thhide-xs>
+            <th>Author</th>
+            <th hide-xs>Created</thhide-xs>
+            <th class="text-right">Add</th>
+          </tr>
+          </thead>
+
+          <tfoot>
+          <tr>
+            <td colspan="5">&nbsp;</td>
+          </tr>
+          </tfoot>
+
+          <tbody>
+          <tr ng-repeat="res in vm.find.results.templates">
+            <td class="name">{{res.name}}</td>
+            <td class="name" hide-xs>{{res.organization}}</td>
+            <td class="name">{{res.author}}</td>
+            <td class="name" hide-xs>{{res.created | date:'MMMM d, yyyy'}}</td>
+            <td class="text-right" ng-switch="res.status">
+
+              <md-button type="button"
+                         class="icon-button"
+                         aria-label="Invite"
+                         ng-click="vm.find.create(res.id)">
+                <md-icon md-font-icon="icon-plus-circle-outline" class="md-accent-fg s18"></md-icon>
+              </md-button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+
+        <div ng-show="!vm.find.results.templates.length">There where no Templates Found</div>
+      </md-dialog-content>
+
+
+        <!-- DIALOG CONTENT -->
+        <md-dialog-content>
+
+            <md-input-container class="md-block">
+                <label translate="GROUP.SEARCH_BY_TEMPLATE_NAME">Template Name</label>
+
+                <input id="findTemplateName" ng-model="vm.find.template.criteria.name" autofocus="autofocus" type="text"/>
+            </md-input-container>
+
+			<md-input-container class="md-block">
+                <label translate="GROUP.SEARCH_BY_ORGANIZATION">Organization</label>
+
+                <input id="findTemplateOrg" type="text" ng-model="vm.find.template.criteria.organization"/>
+            </md-input-container>
+
+			<md-input-container class="md-block">
+                <label translate="GROUP.SEARCH_BY_AUTHOR">Author</label>
+                <input id="findTemplateAuthor" type="text" ng-model="vm.find.template.criteria.author"/>
+            </md-input-container>
+
+            <md-input-container class="md-block">
+                <label translate="GROUP.SEARCH_BY_VERSION">Version</label>
+                <input id="findTemplateVersion" type="text" ng-model="vm.find.template.criteria.version" />
+            </md-input-container>
+
+        </md-dialog-content>
+        <!-- / DIALOG CONTENT -->
+
+
+
+
+        <!-- DIALOG ACTIONS -->
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="start center">
+              <md-button type="submit"
+                         class="md-accent md-button md-raised ng-scope md-ink-ripple md-default-theme submit-button"
+                         aria-label="SEARCH"
+                         ng-disabled="vm.find.searching">
+                SEARCH
+              </md-button>
+            </div>
+
+			<div layout="row">
+
+            </div>
+
+        </md-dialog-actions>
+        <!-- / DIALOG ACTIONS -->
+
+    </form>
+</md-dialog>
+<!-- / DIALOG -->

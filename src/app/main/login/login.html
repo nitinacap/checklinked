@@ -1,6 +1,8 @@
-
 <div id="login" class="flex-scrollable bg-white" layout="column" ms-scroll>
-
+        <!-- <div class="loader22" id="loader-wrapper">
+            <md-progress-circular md-diameter="40"></md-progress-circular>
+        
+        </div> -->
     <div id="login-form-wrapper" layout="column" layout-align="center center">
         <div id="login-form" class="border-blue">
             <div layout="row" layout-padding  ng-if="!firstLogin"> 
@@ -40,14 +42,15 @@
                 </md-button>
             </form>
 
-            <div  ng-if="!firstLogin" class="register list-none" layout="row" layout-sm="row" layout-align="left center">
-                <ul>
-                    <li><a class="link" ui-sref="app.create">Create an account</a></li>
-                    <li>or</li>
-                    <li ><a class="link" ui-sref="app.create">Join an existing account</a></li>
-                    <li style="padding-top:15px;"><a class="link" terget="_blank" ui-sref="app.term">Privacy Policy and Terms of Use</a></li>
-                </ul>
-            </div>
+    <div ng-if="!firstLogin" class="register list-none ng-scope layout-sm-row layout-align-start-center layout-row" layout="row"
+        layout-sm="row" layout-align="left center">
+        <ul>
+            <li><a class="link md-default-theme" ui-sref="app.create" href="/create">Create a new account</a></li>
+            <li><a class="link md-default-theme" ui-sref="app.create" href="/create">Join an existing account</a>
+            </li>
+            <li><a class="link md-default-theme" ui-sref="app.reset" href="/reset/">Forgot Password</a></li>
+        </ul>
+    </div>
             <div class="row thank" layout-padding ng-if="firstLogin">
                 <img alt="Checklinked Logo" src="/assets/images/logos/checklinked.png">
                 <h3 class="text-center">
@@ -67,11 +70,6 @@
 
 </div>
 
-  
-<div class="bd-loader" ng-if="vm.isLoader">
-    <md-progress-circular md-diameter="40"></md-progress-circular>
-</div>
-    
 
 
 <!-- <div id="login" class="flex-scrollable" layout="column" ms-scroll>

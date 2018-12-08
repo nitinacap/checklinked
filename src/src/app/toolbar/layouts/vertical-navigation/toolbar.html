@@ -1,0 +1,160 @@
+<div layout="row" layout-align="start center" ng-class="{'md-primary-bg':viewAs.notMe==true}">
+<!--<img alt="Checklinked Logo" hide-xs class="pull-left" src="/assets/images/logos/checklinked-logo.png">
+-->
+  <div layout="row" layout-align="start center" flex ng-show="globalSearchCollapse">
+    <md-button id="navigation-toggle" class="md-icon-button" ng-click="vm.toggleSidenav('navigation')" hide-gt-sm aria-label="Toggle navigation"
+      translate translate-attr-aria-label="TOOLBAR.TOGGLE_NAVIGATION">
+        <md-icon md-font-icon="icon-menu" style="color:black;" class="icon"></md-icon>
+    </md-button>
+
+  </div>
+
+  <div layout="row" layout-align="start center">
+
+    <md-menu-bar id="user-menu" ng-hide="viewAs.notMe || !globalSearchCollapse">
+      <md-menu md-position-mode="left bottom">
+        <md-button class="user-button" ng-click="$mdOpenMenu()" aria-label="User settings" translate translate-attr-aria-label="TOOLBAR.USER_SETTINGS">
+          <div layout="row" layout-align="space-between center">
+            <div class="avatar-wrapper">
+              <!-- <img md-menu-align-target class="avatar" src="assets/images/avatars/profile.jpg" /> -->
+              <md-icon ng-if="vm.badgeData.friendships>0" md-font-icon ng-class="vm.userStatus.icon" ng-style="{'color': vm.userStatus.color }"
+                class="icon status s16">
+              </md-icon>
+              <!--<md-icon md-font-icon="icon-menu" class="icon"></md-icon>-->
+            </div>
+           <!-- <span class="username" hide show-gt-xs>{{ username.full }}</span> -->
+          <span class="username">{{ username }}</span>
+      
+        <i class="fa fa-angle-down" aria-hidden="true"></i>
+
+          </div>
+        </md-button>
+
+        <md-menu-content width="3">
+          <md-menu-item class="md-indent" ui-sref="app.user">
+            <md-menu>
+              <md-button ng-mousehover="$mdMenu.open()" style="padding: 0 44px 0 25px;">
+                <md-icon style="padding-right: 40px;" md-font-icon="icon-account" class="icon"></md-icon>
+                My Profile
+              </md-button>
+              <md-menu-content width="2" ng-mouseleave="$mdMenu.close()">
+                <md-menu-item ng-repeat="item in ['stats', 'info']">
+                  <md-button>
+                  <a href="/user/{{item}}">
+                    {{item}}
+                  </a>
+                  </md-button>
+                </md-menu-item>
+              </md-menu-content>
+            </md-menu>
+          </md-menu-item>
+
+                    <md-menu-item class="md-indent" ui-sref="app.contacts" ui-sref-opts="{reload: 'app.contacts'}">
+                      <md-menu>
+                        <md-button ng-mousehover="$mdMenu.open()" style="padding: 0 44px 0 25px;">
+                        <md-icon style="padding-right: 40px;" md-font-icon="icon-people" class="icon"></md-icon>
+                         Contacts
+                        </md-button>
+                        <md-menu-content width="2" ng-mouseleave="$mdMenu.close()">
+                          <md-menu-item ng-repeat="contact in ['Internal', 'Direct', 'Secondary']">
+                            <md-button>
+                              {{contact}}
+                            </md-button>
+                          </md-menu-item>
+                        </md-menu-content>
+                      </md-menu>
+                    </md-menu-item>
+
+          <md-menu-item class="md-indent" ui-sref="app.organization">
+            <md-menu>
+              <md-button ng-mousehover="$mdMenu.open()" style="padding: 0 44px 0 25px;">
+                <md-icon md-font-icon="icon-store" style="padding-right: 40px;" class="icon"></md-icon>
+               Organization
+              </md-button>
+              <md-menu-content width="2" ng-mouseleave="$mdMenu.close()">
+                <md-menu-item ng-repeat="organization in ['stats', 'info']">
+                  <md-button>
+                    <a href="/organization/{{organization}}">
+                    {{organization}}
+                    </a>
+                  </md-button>
+                </md-menu-item>
+              </md-menu-content>
+            </md-menu>
+          </md-menu-item>
+
+          <md-menu-item class="md-indent" ui-sref="app.account">
+            <md-menu>
+              <md-button ng-mouseenter="$mdMenu.open()" style="padding: 0 44px 0 25px;">
+                <md-icon md-font-icon="icon-home" class="icon" style="padding-right: 40px;"></md-icon>
+                Account
+              </md-button>
+              <md-menu-content width="2" ng-mouseleave="$mdMenu.close()">
+                <md-menu-item ng-repeat="setting in ['Permissions', 'Subscription', 'Billing']">
+                  <md-button>
+                    {{setting}}
+                  </md-button>
+                </md-menu-item>
+              </md-menu-content>
+            </md-menu>
+          </md-menu-item>
+
+          <!--<md-menu-item class="md-indent" ui-sref="app.organization">
+            <md-icon md-font-icon="icon-store" class="icon"></md-icon>
+            <md-button>Organization</md-button>
+          </md-menu-item>
+
+          <md-menu-item class="md-indent" ui-sref="app.contacts" ui-sref-opts="{reload: 'app.contacts'}">
+            <md-icon md-font-icon="icon-people" class="icon"></md-icon>
+            <md-button>Contacts</md-button>
+
+
+          </md-menu-item>
+
+          <md-menu-item class="md-indent" ui-sref="app.teammembers">
+            <md-icon md-font-icon="icon-people" class="icon"></md-icon>
+            <md-button>Team Members</md-button>
+          </md-menu-item>
+          <md-menu-divider></md-menu-divider>
+          <md-menu-item class="md-indent" ui-sref="app.subscriptions">
+            <md-icon md-font-icon="icon-credit-card" class="icon"></md-icon>
+            <md-button>Subscriptions</md-button>
+          </md-menu-item>
+        -->
+
+
+
+          <md-menu-divider></md-menu-divider>
+
+          <md-menu-item class="md-indent" ui-sref="app.support">
+            <md-icon md-font-icon="fa fa-question-circle" class="icon"></md-icon>
+            <md-button>Help & Support</md-button>
+          </md-menu-item>
+          <md-menu-item class="md-indent" ui-sref="app.logout">
+            <md-icon md-font-icon="icon-logout" class="icon"></md-icon>
+            <md-button>Logout</md-button>
+          </md-menu-item>
+        </md-menu-content>
+
+      </md-menu>
+    </md-menu-bar>
+
+    <md-button class="user-button" ng-show="viewAs.notMe" ng-click="viewAs.restore()" aria-label="User settings" translate translate-attr-aria-label="TOOLBAR.USER_SETTINGS">
+      <div layout="row" layout-align="space-between center">
+
+        <span class="secondary-text pr-5">Viewing As: </span>
+        <span class="secondary-text pr-5">{{viewAs.user.name.full}} </span>
+        <md-icon md-font-icon="icon-cancel" class="icon s16-white"></md-icon>
+      </div>
+    </md-button>
+
+    <div class="toolbar-separator" ng-show="globalSearchCollapse"></div>
+
+    <ms-search-bar on-search="vm.search(query)" on-result-click="vm.searchResultClick(item)" debounce="300"></ms-search-bar>
+
+  </div>
+
+</div>
+
+
+</div>

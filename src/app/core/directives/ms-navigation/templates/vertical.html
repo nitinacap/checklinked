@@ -1,4 +1,6 @@
 <ul>
+   <i class="fa fa-angle-{{vm.folded ? 'right' : 'left'}}  s16 side-toggle pl-30" ng-click="vm.toggleMsNavigationFolded()"></i>
+  
   <li ng-repeat="node in vm.navigation" ms-navigation-node="node" ng-class="{'collapsed': vm.collapsed, 'has-children': vm.hasChildren}"
     ng-include="'navigation-nested.html'"></li>
 
@@ -11,7 +13,9 @@
 
     <div class="ms-navigation-button menuheading" ng-if="!node.uisref && node.title">
     <!--  <i class="icon s16 {{node.icon}}" ng-if="node.icon"></i>-->
-     <i class="material-icons s16"  ng-if="node.icon">{{node.icon}}</i>
+     <!--<i class="material-icons s16"  ng-if="node.icon">{{node.icon}}</i>-->
+    
+     <i class="fa s16 {{node.icon}} "  ng-if="node.icon"></i>
       <span class="title" translate="{{node.translate}}" flex>{{node.title}}</span>
       <!-- <span class="badge white-fg" ng-style="{'background': node.badge.color}"
             ng-if="node.badge">{{node.badge.content}}</span> -->
@@ -23,7 +27,7 @@
        ng-hide="vm.appState == 'app.queue' && vm.showQueue == 'false'">
 
      <!-- <i class="icon s16 {{node.icon}}" ng-if="node.icon"></i>-->
-      <i class="material-icons s16"  ng-if="node.icon">{{node.icon}}</i>
+     <i class="fa s16 fa-{{node.icon}} "  ng-if="node.icon"></i>
       <span class="title" translate="{{node.translate}}" flex>{{node.title}}</span>
      
       <!-- <span class="badge white-fg" ng-style="{'background': node.badge.color}"

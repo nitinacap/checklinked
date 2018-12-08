@@ -1,0 +1,36 @@
+<div class="simple-table-container md-background-bg md-whiteframe-1dp" ng-hide="vm.newSubscription && !subscriptions.success">
+
+  <table class="simple hover" ms-responsive-table>
+
+    <thead>
+    <tr ng-if="user.organization.subscriptions.length">
+      <th class="secondary-text">Plan</th>
+      <th class="secondary-text" hide show-gt-xs>Purchased</th>
+      <th class="secondary-text">Activated</th>
+      <th class="secondary-text">Expires</th>
+      <th class="secondary-text" hide show-gt-sm><div class="text-center">Price</div></th>
+      <th class="secondary-text" hide show-gt-sm><div class="text-center">Cycle Length</div></th>
+      <th class="secondary-text" hide show-gt-xs><div class="text-center">Users</div></th>
+    </tr>
+
+    <tr ng-if="!user.organization.subscriptions.length">
+      <th class="secondary-text">(0) Subscriptions Available</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr ng-repeat="sub in user.organization.subscriptions track by $index">
+      <td>{{}}</td>
+      <td hide show-gt-xs>{{sub.purchased | date: 'MM/dd/yyyy'}}</td>
+      <td>{{sub.activated | date: 'MM/dd/yyyy'}}</td>
+      <td><span ng-show="sub.flag_active">{{sub.expires | date: 'MM/dd/yyyy'}}</span><span ng-hide="sub.flag_active">{{sub.deactivated | date: 'MM/dd/yyyy'}}</span>
+      </td>
+      <td hide show-gt-sm><div class="text-center">{{sub.price | currency}}</div></td>
+      <td hide show-gt-sm><div class="text-center">{{sub.frequency}}</div></td>
+      <td hide show-gt-xs><div class="text-center">{{sub.qty_users}}</div></td>
+    </tr>
+    </tbody>
+
+  </table>
+
+</div>

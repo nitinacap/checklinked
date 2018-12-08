@@ -1,0 +1,15 @@
+{
+    "RESET": {
+        "TITLE": "Password Reset",
+        "EMAIL": "Email your register email id",
+        "CHANGE_TITLE": "Enter a New Password and confirm it below. ",
+        "EMAIL_TITLE": "Enter your register email id",
+        "RESET_TITLE": "Enter a New Password and confirm it below.",
+        "LOG_IN": "LOG IN",
+        "ERRORS": {
+            "EMAIL_REQUIRED": "Email field is required",
+            "EMAIL_MUST_VALID": "Email must be a valid e-mail address",
+            "PASSWORD_REQUIRED": "Password field is required"
+        }
+    }
+}

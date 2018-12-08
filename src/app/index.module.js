@@ -7,7 +7,6 @@
 
       // Common 3rd Party Dependencies
       'textAngular',
-    
 
       // Toastr
       'toastr',
@@ -63,8 +62,21 @@
       // Contacts
       'app.contacts',
 
+      // Alerts 
+      'app.alerts',
+
       // Create Account
       'app.create',
+
+      // Create term
+      'app.term',
+
+      // Create support
+      'app.supports',
+
+      // Reset Password
+      'app.reset',
+
 
       // Account Account
       'app.account',
@@ -80,12 +92,6 @@
 
       // Dassboard Module
       'app.dashboard',
-
-      // Term Module
-
-      //Create Term,
- 
-      'app.term',
 
       // Dassboard Module
       //'app.todo',

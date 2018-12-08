@@ -12,10 +12,10 @@ Array.prototype.diff = function (a) {
   });
 };
 
-/*var BASE_URL = "http://localhost:8000/api/";
-*/
+
 
  var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
+ //var BASEURL = 'http://localhost:8081/dist/ajax/';
 
 
 (function () {
@@ -60,7 +60,7 @@ Array.prototype.diff = function (a) {
      
           return $state.go(toState.name);
         }
-      
+        /*
          else if (!$rootScope.userSubscribed() && module[1] !== 'user' && module[1] !== 'organization' && module[1] !== 'subscriptions' && module[1] !== 'teammembers') {
          console.log('WTF');
          if (path != null) {
@@ -69,7 +69,7 @@ Array.prototype.diff = function (a) {
          $state.go('app.login');
          //return $state.go('app.user');
          }
-      
+         */
 
         else {
           api.cache.local.remove('navTo');
@@ -92,12 +92,20 @@ Array.prototype.diff = function (a) {
           console.log('navigating to create.  return true');
           return true;
           break;
-        case 'term':
-          console.log('navigating to term.  return true');
-          return true;
-          break;
         case 'confirm':
           console.log('navigating to confirm.  return true');
+          return true;
+          break;
+        case 'term':
+          console.log('navigating to term');
+          return true;
+          break;
+        case 'supports':
+          console.log('navigating to supports');
+          return true;
+          break;
+        case 'reset':
+          console.log('navigating to term');
           return true;
           break;
         case 'invite':
@@ -116,6 +124,7 @@ Array.prototype.diff = function (a) {
         case 'templates':
         case 'contacts':
         case 'chat':
+        case 'eee':
         case 'mail':
         case 'queue':
         case 'summary':
@@ -662,9 +671,9 @@ Array.prototype.diff = function (a) {
       });
       //console.log('received event:userLoaded', $rootScope.user);
       if ($location.search().devMode === true) {
-        realtime = 'http://localhost:3000';
+        realtime = 'http://wdc1.acapqa.net:8085/';
       } else {
-        realtime = 'https://realtime.checklinked.co:3000';
+        realtime = 'http://wdc1.acapqa.net:8085/';
       }
       $rootScope.socketio = io(realtime, {
         transports: ['websocket', 'polling', 'flashsocket'],
@@ -973,15 +982,12 @@ Array.prototype.diff = function (a) {
       if (mod[1] === 'login') {
         //console.log('is the login');
       } else if (mod[1] === 'logout') {
-        var token = { token: $rootScope.token }; 
-        $state.go('login', null, { reload: true });
-       // debugger;
-  
+        debugger;
+        var token = { token: $rootScope.token };
         $http.post(BASEURL + 'logout.php', token).then(
           function (d) { //success
-            $rootScope.socketio.disconnect();
+            //$rootScope.socketio.disconnect();
             $rootScope.user = void 0;
-            $state.go('login', null, { reload: true });
             var loginTime = '';
             loginCheck = $rootScope.checkLogin(event, toState);
             if (!loginCheck) {
@@ -1066,5 +1072,7 @@ Array.prototype.diff = function (a) {
     $rootScope.$broadcast('event:startDoomsDayDevice', $rootScope);
 
     //console.log('$rootScope.feed', $rootScope.feed);
+
+
   }
 })();

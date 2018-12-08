@@ -1,0 +1,47 @@
+<div id="team-members" class="page-layout simple tabbed pad-0" layout="column">
+
+  <!-- HEADER -->
+ <!-- <div class="header md-accent-bg" layout="row" layout-align="start center">
+    <div class="white-fg" layout="row" layout-align="start center" flex>
+      <div layout="column" layout-align="start start">
+        <div class="h2">
+           <span>Linking</span> 
+        </div>
+      </div>
+    </div>
+  </div>
+-->
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+    <md-tabs md-dynamic-height class="">
+
+      <md-tab>
+        <md-tab-label>
+          <span translate="">Received</span>
+        </md-tab-label>
+
+        <md-tab-body class="pad-0">
+          <div ng-include="'app/main/invitations/partials/received.html'"></div>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab>
+        <md-tab-label>
+          <span translate="">Awaiting Acceptance</span>
+        </md-tab-label>
+
+        <md-tab-body class="pad-0">
+          <div ng-include="'app/main/invitations/partials/sent.html'"></div>
+        </md-tab-body>
+      </md-tab>
+
+
+
+    </md-tabs>
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

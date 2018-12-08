@@ -10,7 +10,7 @@
 
     <div class="info" flex>
       <div class="heading">
-        {{heading.name}}
+        {{heading.name}} 
       </div>
     </div>
 
@@ -61,7 +61,7 @@
 
             <md-menu-item>
               
-              <md-button ng-click="vm.openConversationDialog($event, 'heading', heading.id, heading.name)"
+              <md-button ng-click="vm.openConversationDialog('heading', heading.id, heading.name)"
                          aria-label="Conversations"
                          translate-attr-aria-label="CHECKLIST.CONVOS">
                 <md-icon class="md-accent-fg s18"

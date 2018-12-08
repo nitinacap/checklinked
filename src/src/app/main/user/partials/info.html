@@ -1,0 +1,69 @@
+<div class="form-wrapper md-whiteframe-1dp flex" id="stats">
+  <table class="bordered-table" cellpadding="0" cellspacing="0"> 
+    <thead>
+      <tr>
+        <th width="5%"><a href="/user/stats"><span class="notactive">Stats</span></a></th>
+        <th colspan="7" width="5%">
+          <a href="/user/stats"><span>Info</span></a>
+        </th>
+        <th width="90%" style="text-align: right !important;">
+          <md-menu>
+
+            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
+              translate translate-attr-aria-label="FOLDER.MORE">
+              <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+            </md-button>
+
+            <md-menu-content width="2" class="">
+              <md-menu-item>
+                <md-button ng-click="vm.editDialog($event, 'changepassword')" aria-label="Edit Organization"
+                  translate-attr-aria-label="edit">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                  <span>Change Password</span>
+                </md-button>
+              </md-menu-item>
+             <md-divider></md-divider>
+              <md-menu-item>
+                <md-button ng-click="vm.editDialog($event, 'editprofile')" aria-label="Edit Workflow" translate-attr-aria-label="FOLDER.EDIT_FOLDER">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                  <span translate="FOLDER.EDIT_FOLDER">Edit Profile</span>
+                </md-button>
+              </md-menu-item>
+
+
+            </md-menu-content>
+            
+          </md-menu>
+
+        </th>
+      </tr>
+    </thead>
+
+  </table>
+
+  <table class="bordered-table" width="100%" cellpadding="0" cellspacing="0">
+
+    <tbody>
+      <tr>
+        <td width="220"><small>First Name</small><br>
+          <span>{{user.name.first}}</span></td>
+        <td><small>Last Name</small><br>
+          <span>{{user.name.last}}</span></td>
+      </tr>
+      <tr>
+        <td><small>Email</small><br>
+          <span>{{ user.email }}</span></td>
+        <td><small>Phone</small><br>
+          <span>{{user.phone}}</span></td>
+      </tr>
+      <tr>
+        <td colspan="2"><small>Role </small><br>
+          <span>{{vm.user.organization.address.city}}</span></td>
+       
+      </tr>
+    </tbody>
+
+    
+  </table>
+
+</div>

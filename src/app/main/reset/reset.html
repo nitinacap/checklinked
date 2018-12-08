@@ -1,0 +1,93 @@
+<div id="reset" class="flex-scrollable bg-white" layout="column" ms-scroll>
+
+    <div id="reset-form-wrapper" layout="column" layout-align="center center">
+        <div id="reset-form" class="border-blue">
+            <div layout="row" layout-padding> 
+        <img alt="Checklinked Logo" class="pull-left" src="/assets/images/logos/checklinked.png">
+       </div>
+         <!--    <div class="title" ng-if="!firstLogin"><p>{{ successtoken ? 'Welcome!' : 'Log in' }}</p> -->
+                <div class="title"><p>Reset Password</p>
+                
+               <p layout-padding ng-if="errtoken" ng-bind="errtoken" ng-class="errtoken ? 'error-text' : '' "></p> 
+           
+            
+            </div>
+            <div class="change-title" flex="90">  
+            <p translate="RESET.CHANGE_TITLE" ng-if="token"></p>
+            <p translate="RESET.EMAIL_TITLE" ng-if="!token"></p>
+            </div>
+              
+            <div class="title text-left"  ng-if="vm.login_error" ng-bind="vm.login_error" style="color:red; font-size:12px;"></div>
+
+            <form ng-if="!token" name="resetForm" novalidate ng-submit="vm.resetPassword()">
+                <md-input-container class="md-block" md-no-float>
+                    <input type="email" name="email" ng-model="vm.email" placeholder="Email" ng-pattern="/^.+@.+\..+$/" required>
+                    <div ng-messages="resetForm.email.$error" role="alert" multiple>
+                        <div ng-message="required">
+                            <span>Email field is required</span>
+                        </div>
+                        <div ng-message="pattern">
+                            <span>Email must be a valid e-mail address</span>
+                        </div>
+                    </div>
+                </md-input-container>
+               <md-button type="submit" class="md-raised md-accent submit-button mx-auto" aria-label="Log in"
+                           ng-disabled="resetForm.$invalid || resetForm.$pristine">
+                  Submit
+                </md-button>
+            </form>
+
+
+            <form ng-if="token" name="changeForm" novalidate ng-submit="vm.changePassword()">
+               
+                    <md-input-container class="md-block" md-no-float>
+                        <input type="password" name="password" ng-model="vm.password" minlength="6" placeholder="Password"
+                            translate translate-attr-placeholder="REGISTER.PASSWORD" required>
+                        <div ng-messages="changeForm.password.$error" role="alert">
+                            <div ng-message="required">
+                                <span >Password field is required</span>
+                            </div>
+                            <div ng-message="minlength">
+                                <span>Minimum password length should 6 digits</span>
+                            </div>
+                        </div>
+                    </md-input-container>
+                    
+                    <md-input-container class="md-block" md-no-float>
+                        <input type="password" name="password_confirmation" ng-model="vm.password_confirmation" placeholder="Password (Confirm)"
+                            translate translate-attr-placeholder="REGISTER.PASSWORD_CONFIRM" required>
+                        <div ng-messages="changeForm.password_confirmation.$error" role="alert">
+                            <div ng-message="required">
+                                <span translate="REGISTER.ERRORS.PASSWORD_CONFIRM_REQUIRED">Password (Confirm) field is required</span>
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                            <div class="terms" layout="row" layout-align="center center">
+                                <md-checkbox name="terms" ng-model="data.cb1" aria-label="I read and accept" required></md-checkbox>
+                                <div flex="100">
+                                    <div flex="100" translate="REGISTER.READ_ACCEPT">I have read and accepted the</div>
+                                    <div flex="100"><a href="#" class="md-accent-color">privacy policy</a> and
+                                        <a href="/term" class="md-accent-color">terms of use</a>
+                                    </div>
+                            
+                                </div>
+                            </div>
+         
+                <md-button type="submit" class="md-raised md-accent submit-button mx-auto" aria-label="Log in" ng-disabled="resetForm.$invalid || resetForm.$pristine">
+                   Ok
+                </md-button>
+            </form>
+      
+
+         
+        </div>
+    </div>
+
+</div>
+
+  
+<div class="bd-loader" ng-if="vm.isLoader">
+    <md-progress-circular md-diameter="40"></md-progress-circular>
+</div>
+    

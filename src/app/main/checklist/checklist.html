@@ -1,14 +1,7 @@
-<div id="checklist" class="page-layout carded left-sidenav" layout="row" style="margin-top:20px;">
-
-  <!-- TOP BACKGROUND -->
-  <div class="top-bg md-accent-bg"></div>
-  <!-- / TOP BACKGROUND -->
-
-  <!-- LEFT SIDENAV -->
-  <!-- <md-sidenav class="sidenav" md-is-locked-open="$mdMedia('gt-md')" md-component-id="main-sidenav"
-              ng-include="'app/main/checklist/sidenavs/main/main-sidenav.html'" ms-scroll ms-sidenav-helper>
-  </md-sidenav> -->
-  <!-- / LEFT SIDENAV -->
+<div class="content">
+<page-toolbar datas="vm.submenu"> </page-toolbar>
+</div>
+<div id="checklist" class="page-layout simple tabbed pad-0 pt-30" layout="column">
 
   <!-- CENTER -->
   <div class="center" layout="column" flex>
@@ -31,12 +24,12 @@
     <!-- / CONTENT HEADER -->
 
     <!-- CONTENT CARD -->
-    <div class="content-card" layout="column" flex>
+    <div class="content-card p-5" layout="column" flex>
 
       <!-- CONTENT TOOLBAR -->
       <div class="toolbar-list" layout="row" layout-align="space-between center" ng-if="vm.checklists.length">
 
-        <div layout="row" layout-align="start center">
+        <div layout="row" layout-align="start center" class="pl-15">
           <md-select class="simplified" ng-model="vm.checklistOrder" placeholder="Order"
                      ng-change="vm.checklistOrderDescending = vm.checklistOrder === '' ? false : vm.checklistOrderDescending">
             <md-option value="name" translate="CHECKLIST.NAME">Checklist Title</md-option>
@@ -52,7 +45,7 @@
                      class="s18"></md-icon>
           </md-button>
          </div>
-          <div class="text-right" layout="row" layout-align="end center">
+          <div class="text-right mr-9" layout="row" layout-align="end center">
         <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg"
                  ng-if="checklist.important"></md-icon>
 
@@ -103,8 +96,12 @@
 
     </div>
     <!-- / CONTENT CARDb-->
-
+<div class="bd-loader" ng-if="vm.isLoader">
+  <md-progress-circular md-diameter="40"></md-progress-circular>
+</div>
   </div>
+<!--  Loader section  -->
+ 
   <!-- / CENTER -->
 
 </div>

@@ -9,7 +9,8 @@
   function config($stateProvider, msApiProvider, $translatePartialLoaderProvider, msNavigationServiceProvider) {
 
     // State
-    $stateProvider.state('app.organization', {
+    $stateProvider
+    .state('app.organization', {
       url: '/organization',
       views: {
         'content@app': {
@@ -18,7 +19,8 @@
         }
       },
       bodyClass: 'forms'
-    });
+    })
+
 
     // Translation
     $translatePartialLoaderProvider.addPart('app/main/organization');

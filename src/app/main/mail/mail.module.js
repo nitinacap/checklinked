@@ -61,7 +61,7 @@
 
     // Navigation
     msNavigationServiceProvider.saveItem('conversations', {
-      title: 'Messaging',
+    //  title: 'Messaging',
       group: true,
       weight: 2
     });
@@ -69,8 +69,7 @@
     // Navigation
     msNavigationServiceProvider.saveItem('conversations.mail', {
       title: 'Notifications',
-      //icon: 'icon-email',
-      icon: 'email',
+      icon: 'commenting-o',
       state: 'app.mail.threads',
       badge      : {
         color  : '#09d261'

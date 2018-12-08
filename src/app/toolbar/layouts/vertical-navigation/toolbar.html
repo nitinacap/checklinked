@@ -1,12 +1,13 @@
 <div layout="row" layout-align="start center" ng-class="{'md-primary-bg':viewAs.notMe==true}">
-<!--<img alt="Checklinked Logo" hide-xs class="pull-left" src="/assets/images/logos/checklinked-logo.png">
--->
+<div class="logo-holder">
+  <img alt="Checklinked Logo" hide-xs class="pull-left logo-icon" src="/assets/images/logos/small-logo.jpg">
+  <img alt="Checklinked Logo" hide-xs class="pull-left" src="/assets/images/logos/checklinked-logo.png">
+  </div>
+
   <div layout="row" layout-align="start center" flex ng-show="globalSearchCollapse">
     <md-button id="navigation-toggle" class="md-icon-button" ng-click="vm.toggleSidenav('navigation')" hide-gt-sm aria-label="Toggle navigation"
       translate translate-attr-aria-label="TOOLBAR.TOGGLE_NAVIGATION">
-        <i class="material-icons custm-toggle" style="color:black;">
-        menu
-      </i>
+        <md-icon md-font-icon="icon-menu" style="color:black;" class="icon"></md-icon>
     </md-button>
 
   </div>
@@ -26,9 +27,9 @@
             </div>
            <!-- <span class="username" hide show-gt-xs>{{ username.full }}</span> -->
           <span class="username">{{ username }}</span>
-        <i class="material-icons" style="color:black;">
-          expand_less
-        </i>
+      
+        <i class="fa fa-angle-down" aria-hidden="true"></i>
+
           </div>
         </md-button>
 
@@ -40,9 +41,10 @@
                 My Profile
               </md-button>
               <md-menu-content width="2" ng-mouseleave="$mdMenu.close()">
-                <md-menu-item ng-repeat="item in ['Stats', 'Info']">
+                <md-menu-item ng-repeat="item in ['stats', 'info']" ui-sref="app.user.{{item}}">
                   <md-button>
                     {{item}}
+              
                   </md-button>
                 </md-menu-item>
               </md-menu-content>
@@ -72,7 +74,7 @@
                Organization
               </md-button>
               <md-menu-content width="2" ng-mouseleave="$mdMenu.close()">
-                <md-menu-item ng-repeat="organization in ['Stats', 'Info']">
+                <md-menu-item ng-repeat="organization in ['stats', 'info']">
                   <md-button>
                     {{organization}}
                   </md-button>
@@ -81,7 +83,7 @@
             </md-menu>
           </md-menu-item>
 
-          <md-menu-item class="md-indent" ui-sref="app.setting">
+          <md-menu-item class="md-indent" ui-sref="app.account">
             <md-menu>
               <md-button ng-mouseenter="$mdMenu.open()" style="padding: 0 44px 0 25px;">
                 <md-icon md-font-icon="icon-home" class="icon" style="padding-right: 40px;"></md-icon>
@@ -124,6 +126,7 @@
 
           <md-menu-divider></md-menu-divider>
 
+
           <md-menu-item class="md-indent" ui-sref="app.logout">
             <md-icon md-font-icon="icon-logout" class="icon"></md-icon>
             <md-button>Logout</md-button>
@@ -145,7 +148,9 @@
     <div class="toolbar-separator" ng-show="globalSearchCollapse"></div>
 
     <ms-search-bar on-search="vm.search(query)" on-result-click="vm.searchResultClick(item)" debounce="300"></ms-search-bar>
-
+<md-button ui-sref="app.supports" class="active support-top-button text-center text-left flex-1 support-buton">
+  <md-icon md-font-icon="fa fa-question-circle" class="fff"></md-icon>
+</md-button>
   </div>
 
 </div>

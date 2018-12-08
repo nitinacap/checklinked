@@ -6,19 +6,37 @@
     .config(config);
 
   /** @ngInject */
-  function config($stateProvider, msApiProvider, $translatePartialLoaderProvider, msNavigationServiceProvider) {
+  function config($stateProvider,$translatePartialLoaderProvider) {
 
     // State
     $stateProvider.state('app.user', {
       url: '/user',
       views: {
         'content@app': {
-          templateUrl: 'app/main/user/user.html',
+          templateUrl: 'app/main/user/partials/stats.html',
           controller: 'UserController as vm'
         }
       },
       bodyClass: 'forms'
-    });
+    })
+      .state('app.user.info', {
+        url: '/info',
+        views: {
+          'content@app': {
+            templateUrl: 'app/main/user/partials/info.html',
+            controller: 'UserController as vm'
+          }
+        }
+      })
+      .state('app.user.stats', {
+        url: '/stats',
+        views: {
+          'content@app': {
+            templateUrl: 'app/main/user/partials/stats.html',
+            controller: 'UserController as vm'
+          }
+        }
+      });
 
     // Translation
     $translatePartialLoaderProvider.addPart('app/main/user');

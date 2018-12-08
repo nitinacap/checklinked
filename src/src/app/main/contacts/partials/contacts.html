@@ -1,0 +1,184 @@
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
+
+  <table class="simple row-border hover">
+    <thead>
+
+    <tr>
+      <th colspan="3" class="hide-xs">
+        <span ng-if="vm.listType === 'all'" translate="">All contacts</span>
+        <span ng-if="vm.listType === 'invitations'" translate="CONTACTS.PENDING_INVITATIONS">Pending contact
+                            	invitations</span>
+        <span ng-if="vm.listType === 'requests'" translate="CONTACTS.PENDING_REQUESTS">Pending contact
+                            	requests</span>
+        <span ng-if="vm.listType.name">{{vm.listType.name}}</span>
+
+        <span ng-if="filteredContacts.length" class="secondary-text contacts-count">
+        ({{filteredContacts.length}})
+        </span>
+        <span ng-if="filteredContacts.length==0" class="secondary-text contacts-count">(0)</span>
+       <span ng-if="vm.listType !='requests' && vm.listType != 'invitations' && vm.LinkList.length>0">{{vm.LinkList.length}}</span>
+      </th>
+
+      <th colspan="2" class="show-xs hide-gt-xs">
+        <span ng-if="vm.listType === 'all'" translate="CONTACTS.ALL_CONTACTS">All contacts</span>
+        <span ng-if="vm.listType === 'invitations'" translate="CONTACTS.PENDING_INVITATIONS">Pending contact
+                            	invitations</span>
+        <span ng-if="vm.listType === 'requests'" translate="CONTACTS.PENDING_REQUESTS">Pending contact
+                            	requests</span>
+        <span ng-if="vm.listType.name">{{vm.listType.name}}</span>
+
+        <span ng-if="filteredContacts.length" class="secondary-text contacts-count">
+        ({{filteredContacts.length}})
+        </span>
+        <span ng-if="filteredContacts.length==0" class="secondary-text contacts-count">(0)</span>
+
+        
+      </th>
+
+      <th class="text-right">
+        <md-menu>
+
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="Sort" translate
+                     translate-attr-aria-label="CONTACTS.SORT">
+            <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+
+            <md-menu-item>
+              <md-button ng-click="vm.find($event)">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-account-plus"></md-icon>
+                <span translate="">Add Contact</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item>
+              <md-button ng-click="vm.filterChange('all')">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-account-multiple"></md-icon>
+                <span translate="CONTACTS.ALL_CONTACTS">All Contacts</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item>
+              <md-button ng-click="vm.filterChange('invitations')">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-google-circles"></md-icon>
+                <!-- <span translate="CONTACTS.PENDING_INVITATIONS">Pending Contact Invitations</span> -->
+                <span>Pending Link Invitations</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item>
+              <md-button ng-click="vm.filterChange('requests')">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-google-circles-invite"></md-icon>
+                <!-- <span translate="CONTACTS.PENDING_REQUESTS">Pending Contact Requests</span> -->
+                <span>Pending Link Requests</span>
+              </md-button>
+            </md-menu-item>
+
+          </md-menu-content>
+
+        </md-menu>
+      </th>
+    </tr>
+    <tr>
+      <th><a href="contacts/internal"><span>Internal</span></a></th>
+      <th><a href="contacts/direct"><span>Direct</span></a></th>
+      <th><a href="contacts/secondary"><span>secondary</span></a></th>
+    </tr>
+    <tr ng-if="filteredContacts.length>0">
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">Name</span>
+        </div>
+      </th>
+      <th class="secondary-text hide-xs">
+        <div class="table-header">
+          <span class="column-title">Email</span>
+        </div>
+      </th>
+      <th class="secondary-text">
+        <div class="table-header">
+          <span class="column-title">Organization</span>
+        </div>
+      </th>
+      <th>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr
+      ng-repeat="contact in vm.contacts | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
+      ng-switch="(which = vm.showWhichInviteContactData(contact))"
+      
+      ng-click="vm.openContactDialog($event, contact)"
+      ng-class="{'md-green-100-bg':vm.passID==contact.id}">
+      <td>
+        {{contact.contacts[which].name.full}}
+      </td>
+      <td class="hide-xs">
+        {{contact.contacts[which].email}}
+      </td>
+
+      <td>
+        {{contact.contacts[which].organization}}
+      </td>
+
+      <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
+          class="text-right">
+
+        <md-menu>
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="More" translate
+                     translate-attr-aria-label="">
+            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+
+            <md-menu-item ng-if="contact.accepted!==''">
+              <md-button
+                ng-click="vm.deleteContactConfirm($event, contact.contacts[which], contact.contacts[which].id)">
+                <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                <span translate="CONTACTS.DELETE_CONTACT">Delete Contact</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="contact.accepted!==''">
+              <md-button ng-click="vm.openDirectMessageDialog(contact, contact.name.full, $event)">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
+                <span translate="CONTACTS.DIRECT_MESSAGING">Direct Message</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
+              <md-button ng-click="vm.acceptConnectionInvitation(contact.contacts.originator.id, $index)">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                <span translate="CONTACTS.ACCEPT_INVITE">Accept Invitation</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
+              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.originator.id)">
+                <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
+                <span translate="CONTACTS.REJECT_INVITE">Reject Invitation</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="contact.accepted=='' && which=='accepter'">
+              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.accepter.id)">
+                <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
+                <span translate="CONTACTS.WITHDRAW_INVITE">Withdraw Invitation</span>
+              </md-button>
+            </md-menu-item>
+
+          </md-menu-content>
+        </md-menu>
+
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>

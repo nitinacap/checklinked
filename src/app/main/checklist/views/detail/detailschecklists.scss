@@ -1,5 +1,10 @@
 #checklist {
 
+  .todo-list-pane .todo-items .todo-item {
+    padding: 5px 9px 4px 20px !important;
+    border-top: 1px solid #4472c4;
+}
+
   // Single scroll
   &.single-scroll {
 

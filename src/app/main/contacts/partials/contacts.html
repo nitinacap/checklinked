@@ -1,6 +1,6 @@
-<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
 
-  <table class="simple row-border hover">
+  <table class="simple row-border hover bordered-table">
     <thead>
 
     <tr>
@@ -81,7 +81,11 @@
         </md-menu>
       </th>
     </tr>
-
+    <tr>
+      <th><a href="contacts/internal"><span>Internal</span></a></th>
+      <th><a href="contacts/direct"><span>Direct</span></a></th>
+      <th colspan="2"><a href="contacts/secondary"><span>Secondary</span></a></th>
+    </tr>
     <tr ng-if="filteredContacts.length>0">
       <th class="secondary-text">
         <div class="table-header">
@@ -93,13 +97,12 @@
           <span class="column-title">Email</span>
         </div>
       </th>
-      <th class="secondary-text">
+      <th class="secondary-text" colspan="2">
         <div class="table-header">
           <span class="column-title">Organization</span>
         </div>
       </th>
-      <th>
-      </th>
+
     </tr>
     </thead>
     <tbody>
@@ -147,7 +150,7 @@
               </md-button>
             </md-menu-item>
 
-            <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
+            <!-- <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
               <md-button ng-click="vm.acceptConnectionInvitation(contact.contacts.originator.id, $index)">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
                 <span translate="CONTACTS.ACCEPT_INVITE">Accept Invitation</span>
@@ -166,7 +169,29 @@
                 <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
                 <span translate="CONTACTS.WITHDRAW_INVITE">Withdraw Invitation</span>
               </md-button>
-            </md-menu-item>
+            </md-menu-item> -->
+
+<md-menu-item>
+  <md-button ng-click="vm.acceptConnectionInvitation(contact.contacts.originator.id, $index)">
+    <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+    <span translate="CONTACTS.ACCEPT_INVITE">Accept Invitation</span>
+  </md-button>
+</md-menu-item>
+
+<md-menu-item>
+  <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.originator.id)">
+    <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
+    <span translate="CONTACTS.REJECT_INVITE">Reject Invitation</span>
+  </md-button>
+</md-menu-item>
+
+<md-menu-item>
+  <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.accepter.id)">
+    <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
+    <span translate="CONTACTS.WITHDRAW_INVITE">Withdraw Invitation</span>
+  </md-button>
+</md-menu-item>
+
 
           </md-menu-content>
         </md-menu>

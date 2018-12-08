@@ -1,4 +1,20 @@
-<div class="form-wrapper md-whiteframe-1dp flex">
+
+<md-dialog class="dialog" aria-label="Organizations Information">
+        <md-toolbar class="md-accent md-hue-2">
+          <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+            <span class="title">{{vm.title}}</span> 
+            <!-- <md-button class="md-icon-button" ng-disabled="vm.user.organizationError ? true : false" ng-click="vm.closeDialog()">
+              <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+            </md-button> -->
+
+            <md-button class="md-icon-button"  ng-click="vm.closeDialog()">
+              <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+            
+          </div>
+        </md-toolbar>
+<div class="oganization-form">
+
   <form name="form" ng-disabled='vm.update.sending' class="md-inline-form" ng-submit="vm.update()" novalidate>
 
     <div layout="column" layout-gt-sm="row">
@@ -14,14 +30,19 @@
       </md-input-container>
 
       <md-input-container flex>
-        <input type="text" name="phone" ng-model="vm.orgTmp.phone" placeholder="Phone Number">
+        <input type="text" name="phone" maxlength="10" ng-pattern="/^[\+\-]?\d*\.?\d+(?:[Ee][\+\-]?\d+)?$/" ng-model="vm.orgTmp.phone" placeholder="Phone">
+          <div ng-messages="form.phone.$error" role="alert">
+            <div ng-message="pattern" style="opacity: 1; margin-top: 0px;">
+              <span>Please enter only numeric.</span>
+            </div>
+          </div>
       </md-input-container>
     </div>
 
     <div layout="column" layout-gt-sm="row">
 
-      <md-input-container flex="50">
-        <input type="email" name="email" ng-model="vm.orgTmp.email" placeholder="Email Address"
+      <md-input-container flex>
+        <input type="email" name="email" ng-model="vm.orgTmp.email" placeholder="Email"
                ng-pattern="/^.+@.+\..+$/" required>
         <div ng-messages="form.email.$error"
              role="alert" multiple="multiple">
@@ -34,8 +55,14 @@
         </div>
       </md-input-container>
 
-      <md-input-container flex="50" hide-sm hide-xs>
-        &nbsp;
+      <md-input-container flex>
+        <input type="text" name="website" required ng-model="vm.orgTmp.website" placeholder="website">
+            <div ng-messages="form.website.$error" role="alert">
+              <div ng-message="required">
+                <span>Website is required.</span>
+              </div>
+            </div>
+     
       </md-input-container>
 
     </div>
@@ -73,7 +100,7 @@
       </md-input-container>
 
       <md-input-container flex>
-        <input type="text" name="address_state" ng-model="vm.orgTmp.address.state" placeholder="State/Province"
+        <input type="text" name="address_state" ng-model="vm.orgTmp.address.state" placeholder="State "
                required>
         <div ng-messages="form.address_state.$error"
              role="alert">
@@ -88,13 +115,14 @@
     <div layout="column" layout-gt-sm="row">
 
       <md-input-container flex>
-        <input type="text" name="address_zip" ng-model="vm.orgTmp.address.zip" placeholder="Zip Code"
+        <input type="text" name="address_zip" maxlength="6" ng-model="vm.orgTmp.address.zip" placeholder="Zip"
                required>
         <div ng-messages="form.address_zip.$error"
              role="alert">
           <div ng-message="required">
             <span>Zip Code is required.</span>
           </div>
+      
         </div>
       </md-input-container>
 
@@ -111,11 +139,25 @@
 
     </div>
 
+    <div layout="column" layout-gt-sm="row">
+    
+      <md-input-container flex>
+        <textarea name="address_zip" ng-model="vm.orgTmp.description" placeholder="Description of Organization"></textarea>
+      </md-input-container>
+    </div>
+  <div flex="90" padding class="pt-20">
     <md-button type="submit" class="md-raised md-accent" aria-label="Submit"
-               ng-disabled="form.$invalid || form.$pristine || vm.update.sending">
-      <span ng-hide='vm.update.sending'>Update</span>
+      ng-disabled="form.$invalid || form.$pristine || vm.update.sending">
+      <span ng-hide='vm.update.sending'>Save</span>
       <span ng-show='vm.update.sending'>Updating...</span>
     </md-button>
+
+    <md-button type="button" class="md-raised md-accent link" aria-label="link">
+      <span>Insert Link</span>
+    </md-button>
+ </div>
   </form>
 
 </div>
+
+</md-dialog>

@@ -462,5 +462,16 @@
       return $uibModalInstance.dismiss('cancel');
     };
 
+    // Content sub menu
+    vm.submenu = [
+      { link: '#', title: 'Alerts' },
+      { link: '#', title: 'Action Items' },
+      { link: '', title: 'Messages' },
+      { link: 'mail.threads', title: 'Notifications' },
+      { link: 'invitations', title: 'Invitations' }
+
+    ];
+
+
   }
 })();

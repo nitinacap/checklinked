@@ -1,0 +1,30 @@
+<!-- SIDENAV HEADER -->
+<!-- <div class="header" layout="column" layout-align="space-between">
+    <div class="logo" layout="row" layout-align="start center">
+    </div>
+</div> -->
+<!-- / SIDENAV HEADER -->
+
+<!-- SIDENAV CONTENT -->
+<md-content ms-scroll class="content" flex>
+
+  <div class="navigation-simple" layout="column">
+
+    <md-button class="item" ng-click="vm.addChecklistDialog($event)">
+      <div layout="row" layout-align="start center">
+        <div class="h-10 w-10"></div>
+        <span class="title">Create New Checklist</span>
+      </div>
+    </md-button>
+
+    <md-button class="item" ng-click="vm.find.begin($event, vm.folder_id, 'checklist')">
+      <div layout="row" layout-align="start center">
+        <div class="h-10 w-10"></div>
+        <span class="title">Download Templates</span>
+      </div>
+    </md-button>
+
+  </div>
+
+</md-content> 
+<!-- / SIDENAV CONTENT -->

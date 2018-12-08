@@ -418,6 +418,17 @@
       $mdDialog.hide();
     }
 
+    // Content sub menu
+    vm.submenu = [
+      { link: '#', title: 'Alerts' },
+      { link: '#', title: 'Action Items' },
+      { link: 'chat', title: 'Messages' },
+      { link: 'mail.threads', title: 'Notifications' },
+      { link: '', title: 'Invitations' }
+
+    ];
+
+
   }
 
 })();

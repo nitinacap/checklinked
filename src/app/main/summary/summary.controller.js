@@ -253,7 +253,13 @@
 
 
     vm.reports.refresh();
-
+    // Content sub menu
+    vm.submenu = [
+      { link: '', title: 'Issues' },
+      { link: 'checklist', title: 'Schedules' },
+      { link: '#', title: 'Reports' },
+      { link: 'dashboard', title: 'Dashboard' }
+    ];
 
   }
 

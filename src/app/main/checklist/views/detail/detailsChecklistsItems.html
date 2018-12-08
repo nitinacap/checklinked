@@ -32,14 +32,20 @@
                layout-align="start end">
             <ul class="checkbox-list">
               <li ng-repeat="show in showingUsers track by $index">
-                <button type="button"
-                        ng-click="vm.toggleCheckbox(item,'applies',$index)"
-                        ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON)"
-                        class="checkbox">
-                  <i ng-hide="item.checkbox[$index].applies" class="icon-checkbox-blank-outline"></i>
-                  <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
-                  <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'APPLY':show.name}}</span>
-                </button>
+
+              <!-- <button type="button" ng-click="vm.toggleCheckbox(item,'applies',$index)" ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON)"
+                class="checkbox">
+                <i ng-hide="item.checkbox[$index].applies" class="icon-checkbox-blank-outline"></i>
+                <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
+                <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'APPLY':show.name}}</span>
+              </button> -->
+
+                  <button type="button" ng-click="vm.toggleCheckbox(item,'applies',$index)" class="checkbox">
+                    <i ng-hide="item.checkbox[$index].applies" class="icon-checkbox-blank-outline"></i>
+                    <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
+                    <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'APPLY':show.name}}</span>
+                  </button>
+     
               </li>
             </ul>
           </div>
@@ -49,9 +55,16 @@
               {{item.name}}
             </div>
     
-            <div ng-show="item.info.length && (checklist.showReferences || section.showReferences || heading.showReferences) && !vm.isForm(item)" ng-bind-html="item.info | sanitize" layout="row" class="item" flex>
+            <!-- <div ng-show="item.info.length && (checklist.showReferences || section.showReferences || heading.showReferences) && !vm.isForm(item)" ng-bind-html="item.info | sanitize" layout="row" class="item" flex>
               <sup>{{ item.info }}</sup>{{ which.showReferences }}
-            </div>
+            </div> -->
+<div layout="row" class="item" flex>
+
+  <!--<input name="name" ng-model="item.info" ng-show="vm.isForm(item)" ng-click="vm.openFormLineDialog($event, item)">-->
+  <span>{{ item.info }}</span>
+
+
+</div>
 
             <div ng-show="vm.isForm(item)" layout="row" class="item" flex>
 
@@ -83,16 +96,19 @@
 
             <ul class="checkbox-list">
               <li ng-repeat="show in showingUsers track by $index">
-                <button type="button"
+                <!-- <button type="button"
                         ng-click="vm.toggleCheckbox(item,'complies',$index)"
                         ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON)"
                         class="checkbox">
-
                   <i ng-hide="item.checkbox[$index].complies" class="icon-checkbox-blank-outline"></i>
                   <i ng-show="item.checkbox[$index].complies" class="icon-checkbox-marked-outline"></i>
-
                   <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'COMPLY':show.name}}</span>
+                </button> -->
 
+                <button type="button" ng-click="vm.toggleCheckbox(item,'complies',$index)" class="checkbox">
+                  <i ng-hide="item.checkbox[$index].complies" class="icon-checkbox-blank-outline"></i>
+                  <i ng-show="item.checkbox[$index].complies" class="icon-checkbox-marked-outline"></i>
+                  <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'COMPLY':show.name}}</span>
                 </button>
               </li>
             </ul>
@@ -124,7 +140,7 @@
             <md-divider class="md-default-theme"></md-divider>
 
             <md-menu-item>
-              <md-button ng-click="vm.openConversationDialog($event, 'item', item.id, item.name)"
+              <md-button ng-click="vm.openConversationDialog('item', item.id, item.name)"
                          aria-label="Conversations"
                          translate-attr-aria-label="CHECKLIST.CONVOS">
                 <md-icon class="md-accent-fg s18"

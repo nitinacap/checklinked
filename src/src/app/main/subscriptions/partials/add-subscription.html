@@ -1,0 +1,92 @@
+
+<div class="simple-table-container md-background-bg md-whiteframe-1dp mt-25">
+
+  <div ng-show="!subscriptions.success" class="simple-table-container form-container md-background-bg md-whiteframe-1dp">
+
+
+    <table class="simple row-border hover" ms-responsive-table>
+      <thead>
+      <tr class="hide-xs">
+
+        <th class="secondary-text">
+          Plan
+        </th>
+        <th class="secondary-text">
+          Description
+        </th>
+        <th class="secondary-text">
+          <span ng-hide="subscriptions.selected.id">Choose Plan</span>
+          <span ng-show="subscriptions.selected.id">Remove</span>
+        </th>
+      </tr>
+      </thead>
+
+      <tr ng-repeat="off in vm.offers" ng-class="{'md-green-100-bg': subscriptions.selected.id == off.id}" ng-hide="subscriptions.selected && subscriptions.selected.id != off.id">
+        <td class="text-left">
+          <strong>Plan Name (FPO)</strong></strong>
+        </td>
+        <td>
+          {{off.description}}
+        </td>
+        <td>
+
+          <md-radio-group ng-model="vm.offer.selected=null" ng-hide="subscriptions.selected.id == off.id" >
+            <md-radio-button ng-click="subscriptions.select(off)" value="{{off.id}}"><strong>${{off.price}} (usd)</strong></md-radio-button>
+          </md-radio-group>
+
+
+          <md-button ng-show="subscriptions.selected.id == off.id" class="md-icon-button"
+                     ng-click="vm.clearSelectSubscription($event)" aria-label="Delete" translate
+                     translate-attr-aria-label="SUBSCRIPTIONS.DELETE">
+            <md-icon md-font-icon="icon-delete"></md-icon>
+            <md-tooltip><span translate="SUBSCRIPTIONS.DELETE">DELETE</span></md-tooltip>
+          </md-button>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div ng-show="subscriptions.selected" class="form-wrapper md-whiteframe-1dp flex">
+      <form id="checkout" method="post"
+            ng-submit="enterPaymentMethodValues.submit()">
+        <div class="form-title">
+          Payment Method
+        </div>
+        <p>Note: Your payment is being processed through a merchant account residing in United States</p>
+        <div class="ecommerce-cc"><img alt="American Express" class="" src="/assets/images/ecommerce/american_express.png"><img alt="Discover" class="" src="/assets/images/ecommerce/discover.png"><img alt="JCB" class="" src="/assets/images/ecommerce/jcb.png"><img alt="MasterCard" class="" src="/assets/images/ecommerce/mastercard.png"><img alt="Visa" class="" src="/assets/images/ecommerce/visa.png"><img alt="PayPal Account" class="" src="/assets/images/ecommerce/paypal_account.png"></div>
+        <div id="payment-form"></div>
+        <div layout="column" layout-gt-sm="row">
+          <md-button type="submit" value="{{enterPaymentMethodValues.submitText}}" ng-show="currentPaymentMethod == null"
+                     class="cta-button md-raised md-accent md-button md-default-theme md-ink-ripple">Process Payment
+          </md-button>
+
+        </div>
+      </form>
+    </div>
+
+    <div ng-hide="subscriptions.selected == null || currentPaymentMethod == null"
+         class="form-wrapper md-whiteframe-1dp flex">
+      <form ng-submit="subscriptions.finalize()"
+            class="md-inline-form ng-pristine ng-invalid ng-invalid-required ng-valid-pattern">
+        <div class="form-title">
+          Terms &amp; Conditions
+        </div>
+        <!--<p></p>-->
+
+        <md-checkbox-container flex>
+          <md-checkbox aria-label="Notifications"
+                       ng-model="subscriptions.agreeToTerms"
+                       ng-true-value="1"
+                       ng-false-value="0">By placing your order, you agree to Checklink&apos;s privacy notice and <a href="" target="_blank">conditions of use</a>.</md-checkbox>
+        </md-checkbox-container>
+
+        <div layout="column" layout-gt-sm="row">
+          <md-button type="submit" class="md-raised md-accent" aria-label="Submit"
+                     ng-disabled="subscriptions.finalizing || !subscriptions.agreeToTerms">
+            <span ng-hide="subscriptions.finalizing">Subscribe</span><span ng-show="subscriptions.finalizing"><i
+            class="fa fa-spin fa-spinner"> </i> Finalizing Subscription...</span>
+          </md-button>
+        </div>
+      </form>
+    </div>

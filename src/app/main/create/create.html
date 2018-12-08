@@ -92,8 +92,10 @@
                     <md-checkbox name="terms" ng-model="data.cb1" aria-label="I read and accept" required></md-checkbox>
                     <div flex="100">
                         <div flex="100" translate="REGISTER.READ_ACCEPT">I have read and accepted the</div>
-                        <div  flex="100"><a href="#" class="md-accent-color">privacy policy</a> and
-                        <a href="#" class="md-accent-color">terms of use</a>
+                        <div  flex="100">
+                            <a class="link" ui-sref="app.term" class="md-accent-color">
+                            privacy policy <span style="color:#929292;">and</span>
+                            terms of use</a>
                     </div>
                         
                     </div>
