@@ -1,4 +1,4 @@
-<md-dialog class="dialog" aria-label="New Folder">
+<md-dialog class="dialog" aria-label="New Workflow">
     <form name="folderForm" class="md-inline-form" novalidate>
         <md-toolbar class="md-accent md-hue-2">
             <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
@@ -44,9 +44,7 @@
                            ng-click="vm.addNewFolder($event)"
                            class="md-raised md-accent"
                            ng-disabled="folderForm.$invalid || folderForm.$pristine"
-                           aria-label="Add Folder"
-                           translate="FOLDER.ADD_FOLDER"
-                           translate-attr-aria-label="FOLDER.ADD_FOLDER">
+                           aria-label="Add Folder" >
                     ADD WORKFLOW
                 </md-button>
              </div>

@@ -5,14 +5,15 @@
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <span class="title">{{vm.title}}</span>
         <md-button class="md-icon-button" ng-click="vm.closeDialog()">
-          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog">
+          </md-icon>
         </md-button>
       </div>
     </md-toolbar>
 
     <md-dialog-content ms-scroll>
 
-      <md-input-container class="md-block">
+      <md-input-container class="md-block" flex>
         <label translate="CONTACTS.FROM">From</label>
         <input ng-model="vm.from" type="text" disabled>
       </md-input-container>
@@ -22,16 +23,47 @@
         <input ng-model="vm.to" type="text" disabled>
       </md-input-container>
 
-      <md-input-container class="md-block">
+      <md-input-container class="md-block" flex>
         <label>Message</label>
-        <input name="message" ng-model="vm.message" required md-autofocus>
+        <!-- <input name="message" ng-model="vm.message" required md-autofocus> -->
+        <textarea name="text" ng-model="vm.message" required md-autofocus
+        class="ng-valid md-input ng-not-empty ng-dirty ng-valid-parse ng-valid-md-maxlength ng-touched"
+        md-maxlength="255" maxlength="255" max-rows="5"
+        ng-trim="false"></textarea>
         <div ng-messages="messageForm.message.$error" ng-show="messageForm.message.$touched" role="alert">
           <div ng-message="required">
             <span></span>
           </div>
+        </div>
       </md-input-container>
-      </div>
-
+   
+      <div class="simple-table-container bordered-table">
+          <table class="simple" ms-responsive-table>
+            <tbody>
+            <tr ng-repeat="post in vm.conversation.posts">
+              <td>
+                {{post.user}}
+              </td>
+              <td>
+                <!--<div class="item-main">
+                  <p class="item-text">-->{{post.text}}<!--</p>
+                </div>-->
+              </td>
+              <td>
+                {{post.organization}}
+              </td>
+              <td>
+                <div ng-switch="vm.old(post.timestamp)" class="user">
+                <span ng-switch-when="true"
+                      class="timestamp pull-right">{{post.timestamp | date:'shortDate'}}</span>
+                  <span ng-switch-when="false"
+                        class="timestamp pull-right">{{post.timestamp | date:'mediumTime'}}</span>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
     </md-dialog-content>
 
     <md-dialog-actions layout="row" layout-align="space-between center">

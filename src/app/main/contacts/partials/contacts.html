@@ -111,7 +111,7 @@
       ng-switch="(which = vm.showWhichInviteContactData(contact))"
       
       ng-click="vm.openContactDialog($event, contact)"
-      ng-class="{'md-green-100-bg':vm.passID==contact.id}">
+      ng-class="{'md-green-100-bg':vm.passID==contact.id}" ng-if="!deleted_by">
       <td>
         {{contact.contacts[which].name.full}}
       </td>
@@ -135,22 +135,22 @@
 
           <md-menu-content width="3">
 
-            <md-menu-item ng-if="contact.accepted!==''">
+            <md-menu-item ng-if="contact.accepted">
               <md-button
-                ng-click="vm.deleteContactConfirm($event, contact.contacts[which], contact.contacts[which].id)">
+                ng-click="vm.Confirmation($event, contact.contacts[which], contact.contacts[which].id, 'delete')">
                 <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                 <span translate="CONTACTS.DELETE_CONTACT">Delete Contact</span>
               </md-button>
             </md-menu-item>
 
-            <md-menu-item ng-if="contact.accepted!==''">
+            <md-menu-item ng-if="contact.accepted">
               <md-button ng-click="vm.openDirectMessageDialog(contact, contact.name.full, $event)">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
                 <span translate="CONTACTS.DIRECT_MESSAGING">Direct Message</span>
               </md-button>
             </md-menu-item>
 
-            <!-- <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
+            <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
               <md-button ng-click="vm.acceptConnectionInvitation(contact.contacts.originator.id, $index)">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
                 <span translate="CONTACTS.ACCEPT_INVITE">Accept Invitation</span>
@@ -158,39 +158,39 @@
             </md-menu-item>
 
             <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
-              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.originator.id)">
+              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.originator.id,'reject')">
                 <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
                 <span translate="CONTACTS.REJECT_INVITE">Reject Invitation</span>
               </md-button>
             </md-menu-item>
 
             <md-menu-item ng-if="contact.accepted=='' && which=='accepter'">
-              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.accepter.id)">
+              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.accepter.id,'withdrawn')">
                 <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
                 <span translate="CONTACTS.WITHDRAW_INVITE">Withdraw Invitation</span>
               </md-button>
-            </md-menu-item> -->
+            </md-menu-item>
 
-<md-menu-item>
-  <md-button ng-click="vm.acceptConnectionInvitation(contact.contacts.originator.id, $index)">
+<!-- <md-menu-item ng-if="contact.accepted=='' && which=='originator'" >
+  <md-button  ng-click="vm.acceptConnectionInvitation(contact.contacts.originator.id, $index)">
     <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
     <span translate="CONTACTS.ACCEPT_INVITE">Accept Invitation</span>
   </md-button>
 </md-menu-item>
 
-<md-menu-item>
+<md-menu-item  ng-if="contact.accepted=='' && which=='originator'">
   <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.originator.id)">
     <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
     <span translate="CONTACTS.REJECT_INVITE">Reject Invitation</span>
   </md-button>
 </md-menu-item>
 
-<md-menu-item>
+<md-menu-item  ng-if="contact.accepted=='' && which=='accepter'">
   <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.accepter.id)">
     <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
     <span translate="CONTACTS.WITHDRAW_INVITE">Withdraw Invitation</span>
   </md-button>
-</md-menu-item>
+</md-menu-item> -->
 
 
           </md-menu-content>

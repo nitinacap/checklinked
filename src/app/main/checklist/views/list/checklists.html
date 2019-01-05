@@ -9,7 +9,7 @@
     <div layout="row" layout-align="start center" flex>
 
       <div class="" flex>
-        <div class="title">
+        <div>
           <a href="/checklist/detail/{{checklist.idCHK ? checklist.idCHK : checklist.id_child }}">
             {{checklist.name}}
 
@@ -46,6 +46,13 @@
                 <span translate="CHECKLIST.EDIT_CHECKLIST_NAME">Edit Checklist Name</span>
               </md-button>
             </md-menu-item>
+
+            <md-menu-item>
+                <md-button ng-click="vm.archieveDialog($event, checklist.id)" aria-label="Archive All" translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
+                  <span translate="CHECKLIST.ARCHIVE"></span>
+                </md-button>
+              </md-menu-item>
 
           </md-menu-content>
         </md-menu>

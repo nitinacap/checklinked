@@ -92,17 +92,20 @@
           status: info.status,
           invite: info.invites[0],
           request: function() {
+            debugger;
           	console.log('vm', vm);
             var itemID, link;
             link = this;
             link.requesting = true;
             itemID = vm.type === 'group' ? vm.item : vm.idCHK;
-            return api.checklists.invite.send(raw.id, itemID, true, raw.idACC, vm.type).success(function(res) {
+            return api.checklists.invite.send(raw.id, itemID, true, raw.idACC, vm.type, $rootScope.user.idCON, $rootScope.user.token).success(function(res) {
               var status;
               if (res === void 0 || res === null || res === '') {
                 return $rootScope.message('Error sending Link Request.  Server not responding properly.', 'warning');
-              } else if (res.code) {
-                return $rootScope.message("Error sending Link Request. (" + res.code + "): " + res.message, 'warning');
+              } else if (res.code=='-1') {
+                return $rootScope.message("Error sending Link Request." + res.message, 'warning');
+              }else if (res.code==0) {
+                return $rootScope.message("Link request has been sent successfully", 'success');
               } else {
                 vm.invites.push(res.invites[0]);
                 status = vm.find.status(link);

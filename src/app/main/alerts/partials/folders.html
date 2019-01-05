@@ -63,7 +63,7 @@
     <tr
       ng-repeat="folder in vm.folders | orderBy:vm.folderOrder:vm.folderOrderDescending | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
       <td colspan="2">
-        <a ng-href="/groups/{{folder.id}}" ng-class="{ folder.id_child=='no': 'folderchild' }" class="{{folder.id_child=='no' ? 'folderchild': '' }}">
+        <a ng-href="/workflows/{{folder.id}}" ng-class="{ folder.id_child=='no': 'folderchild' }" class="{{folder.id_child=='no' ? 'folderchild': '' }}">
           <md-icon ng-if="folder.id_child=='yes'" style="color:#9dacff !important; padding-top:0px;" class="md-accent-fg s18 cplus ng-scope md-font icon-plus material-icons md-default-theme" md-font-icon="icon-plus" aria-hidden="true"></md-icon> 
           {{folder.name}}
         </a>

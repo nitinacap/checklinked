@@ -87,12 +87,12 @@
       group: true,
       weight: 1
     });
-
+    console.log("WOW");
     msNavigationServiceProvider.saveItem('checklists.checklist', {
     //  title: 'My Checklists',
       title: 'Process',
       icon: 'check-square',
-      state: 'app.checklist',
+      state: 'app.folders',
       weight: 1
     });
 

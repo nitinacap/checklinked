@@ -1,6 +1,63 @@
-<div id="user" class="page-layout simple tabbed" layout="column">
-  <div class="content nav-fixed-top">
+<div id="user" class="page-layout simple tabbed " layout="column">
   <page-toolbar datas="vm.submenu"> </page-toolbar>
+
+  <div class="content ">
+    <div ng-cloak class="subtab pt-45">
+      <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab ng-click="myvalue = false;">
+          <md-tab-label>
+            <span>Stats</span>
+          </md-tab-label>
+          <md-tab-body>
+            <div ng-include="'app/main/user/partials/stats.html'"></div>
+          </md-tab-body>
+        </md-tab>
+
+
+        <md-tab class="pr-50">
+          <md-tab-label>
+            <md-menu>
+              <md-icon ng-show="myvalue" md-font-icon="icon-dots-vertical s18" id="lh-5" ng-click="$mdOpenMenu($event)"></md-icon>
+              <md-menu-content>
+                <md-menu-item>
+                  <md-button ng-click="vm.editDialog($event, 'changepassword')" aria-label=">Change Password"
+                    translate-attr-aria-label="edit">
+                    <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                    <span>Change Password</span>
+                  </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                  <md-button ng-click="vm.editDialog($event, 'editprofile')" aria-label="Edit profile"
+                    translate-attr-aria-label="FOLDER.EDIT_FOLDER">
+                    <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                    <span>Edit Profile</span>
+                  </md-button>
+                </md-menu-item>
+              </md-menu-content>
+            </md-menu>
+          </md-tab-label>
+          <md-tab-body>
+            <div ng-include="'app/main/user/partials/info.html'"></div>
+          </md-tab-body>
+        </md-tab>
+
+
+        <md-tab class="pr-30" ng-click="myvalue = true;">
+          <md-tab-label>
+            <span>Info</span>
+          </md-tab-label>
+          <md-tab-body>
+            <div ng-include="'app/main/user/partials/info.html'"></div>
+
+          </md-tab-body>
+
+        </md-tab>
+
+
+
+      </md-tabs>
+    </div>
+
+
   </div>
 </div>
-

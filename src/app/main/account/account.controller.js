@@ -12,7 +12,13 @@
 	var vm = this;
 	
 	console.log('$stateParams.key', $stateParams.key);
-	console.log('$stateParams', $stateParams);
+  console.log('$stateParams', $stateParams);
+  
+      //Toggle Left Side Nav
+      vm.toggleSidenav = toggleSidenav;
+      function toggleSidenav(sidenavId) {
+        $mdSidenav(sidenavId).toggle();
+      }
 	
 	/* confirmAccount START */
 	
@@ -164,11 +170,8 @@
       
       vm.invite = api.subscriptions.getInvite(idSUI).success(function(res) {
         if (res === void 0 || res === null || res === '') {
-		console.log('res void');
         } else if (res.code) {
-		console.log('res.code', res.code);
         } else {
-        	console.log('res', res);
           vm.invite = res.invite;
           vm.acceptInvite.signin.username = res.invite.email;
           vm.acceptInvite.reg.contact.email = res.invite.email;
@@ -182,10 +185,10 @@
   /* inviteAccount END */
   
     vm.submenu = [
-      { link: '', title: 'My Profile' },
+      { link: 'user', title: 'My Profile' },
       { link: 'contacts', title: 'Contacts' },
       { link: 'organization', title: 'Organization' },
-      { link: 'account', title: 'Account' }
+      { link: '', title: 'Account' }
     ];
 
     }

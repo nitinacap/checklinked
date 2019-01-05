@@ -329,12 +329,13 @@
 
 
     function addNewFolder() {
-
       vm.folder.sending = true;
       vm.folder.order = 1;
-      vm.folder.order += vm.folders.length;
+      vm.folder.attachment = '';
+      vm.folder.link = '';
+      vm.folder.order += vm.folders ?  vm.folders.length : '';
 
-      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order).error(function (res) {
+      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.link, vm.folder.attachment, vm.folder.order, '', '').error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {

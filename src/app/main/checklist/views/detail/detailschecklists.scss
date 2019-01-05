@@ -1,7 +1,7 @@
 #checklist {
 
   .todo-list-pane .todo-items .todo-item {
-    padding: 5px 9px 4px 20px !important;
+    padding: 0px 9px 4px 20px !important;
     border-top: 1px solid #4472c4;
 }
 
@@ -123,11 +123,11 @@
     }
 
     .checkboxLabel {
-      font-size: 6pt;
+     // font-size: 6pt;
       float: left;
       margin-top: -1px;
       margin-left: 3px;
-      text-transform: uppercase;
+      text-transform: capitalize;
     }
 
     .checkbox {

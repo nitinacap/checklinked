@@ -1,8 +1,0 @@
-{
-    "INVITE": {
-        "LEGACY": "I ALREADY HAVE AN ACCOUNT",
-        "CREATE": "CREATE MY ACCOUNT",
-        "ACCEPT": "ACCEPT INVITATION",
-        "LOGIN": "Log in"
-    }
-}

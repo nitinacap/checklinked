@@ -68,8 +68,8 @@
 
     // Navigation
     msNavigationServiceProvider.saveItem('conversations.mail', {
-      title: 'Notifications',
-      icon: 'commenting-o',
+      title: 'Communicate',
+      icon: 'commenting',
       state: 'app.mail.threads',
       badge      : {
         color  : '#09d261'

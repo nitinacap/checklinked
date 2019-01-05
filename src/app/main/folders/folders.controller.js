@@ -10,31 +10,39 @@
   function FoldersController($rootScope, api, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $scope) {
     var vm = this;
     vm.isLoader = true
-    setTimeout(function () { 
-    if ($stateParams.id !== undefined && $stateParams.id != null) {
-      if ($stateParams.id == '') {
-        $location.path('/folders');
-      } else {
-        vm.groups = [];
-        api.groups.get($stateParams.id).then(function (d) {
-          vm.isLoader = false
-          vm.groups = d.data.groups;
-        });
-      }
+    setTimeout(function () {
+      if ($stateParams.id !== undefined && $stateParams.id != null) {
+        if ($stateParams.id == '') {
+          $location.path('/folders');
+        } else {
+          vm.groups = [];
+          api.groups.get($stateParams.id).then(function (d) {
+            vm.isLoader = false
+            vm.groups = d.data.groups;
+          });
+        }
 
-    } else {
-      vm.folders = [];
-      $scope.getFolder = function() {
-      api.folders.get($rootScope.user.token).then(function (d) {
-        vm.isLoader = false
-        vm.folders = d.data.folders;
-      });
+      } else {
+        vm.folders = [];
+        $scope.getFolder = function () {
+          api.folders.get().then(function (d) {
+            vm.isLoader = false
+            vm.folders = d.data.folders;
+            //  $rootScope.$on('getFolders', d.data.folders);// res - your data
+          });
+        }
       }
-    }
     }, 400);
-    setTimeout(function () { 
-    $scope.getFolder();
-    },500);
+    setTimeout(function () {
+      $scope.getFolder();
+    }, 500);
+
+
+    //   $rootScope.$on("getAllFolders", function () {  
+    //     alert('Ctrl1 MyFunction')  
+    //     $scope.getFolder();
+    // });
+
 
     // Tasks will be filtered against these models
     vm.folderFilters = {
@@ -163,21 +171,24 @@
 
 
     /* Dialog Methods */
-    function openFolderDialog(ev, folder) {
-
+    function openFolderDialog(ev, folder, type) {
       vm.folder = folder;
-      vm.title = 'Edit Project Name Title';
+      vm.title = 'Edit Project Name';
       vm.newFolder = false;
-
+      vm.type = type;
+      vm.datas = ev;
+     
       if (!vm.folder) {
         vm.folder = {
           'id': '',
           'name': '',
           'description': '',
+          'link': '',
+          'attachment': '',
           'order': '',
           'deleted': false
         };
-        vm.title = 'Create New Project';
+        vm.title = type ? 'Duplicate Project' : 'Create New Project';
         vm.newFolder = true;
       }
 
@@ -185,7 +196,6 @@
         scope: $scope,
         preserveScope: true,
         templateUrl: 'app/main/folders/dialogs/folder/folder-dialog.html',
-        parent: angular.element($document.find('#checklist')),
         targetEvent: ev,
         clickOutsideToClose: true
       });
@@ -214,14 +224,12 @@
     }
 
     /* Add New Folder */
-    function addNewFolder() {
-    
+    function addNewFolder(item) {
       vm.folder.sending = true;
       vm.folder.order = 1;
       vm.folder.order += vm.folders ? vm.folders.length : 0;
 
-
-      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order, $rootScope.user.token).error(function (res) {
+      api.folders.add(vm.folder.name, vm.folder.description,  vm.folder.link,  vm.folder.attachment, vm.folder.order,item ? item.id: '' ).error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -239,10 +247,13 @@
           vm.folder.id_parent = res.folder.id_parent;
 
           //Toaster Notification
-          $rootScope.message('Project Created');
+          $rootScope.message('Project has been created successfully');
 
           //Add New Folder to Folders object
-          vm.folders.unshift(vm.folder);
+          if(res.folder.length > 0){
+            vm.folders.unshift(vm.folder);
+
+          }
 
           vm.folder.sending = false;
 
@@ -263,6 +274,8 @@
         'type': 'folder',
         'text': vm.folder.name,
         'description': vm.folder.description,
+        'link': vm.folder.link,
+        'attachment': vm.folder.attachment,
         'order': vm.folder.order,
         'id': vm.folder.id,
         'rid': vm.folder.rid,
@@ -282,7 +295,7 @@
           $rootScope.message('Project Name ' + vm.folder.name + ' Edited');
 
           vm.folder.sending = false;
-          
+
 
           //Close Dialog Window
           vm.closeDialog();
@@ -294,35 +307,69 @@
 
     /* Delete Folder */
     function deleteFolder(folder, event) {
-      vm.folder = folder;
-
-      var confirm = $mdDialog.confirm()
-        .title('Are you sure?')
-        .content('The Project ' + folder.name +  ' will be deleted.')
-        .ariaLabel('Delete Project')
-        .ok('Delete')
-        .cancel('Cancel')
-        .targetEvent(event);
-
-      $mdDialog.show(confirm).then(function () {
-        api.folders.destroy(vm.folder.id, $rootScope.user.token).error(function (res) {
-          return $rootScope.message("Error Deleteing Project", 'warning');
-        }).success(function (res) {
-          if (res === void 0 || res === null || res === '') {
-            return $rootScope.message("Error Deleteing Project", 'warning');
-          } else if (res.code) {
-            return $rootScope.message(res.message, 'warning');
-          } else {
-
-            /* Remove From Folders Object */
-            vm.folders.splice(vm.folders.indexOf(folder), 1);
-
-            $rootScope.message('Project  ' + folder.name +  'has been deleted');
-
-            vm.folder.sending = false;
-          }
-        });
+      vm.title = 'Delete Folder Information';
+      vm.warning = 'Warning: This can’t be undone';
+      vm.description = "Please confirm you want to delete this <span class='link'>" + folder.name +"</span><br>All of the contents will be deleted and can’t be recovered"
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/organization/dialogs/organizations/alert.html',
+        parent: angular.element(document.body),
+        targetEvent: folder,
+        clickOutsideToClose:false
+      })
+      .then(function(answer) {
+        deleteFoderItem(folder);
+      }, function() {
+        $scope.status = 'You cancelled the dialog.';
       });
+
+      // var confirm = $mdDialog.confirm()
+      //   .title('Are you sure?')
+      //   .content('The Project ' + folder.name + ' will be deleted.')
+      //   .ariaLabel('Delete Project')
+      //   .ok('Delete')
+      //   .cancel('Cancel')
+      //   .targetEvent(event);
+
+      // $mdDialog.show(confirm).then(function () {
+      //   api.folders.destroy(vm.folder.id, $rootScope.user.token).error(function (res) {
+      //     return $rootScope.message("Error Deleteing Project", 'warning');
+      //   }).success(function (res) {
+      //     if (res === void 0 || res === null || res === '') {
+      //       return $rootScope.message("Error Deleteing Project", 'warning');
+      //     } else if (res.code) {
+      //       return $rootScope.message(res.message, 'warning');
+      //     } else {
+
+      //       /* Remove From Folders Object */
+      //       vm.folders.splice(vm.folders.indexOf(folder), 1);
+
+      //       $rootScope.message('Project  ' + folder.name + ' has been deleted');
+
+      //       vm.folder.sending = false;
+      //     }
+      //   });
+      // });
+    }
+
+    function deleteFoderItem(folder){
+      vm.isLoader = true;
+      api.folders.destroy(folder.id, $rootScope.user.token).error(function (res) {
+            return $rootScope.message("Error Deleteing Project", 'warning');
+          }).success(function (res) {
+            
+            vm.isLoader = false;
+            if (res === void 0 || res === null || res === '') {
+              return $rootScope.message("Error Deleteing Project", 'warning');
+            } else if (res.code) {
+              return $rootScope.message(res.message, 'warning');
+            } else {
+              vm.folders.splice(vm.folders.indexOf(folder), 1);
+              $rootScope.message('Project  ' + folder.name + ' has been deleted');
+              vm.folder.sending = false;
+            }
+          });
     }
 
     /* Side Navigation Methods */
@@ -357,15 +404,94 @@
     // Content sub menu
     vm.submenu = [
       { link: '', title: 'Projects' },
-      { link: 'checklist', title: 'Workflow' },
+      { link: 'groups', title: 'Workflow' },
       { link: 'checklist', title: 'Checklists' },
       { link: 'templates', title: 'Templates' },
       { link: '#', title: 'Others' },
-      { link: '#', title: 'Archives' }
+      { link: 'archives', title: 'Archives' }
 
     ];
+    vm.saveArchieve = saveArchieve;
+    vm.archieveDialog = archieveDialog;
 
-  
+
+    function saveArchieve(id) {
+      vm.spinner = true;
+      $http.post(BASEURL + "create-archieve-post.php", { 'name': vm.archieve.name, 'type': 'project', 'id': id ? id : '' })
+        .success(function (res) {
+          vm.spinner = false;
+          if (res.type == 'success') {
+            vm.archieve.name = '';
+            vm.closeDialog();
+            return $rootScope.message(res.message, 'success');
+
+          } else {
+            return $rootScope.message(res.message, 'warning');
+          }
+
+        }).error(function (err) {
+          console.log('Error found to make archieve');
+        })
+
+    };
+    // create duplicate project
+
+    vm.Duplicate = Duplicate;
+    function Duplicate(folder) {
+    //  vm.isLoader = true;
+
+      // vm.title = 'Duplicate Project';
+      // $mdDialog.show({
+      //   scope: $scope,
+      //   preserveScope: true,
+      //   templateUrl: 'app/main/folders/dialogs/folder/duplicate.html',
+      //   clickOutsideToClose: true
+      // });
+
+      // api.folders.add(folder.name + '-copy', folder.description, 1).error(function (res) {
+      //   return $rootScope.message("Error Creating Project", 'warning');
+      // }).success(function (res) {
+      //   vm.isLoader = false;
+
+      //   if (res === void 0 || res === null || res === '') {
+      //     return $rootScope.message("Error Creating Project", 'warning');
+      //   } else {
+      //     $scope.getFolder();
+
+      //   }
+
+
+      // });
+    };
+
+
+
+    function archieveDialog(ev, id) {
+      vm.title = 'Create New Archieve';
+      if (id) {
+        vm.id = parseInt(id);
+      }
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/folders/dialogs/folder/archieve-dialog.html',
+        parent: angular.element($document.find('#checklist')),
+        targetEvent: ev,
+        clickOutsideToClose: true
+      });
+    };
+
+    $scope.hide = function() {
+      $mdDialog.hide();
+    };
+
+    $scope.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    $scope.answer = function(answer) {
+      $mdDialog.hide(answer);
+    };
 
   }
 

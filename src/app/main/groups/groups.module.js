@@ -10,11 +10,11 @@
 
     // STATE
     $stateProvider.state('app.groups', {
-      url: '/groups',
+      url: '/workflows',
       views: {
         'content@app': {
-          templateUrl: 'app/main/folders/folders.html',
-          controller: 'FoldersController as vm'
+          templateUrl: 'app/main/groups/groups.html',
+          controller: 'GroupsController as vm'
         }
       }
     })

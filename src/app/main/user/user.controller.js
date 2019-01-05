@@ -6,7 +6,7 @@
     .controller('UserController', UserController);
 
   /** @ngInject */
-  function UserController($rootScope, $location, $mdDialog, $document,  $http, $state, $scope, api, $mdSidenav) {
+  function UserController($rootScope, $mdDialog, $document, $http, $state, $scope, api, $mdSidenav) {
 
     var vm = this;
     vm.editDialog = editDialog;
@@ -14,11 +14,11 @@
     vm.closeDialog = closeDialog;
 
     vm.updateUser = updateUser;
-    setTimeout(function(){
-      if (!$rootScope.user) {
-        $state.go('app.login');
-      }
-    }, 1000);
+    // setTimeout(function () {
+    //   if (!$rootScope.user) {
+    //     $state.go('app.login');
+    //   }
+    // }, 1000);
     // console.log("types= " + $stateParams.type);
     // if ($stateParams.type) {
     //   vm.type = $stateParams.type
@@ -40,10 +40,12 @@
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Error talking to server', 'warning');
           } else if (res.code) {
-            $rootScope.user = res.user;
+           $rootScope.user = res.user;
             return $rootScope.message(res.message, 'warning');
           } else {
-            $rootScope.user = res.user;
+            $scope.user = res.user;
+            $rootScope.$broadcast('updatedUsername', res.user.name.full);
+            $mdDialog.hide();
             vm.update.editable = false;
             return $rootScope.message(res.message);
           }
@@ -59,7 +61,8 @@
         },
         email: '',
         password: '',
-        phone: ''
+        phone: '',
+        token: ''
       }
     };
 
@@ -73,7 +76,7 @@
         email: u.email,
         password: u.password,
         phone: u.phone,
-        token: $rootScope.token
+        token: $rootScope.user.token
       };
     };
 
@@ -121,32 +124,44 @@
     }
 
 
-    function closeDialog() {
+    function closeDialog(type) {
       $mdDialog.hide();
-      //$scope.getFolder();
+      if(type=='profile'){
+        vm.updateUser($rootScope.user);
+      }
 
-   }
-    function changePassword(){
-      vm.updating = true;
-      return $http.post(BASEURL + 'organization-update-post.php', {
-        user: vm.user
-      }, 
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }
+    vm.changeprocess = false;
+    function changePassword() {
+      vm.changeprocess = true;
+      $http.post(BASEURL + 'password-change.php', vm.user,
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           cache: false
         }).error(function () {
+          vm.changeprocess = false;
           return $rootScope.message('Error talking to server.', 'warning');
         }).success(function (resp) {
-          return $rootScope.message('Password has been successfully', 'success');
-         
+          if (resp.type == 'error') {
+            vm.changeprocess = false;
+            return $rootScope.message(resp.message, 'warning');
+
+          } else {
+            vm.changeprocess = false;
+            $mdDialog.hide();
+            return $rootScope.message(resp.message, 'success');
+
+          }
+
         })
     }
 
-   vm.submenu = [
-     { link: '', title: 'My Profile' },
-     { link: 'contacts', title: 'Contacts' },
-     { link:'organization', title: 'Organization' },
-     { link: 'account', title:'Account'}
-   ];
+    vm.submenu = [
+      { link: '', title: 'My Profile' },
+      { link: 'contacts', title: 'Contacts' },
+      { link: 'organization', title: 'Organization' },
+      { link: 'account', title: 'Account' }
+    ];
 
   }
 })();

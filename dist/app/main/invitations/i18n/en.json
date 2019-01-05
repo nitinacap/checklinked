@@ -1,9 +1,0 @@
-{
-    "INVITATIONS": {
-        "INVITATIONS": "Invitations",
-        "DELETE_INVITATION": "Delete Invitation",
-        "REJECT_INVITATION": "Reject Invitation",
-        "RESCIND_INVITATION": "Rescind Invitation",
-        "ACCEPT_INVITATION": "Accept Invitation"
-    }
-}

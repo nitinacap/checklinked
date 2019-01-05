@@ -139,13 +139,19 @@
       return api.conversations.add(vm.conversation.id, vm.newPost.text, vm.itemType, vm.producerType).error(function (res) {
         return $rootScope.message('Error posting.', 'warning');
       }).success(function (res) {
-        if (res.code) {
+        if (res.type=='success') {
+          vm.newPost.submitting = false;
+          vm.newPost.text = '';
+          vm.conversation.posts.unshift(res.posts[0]);
+         // vm.conversation.posts.unshift(res.posts[0]);
+         // return $rootScope.socketio.emit('message', res.posts[0]);
+        }  else {
           return $rootScope.message(res.message, 'warning');
-        } else {
-          return $rootScope.socketio.emit('message', res.posts[0]);
+
+          //return $rootScope.socketio.emit('message', res.posts[0]);
         }
       })["finally"](function () {
-        vm.closeDialog();
+       // vm.closeDialog();
         /*
          return vm.newPost = {
          text: vm.newPost.text,

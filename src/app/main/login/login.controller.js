@@ -17,7 +17,6 @@
     }
 
     function activateAccount(token){
-
       $http.get(BASEURL +'account-create-confirm.php?token=' + token).success(function (res) {
         if(res.code==1){
            $scope.errtoken =  res.message
@@ -53,7 +52,7 @@ function login() {
     cache: false
   }).success(function (res) {
     vm.isLoader = false;
-    if(res.code==1){
+    if(res.code=='-1'){
       console.log(res);
       $scope.login_error = "Please enter correct username and password";    
 

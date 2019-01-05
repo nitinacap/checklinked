@@ -13,7 +13,7 @@
       url: '/user',
       views: {
         'content@app': {
-          templateUrl: 'app/main/user/partials/stats.html',
+          templateUrl: 'app/main/user/user.html',
           controller: 'UserController as vm'
         }
       },

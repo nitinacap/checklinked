@@ -14,7 +14,9 @@ Array.prototype.diff = function (a) {
 
 
 
- var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
+//var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
+// Azure
+var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
  //var BASEURL = 'http://localhost:8081/dist/ajax/';
 
 
@@ -28,9 +30,6 @@ Array.prototype.diff = function (a) {
 
     // Activate loading indicator
     var silent;
-
-
-
 
     // Authinication
     $rootScope.checkLogin = function (event, toState) {
@@ -117,8 +116,10 @@ Array.prototype.diff = function (a) {
         case 'checklist':
         case 'invitations':
         case 'organization':
+        case 'notification':
         case 'subscriptions':
         case 'folders':
+        case 'archives':
         case 'groups':
         case 'teammembers':
         case 'templates':

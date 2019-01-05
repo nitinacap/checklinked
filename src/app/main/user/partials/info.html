@@ -1,6 +1,5 @@
-<div ng-include="'app/main/user/partials/toolbar.html'"></div>
 <div class="form-wrapper md-whiteframe-1dp flex  userinfo" id="stats">
-  <table class="bordered-table" cellpadding="0" cellspacing="0"> 
+  <!-- <table class="bordered-table" cellpadding="0" cellspacing="0"> 
     <thead>
       <tr>
         <th width="5%"><a href="/user/stats"><span class="notactive">Stats</span></a></th>
@@ -40,7 +39,7 @@
       </tr>
     </thead>
 
-  </table>
+  </table> -->
 
   <table class="bordered-table" width="100%" cellpadding="0" cellspacing="0">
 
@@ -53,7 +52,7 @@
       </tr>
       <tr>
         <td><small>Email</small><br>
-          <span>{{ user.email }}</span></td>
+          <span><a href="mailto:{{user.email}}" class="link">{{user.email}}</a></span></td>
         <td><small>Phone</small><br>
           <span>{{user.phone}}</span></td>
       </tr>

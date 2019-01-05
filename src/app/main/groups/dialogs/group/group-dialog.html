@@ -2,12 +2,25 @@
   <form name="groupForm" class="md-inline-form" novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-        <span class="title">{{vm.title}}</span>
+        <span class="title">{{vm.title}} {{vm.projectParamId}}</span>
         <md-button class="md-icon-button" ng-click="vm.closeDialog()">
           <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
         </md-button>
       </div>
     </md-toolbar>
+    <md-dialog-content ms-scroll ng-if="!vm.projectParamId">
+      <md-input-container class="md-block mb-0">
+        <label translate="GROUP.NAME">Group Name {{vm.projects}}</label>
+        <md-select name="project_id" required  ng-model="vm.group.Id" placeholder="Select a Project">
+          <md-option ng-value="project.id" ng-repeat="project in vm.projects">{{project.name}}</md-option>
+        </md-select>
+        <div ng-messages="groupForm.project_id.$error" ng-show="groupForm.project_id.$touched" role="alert">
+          <div ng-message="required">
+            <span>Project field is required</span>
+          </div>
+        </div>
+      </md-input-container>
+    </md-dialog-content>
 
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block mb-0">
@@ -18,6 +31,13 @@
             <span translate="GROUP.ERRORS.GROUP_NAME_REQUIRED">Group Name field is required</span>
           </div>
         </div>
+      </md-input-container>
+    </md-dialog-content>
+
+    <md-dialog-content ms-scroll>
+      <md-input-container class="md-block mb-0">
+        <label translate="GROUP.WORKFLOW_DESCRIPTION"></label>
+        <input name="description" ng-model="vm.group.description">
       </md-input-container>
     </md-dialog-content>
 

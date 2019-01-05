@@ -311,13 +311,11 @@
           return $http.get(BASEURL + "templates-get.php?org=1&noXML=1").success(function (res) {
             vm.isLoader = false;
             if (res === void 0 || res === null || res === '') {
-              console.log('Error loading templates: ', res);
               return vm.templates.load.error = 'Error loading Templates! (Server not responding properly.)';
             } else if (res.code) {
               return vm.templates.load.error = "Error loading Templates: (" + res.code + ") " + res.message;
             } else if (res.templates !== void 0 && res.templates.length) {
               vm.templates.list = res.templates.map(process);
-              console.log('vm.templates.list', vm.templates.list);
             }
           }).error(function (err) {
             console.log('Error loading team members: ', err);
@@ -344,7 +342,7 @@
               //$rootScope.message(res.display, 'warning');
             }
             vm.publicTemplates = res.templates;
-            console.log('vm.publicTemplates', vm.publicTemplates);
+          //  console.log('vm.publicTemplates', vm.publicTemplates);
           })["finally"](function () {
           });
         },
@@ -439,6 +437,51 @@
     vm.templates.load.start();
     vm.templates.load.startInternal();
 
+    //Archieve Dialog
+    vm.archieveDialog = archieveDialog;
+    vm.saveArchieve = saveArchieve;
+
+    function archieveDialog(ev, id, type) {
+      vm.title = 'Create New Archieve';
+      vm.type = type ? type : '';
+
+      if (id) {
+        vm.id = parseInt(id);
+      }
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/templates/dialogs/templates/archieve-dialog.html',
+        parent: angular.element($document.find('#checklist')),
+        targetEvent: ev,
+        clickOutsideToClose: true
+      });
+    };
+
+    
+    // Save Archive
+
+    function saveArchieve(id, type){
+      vm.spinner =true;
+      $http.post(BASEURL + "create-archieve-post.php", { 'name': vm.archieve.name, 'type': type, 'id': id ? id : '' })
+      .success(function (res) {
+        vm.spinner =false;
+        if (res.type == 'success') {
+          vm.archieve.name = '';
+          vm.templates.load.start();
+          vm.closeDialog();
+          return $rootScope.message(res.message, 'success');
+         
+        } else {
+          return $rootScope.message(res.message, 'warning');
+        }
+
+      }).error(function (err) {
+        console.log('Error found to make archieve');
+      })
+
+    };
+
     // Content sub menu
     vm.submenu = [
       { link: 'folders', title: 'Projects' },
@@ -446,7 +489,7 @@
       { link: 'checklist', title: 'Checklists' },
       { link: '', title: 'Templates' },
       { link: '#', title: 'Others' },
-      { link: '#', title: 'Archives' }
+      { link: 'archives', title: 'Archives' }
 
     ];
 

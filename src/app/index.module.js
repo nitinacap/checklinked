@@ -47,6 +47,9 @@
       // Folders
       'app.folders',
 
+      //Archives
+      'app.archives',
+
       // Groups
       'app.groups',
 
@@ -76,7 +79,9 @@
 
       // Reset Password
       'app.reset',
-
+      
+      //notification
+      'app.notification',
 
       // Account Account
       'app.account',
@@ -92,9 +97,6 @@
 
       // Dassboard Module
       'app.dashboard',
-
-      // Dassboard Module
-      //'app.todo',
 
       // Login
       'app.login'

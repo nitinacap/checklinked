@@ -23,6 +23,12 @@ md-tab-data{
         background-color:black !important; 
         color:#fff !important;
 }
+.danger{
+    color:#f24141;
+}
+.success{
+    color:green;
+}
 
 #vertical-navigation {
     background-color:black;
@@ -31,7 +37,18 @@ md-tab-data{
     max-width: 185px;
 }
 
-
+.link-color{
+  color:#3373c7;
+}
+.black{
+    color:black;
+}
+.capitalize{
+    text-transform: capitalize;
+}
+.max-10{
+    max-width: 10% !important
+}
 
 md-progress-circular.ng-isolate-scope._md-mode-indeterminate.md-default-theme {
     position: absolute;
@@ -49,12 +66,12 @@ md-tabs-canvas{
 }
 .md-tab{
     color:#fff !important;
-   padding: 3px 0px 0px 20px !important; 
+   padding: 3px 12px 0px 12px !important; 
    font-size: 10px;
 }
-.md-accent{
-    background-color: black;
-}
+// .md-accent{
+//     background-color: black;
+// }
 .bd-loader{
     position: absolute;
     left: 0;
@@ -207,6 +224,7 @@ small {
 .subtab md-tabs-wrapper * {
     font-size: 13px !important;
     color: #333;
+    text-transform: capitalize;
 }
 
 .subtab md-tabs-wrapper md-pagination-wrapper {
@@ -231,7 +249,7 @@ md-sidenav#vertical-navigation {
     margin-top: 48px !important;
 }
 .logo-icon{
-    height: 40px !important;
+    height: 35px !important;
 margin-right: 8px;
 }
 .logo-holder {
@@ -262,6 +280,112 @@ margin-right: 8px;
     padding: 0 !important;
     margin: 0 !important;
 }
+.md-tab.md-active{
+    border-bottom:1px solid #517cc6  !important
+}
 
+md-menu-item > .md-button{
+    font-size: 13px !important;
+}
+md-menu-item {
+    height: 36px !important;
+    min-height: 36px !important;
+}
+
+md-icon[md-font-icon].s18, i.s18 {
+    font-size: 15px !important;
+    line-height: 20px !important;
+    margin-right: 0;
+}
+.username {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: rgb(65,110,163);
+    text-transform: capitalize;
+}
+
+.username + .fa {
+    line-height: 22px;
+    font-size: 16px !important;
+    color: rgb(65,110,163);
+}
+.user-menu {
+    md-icon{
+        font-size: 15px !important;
+        line-height: 20px !important;
+        margin-right: 0;
+        color:rgb(65,110,163) !important;
+        padding-right: 2px !important;
+
+
+}
+span{
+    font-size: 13px;
+}
+.md-menu > .md-button{
+    padding-left:15px !important;
+}
+}
+// .md-button.md-default-theme:not([disabled]):hover, .md-button:not([disabled]):hover, .md-menu._md-open > .md-button {
+//     background-color: rgba(158,158,158,0.1) !important;
+// }
  
+md-radio-button ._md-off, md-radio-button ._md-on, md-checkbox ._md-icon{
+    width: 14px;
+    height: 14px;
+}
+form {
+    font-size: 13px;
+}
   
+md-radio-button ._md-label {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+md-checkbox ._md-icon {   
+    top: 2px;
+}
+md-checkbox.md-checked ._md-icon:after {
+    left: 4.66667px;
+    top: 2.22222px;
+    width: 5.66667px;
+    height: 8.33333px;
+}
+md-checkbox ._md-label{
+    margin-left: 25px;
+}
+.link{
+    text-transform: capitalize !important;
+    color:#4572C0 !important;
+}
+.text-initial{
+    text-transform: initial !important;
+}
+.pull-right{
+    float: right; 
+}
+.toast-warning{
+    background-color:#d30000 !important;
+}
+.md-tab.md-active span {
+    color: #517cc6 !important;
+}
+
+#alert-message{
+    md-toolbar {
+        min-height: 30px !important;
+        max-height: 30px !important;
+    }  
+    .md-dialog-content {
+        padding:0px !important;
+    } 
+    #dialogContent_alert-message{
+        padding: 0px 16px 0px 20px !important;
+    }
+    .md-button span {
+        text-transform: capitalize !important;
+    }
+    .md-button{
+        min-width: 40px !important;
+    }
+}

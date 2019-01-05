@@ -96,7 +96,7 @@
             link = this;
             link.requesting = true;
             itemID = item;
-            return api.checklists.invite.send(raw.id, itemID, true, raw.idACC, 'group').success(function(res) {
+            return api.checklists.invite.send(raw.id, itemID, true, raw.idACC, 'group', $rootScope.user.id, $rootScope.token).success(function(res) {
               var id, invite, status;
               if (res === void 0 || res === null || res === '') {
                 return $rootScope.message('Error sending Link Request.  Server not responding properly.', 'warning');

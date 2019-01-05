@@ -12,6 +12,9 @@
                <div class="title"><p>{{ successtoken ? 'Welcome!' : 'Log in' }}</p>
                <p layout-padding ng-if="errtoken" ng-bind="errtoken" ng-class="errtoken ? 'error-text' : '' "></p> 
             </div>
+            <div layout="row" ng-if="successtoken"> 
+                    <h4><strong>Your account has been confirmed and you can  now log in.</strong></h4>
+            </div>
             <div class="title text-left"  ng-if="login_error || firstLogin" ng-bind="login_error" style="color:red; font-size:12px;"></div>
 
             <form name="loginForm" novalidate ng-submit="vm.login()" ng-if="!firstLogin">

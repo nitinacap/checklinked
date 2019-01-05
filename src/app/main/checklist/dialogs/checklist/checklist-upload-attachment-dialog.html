@@ -1,109 +1,114 @@
 <md-dialog class="dialog" aria-label="New Folder">
 
-  <md-toolbar class="md-accent md-hue-2">
-    <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-      <span class="title">{{vm.title}}</span>
-      <md-button class="md-icon-button" ng-click="vm.closeDialog()">
-        <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
-      </md-button>
-    </div>
-  </md-toolbar>
-
-  <md-dialog-content class="padding-top-0 padding-bottom-0">
-
-    <table class="simple" ms-responsive-table ng-hide="vm.upload || !vm.SelectedAttachments.length">
-      <thead>
-      <tr>
-          <th>Edit</th>
-        <th>Attachment Label</th>
-        <th>Delete</th>
-        <th class="text-right">Download</th>
-      </tr>
-      </thead>
-
-      <tfoot>
-      </tfoot>
-
-      <tbody>
-      <tr ng-repeat="attachment in  vm.SelectedAttachments track by $index">
-        <td class="text-left">
-            <button aria-label="Edit">
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">{{vm.title}}</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+  
+    <md-dialog-content class="padding-top-0 padding-bottom-0">
+  
+      <table class="simple bordered-table" ms-responsive-table ng-hide="vm.upload || !vm.SelectedAttachments.length">
+        <thead>
+          <tr>
+            <th class="text-center">Edit</th>
+            <th class="text-center">Attachment Label</th>
+            <th class="text-center">Delete</th>
+            <th class="text-center">Download</th>
+          </tr>
+        </thead>
+  
+        <tfoot>
+        </tfoot>
+  
+        <tbody>
+          <tr ng-repeat="attachment in  vm.SelectedAttachments track by $index" ng-show="IsAttachment">
+            <td class="text-center">
+              <button aria-label="Edit" ng-click="editAttachment(attachment)">
                 <md-icon md-font-icon="icon-pencil"></md-icon>
               </button>
-        </td>
-        
-        <td class="name">{{attachment.file.label}}</td>
-        <td>
-
-            <button aria-label="Delete" >
-              <md-icon md-font-icon="icon-trash"></md-icon>
-            </button>
-        <!--<td class="salary">{{attachment.storage.temporary}}</td>-->
-        <td class="text-right">
-
-          <button aria-label="Linked" ng-click="vm.downloadAttachment($event, attachment.storage.temporary)">
-            <md-icon md-font-icon="icon-cloud-download"></md-icon>
-          </button>
-
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <div ng-show="vm.upload || !vm.SelectedAttachments.length">
-
-      <md-input-container class="md-block">
-        <label translate="CHECKLIST.ATTACHMENT_LABEL">Attachment Label</label>
-        <input name="label" ng-model="vm.label" required md-autofocus>
-        <div ng-messages="checklistForm.label.$error" ng-show="checklistForm.label.$touched" role="alert">
-          <div ng-message="required">
-            <span translate="CHECKLIST.ERRORS.ATTACHMENT_LABEL_REQUIRED">Attachment Label field is required</span>
+            </td>
+            <td class="name text-center">{{attachment.file.label}} </td>
+            <td class="text-center">
+              <button aria-label="Delete" ng-click="deleteAttachment(attachment.id)">
+                <md-icon md-font-icon="icon-trash"></md-icon>
+              </button>
+              <!--<td class="salary">{{attachment.storage.temporary}}</td>-->
+            <td class="text-center">
+              <button aria-label="Linked" ng-click="vm.downloadAttachment($event, attachment.storage.temporary)">
+                <md-icon md-font-icon="icon-cloud-download"></md-icon>
+              </button>
+  
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div ng-show="vm.upload || !vm.SelectedAttachments.length">
+        <form name="checklistForm" novalidate>
+          <md-input-container class="md-block">
+            <label translate="CHECKLIST.ATTACHMENT_LABEL">Attachment Label</label>
+            <input name="label" ng-model="vm.label" required md-autofocus>
+            <div ng-messages="checklistForm.label.$error" ng-show="checklistForm.label.$touched" role="alert">
+              <div ng-message="required">
+                <span translate="CHECKLIST.ERRORS.ATTACHMENT_LABEL_REQUIRED">Attachment Label field is required</span>
+              </div>
+            </div>
+          </md-input-container>
+          <div layout="column">
+            <div>
+              <!-- <md-button  class="add-file-button md-raised md-accent"
+      aria-label="Add file" translate
+      translate-attr-aria-label="FM.ADD_FILE">
+  <label for="AWSFileUploadInput">
+      {{ vm.filename ? 'Change file': 'Add file'}}
+  </label>
+  </md-button> -->
+            </div>
+            <div>
+              <!-- {{ vm.filename}} -->
+            </div>
           </div>
-        </div>
-        <div>{{vm.file}}</div>
-      </md-input-container>
-
-      <md-button  class="add-file-button md-raised md-accent"
-                 aria-label="Add file" translate
-                 translate-attr-aria-label="FM.ADD_FILE">
-        <label for="AWSFileUploadInput">
-          Add file
-        </label>
-      </md-button>
-
-      <md-input-container class="md-block mb-0 mt-0">
-        <input id="AWSFileUploadInput" ng-model="vm.file" name="file" type="file" class="add-file-button md-fab md-warn"
-               style="display:none;"/>
-        <div ng-messages="checklistForm.file.$error" ng-show="checklistForm.file.$touched" role="alert">
-          <div ng-message="required">
-            <span translate="CHECKLIST.ERRORS.ATTACHMENT_REQUIRED">Attachment is required</span>
+  
+          <div>
+  
           </div>
-        </div>
-      </md-input-container>
-
-    </div>
-  </md-dialog-content>
-
-  <md-dialog-actions layout="row" layout-align="space-between center">
-    <div layout="row" layout-align="start center">
-      <md-button type="button"
-                 ng-show="vm.upload || !vm.SelectedAttachments.length"
-                 ng-click="vm.uploadAttachment(vm.pType, vm.pID, vm.index)"
-                 class=""
-                 aria-label="Upload Attachment"
-                 translate="CHECKLIST.UPLOAD"
-                 translate-attr-aria-label="CHECKLIST.UPLOAD">
-        UPLOAD ATTACHMENTS
-      </md-button>
-
-      <md-button type="button"
-                 ng-hide="vm.upload || !vm.SelectedAttachments.length"
-                 ng-click="vm.upload=true"
-                 class="md-raised md-accent"
-                 aria-label="Upload Attachment"
-                 translate="CHECKLIST.UPLOAD_ATTACHMENT"
-                 translate-attr-aria-label="CHECKLIST.UPLOAD_ATTACHMENT">
-        UPLOAD ATTACHMENTS
-      </md-button>
-    </div>
-  </md-dialog-actions>
-</md-dialog>
+  
+          <md-input-container class="md-block mb-0 mt-0">
+            <!-- <input id="AWSFileUploadInput" ng-model="vm.file" name="file" type="file" class="add-file-button md-fab md-warn" /> -->
+    <input file-model="files" multiple ng-model="vm.file" name="file" type="file" class="add-file-button md-fab md-warn" />
+            <div ng-messages="checklistForm.file.$error" ng-show="checklistForm.file.$touched" role="alert">
+              <div ng-message="required">
+                <span translate="CHECKLIST.ERRORS.ATTACHMENT_REQUIRED">Attachment is required</span>
+              </div>
+            </div>
+          </md-input-container>
+  
+      </div>
+    </md-dialog-content>
+  
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="start center">
+        <md-button type="button" ng-show="vm.upload || !vm.SelectedAttachments.length" ng-click="vm.uploadAttachment(vm.pType, vm.pID, vm.index)"
+          class="" aria-label="Upload Attachment" translate="CHECKLIST.UPLOAD" ng-disabled="checklistForm.$invalid || checklistForm.$pristine || vm.fileUploadButton"
+          translate-attr-aria-label="CHECKLIST.UPLOAD" ng-if="!vm.editAttachment">
+          UPLOAD ATTACHMENTS
+        </md-button>
+        <md-button type="button" ng-click="UpdateAttachment(vm.attachment)" translate-attr-aria-label="CHECKLIST.UPLOAD"
+          ng-if="vm.editAttachment">
+          Update
+        </md-button>
+  
+        <md-button type="button" ng-hide="vm.upload || !vm.SelectedAttachments.length" ng-click="vm.upload=true" class="md-raised md-accent"
+          aria-label="Upload Attachment" translate="CHECKLIST.UPLOAD_ATTACHMENT" translate-attr-aria-label="CHECKLIST.UPLOAD_ATTACHMENT">
+          UPLOAD ATTACHMENTS
+        </md-button>
+        <i class="fa fa-spinner fa-spin" ng-if="vm.spinner" style="font-size:20px"></i>
+  
+      </div>
+  
+    </md-dialog-actions>
+    </form>
+  </md-dialog>

@@ -1,5 +1,7 @@
 md-dialog {
-
+.alertMsg label, .md-char-counter{
+  color:rgba(0,0,0,0.87) !important;
+}
   &.dialog {
     max-width: 720px;
     width: 720px;

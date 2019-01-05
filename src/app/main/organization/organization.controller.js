@@ -6,10 +6,10 @@
     .controller('OrganizationController', OrganizationController)
 
   /** @ngInject */
-  function OrganizationController($rootScope, $mdDialog, $document, $stateParams, $http, $scope, api, $mdSidenav) {
- 
+  function OrganizationController($rootScope, $mdDialog, $document, $stateParams, $state, $http, $scope, api, $mdSidenav) {
+
     var vm = this;
-  
+
     if ($stateParams.type) {
       vm.type = $stateParams.type
 
@@ -38,37 +38,38 @@
         phone: '',
         email: '',
         website: '',
-        description: ''
+        description: '',
+        link: ''
       };
 
       if (((ref = vm.user) != null ? ref.organization : void 0) === void 0 || ((ref1 = vm.user) != null ? ref1.organization : void 0) === null || ((ref2 = vm.user) != null ? ref2.organization.length : void 0) === 0) {
         console.log('blank');
         vm.orgTmp = blank;
       } else {
-        if (!vm.user.organizationError){
+        if (!vm.user.organizationError) {
           vm.orgTmp = vm.user.organization;
         }
-        else{
+        else {
           vm.orgTmp = blank;
         }
-        
-       
+
+
       }
 
-    
-      if (vm.orgTmp.idACC > 0) { 
-        vm.createOrganization = true; 
+
+      if (vm.orgTmp.idACC > 0) {
+        vm.createOrganization = true;
         console.log("woworg" + JSON.stringify(vm.orgTmp) + vm.createOrganization);
       }
 
     }, 1000);
-  
+
     vm.toggleSidenav = toggleSidenav;
     vm.closeDialog = closeDialog;
 
     vm.update = update;
 
-   
+
 
     //console.log('vm.createOrganization', vm.createOrganization);
 
@@ -78,28 +79,28 @@
       vm.updating = true;
       return $http.post(BASEURL + 'organization-update-post.php', {
         org: vm.orgTmp,
-        token:vm.user.token
+        token: vm.user.token
       }, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }).error(function () {
-        return $rootScope.message('Error talking to server.', 'warning');
-      }).success(function (resp) {
-        if (resp.code == void 0 || resp === null || resp === '') {
-          return $rootScope.message('Server response is unreadable.', 'warning');
-        } else if (resp.code) {
-          $mdDialog.hide();
-          return $rootScope.message(resp.message);
-        } else {
-          //$rootScope.user = resp.user;
-          //$rootScope.viewAs.user = resp.viewAs;
-          $mdDialog.hide();
-          return $rootScope.message('Organization Information updated successfully.');
-        }
-      })["finally"](function () {
-        return vm.updating = false;
-      });
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }).error(function () {
+          return $rootScope.message('Error talking to server.', 'warning');
+        }).success(function (resp) {
+          if (resp.code == void 0 || resp === null || resp === '') {
+            return $rootScope.message('Server response is unreadable.', 'warning');
+          } else if (resp.code) {
+           // $mdDialog.hide();
+            return $rootScope.message(resp.message);
+          } else {
+            //$rootScope.user = resp.user;
+            //$rootScope.viewAs.user = resp.viewAs;
+            //$mdDialog.hide();
+            return $rootScope.message('Organization Information updated successfully.');
+          }
+        })["finally"](function () {
+          return vm.updating = false;
+        });
     };
 
     vm.creating = false;
@@ -111,30 +112,30 @@
       return $http.post(BASEURL + 'organization-create-post.php', {
         org: send
       }, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        cache: false
-      }).error(function () {
-        return $rootScope.message('Error talking to server.', 'warning');
-      }).success(function (resp) {
-        if (resp === void 0 || resp === null || resp === '') {
-          $mdDialog.hide();
-          return $rootScope.message('Server response is unreadable.', 'warning');
-        } else if (resp.code) {
-          $mdDialog.hide();
-          return $rootScope.message(resp.message, 'warning');
-        } else {
-          $rootScope.user = resp.user;
-          $mdDialog.hide();
-          closeDialog();
-          return $rootScope.message('Organization details have been updated.', 'success');
-         
-          
-        }
-      })["finally"](function () {
-        return vm.creating = false;
-      });
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          cache: false
+        }).error(function () {
+          return $rootScope.message('Error talking to server.', 'warning');
+        }).success(function (resp) {
+          if (resp === void 0 || resp === null || resp === '') {
+            $mdDialog.hide();
+            return $rootScope.message('Server response is unreadable.', 'warning');
+          } else if (resp.code) {
+            $mdDialog.hide();
+            return $rootScope.message(resp.message, 'warning');
+          } else {
+            $rootScope.user = resp.user;
+            $mdDialog.hide();
+            closeDialog();
+            return $rootScope.message('Organization details have been updated.', 'success');
+
+
+          }
+        })["finally"](function () {
+          return vm.creating = false;
+        });
     };
 
 
@@ -173,20 +174,20 @@
     }
 
 
-    setTimeout(function() {
+    setTimeout(function () {
       if ($rootScope.user.organizationError) {
-          openOrgInfoDialog(event, $rootScope.user);
-           //vm.disableModelClose = true;
+        openOrgInfoDialog(event, $rootScope.user);
+        //vm.disableModelClose = true;
 
       }
-   }, 1000);
-    
-    
+    }, 1000);
+
+
 
 
     function closeDialog() {
-      $mdDialog.hide();
       //$scope.getFolder();
+      $mdDialog.hide();
 
 
     }
@@ -199,8 +200,73 @@
     ];
 
 
+    vm.EditOrgConfirm = EditOrgConfirm;
+    function EditOrgConfirm(ev) {
+      vm.title = 'Organization Changes';
+      vm.warning = 'Warning';
+      vm.description = " Please confirm you want to change your information.<br>Editing your information will change it through the system."
+      $mdDialog.show({
+        //controller: DialogController,
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/organization/dialogs/organizations/alert.html',
+        parent: angular.element(document.body),
+        targetEvent: ev,
+        clickOutsideToClose:false
+      })
+      .then(function(answer) {
+         vm.update();
+         $scope.changedInfoDialog($rootScope.user);
+        $scope.status = 'You said the information was "' + answer + '".';
+      }, function() {
+        $scope.status = 'You cancelled the dialog.';
+      });
 
-  }
+      // var confirm = $mdDialog.confirm()
+      //   .title('Are you sure to update this organization')
+      //   //.htmlContent('This action cannot be undone.')
+      //   .ariaLabel('delete')
+      //   .targetEvent(ev)
+      //   .ok('OK')
+      //   .cancel('CANCEL');
+
+      // $mdDialog.show(confirm).then(function () {
+      //   vm.update();
+      //   $scope.changedInfoDialog($rootScope.user);
+
+      // }, function () {
+      //   openOrgInfoDialog(event, $rootScope.user);
+       
+      // });
+    }
+
+    //organization detail after saved and edit
+     $scope.changedInfoDialog = function(item) {
+      vm.item = item.organization;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/organization/dialogs/organizations/details.html',
+        parent: angular.element($document.find('#checklist')),
+        targetEvent: item,
+        clickOutsideToClose: false
+      });
+    };
+
+    $scope.hide = function() {
+      $mdDialog.hide();
+    };
+
+    $scope.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    $scope.answer = function(answer) {
+      $mdDialog.hide(answer);
+    };
+
+  };
+
 
 
 

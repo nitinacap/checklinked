@@ -22,7 +22,7 @@
 		console.log('vm.contact.contacts[which].id', vm.contact.contacts[which].id);
 
         //Functions
-        vm.title = 'Direct Message';
+    vm.title = 'Direct Message';
 		vm.closeDialog = closeDialog;
 		vm.submitPost = submitPost;
 		vm.from = $rootScope.user.name.full;
@@ -35,24 +35,25 @@
     }
 
     function submitPost() {
-		console.log('vm.contact', vm.contact);
-		console.log('vm.which', vm.which);
-		console.log('vm.contact.contacts[which].name.full', vm.contact.contacts[which].name.full);
-		console.log('vm.contact.contacts[which].id', vm.contact.contacts[which].id);
-    	console.log('vm.message', vm.message);
+		// console.log('vm.contact', vm.contact);
+		// console.log('vm.which', vm.which);
+		// console.log('vm.contact.contacts[which].name.full', vm.contact.contacts[which].name.full);
+		// console.log('vm.contact.contacts[which].id', vm.contact.contacts[which].id);
+    // 	console.log('vm.message', vm.message);
 
 
       vm.submitting = true;
-      console.log('submitting convo entry', vm.contact.id, vm.message, 'message');
+      // console.log('submitting convo entry', vm.contact.id, vm.message, 'message');
       return api.conversations.add(vm.contact.id, vm.message, 'message').error(function(res) {
         return $rootScope.message('Error posting.', 'warning');
       }).success(function(res) {
         if (res.code) {
           $rootScope.message(res.message, 'warning');
         } else {
+          vm.conversation.posts.unshift(res.posts[0]);
           $rootScope.socketio.emit('message', res.posts[0]);
 
-          vm.closeDialog();
+         // vm.closeDialog();
         }
 
       })["finally"](function() {
@@ -60,6 +61,19 @@
         vm.message = '';
       });
     };
+
+    function getDirectMessage(id){
+      vm.items = {'user_id':$rootScope.user.idCON , 'item_id':id};
+      return api.contacts.getdirectmessage(vm.items).success(function (res) {
+        if (res.type=='success') {
+          vm.conversation = res;
+        } else {
+          vm.contacts = res.messages;
+          return vm.loaded.friends = true;
+        }
+      });
+    }
+    getDirectMessage(vm.contact.id);
 
 
     }

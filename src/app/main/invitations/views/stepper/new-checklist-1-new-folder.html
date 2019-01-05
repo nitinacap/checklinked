@@ -1,4 +1,4 @@
-<div layout="row" flex>
+<div layout="column" flex>
   <md-input-container flex="100">
     <label translate="FOLDER.NAME">Project Name</label>
     <input name="name" ng-model="vm.folder.name" md-autofocus required>
@@ -7,5 +7,9 @@
         <span translate="CHECKLIST.ERRORS.PROJECT_NAME_REQUIRED">Project Name field is required</span>
       </div>
     </div>
+  </md-input-container>
+  <md-input-container flex="100">
+    <label>Description</label>
+    <input name="description" ng-model="vm.folder.description" md-autofocus>
   </md-input-container>
 </div>

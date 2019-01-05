@@ -29,21 +29,20 @@
         </div>
       </md-input-container>
 
-      <md-input-container class="md-block">
+      <md-input-container class="md-block alertMsg">
         <label translate="MAIL.MESSAGE">Message</label>
         <div class="md-resize-wrapper">
           <textarea name="text" ng-model="vm.newPost.text" required md-autofocus
                     class="ng-valid md-input ng-not-empty ng-dirty ng-valid-parse ng-valid-md-maxlength ng-touched"
-                    md-maxlength="150" max-rows="5"
+                    md-maxlength="500" maxlength="500" max-rows="5"
                     ng-trim="false"></textarea>
 
-          <div class="md-resize-handle" style="touch-action: pan-x;"></div>
         </div>
-        <div ng-messages="conversationForm.text.$error" ng-show="conversationForm.text.$touched" role="alert">
+        <!-- <div ng-messages="conversationForm.text.$error" ng-show="conversationForm.text.$touched" role="alert">
           <div ng-message="required">
-            <span translate="MAIL.ERRORS.MESSAGE">Message field is required</span>
+            <span>Message field is required</span>
           </div>
-        </div>
+        </div> -->
       </md-input-container>
 
       <div class="simple-table-container">

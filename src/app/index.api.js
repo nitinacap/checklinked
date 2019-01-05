@@ -13,8 +13,8 @@
     // Base Url
     api.baseUrl = 'app/data/';
 
-    var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
-    //var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
+    var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
+   //var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
 
     //var BASEURL = 'http://localhost:8081/dist/ajax/';
 
@@ -196,15 +196,18 @@
       get: function (token) {
         return $http.get(BASEURL + 'coe-get.php?t=folder&token=' + token);
       },
-      add: function (name, description, order, token) {
+      add: function (name, description, link, attachment, order,folder_id) {
         //return $http.post(BASEURL+'coe-post.php', {
 
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'folder',
           name: name,
           description: description,
+          link: link,
+          attachment: attachment,
           order: order,
-          token: token
+          id: folder_id,
+          sub_type: folder_id ? 'duplicate' : ''
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -242,7 +245,7 @@
     api.groups = {
 
       get: function (idCFC, token) {
-        return $http.get(BASEURL + "coe-get.php?t=group&p=" + idCFC + "&token=" + token, {
+        return $http.get(BASEURL + "coe-get.php?t=group&p=" + idCFC, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -250,13 +253,13 @@
           return res.groups;
         });
       },
-      add: function (name, order, to, token) {
+      add: function (name, order, to, description) {
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'group',
           name: name,
           order: order,
           parentID: to,
-          token: token
+          description: description
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -317,13 +320,14 @@
           return res.checklists;
         });
       },
-      add: function (name, order, to, token) {
+      add: function (name, order, to, token,description) {
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'checklist',
           name: name,
           order: order,
           parentID: to,
-          token: token
+          token: token,
+          description:description
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -436,7 +440,7 @@
         });
       },
       invite: {
-        send: function (idCON, idCHK, findLink, idACC, type) {
+        send: function (idCON, idCHK, findLink, idACC, type, user_id, token) {
           console.log('send');
           var pack;
           if (findLink == null) {
@@ -462,7 +466,9 @@
               idACC: idACC,
               idCHK: idCHK,
               findLink: findLink,
-              type: type
+              type: type,
+              user_id: user_id,
+              token:token
             };
           }
           return $http.post(BASEURL + 'checklist_invite-post.php', pack, {
@@ -677,12 +683,18 @@
           return results;
         });
       },
-      add: function (name, order, to, type, info) {
+      add: function (name, order, to, type, info, item_type, alert) {
         if (type == null) {
           type = 1;
         }
         if (info == null) {
           info = '';
+        }
+        if (item_type == null) {
+          item_type = '';
+        }
+        if (alert == null) {
+          alert = '';
         }
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'item',
@@ -690,6 +702,8 @@
           info: info,
           order: order,
           dataType: type,
+          item_type : item_type,
+          item_alert : alert,
           parentID: to
         }, {
             headers: {
@@ -780,11 +794,20 @@
           return res.contacts;
         });
       },
+      getdirectmessage: function (data) {
+        return $http.post(BASEURL + 'contact-message.php',data, {
+          cache: false
+        }).error(function (res) {
+         // $rootScope.message('Error talking to server', 'warning');
+        }).success(function (res) {
+          return res.contacts;
+        });
+      },
       find: function (q) {
         if (q == null) {
           q = '';
         }
-        return $http.get(BASEURL + "contacts-find.php?q=" + q, {
+        return $http.post(BASEURL + "contacts-find.php",q, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -846,9 +869,10 @@
               }
             });
         },
-        send: function (idCON) {
+        send: function (idCON,message) {
           return $http.post(BASEURL + 'friendship_invite-post.php', {
-            idCON: idCON
+            idCON: idCON,
+            message:message
           }, {
               headers: {
                 'Content-Type': 'applicatio/x-www-form-urlencoded'
@@ -865,9 +889,10 @@
               }
             });
         },
-        remove: function (idCON) {
+        remove: function (idCON,type) {
           return $http.post(BASEURL + 'friendship_invite-destroy.php', {
-            idCON: idCON
+            idCON: idCON,
+            'action':type
           }, {
               headers: {
                 'Content-Type': 'applicatio/x-www-form-urlencoded'

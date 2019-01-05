@@ -6,50 +6,55 @@
 
   <table class="bordered-table" cellpadding="0" cellspacing="0">
 
-  <tbody>
-    <tr>
-      <td width="220"><small>Organization Name</small><br>
-      <span ng-bind="vm.user.organization.name"></span></td>
-      <td><small>Phone</small><br>
-      <span>{{vm.user.organization.phone}}</span></td>
-     
-    
-    </tr>
-    <tr>
-      <td><small>Email</small><br>
-    <span>{{vm.user.organization.email}}</span></td>
+    <tbody>
+      <tr>
+        <td width="220"><small>Organization Name</small><br>
+          <span ng-bind="vm.user.organization.name"></span></td>
+        <td><small>Phone</small><br>
+          <span>{{vm.user.organization.phone}}</span></td>
 
-      <td><small>Website</small><br>
-        <span>{{vm.user.organization.website}}</span></td>
-     
-    
-    </tr>
-    <tr>
-      <td><small>Address 1</small><br>
-      <span>{{ vm.user.organization.address.line1 }}</span></td>
-      <td><small>Address 2</small><br>
-      <span>{{vm.user.organization.address.line2}}</span></td>
-    </tr>
+
+      </tr>
+      <tr>
+        <td><small>Organization Email</small><br>
+          <span><a href="mailto:{{vm.user.organization.email}}" class="link text-initial">{{vm.user.organization.email}}</a></span></td>
+
+        <td><small>Website</small><br>
+          <span><a href="{{vm.user.organization.website}}" target="_blank" class="link text-initial">{{vm.user.organization.website}}</a></span></td>
+
+
+      </tr>
+      <tr>
+        <td><small>Address 1</small><br>
+          <span>{{ vm.user.organization.address.line1 }}</span></td>
+        <td><small>Address 2</small><br>
+          <span>{{vm.user.organization.address.line2}}</span></td>
+      </tr>
       <tr>
         <td><small>City </small><br>
-        <span>{{vm.user.organization.address.city}}</span></td>
+          <span>{{vm.user.organization.address.city}}</span></td>
         <td><small>State </small><br>
-        <span>{{vm.user.organization.address.state}}</span></td>
+          <span>{{vm.user.organization.address.state}}</span></td>
       </tr>
 
-            <tr>
-              <td><small>Zip </small><br>
-              <span>{{vm.user.organization.address.zip}}</span></td>
-              <td><small>Country</small> <br>
-              <span>{{vm.user.organization.address.country}}</span></td>
-            </tr>
+      <tr>
+        <td><small>Zip </small><br>
+          <span>{{vm.user.organization.address.zip}}</span></td>
+        <td><small>Country</small> <br>
+          <span>{{vm.user.organization.address.country}}</span></td>
+      </tr>
 
-    <tr>
-      <td colspan="2"><small>Organization Information</small><br>
-        {{vm.user.organization.description}}<br>
-    
-    </tr>
-  </tfoot>
-</table>
+      <tr>
+        <td colspan="2"><small>Organization Information</small><br>
+          {{vm.user.organization.description}}<br>
+
+      </tr>
+      <tr ng-if="vm.user.organization.link">
+        <td colspan="2"><small>Link</small><br>
+         <a href="{{vm.user.organization.link}}">{{vm.user.organization.link}}</a> <br>
+
+      </tr>
+      </tfoot>
+  </table>
 
 </div>

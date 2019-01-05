@@ -38,19 +38,19 @@
           <md-menu-content width="3">
 
             <md-menu-item>
-              <md-button ng-click="vm.openFolderDialog($event)">
+              <md-button ng-click="vm.openFolderDialog()">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
                 <span translate="">Add New Project</span>
               </md-button>
             </md-menu-item>
 
 
-            <md-menu-item>
-              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Archive All"
+            <md-menu-item ng-if="vm.folders">
+              <md-button ng-click="vm.archieveDialog($event, '')" aria-label="Archive All"
                          translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
                 <md-icon class="md-accent-fg s18"
                          md-font-icon="fa fa-download"></md-icon>
-                <span translate="FOLDER.FOLDER_ARCHIVE"></span>
+                <span translate="FOLDER.FOLDER_ARCHIVE_ALL"></span>
               </md-button>
             </md-menu-item>
           </md-menu-content>
@@ -67,7 +67,7 @@
         <!-- <a  ng-click="ShowHideDescription()" ng-show="folder.description !='Null' ">
                 <md-icon class="md-accent-fg s18 pt-0" md-font-icon="icon-plus"></md-icon>
         </a>
-        <a ng-href="/groups/{{folder.id}}"  class="{{folder.description=='Null' ? 'folderchild': '' }}">
+        <a ng-href="/workflows/{{folder.id}}"  class="{{folder.description=='Null' ? 'folderchild': '' }}">
           {{folder.name}} 
         </a>
         <p class="pl-25" ng-show = "IsVisibledesc">{{folder.description}}</p> -->
@@ -75,7 +75,7 @@
           <a  ng-click="ShowHideDescription()" ng-show="folder.description !='Null' ">
                         <md-icon class="md-accent-fg s18 pt-0" md-font-icon="icon-plus"></md-icon>
                 </a>
-                <a ng-href="/groups/{{folder.id}}"  class="{{folder.id_child=='no' ? 'folderchild': '' }}">
+                <a ng-href="/workflows/{{folder.id}}"  class="{{folder.id_child=='no' ? 'folderchild': '' }}">
                   {{folder.name}} 
                 </a>
                 <p class="pl-25" ng-show = "IsVisibledesc">{{folder.description}}</p>
@@ -130,7 +130,7 @@
             </md-menu-item>
 
             <md-menu-item>
-              <md-button ng-click="vm.openFolderDialog($event, folder)" aria-label="Duplicate"
+              <md-button ng-click="vm.openFolderDialog(folder, '' , 'duplicate')" aria-label="Duplicate"
                          translate-attr-aria-label="FOLDER.FOLDER_DUPLICATE">
                 <md-icon class="md-accent-fg s18"
                          md-font-icon="fa fa-files-o"></md-icon>
@@ -139,20 +139,16 @@
             </md-menu-item>
 
             <md-menu-item>
-              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Archive All"
+              <md-button ng-click="vm.archieveDialog($event, folder.id)" aria-label="Archive All"
                          translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE">
                 <md-icon class="md-accent-fg s18"
                          md-font-icon="fa fa-download"></md-icon>
                 <span translate="FOLDER.FOLDER_ARCHIVE"></span>
               </md-button>
             </md-menu-item>
-
             <md-divider class="md-default-theme"></md-divider>
-
-
           </md-menu-content>
         </md-menu>
-
       </td>
 
     </tr>

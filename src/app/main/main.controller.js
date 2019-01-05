@@ -26,7 +26,4 @@
     }
 })();
 
-var contentWidth = $("#content").outerWidth();
-console.log("hello22");
-console.log(contentWidth);
-$(".nav-fixed-top").css('width', contentWidth);
+

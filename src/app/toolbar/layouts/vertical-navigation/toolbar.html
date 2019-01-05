@@ -16,7 +16,7 @@
 
     <md-menu-bar id="user-menu" ng-hide="viewAs.notMe || !globalSearchCollapse">
       <md-menu md-position-mode="left bottom">
-        <md-button class="user-button" ng-click="$mdOpenMenu()" aria-label="User settings" translate translate-attr-aria-label="TOOLBAR.USER_SETTINGS">
+        <md-button class="user-button" ng-click="$mdOpenMenu(); vm.ShowHideToggle()" aria-label="User settings" translate translate-attr-aria-label="TOOLBAR.USER_SETTINGS">
           <div layout="row" layout-align="space-between center">
             <div class="avatar-wrapper">
               <!-- <img md-menu-align-target class="avatar" src="assets/images/avatars/profile.jpg" /> -->
@@ -28,15 +28,15 @@
            <!-- <span class="username" hide show-gt-xs>{{ username.full }}</span> -->
           <span class="username">{{ username }}</span>
       
-        <i class="fa fa-angle-down" aria-hidden="true"></i>
+        <i class="fa fa-angle-{{vm.IsHidden ? 'up' : 'down'}}" aria-hidden="true"></i>
 
           </div>
         </md-button>
 
-        <md-menu-content width="3">
+        <md-menu-content width="3" class="user-menu">
           <md-menu-item class="md-indent" ui-sref="app.user">
             <md-menu>
-              <md-button ng-mousehover="$mdMenu.open()" style="padding: 0 44px 0 25px;">
+              <md-button ng-mousehover="$mdMenu.open()" >
                 <md-icon style="padding-right: 40px;" md-font-icon="icon-account" class="icon"></md-icon>
                 My Profile
               </md-button>
@@ -53,7 +53,7 @@
 
                     <md-menu-item class="md-indent" ui-sref="app.contacts" ui-sref-opts="{reload: 'app.contacts'}">
                       <md-menu>
-                        <md-button ng-mousehover="$mdMenu.open()" style="padding: 0 44px 0 25px;">
+                        <md-button ng-mousehover="$mdMenu.open()">
                         <md-icon style="padding-right: 40px;" md-font-icon="icon-people" class="icon"></md-icon>
                          Contacts
                         </md-button>
@@ -69,7 +69,7 @@
 
           <md-menu-item class="md-indent" ui-sref="app.organization">
             <md-menu>
-              <md-button ng-mousehover="$mdMenu.open()" style="padding: 0 44px 0 25px;">
+              <md-button ng-mousehover="$mdMenu.open()">
                 <md-icon md-font-icon="icon-store" style="padding-right: 40px;" class="icon"></md-icon>
                Organization
               </md-button>
@@ -85,7 +85,7 @@
 
           <md-menu-item class="md-indent" ui-sref="app.account">
             <md-menu>
-              <md-button ng-mouseenter="$mdMenu.open()" style="padding: 0 44px 0 25px;">
+              <md-button ng-mouseenter="$mdMenu.open()">
                 <md-icon md-font-icon="icon-home" class="icon" style="padding-right: 40px;"></md-icon>
                 Account
               </md-button>
@@ -98,38 +98,15 @@
               </md-menu-content>
             </md-menu>
           </md-menu-item>
-
-          <!--<md-menu-item class="md-indent" ui-sref="app.organization">
-            <md-icon md-font-icon="icon-store" class="icon"></md-icon>
-            <md-button>Organization</md-button>
-          </md-menu-item>
-
-          <md-menu-item class="md-indent" ui-sref="app.contacts" ui-sref-opts="{reload: 'app.contacts'}">
-            <md-icon md-font-icon="icon-people" class="icon"></md-icon>
-            <md-button>Contacts</md-button>
-
-
-          </md-menu-item>
-
-          <md-menu-item class="md-indent" ui-sref="app.teammembers">
-            <md-icon md-font-icon="icon-people" class="icon"></md-icon>
-            <md-button>Team Members</md-button>
-          </md-menu-item>
           <md-menu-divider></md-menu-divider>
-          <md-menu-item class="md-indent" ui-sref="app.subscriptions">
-            <md-icon md-font-icon="icon-credit-card" class="icon"></md-icon>
-            <md-button>Subscriptions</md-button>
-          </md-menu-item>
-        -->
-
-
-
-          <md-menu-divider></md-menu-divider>
-
 
           <md-menu-item class="md-indent" ui-sref="app.logout">
-            <md-icon md-font-icon="icon-logout" class="icon"></md-icon>
-            <md-button>Logout</md-button>
+              <md-menu>
+            <md-button>
+                <md-icon md-font-icon="icon-logout" class="icon"></md-icon>
+              Logout
+            </md-button>
+              </md-menu>
           </md-menu-item>
         </md-menu-content>
 

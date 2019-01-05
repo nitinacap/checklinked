@@ -1,4 +1,32 @@
 #contacts {
+  .subtab md-tabs-wrapper {
+    background: #fff!important;
+}
+.subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2) {
+  float: left !important;
+
+}
+md-tabs-wrapper{
+  border-color: #517CC2 !important;
+}
+.md-tab {
+  margin-right: 30px !important;
+}
+// .md-tab.md-active{
+//   border-bottom:none !important;
+//   color:black !important;
+// }
+// .md-tab span{
+//   color:#a6a6a6 !important;
+// }
+// .md-tab.md-active span {
+//   color: #000 !important;
+// } 
+md-tab-item:nth-last-child(2){
+float: right !important;
+margin-right: 0px !important;
+max-width: 75px !important;
+}  
 
   table.dataTable {
 

@@ -16,7 +16,11 @@
 <div class="oganization-form">
 
   <form name="form" ng-disabled='vm.update.sending' class="md-inline-form" ng-submit="vm.update()" novalidate>
-
+    <div layout="column" layout-gt-sm="row" class="pb-20">
+      <md-input-container flex class="m-0">
+        <span>This Information will be your public profile viewable by other organizations</span>
+    </md-input-container>
+    </div>
     <div layout="column" layout-gt-sm="row">
       <md-input-container flex>
         <input type="text" name="name" ng-model="vm.orgTmp.name" placeholder="Organization Name"
@@ -35,6 +39,9 @@
             <div ng-message="pattern" style="opacity: 1; margin-top: 0px;">
               <span>Please enter only numeric.</span>
             </div>
+              <div ng-message="required" style="opacity: 1; margin-top: 0px;">
+                <span>Mobile number is required</span>
+              </div>
           </div>
       </md-input-container>
     </div>
@@ -42,7 +49,7 @@
     <div layout="column" layout-gt-sm="row">
 
       <md-input-container flex>
-        <input type="email" name="email" ng-model="vm.orgTmp.email" placeholder="Email"
+        <input type="email" name="email" ng-model="vm.orgTmp.email" placeholder="Organization Email"
                ng-pattern="/^.+@.+\..+$/" required>
         <div ng-messages="form.email.$error"
              role="alert" multiple="multiple">
@@ -56,10 +63,13 @@
       </md-input-container>
 
       <md-input-container flex>
-        <input type="text" name="website" required ng-model="vm.orgTmp.website" placeholder="website">
+        <input type="url" name="website" ng-model="vm.orgTmp.website" placeholder="Website (http://)">
             <div ng-messages="form.website.$error" role="alert">
               <div ng-message="required">
                 <span>Website is required.</span>
+              </div>
+              <div ng-message="url" style="opacity: 1; margin-top: 0px;">
+                <span>Website format is not correct enter with http</span>
               </div>
             </div>
      
@@ -70,8 +80,7 @@
     <div layout="column" layout-gt-sm="row">
 
       <md-input-container flex>
-        <input type="text" name="address_line1" ng-model="vm.orgTmp.address.line1" placeholder="Address Line 1"
-               required>
+        <input type="text" name="address_line1" ng-model="vm.orgTmp.address.line1" placeholder="Address Line 1">
         <div ng-messages="form.address_line1.$error"
              role="alert">
           <div ng-message="required">
@@ -89,8 +98,7 @@
     <div layout="column" layout-gt-sm="row">
 
       <md-input-container flex>
-        <input type="text" name="address_city" ng-model="vm.orgTmp.address.city" placeholder="City"
-               required>
+        <input type="text" name="address_city" ng-model="vm.orgTmp.address.city" placeholder="City">
         <div ng-messages="form.address_city.$error"
              role="alert">
           <div ng-message="required">
@@ -100,8 +108,7 @@
       </md-input-container>
 
       <md-input-container flex>
-        <input type="text" name="address_state" ng-model="vm.orgTmp.address.state" placeholder="State "
-               required>
+        <input type="text" name="address_state" ng-model="vm.orgTmp.address.state" placeholder="State">
         <div ng-messages="form.address_state.$error"
              role="alert">
           <div ng-message="required">
@@ -115,20 +122,17 @@
     <div layout="column" layout-gt-sm="row">
 
       <md-input-container flex>
-        <input type="text" name="address_zip" maxlength="6" ng-model="vm.orgTmp.address.zip" placeholder="Zip"
-               required>
-        <div ng-messages="form.address_zip.$error"
-             role="alert">
+        <input type="text" name="address_zipcode" maxlength="6" ng-model="vm.orgTmp.address.zip" placeholder="Zip code">
+        <div ng-messages="form.address_zipcode.$error" role="alert">
           <div ng-message="required">
-            <span>Zip Code is required.</span>
+            <span>Zip code is required.</span>
           </div>
-      
         </div>
+
       </md-input-container>
 
       <md-input-container flex>
-        <input type="text" name="address_country" ng-model="vm.orgTmp.address.country" placeholder="Country"
-               required>
+        <input type="text" name="address_country" ng-model="vm.orgTmp.address.country" placeholder="Country">
         <div ng-messages="form.address_country.$error"
              role="alert">
           <div ng-message="required">
@@ -145,15 +149,27 @@
         <textarea name="address_zip" ng-model="vm.orgTmp.description" placeholder="Description of Organization"></textarea>
       </md-input-container>
     </div>
+
+    <div layout="column" layout-gt-sm="row" ng-show="myLink" >
+      <md-input-container flex>
+        <input type="url" style="width:90% !important;" name="link" ng-model="vm.orgTmp.link" placeholder="link">
+        <div ng-messages="form.link.$error" role="alert">
+          <div ng-message="url" style="opacity: 1; margin-top: 0px;">
+            <span>Link format is not correct</span>
+          </div>
+        </div>
+      </md-input-container>
+    </div>
+
   <div flex="90" padding class="pt-20">
-    <md-button type="submit" class="md-raised md-accent" aria-label="Submit"
+    <md-button type="button" ng-click="vm.EditOrgConfirm()"  class="md-raised md-accent" aria-label="Submit"
       ng-disabled="form.$invalid || form.$pristine || vm.update.sending">
       <span ng-hide='vm.update.sending'>Save</span>
       <span ng-show='vm.update.sending'>Updating...</span>
     </md-button>
 
-    <md-button type="button" class="md-raised md-accent link" aria-label="link">
-      <span>Insert Link</span>
+    <md-button type="button" md-no-ink ng-click="myLink=myLink ? false : true;" class="md-primary link" aria-label="link">
+      <span> {{myLink ? 'Cancel' : 'Insert'}}  Link</span>
     </md-button>
  </div>
   </form>

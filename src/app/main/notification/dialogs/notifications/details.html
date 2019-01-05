@@ -1,0 +1,48 @@
+<md-dialog class="dialog orgdetail" aria-label="Organization Detail">
+    <md-toolbar class="md-accent md-hue-2">
+        <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+            <span class="title">{{vm.item.name}}</span>
+            <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+                <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <div layout="row" padding>
+        <table>
+            <thead>
+                <tr>
+                    <th><span class="name">{{vm.item.name}}</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{vm.item.address.line1}}</td>
+                </tr>
+                <tr>
+                    <td>{{vm.item.address.line2}} {{vm.item.address.city}}, {{vm.item.address.state}},
+                        {{vm.item.address.zip}} {{vm.item.address.country}}</td>
+                </tr>
+                <tr ng-if="vm.item.phone">
+                    <td>{{vm.item.phone}}</td>
+                </tr>
+                <tr ng-if="vm.item.email">
+                    <td>{{vm.item.email}}</td>
+                </tr>
+                <tr ng-if="vm.item.website">
+                    <td>{{vm.item.website}}</td>
+                </tr>
+                <tr ng-if="vm.item.description">
+                    <td height="30">{{vm.item.description}}</td>
+                </tr>
+                <tr ng-if="vm.item.link">
+                    <td height="30"><a href="{{vm.item.link}}">{{vm.item.link}}</a></td>
+                </tr>
+                <tr>
+                    <td height="20"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</md-dialog>

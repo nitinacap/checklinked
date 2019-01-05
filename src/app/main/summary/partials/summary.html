@@ -70,7 +70,7 @@
         ng-class="{'md-green-100-bg': vm.reports.success && $index==0}">
       <td ng-class="{'md-accent-fg': !vm.reports.viewing}" class="text-left">
     
-        <md-icon ng-if="!vm.reports.viewing" ng-if="!vm.reports.viewing" ng-click="vm.reports.view(report, $index)" class="fa fa-angle-down  s18" md-font-icon="icon-file-document"></md-icon>
+        <md-icon ng-if="!vm.reports.viewing"  ng-click="vm.reports.view(report, $index)" class="fa fa-angle-down  s18" md-font-icon="icon-file-document"></md-icon>
         <md-icon ng-if="vm.reports.viewing" ng-click="vm.reports.clear()" class="s18" md-font-icon="fa fa-angle-up"></md-icon>
      
         {{ report.requested * 1000 | date:'short'}}
@@ -250,12 +250,19 @@
                 </md-menu-item>
 
                 <md-menu-item ng-show="line.contact.idACC == user.organization.idACC">
-                  <md-button
+                  <!-- <md-button
                     ng-click="vm.openConversationDialog($event, 'checklist', vm.reports.viewingSub.idCNV_mostRecent, line.cfcName)">
                     <md-icon md-font-icon="icon-comment-multipe-outline" class="md-accent-fg s18"
                              md-menu-align-target></md-icon>
                     Conversations
-                  </md-button>
+                  </md-button> -->
+
+                  <md-button
+                  ng-click="vm.openConversationDialog('checklist', vm.reports.viewingSub.idCNV_mostRecent, line.cfcName)">
+                  <md-icon md-font-icon="icon-comment-multipe-outline" class="md-accent-fg s18"
+                           md-menu-align-target></md-icon>
+                  Conversations
+                </md-button>
                 </md-menu-item>
 
               </md-menu-content>

@@ -6,7 +6,7 @@
     .controller('ContactsController', ContactsController);
 
   /** @ngInject */
-  function ContactsController($rootScope, $state, $stateParams, $scope, $mdSidenav, msUtils, $mdDialog, $document, api, $http, $filter) {
+  function ContactsController($rootScope, $state, $location, $stateParams, $scope, $mdSidenav, msUtils, $mdDialog, $document, api, $http, $filter) {
     var vm = this;
 
 
@@ -15,20 +15,19 @@
 
     api.contacts.get().then(function (d) {
       debugger;
-      vm.contacts = d.data.friendships;
-      var me = $rootScope.user.idCON;
-      vm.LinkList = $filter('filter')(vm.contacts, function (invite) {
-        return (invite.contacts.originator.id !== me && invite.accepted == '');
-      });
-      console.log("MUser", $rootScope.user);
-      if ($stateParams.passID) {
-        vm.filterChange('invitations');
-      }
-      console.log('vm.contacts', vm.contacts);
+      // vm.contacts = d.data.friendships;
+      // var me = $rootScope.user.idCON;
+      // vm.LinkList = $filter('filter')(vm.contacts, function (invite) {
+      //   return (invite.contacts.originator.id !== me && invite.accepted == '');
+      // });
+      // console.log("MUser", $rootScope.user);
+      // if ($stateParams.passID) {
+      //   vm.filterChange('invitations');
+      // }
+      // console.log('vm.contacts', vm.contacts);
     });
 
     vm.user = $rootScope.user;
-
     vm.contacts.shift = showWhichInviteContactData(vm.contacts);
 
     vm.filterIds = null;
@@ -42,7 +41,7 @@
     vm.filterChange = filterChange;
     vm.openContactDialog = openContactDialog;
     vm.openAddContactDialog = openAddContactDialog;
-    vm.deleteContactConfirm = deleteContactConfirm;
+    vm.Confirmation = Confirmation;
     vm.toggleSidenav = toggleSidenav;
     vm.setBlank = setBlank;
     vm.updateFriends = updateFriends;
@@ -151,6 +150,7 @@
           if (friend.contacts.accepter.id === idCON) {
             return 'Sent';
           } else if (friend.contacts.originator.id === idCON) {
+
             return 'Received';
           }
         } else {
@@ -179,15 +179,18 @@
         return 'Strangers';
       }
     };
-    function deleteConnection(idCON) {
+    function deleteConnection(idCON, type) {
       if (confirm('Are you sure you wish to delete this connection?')) {
-        return vm.removeConnectionInvitation(idCON);
+        return vm.removeConnectionInvitation(idCON, type);
       }
     };
     function find(ev) {
       vm.findContacts = {
         criteria: {
-          queryString: ''
+          name: '',
+          organization:'',
+          city:'',
+          state:''
         },
         searchCount: 0,
         searching: false,
@@ -196,17 +199,19 @@
       vm.openAddContactDialog(ev);
       return null;
     };
+    vm.findContactsMessage = true;
     function queryContacts() {
-      console.log('queryContacts', vm.findContacts.criteria.queryString);
-      if (vm.findContacts.criteria.queryString === '') {
+      if (vm.findContacts.criteria.name === '') {
         return $rootScope.message('Please provide Search criteria.', 'warning');
       } else {
         vm.findContacts.searching = true;
-        return api.contacts.find(vm.findContacts.criteria.queryString).success(function (res) {
+        return api.contacts.find(vm.findContacts.criteria).success(function (res) {
           if (res.code) {
             return $rootScope.message(res.message, 'warning');
           } else {
+            vm.findContactsMessage = res.contacts.length > 0 ? true : false;
             vm.findContacts.results = res.contacts;
+            vm.findContacts.results2 = res.contacts;
             return vm.findContacts.searchCount += 1;
           }
         })["finally"](function () {
@@ -228,11 +233,7 @@
 
 
       var friendship;
-
       friendship = vm.contacts[index];
-
-      console.log('friendship', friendship);
-
       return api.contacts.invite.accept(idCON).success(function (res) {
         if (!res.code) {
 
@@ -244,15 +245,20 @@
         }
       });
     };
+    vm.spinner = false;
     function inviteToConnect(idCON) {
-      return api.contacts.invite.send(idCON).success(function (res) {
+      vm.spinner = true;
+      return api.contacts.invite.send(idCON, vm.message).success(function (res) {
+        vm.spinner = false;
         if (!res.code) {
+          updateFriends();
+          $mdDialog.hide();
           return vm.contacts.unshift(res.friendships[0]);
         }
       });
     };
-    function removeConnectionInvitation(idCON) {
-      return api.contacts.invite.remove(idCON).success(function () {
+    function removeConnectionInvitation(idCON, type) {
+      return api.contacts.invite.remove(idCON, type).success(function () {
         var i, invite, invites, len, results;
         invites = $filter('filter')(vm.contacts, {
           contacts: {
@@ -290,9 +296,7 @@
     };
     debugger;
     function openContactDialog(ev, contact) {
-
       vm.contact = angular.copy(contact);
-
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
@@ -314,19 +318,36 @@
       });
     }
 
-    function deleteContactConfirm(ev, contact, idCON) {
-      console.log(contact);
-      var confirm = $mdDialog.confirm()
-        .title('Are you sure want to delete the contact?')
-        .htmlContent('<b>' + contact.name.full + '</b>' + ' will be deleted.')
-        .ariaLabel('delete contact')
-        .targetEvent(ev)
-        .ok('OK')
-        .cancel('CANCEL');
+    function Confirmation(ev, contact, idCON, type) {
+      vm.title = 'Delete Contact';
+      vm.warning = 'Warning';
+      vm.description = "Please confirm you want to delete this contact.<br>This will prevent direct messages between you."
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/organization/dialogs/organizations/alert.html',
+        parent: angular.element(document.body),
+        targetEvent: ev,
+        clickOutsideToClose: false
+      })
+        .then(function (answer) {
+          vm.removeConnectionInvitation(idCON, type);
+        }, function () {
+          $scope.status = 'You cancelled the dialog.';
+        });
 
-      $mdDialog.show(confirm).then(function () {
-        vm.removeConnectionInvitation(idCON);
-      });
+      // console.log(contact);
+      // var confirm = $mdDialog.confirm()
+      //   .title('Are you sure want to delete the contact?')
+      //   .htmlContent('<b>' + contact.name.full + '</b>' + ' will be deleted.')
+      //   .ariaLabel('delete contact')
+      //   .targetEvent(ev)
+      //   .ok('OK')
+      //   .cancel('CANCEL');
+
+      // $mdDialog.show(confirm).then(function () {
+      //   vm.removeConnectionInvitation(idCON,type);
+      //  });
 
     }
 
@@ -357,13 +378,12 @@
      */
 
     function openDirectMessageDialog(contact, ev) {
-
       vm.contact = contact;
+      // getDirectMessage(contact.id);
+      vm.titlea = "DATA HERE";
 
+      console.log('Direct Message', contact);
       vm.which = vm.showWhichInviteContactData(contact);
-
-      console.log('vm.which', vm.which); console.log('vm.which', vm.which);
-
       $mdDialog.show({
         controller: 'DirectMessageDialogController',
         controllerAs: 'vm',
@@ -381,11 +401,6 @@
 
 
     function openConversationDialog(ev, producerType, id, name) {
-
-      console.log('id', id);
-      console.log('name', name);
-      console.log('producerType', producerType);
-
       $mdDialog.show({
         controller: 'ChecklistConversationDialogController',
         controllerAs: 'vm',
@@ -410,7 +425,11 @@
 
 
     function closeDialog() {
+      vm.spinner = false;
+      vm.isMessage = true;
+      vm.message = '';
       $mdDialog.hide();
+      vm.findContactsMessage = true;
     }
 
     function toggleSidenav(sidenavId) {
@@ -423,6 +442,57 @@
       { link: 'organization', title: 'Organization' },
       { link: 'account', title: 'Account' }
     ];
+    vm.sendToggle = sendToggle;
+    vm.isMessage = true;
+
+    function sendToggle(res, type) {
+      vm.isMessage = false;
+      vm.itemId = res.id;
+      var data = [];
+
+      if (type == 'close') {
+        vm.spinner = false;
+        vm.message = '';
+        vm.isMessage = true;
+        vm.findContacts.results = vm.findContacts.results2;
+      }
+      else {
+
+        angular.forEach(vm.findContacts.results, function (item) {
+          if (item.rid == res.rid) {
+            data.push(item);
+          }
+        });
+        vm.findContacts.results = data;
+      }
+    };
+
+    $scope.hide = function () {
+      $mdDialog.hide();
+    };
+
+    $scope.cancel = function () {
+      $mdDialog.cancel();
+    };
+
+    $scope.answer = function (answer) {
+      $mdDialog.hide(answer);
+    };
+
+    //contact direct message list
+    // function getDirectMessage(id){
+
+    //   vm.items = {'user_id':$rootScope.user.idCON , 'item_id':id};
+    //   return api.contacts.getdirectmessage(vm.items).success(function (res) {
+    //     if (res.type=='success') {
+    //       vm.conversation = res;
+    //     console.log('msg=',vm.conversation.posts);
+    //     } else {
+    //       vm.contacts = res.messages;
+    //       return vm.loaded.friends = true;
+    //     }
+    //   });
+    // }
 
 
 

@@ -19,6 +19,12 @@
           </div>
         </div>
       </md-input-container>
+
+      <md-input-container class="md-block">
+        <label translate="CHECKLIST.DESCRIPTION">{{vm.checklist.description}}</label>
+        <input name="name" ng-model="vm.checklist.description">
+
+      </md-input-container>
     </md-dialog-content>
 
     <md-dialog-actions layout="row" layout-align="space-between center">

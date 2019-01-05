@@ -8,11 +8,12 @@
                 </md-button>
             </div>
         </md-toolbar>
-
-        <md-dialog-content>
-
+      
+        <md-dialog-content class="pt-15">
+                <p class="black" ng-if="type">Duplicate all the Groups and Checklists in this Project and create a new Project.
+                    </p>
           <md-input-container class="md-block">
-                <label translate="FOLDER.NAME">Workflow Name</label>
+                <label>{{ vm.type ? '' : 'Project' }} Name</label>
                 <input name="name" ng-model="vm.folder.name" required md-autofocus>
                 <div ng-messages="folderForm.name.$error" ng-show="folderForm.name.$touched" role="alert">
                     <div ng-message="required">
@@ -26,32 +27,53 @@
                 <input name="description" ng-model="vm.folder.description">
           </md-input-container>
 
+          <md-input-container class="md-block" ng-show="insertLink && vm.type">
+                <label>Insert Link</label>
+                <input type="url" name="link" ng-model="vm.folder.link" md-autofocus>
+                <div ng-messages="folderForm.link.$error" ng-show="folderForm.link.$touched" role="alert">
+                    <div ng-message="required">
+                        <span>Link is required</span>
+                    </div>
+                </div>
+          </md-input-container>
+
         </md-dialog-content>
 
         <md-dialog-actions layout="row" layout-align="space-between center">
             <div layout="row" layout-align="start center">
                 <md-button type="submit"
                            ng-if="!vm.newFolder"
-                           ng-click="vm.saveFolder()"
+                           ng-click="vm.saveFolder(vm.datas)"
                            class="md-raised md-accent"
                            ng-disabled="folderForm.$invalid || folderForm.$pristine"
-                           aria-label="Save"
-                           translate="FOLDER.SAVE"
-                           translate-attr-aria-label="FOLDER.SAVE">SAVE WORKFLOW</md-button>
+                           aria-label="Save">{{vm.type ? 'Ok': 'Edit Workflow'}}</md-button>
 
 
                 <md-button type="submit" ng-if="vm.newFolder"
-                           ng-click="vm.addNewFolder($event)"
+                           ng-click="vm.addNewFolder(vm.datas)"
                            class="md-raised md-accent"
                            ng-disabled="folderForm.$invalid || folderForm.$pristine"
-                           aria-label="Add Folder"
-                           translate="FOLDER.ADD_FOLDER"
-                           translate-attr-aria-label="FOLDER.ADD_FOLDER">
-                    ADD WORKFLOW
+                           aria-label="Add Folder">
+                           {{vm.type ? 'Ok': 'Save Workflow'}}  
                 </md-button>
+
+                <md-button ng-show="vm.type" 
+                ng-click="insertLink = insertLink == true ? false : true;"
+                class="md-accent capitalize">
+              {{insertLink ? 'Cancel' : 'Insert'}}  Link
+            </md-button>
+                <md-checkbox ng-if="vm.type"
+                ng-model="vm.folder.attachment"
+                aria-label="Include Attachments"
+                ng-true-value="'yes'"
+                ng-false-value="''"
+                class="md-success md-align-top-left" flex>
+                Include Attachments
              </div>
 
             <div layout="row">
+                   
+
                 <md-button ng-if="!vm.newFolder"
                            class="md-icon-button"
                            ng-click="vm.deleteFolder(vm.folder, $event)"
