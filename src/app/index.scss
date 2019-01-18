@@ -16,18 +16,31 @@ md-accent-bg{
     background-color: #282D38 !important;
 }
 md-tabs-wrapper{
-    background-color:black !important; 
+    background-color:#f5f5f5  !important; 
       color:#fff !important;
 }
 md-tab-data{
         background-color:black !important; 
         color:#fff !important;
 }
+.tool-bg{
+    background-color: rgb(245, 245, 245) !important;
+}
+.tb-border{
+    border-bottom:1px solid rgba(0,0,0,0.12) !important;
+}
+
+.subtab .md-tab.md-active{
+    border-bottom:none !important;
+}
 .danger{
     color:#f24141;
 }
 .success{
     color:green;
+}
+.black{
+    color:black !important;
 }
 
 #vertical-navigation {
@@ -49,6 +62,9 @@ md-tab-data{
 .max-10{
     max-width: 10% !important
 }
+.pointer {
+    cursor: pointer !important;
+ }
 
 md-progress-circular.ng-isolate-scope._md-mode-indeterminate.md-default-theme {
     position: absolute;
@@ -62,11 +78,10 @@ md-progress-circular.ng-isolate-scope._md-mode-indeterminate.md-default-theme sv
     stroke: rgb(255, 255, 255);
 }
 md-tabs-canvas{
-        height: 30px !important;
+        height: 40px !important;
 }
 .md-tab{
-    color:#fff !important;
-   padding: 3px 12px 0px 12px !important; 
+   color:#fff !important;
    font-size: 10px;
 }
 // .md-accent{
@@ -113,7 +128,7 @@ md-tabs-canvas{
     color:black !important;;
 }
 .blue{
-    color:#04cbd6;
+    color:#50dbfe;
     font-size: 13px;
 }
 .white{
@@ -218,7 +233,10 @@ small {
     opacity: 1;
 }
 .subtab md-tabs-wrapper {
-    background: none !important;
+  //  background: none !important;
+}
+pt-37{
+    padding-top:37px !important;
 }
 
 .subtab md-tabs-wrapper * {
@@ -370,6 +388,9 @@ md-checkbox ._md-label{
 .md-tab.md-active span {
     color: #517cc6 !important;
 }
+md-pagination-wrapper{
+    height: 40px !important;
+}
 
 #alert-message{
     md-toolbar {
@@ -388,4 +409,5 @@ md-checkbox ._md-label{
     .md-button{
         min-width: 40px !important;
     }
+ 
 }

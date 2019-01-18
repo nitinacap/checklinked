@@ -1,83 +1,65 @@
 <div class="content">
   <page-toolbar datas="vm.submenu"> </page-toolbar>
 </div>
-<div id="checklist" class="page-layout simple tabbed pad-0 pt-30" layout="column">
+<div id="checklist" class="page-layout simple tabbed pad-0 pt-35" layout="column">
 
   <!-- CENTER -->
-  <div class="center" layout="column" flex>
 
-    <!-- CONTENT HEADER -->
-    <!-- <div class="header" layout="row" layout-align="start center" hide-xs>
-      <div class="search-wrapper md-whiteframe-4dp" flex layout="row" layout-align="start center">
-        <md-button class="md-icon-button sidenav-toggle" ng-click="vm.toggleSidenav('main-sidenav')" hide-gt-md
-                   aria-label="Toggle sidenav" translate translate-attr-aria-label="CHECKLIST.TOGGLE_SIDENAV">
-          <md-icon md-font-icon="icon-menu" class="icon"></md-icon>
+
+    <div class="toolbar-list tb-border" layout="row" layout-align="space-between center" ng-if="vm.checklists.length && !vm.isLoader">
+      <div layout="row" layout-align="start center" class="pl-15">
+        <md-select class="simplified" ng-model="vm.checklistOrder" placeholder="Mosr Recent" ng-change="vm.checklistOrderDescending = vm.checklistOrder === '' ? false : vm.checklistOrderDescending">
+          <md-option value="name">Checklist</md-option>
+        </md-select>
+
+        <md-button class="md-icon-button" ng-disabled="vm.checklistOrder === ''" ng-click="vm.checklistOrderDescending = !vm.checklistOrderDescending"
+          aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+          <md-icon style="line-height: 10px !important;" md-font-icon="icon-sort-ascending" ng-if="vm.checklistOrderDescending === false" class="s18"></md-icon>
+          <md-icon style="line-height: 10px !important;" md-font-icon="icon-sort-descending" ng-if="vm.checklistOrderDescending === true" class="s18"></md-icon>
         </md-button>
-
-        <div class="search" flex layout="row" layout-align="start center">
-          <md-icon md-font-icon="icon-magnify" class="icon s24"></md-icon>
-          <input flex ng-model="vm.checklistFilters.search" type="text" placeholder="Search Checklists"
-                 translate translate-attr-placeholder="CHECKLIST.SEARCHS">
-        </div>
       </div>
-    </div> -->
-    <!-- / CONTENT HEADER -->
+      <div class="text-right mr-9" layout="row" layout-align="end center">
+        <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg" ng-if="checklist.important"></md-icon>
 
-    <!-- CONTENT CARD -->
-    <div class="content-card p-5" layout="column" flex>
+        <md-menu>
+          <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
+            translate-attr-aria-label="CHECKLIST.MORE">
+            <md-icon md-font-icon="icon-dots-horizontal" class="s18"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+            <md-menu-item>
+              <md-button class="item" ng-click="vm.addChecklistDialog($event)" aria-label="Create New Checklist">
+                <md-icon class="md-accent s18" md-font-icon="icon-pencil"></md-icon>
+                <span translate-attr-aria-label="CHECKLIST.CREATE_NEW_CHECKLIST">Create New Checklist</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item>
+              <md-button class="item" ng-click="vm.find.begin($event, vm.folder_id, 'checklist')" aria-label="Download Templates">
+
+                <md-icon class="red-600-fg s18" md-font-icon="icon-cloud-download"></md-icon>
+                <span>Download Checklists</span>
+              </md-button>
+
+            </md-menu-item>
+
+            <!-- <md-menu-item>
+              <md-button ng-click="vm.archieveDialog($event, '')" aria-label="Archive All" translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
+                <span translate="CHECKLIST.ARCHIVE_ALL"></span>
+              </md-button>
+            </md-menu-item> -->
+
+          </md-menu-content>
+        </md-menu>
+      </div>
+
+    </div>
+    <div class="content-card" layout="column" flex>
 
       <!-- CONTENT TOOLBAR -->
-      <div class="toolbar-list" layout="row" layout-align="space-between center" ng-if="vm.checklists.length">
 
-        <div layout="row" layout-align="start center" class="pl-15">
-          <md-select class="simplified" ng-model="vm.checklistOrder" placeholder="Mosr Recent" ng-change="vm.checklistOrderDescending = vm.checklistOrder === '' ? false : vm.checklistOrderDescending">
-            <md-option value="name">Checklist</md-option>
-          </md-select>
-
-          <md-button class="md-icon-button" ng-disabled="vm.checklistOrder === ''" ng-click="vm.checklistOrderDescending = !vm.checklistOrderDescending"
-            aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
-            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.checklistOrderDescending === false" class="s18"></md-icon>
-            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.checklistOrderDescending === true" class="s18"></md-icon>
-          </md-button>
-        </div>
-        <div class="text-right mr-9" layout="row" layout-align="end center">
-          <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg" ng-if="checklist.important"></md-icon>
-
-          <md-menu>
-            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
-              translate-attr-aria-label="CHECKLIST.MORE">
-              <md-icon md-font-icon="icon-dots-horizontal" class="s18"></md-icon>
-            </md-button>
-
-            <md-menu-content width="3">
-              <md-menu-item>
-                <md-button class="item" ng-click="vm.addChecklistDialog($event)" aria-label="Create New Checklist">
-                  <md-icon class="md-accent s18" md-font-icon="icon-pencil"></md-icon>
-                  <span translate-attr-aria-label="CHECKLIST.CREATE_NEW_CHECKLIST">Create New Checklist</span>
-                </md-button>
-              </md-menu-item>
-
-              <md-menu-item>
-                <md-button class="item" ng-click="vm.find.begin($event, vm.folder_id, 'checklist')" aria-label="Download Templates">
-
-                  <md-icon class="red-600-fg s18" md-font-icon="icon-cloud-download"></md-icon>
-                  <span>Download Checklists</span>
-                </md-button>
-
-              </md-menu-item>
-
-              <!-- <md-menu-item>
-                <md-button ng-click="vm.archieveDialog($event, '')" aria-label="Archive All" translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
-                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
-                  <span translate="CHECKLIST.ARCHIVE_ALL"></span>
-                </md-button>
-              </md-menu-item> -->
-
-            </md-menu-content>
-          </md-menu>
-        </div>
-
-      </div>
       <!-- / CONTENT TOOLBAR -->
 
       <!-- CONTENT -->
@@ -94,12 +76,9 @@
     </div>
     <!-- / CONTENT CARDb-->
     
-  </div>
-  <!--  Loader section  -->
 
-  <!-- / CENTER -->
 
-</div>
-<div class="bd-loader" ng-if="vm.isLoader">
+  <div class="bd-loader" ng-if="vm.isLoader">
     <md-progress-circular md-diameter="40"></md-progress-circular>
   </div>
+</div>

@@ -76,19 +76,23 @@
     };
 
     function fetchGroups(id) {
+      ftchFolder(id)
+      // vm.groups = $rootScope.children('groups', id);
+      // $rootScope.organizeData();
 
-      vm.groups = $rootScope.children('groups', id);
-      console.log('vm.groups pre organizeData id / vm.groups', id, vm.groups)
-      $rootScope.organizeData();
-      console.log('fetching', id, vm.groups);
-
-      if (!vm.groups.length > 0) {
-        vm.wizard.switch = true;
-      } else {
-        vm.wizard.switch = false;
-      }
+      // if (!vm.groups.length > 0) {
+      //   vm.wizard.switch = true;
+      // } else {
+      //   vm.wizard.switch = false;
+      // }
     };
-
+    function ftchFolder(id) {
+      api.groups.get(id).then(function (d) {
+        vm.groups = d.data.groups
+        $rootScope.nextStep();
+        vm.wizard.switch = true;
+      });
+    }
 
     function openFolderInput() {
       vm.folder = '';
@@ -176,7 +180,7 @@
 
       //Set order variable for sql insert
       vm.group.order = 1;
-      vm.group.order += vm.groups.length;
+      vm.group.order += vm.groups ? vm.groups.length : 0;
       vm.group.text = groupName;
       vm.group.id_parent = folderID;
        
@@ -485,13 +489,80 @@
     // Content sub menu
     vm.submenu = [
       { link: 'folders', title: 'Projects' },
-      { link: 'checklist', title: 'Workflow' },
+      { link: 'groups', title: 'Workflow' },
       { link: 'checklist', title: 'Checklists' },
       { link: '', title: 'Templates' },
-      { link: '#', title: 'Others' },
+      { link: 'other', title: 'Other' },
       { link: 'archives', title: 'Archives' }
 
     ];
+
+
+    vm.sortBy = sortBy;
+    vm.propertyName = '';
+    vm.reverse = true;
+     function sortBy(templateOrder) {
+       vm.reverse = (vm.templateOrder === templateOrder) ? !vm.reverse : false;
+       vm.templateOrder = templateOrder;
+     };
+vm.deleteItemConfirm = deleteItemConfirm;
+
+         /* Delete Folder */
+    function deleteItemConfirm(template, event) {
+      vm.title = 'Delete Template Information';
+      vm.warning = 'Warning: This can’t be undone';
+      vm.description = "Please confirm you want to delete this <span class='link'>" + template.name +"</span><br>All of the contents will be deleted and can’t be recovered"
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/organization/dialogs/organizations/alert.html',
+        clickOutsideToClose:false
+      })
+      .then(function(answer) {
+        deleteItem(template);
+      }, function() {
+        $scope.status = 'You cancelled the dialog.';
+      });
+
+
+   function deleteItem(template){
+     $http.post(BASEURL + "template_delete-post.php", { template: template}, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      cache: false
+    }).success(function (res) {
+      if (res.type=='success') {
+        vm.templates.load.start();
+       
+        $rootScope.message('Template has been deleted successfully', 'success');
+       
+      } else if (res.type!='success') {
+        return $rootScope.message("Error deleting Template: (" + res.code + "): " + res.message, 'warning');
+      } else {
+        vm.templates.load.start();
+        return $rootScope.message('Template has been deleted');
+      }
+    });
+
+   }
+
+
+    }
+
+
+    $scope.hide = function() {
+      $mdDialog.hide();
+    };
+
+    $scope.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    $scope.answer = function(answer) {
+      $mdDialog.hide(answer);
+    };
+
 
   }
 

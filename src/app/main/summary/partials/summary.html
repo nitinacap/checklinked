@@ -6,35 +6,29 @@
   </div>
 
   <table class="bordered-table" cellpadding="0" cellspacing="0" ms-responsive-table width="100%">
-
     <thead>
     <tr >
-      <th width="20%" class="secondary-text" ng-if="vm.reports.list.length">
+      <th width="20%" class="text-left" ng-if="vm.reports.list.length">
       Date/Title
       </th>
-      <th width="20%" class="secondary-text" ng-if="vm.reports.list.length">
+      <th width="20%" class="text-center" ng-if="vm.reports.list.length">
       Issues
       </th>
-      <th width="20%" class="secondary-text" ng-if="vm.reports.list.length">
+      <th width="20%" class="text-center" ng-if="vm.reports.list.length">
         Checklists
       </th>
-      <th width="20%" class="secondary-text" ng-if="vm.reports.list.length">
+      <th width="20%" class="text-center" ng-if="vm.reports.list.length">
       New Messages 
       </th>
-
-      <th width="20%" class="secondary-text" ng-if="vm.reports.list.length">
+      <th width="20%" class="text-center" ng-if="vm.reports.list.length">
     Active Users
       </th>
-
-      
-
-      <th class="secondary-text" ng-if="!vm.reports.list">
+      <th class="text-center" ng-if="!vm.reports.list">
         <div class="table-header">
           <span class="column-title">(0) Reports Available</span>
         </div>
       </th>
       <th width="25%" ng-if="vm.reports.viewing" class="text-center">
-
       </th>
 
       <th width="25%" ng-if="!vm.reports.viewing" class="text-right">
@@ -75,17 +69,17 @@
      
         {{ report.requested * 1000 | date:'short'}}
       </td>
-<td>
+<td class="text-center">
         {{report.type}}
       </td>
 
-      <td>
+      <td class="text-center">
         {{report.lines.length}}
       </td>
-      <td>
+      <td class="text-center">
         {{report.lines.length}}
       </td>
-      <td>
+      <td class="text-center"> 
         {{report.lines.length}}
       </td>
       
@@ -134,7 +128,7 @@
 
 <div ng-show="vm.reports.viewing" class="simple-table-container md-background-bg md-whiteframe-1dp">
 
-  <table class="simple row-border hover" ms-responsive-table>
+  <table class="simple row-border hover  bordered-table" ms-responsive-table>
     <tbody>
     <tr
       ng-class="{'md-green-100-bg': vm.reports.viewingSub.id == $index}"
@@ -175,36 +169,36 @@
   </div>
   <div layout="row">
     <div class="simple-table-container flex">
-      <table class="simple row-border hover" ms-responsive-table>
+      <table class="simple row-border hover bordered-table" ms-responsive-table>
         <thead>
         <tr>
           <th>
-            <div class="secondary-text">
+            <div class="text-left">
               User
             </div>
           </th>
           <th hide show-gt-xs>
-            <div class="secondary-text">
+            <div class="text-center">
               Organization
             </div>
           </th>
           <th>
-            <div class="secondary-text">
+            <div class="text-center">
               Checklist
             </div>
           </th>
           <th class="text-center">
-            <div class="secondary-text">
+            <div class="text-center">
               <small>Conflicts</small>
             </div>
           </th>
           <th class="text-center">
-            <div class="secondary-text">
+            <div class="text-center">
               <small>NC</small>
             </div>
           </th>
           <th hide show-gt-xs class="text-center">
-            <div class="secondary-text">
+            <div class="text-center">
               <small>Complete</small>
             </div>
           </th>
@@ -214,8 +208,8 @@
         <tbody>
         <tr ng-repeat="line in vm.reports.viewingSub.lines">
           <td>{{line.contact.name.full}}</td>
-          <td hide show-gt-xs>{{line.contact.org}}</td>
-          <td>{{line.cfcName}}</td>
+          <td hide show-gt-xs class="text-center">{{line.contact.org}}</td>
+          <td class="text-center">{{line.cfcName}}</td>
           <td class="text-center">{{line.counts.conflicts}}</td>
           <td class="text-center">{{line.counts.nonCompliant}}</td>
           <td hide show-gt-xs class="text-center">
@@ -223,7 +217,7 @@
             <span ng-hide="line.cfcComplete">N</span>
           </td>
 
-          <td class="text-right">
+          <td class="text-center">
             <md-menu>
               <md-button ng-click="$mdOpenMenu($event)"
                          class="md-icon-button table-md-icon-button" aria-label="More" translate

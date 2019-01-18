@@ -6,10 +6,9 @@
     .factory('api', apiService);
 
   /** @ngInject */
-  function apiService($rootScope, $cacheFactory, $resource, $http, $location) {
+  function apiService($rootScope, $cacheFactory, $resource, $http, $location, $cookies) {
 
     var api = {};
-
     // Base Url
     api.baseUrl = 'app/data/';
 
@@ -253,13 +252,14 @@
           return res.groups;
         });
       },
-      add: function (name, order, to, description) {
+      add: function (name, order, to, description, link) {
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'group',
           name: name,
           order: order,
           parentID: to,
-          description: description
+          description: description,
+          link: link
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -357,7 +357,7 @@
             cache: false
           });
       },
-      publish: function (id, name, type, pvt) {
+      publish: function (id, name, description, type, pvt) {
         console.log('id', id);
         console.log('name', name);
         console.log('type', type);
@@ -369,6 +369,7 @@
         return $http.post(BASEURL + 'checklist-publish.php', {
           id: id,
           name: name,
+          description: description,
           type: type,
           pvt: pvt
         }, {
@@ -441,7 +442,6 @@
       },
       invite: {
         send: function (idCON, idCHK, findLink, idACC, type, user_id, token) {
-          console.log('send');
           var pack;
           if (findLink == null) {
             findLink = false;
@@ -458,7 +458,8 @@
               group: idCHK,
               idCON: idCON,
               idACC: idACC,
-              findLink: true
+              findLink: true,
+              token: token
             };
           } else {
             pack = {
@@ -474,6 +475,10 @@
           return $http.post(BASEURL + 'checklist_invite-post.php', pack, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
+              // 'Access-Control-Allow-Headers': 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With',
+              // 'Access-Control-Allow-Origin': '*',
+              // 'Access-Control-Allow-Credentials': 'true',
+              // 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, DELETE',
             },
             cache: false
           }).success(function (res) {
@@ -670,7 +675,7 @@
           items = [];
           ref = res.items;
           results = [];
-          for (item = i = 0, len = ref.length; i < len; item = ++i) {
+          for (item = i = 0, len = ref ? ref.length : 0; i < len; item = ++i) {
             key = ref[item];
             results.push(items.push($.extend({}, item, {
               checkbox: {
@@ -683,7 +688,7 @@
           return results;
         });
       },
-      add: function (name, order, to, type, info, item_type, alert) {
+      add: function (name, order, to, type, info, item_type, alert, option) {
         if (type == null) {
           type = 1;
         }
@@ -696,15 +701,19 @@
         if (alert == null) {
           alert = '';
         }
+        if (option == null) {
+          option = '';
+        }
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'item',
           name: name,
           info: info,
           order: order,
-          dataType: type,
+          dataType: option,
           item_type : item_type,
           item_alert : alert,
-          parentID: to
+          parentID: to,
+          option :type
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -760,11 +769,12 @@
           return res.checkboxes;
         });
       },
-      toggle: function (idCLI, idCON, which) {
+      toggle: function (idCLI, idCON, which, type) {
         return $http.post(BASEURL + 'checkbox-toggle.php', {
           idCLI: idCLI,
           idCON: idCON,
-          which: which
+          which: which,
+          item_type: type
         }, {
             headers: {
               'Content-Type': 'applicatio/x-www-form-urlencoded'
@@ -1329,10 +1339,57 @@
 
     }
 
+    api.item = {
+      paste: function(origin, destination, type, action_type, move_item_id ){
+        return $http.post(BASEURL + 'cut-copy-paste.php', {
+          parent_origin_id: origin,
+          parent_destination_id: destination,
+          item_move_type: type ,
+          action_type: action_type,
+          move_item_id: move_item_id,
+        }, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
+      }
+    }
+
 
     api.mail = {
       inbox: $resource(api.baseUrl + 'mail/inbox.json')
     };
+
+/// stats API
+    // api.userstats = {
+    //   create: function (type, title, id, user_id) {
+    //     return $http.post(BASEURL + 'user-stats.php', {
+    //       type: type,
+    //       title:title,
+    //       id:id,
+    //       user_id:user_id
+    //     }, { headers: {
+    //           'Content-Type': 'application/x-www-form-urlencoded' },
+    //            cache: false
+    //       });
+    //   }
+    // };
+
+    $rootScope.createStats = function(type, title, id){
+      $http.post(BASEURL + 'user-stats.php', {
+        type: type,
+        title:title,
+        id:id,
+        user_id: $cookies.get('useridCON')
+      }, { headers: {
+            'Content-Type': 'application/x-www-form-urlencoded' },
+             cache: false
+        });
+    };
+    
+
+
 
 
     return api;

@@ -1,5 +1,13 @@
 #groups {
 
+  .bordered-table thead th {
+    padding: 5px !important;
+    padding-left:20px !important;
+}
+.bordered-table thead th {
+  border-bottom: none !important;
+}
+
   table.dataTable {
 
     tbody {
@@ -30,11 +38,12 @@
   .md-button.md-icon-button {
     margin: 0 6px;
     min-width: 0;
-    line-height: 18px !important;
-    padding: 8px;
     width: 40px;
     border-radius: 50%;
+    padding:0px !important;
+    height: 30px;
   }
+
 
 }
 

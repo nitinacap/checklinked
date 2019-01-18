@@ -6,26 +6,27 @@
     .controller('ContactsController', ContactsController);
 
   /** @ngInject */
-  function ContactsController($rootScope, $state, $location, $stateParams, $scope, $mdSidenav, msUtils, $mdDialog, $document, api, $http, $filter) {
+  function ContactsController($rootScope, $state, $cookies, $stateParams, $scope, $mdSidenav, msUtils, $mdDialog, $document, api, $http, $filter) {
     var vm = this;
+    vm.user_id = $cookies.get('useridCON');
 
 
     vm.contacts = [];
     vm.LinkList = [];
-
-    api.contacts.get().then(function (d) {
-      debugger;
-      // vm.contacts = d.data.friendships;
-      // var me = $rootScope.user.idCON;
-      // vm.LinkList = $filter('filter')(vm.contacts, function (invite) {
-      //   return (invite.contacts.originator.id !== me && invite.accepted == '');
-      // });
-      // console.log("MUser", $rootScope.user);
-      // if ($stateParams.passID) {
-      //   vm.filterChange('invitations');
-      // }
-      // console.log('vm.contacts', vm.contacts);
-    });
+    vm.isLoader = true;
+    // api.contacts.get().then(function (d) {
+    //   debugger;
+    //   vm.contacts = d.data.friendships;
+    //   var me = $rootScope.user.idCON;
+    //   vm.LinkList = $filter('filter')(vm.contacts, function (invite) {
+    //     return (invite.contacts.originator.id !== me && invite.accepted == '');
+    //   });
+    //   console.log("MUser", $rootScope.user);
+    //   if ($stateParams.passID) {
+    //     vm.filterChange('invitations');
+    //   }
+    //   console.log('vm.contacts', vm.contacts);
+    // });
 
     vm.user = $rootScope.user;
     vm.contacts.shift = showWhichInviteContactData(vm.contacts);
@@ -60,6 +61,8 @@
 
     vm.passID = $stateParams.passID;
 
+
+    vm.currentItem = parseInt($rootScope.curreManuItem);
     //console.log('vm.passID', vm.passID);
 
     function filterChange(type) {
@@ -120,6 +123,8 @@
           return $rootScope.message(res.message, 'warning');
         } else {
           vm.contacts = res.friendships;
+          vm.secondary = res.secondary;
+          vm.isLoader = false;
           return vm.loaded.friends = true;
         }
       })["finally"](function () {
@@ -205,6 +210,7 @@
         return $rootScope.message('Please provide Search criteria.', 'warning');
       } else {
         vm.findContacts.searching = true;
+
         return api.contacts.find(vm.findContacts.criteria).success(function (res) {
           if (res.code) {
             return $rootScope.message(res.message, 'warning');
@@ -253,10 +259,12 @@
         if (!res.code) {
           updateFriends();
           $mdDialog.hide();
+          vm.isMessage = true;
           return vm.contacts.unshift(res.friendships[0]);
         }
       });
     };
+  
     function removeConnectionInvitation(idCON, type) {
       return api.contacts.invite.remove(idCON, type).success(function () {
         var i, invite, invites, len, results;
@@ -280,9 +288,9 @@
           invite = invites[i];
           results.push(vm.contacts.splice(vm.contacts.indexOf($filter('filter')(vm.contacts, { id: invite.id }, true)[0]), 1));
           console.log('removed invites[i]', invites, vm.contacts);
-        } $state.go($state.current, {}, { reload: true });
+        } 
+       // $state.go($state.current, {}, { reload: true });
         console.log('vm.contact removed', vm.contacts, results);
-
         return results;
       });
     };

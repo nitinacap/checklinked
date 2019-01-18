@@ -6,9 +6,9 @@
     .controller('ToolbarController', ToolbarController);
 
   /** @ngInject */
-  function ToolbarController($rootScope, $scope, $q, $state, $location, $timeout, $http, $mdSidenav, $translate, $mdToast, msNavigationService, toastr) {
+  function ToolbarController($rootScope, $scope, $q, $cookies, $location, $timeout, $http, $mdSidenav, $translate, $mdToast, msNavigationService, toastr) {
     var vm = this;
-
+    vm.currentSettingMenu = currentSettingMenu;
     // Data
     $rootScope.global = {
       search: ''
@@ -47,6 +47,9 @@
         'color': '#616161'
       }
     ];
+    function currentSettingMenu(id){
+    return  $rootScope.curreManuItem = id;
+    }
 
     // Methods
     vm.toggleSidenav = toggleSidenav;
@@ -60,21 +63,21 @@
 
     // Select the first status as a default
     vm.userStatus = vm.userStatusOptions[0];
+    $scope.username = $cookies.get("username");
 
     $rootScope.username = function (username) {
       return $scope.username = username;
     }
 
+    // function myUsername() {
+    //   setTimeout(function () {
+    //     $scope.$apply(function () {
+    //       $rootScope.username($rootScope.user.name.full)
+    //     });
+    //   }, 800);
+    // }
 
-    function myUsername() {
-      setTimeout(function () {
-        $scope.$apply(function () {
-          $rootScope.username($rootScope.user.name.full)
-        });
-      }, 800);
-    }
-
-    myUsername();
+    // myUsername();
 
 
     $scope.$on('updatedUsername', ShowUpdateuserName);
@@ -110,6 +113,10 @@
 
     function setUserStatus(status) {
       vm.userStatus = status;
+    }
+    vm.support = support;
+    function support(){
+      window.open('https://desk.zoho.com/portal/checklinkedsystems/home', '_blank');
     }
 
   }

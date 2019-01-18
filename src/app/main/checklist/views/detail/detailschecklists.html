@@ -16,7 +16,7 @@
 
         <div class="info" flex="50">
           <div class="checklist">
-            {{checklist.name}}
+            {{checklist.name}} 
           </div>
 
         </div>
@@ -50,8 +50,8 @@
               <md-menu-item>
                 <md-button ng-click="vm.toggleComplete(checklist)" aria-label="Complete Checklist"
                   translate-attr-aria-label="CHECKLIST.COMPLETE_CHECKLIST">
-                  <md-icon ng-if="checklist.complete==0" class="md-accent-fg s18" md-font-icon="icon-checkbox-marked-outline"></md-icon>
-                  <md-icon ng-if="checklist.complete==1" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline"></md-icon>
+                  <md-icon ng-if="checklist.complete==1" class="md-accent-fg s18" md-font-icon="icon-checkbox-marked-outline"></md-icon>
+                  <md-icon ng-if="checklist.complete==0" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline"></md-icon>
                   <span translate="CHECKLIST.COMPLETE_CHECKLIST">Complete</span>
                 </md-button>
               </md-menu-item>
@@ -128,7 +128,7 @@
               </md-menu-item>
 
               <md-menu-item>
-                  <md-button ng-click="vm.publishTemplate($event, checklist.idCHK)" aria-label="Publish as Template"
+                  <md-button ng-click="vm.publishTemplate($event, checklist.idCHK, checklist.name)" aria-label="Publish as Template"
                     translate-attr-aria-label="CHECKLIST.PUBLISH_TEMPLATE">
                     <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-upload"></md-icon>
                     <span translate="CHECKLIST.PUBLISH_TEMPLATE">Publish as Template</span>
@@ -153,7 +153,7 @@
 
               <md-divider class="md-default-theme"></md-divider>
               <md-menu-item>
-                  <md-button ng-disabled="vm.isCuted"  ng-click="vm.cutDialog(checklist.idCHK, checklist.id, 'cut',$index)" aria-label="Cut"
+                  <md-button ng-disabled="vm.isCuted"  ng-click="vm.cutDialog('checklist', checklist.id, checklist.idCHK)" aria-label="Cut"
                     translate-attr-aria-label="GROUP.CUT">
                     <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
                     <span translate="GROUP.CUT"></span>
@@ -169,7 +169,7 @@
                   </md-menu-item>
 
                   <md-menu-item>
-                      <md-button ng-disabled="vm.isCuted"  ng-click="vm.pasteDialog(checklist.idCHK, checklist.id, 'paste',$index)" aria-label="Paste"
+                      <md-button ng-disabled="vm.isCuted"  ng-click="vm.pasteDialog('checklist', checklist.id, checklist.idCHK)" aria-label="Paste"
                         translate-attr-aria-label="GROUP.PASTE">
                         <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
                         <span translate="GROUP.PASTE"></span>

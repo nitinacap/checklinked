@@ -20,7 +20,7 @@
 
           } else {
             vm.archives = res.archives;
-            return $rootScope.message(res.message, 'warning');
+           // return $rootScope.message(res.message, 'warning');
           }
 
         }).error(function (err) {
@@ -100,7 +100,7 @@
       { link: 'groups', title: 'Workflow' },
       { link: 'checklist', title: 'Checklists' },
       { link: 'templates', title: 'Templates' },
-      { link: '#', title: 'Others' },
+      { link: 'other', title: 'Other' },
       { link: '', title: 'Archives' }
     ];
 

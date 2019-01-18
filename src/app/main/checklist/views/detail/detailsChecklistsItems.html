@@ -26,7 +26,7 @@
         <!-- <div ng-hide="vm.isForm(item)"
                flex="15" layout="row"
                layout-align="start end"> -->
-        <div flex="15" layout="row" layout-align="start end">
+        <div flex="10" layout="row" layout-align="start end">
           <ul class="checkbox-list">
             <li ng-repeat="show in showingUsers track by $index">
 
@@ -36,27 +36,36 @@
                 <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
                 <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'APPLY':show.name}}</span>
               </button> -->
-
-              <button type="button" ng-click="vm.toggleCheckbox(item,'applies',$index)" class="checkbox">
+              <button ng-disabled="checklist.complete || viewAs.notMe || (show.idCON != item.inviterDetails.idCON)" type="button" ng-click="vm.toggleCheckbox(item,'applies',item.checkbox[$index].item_type,$index)" class="checkbox" ng-show="item.checkbox[$index].item_type !='textbox'">
                 <i ng-hide="item.checkbox[$index].applies" class="icon-checkbox-blank-outline"></i>
                 <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
                 <span class="checkboxLabel">{{(show.idCON ==
-                  user.idCON)?(showingUsers.length>1)?'YOU':'Req':show.name}}</span>
+                  item.inviterDetails.idCON)?(showingUsers.length>1)?'YOU': (item.checkbox[$index].item_type=='yn' ? 'Yes' : 'Req'):show.name}}</span>
               </button>
+
+              <!-- <button type="button" ng-click="vm.toggleCheckbox(item,'applies','yn',$index)" class="checkbox" ng-if="item.checkbox[$index].item_type=='yn'">
+                  <i ng-hide="item.checkbox[$index].applies" class="icon-checkbox-blank-outline"></i>
+                  <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
+                  <span class="checkboxLabel">{{(show.idCON ==
+                    item.inviterDetails.idCON)?(showingUsers.length>1)?'YOU':'Yes':show.name}}</span>
+                </button> -->
 
             </li>
           </ul>
         </div>
 
-        <div layout="column" layout-align="center start">
+        <div flex="70" layout="column" layout-align="center start">
           <div ng-class="{'text-bold form-line-question': vm.isForm(item)}" class="item" layout-align="start center"
             layout="row" flex>
             {{item.name}}
           </div>
 
           <div ng-show="item.info.length && (checklist.showReferences || section.showReferences || heading.showReferences) && !vm.isForm(item)"
-            ng-bind-html="item.info | sanitize" layout="row" class="item" flex>
-            <sup>{{ item.info }}</sup>{{ which.showReferences }}
+            layout="column" class="item" flex>
+            <div layout="row" flex  ng-bind-html="item.info | sanitize">  <sup>{{ item.info }}</sup>{{ which.showReferences }}</div>
+          <div layout="row" flex>  <a href="{{item.link}}" target="_blank">{{item.link}}</a>
+          </div>
+
           </div>
           <!-- <div layout="row" class="item" flex> -->
 
@@ -77,7 +86,7 @@
 
         <div layout="row" flex="" layout-align="end center">
 
-          <md-icon md-font-icon="icon-paperclip s20" class="is-important indicator-icon s18" ng-click="vm.openUploadAttachmentDialog($event, 'item', item.id, $index, item.attachments)"
+          <md-icon md-font-icon="icon-paperclip s20 pt-0" class="is-important indicator-icon s18 black" ng-click="vm.openUploadAttachmentDialog($event, 'item', item.id, $index, item.attachments)"
             ng-if="item.attachments.length>0"></md-icon>
 
           <md-icon md-font-icon="icon-comment-text-outline s20" class="is-important indicator-icon s18" ng-click="vm.openConversationDialog('item', item.id, item.name)"
@@ -103,12 +112,19 @@
                   <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'COMPLY':show.name}}</span>
                 </button> -->
 
-              <button type="button" ng-click="vm.toggleCheckbox(item,'complies',$index)" class="checkbox">
+              <button  ng-disabled="checklist.complete || viewAs.notMe || (show.idCON != item.inviterDetails.idCON)"  type="button" ng-click="vm.toggleCheckbox(item,'complies',item.checkbox[$index].item_type,$index)" class="checkbox" ng-show="item.checkbox[$index].item_type !='textbox'">
                 <i ng-hide="item.checkbox[$index].complies" class="icon-checkbox-blank-outline"></i>
                 <i ng-show="item.checkbox[$index].complies" class="icon-checkbox-marked-outline"></i>
-                <span class="checkboxLabel">{{(show.idCON ==
-                  user.idCON)?(showingUsers.length>1)?'YOU':'Comp':show.name}}</span>
+              <span class="checkboxLabel">{{(show.idCON ==
+                    item.inviterDetails.idCON)?(showingUsers.length>1)?'YOU': (item.checkbox[$index].item_type=='yn' ? 'No' : 'Comp'):show.name}}</span>
               </button>
+
+              <!-- <button type="button" ng-click="vm.toggleCheckbox(item,'complies','yn',$index)" class="checkbox" ng-if="item.checkbox[$index].item_type=='yn'">
+                  <i ng-hide="item.checkbox[$index].complies" class="icon-checkbox-blank-outline"></i>
+                  <i ng-show="item.checkbox[$index].complies" class="icon-checkbox-marked-outline"></i>
+                  <span class="checkboxLabel">{{(show.idCON ==
+                    item.inviterDetails.idCON))?(showingUsers.length>1)?'YOU':'No':show.name}}</span>
+                </button> -->
             </li>
           </ul>
         </div>
@@ -174,7 +190,7 @@
           <md-divider class="md-default-theme"></md-divider>
 
           <md-menu-item>
-            <md-button ng-click="vm.cutDialog($event, group.id)" aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
+            <md-button ng-click="vm.cutDialog('item', item.id, item.id_parent)" aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
               <span translate="GROUP.CUT"></span>
             </md-button>
@@ -188,7 +204,7 @@
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-click="vm.pasteDialog($event, group.id)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
+            <md-button ng-click="vm.pasteDialog('item', item.id, item.id_parent)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
               <span translate="GROUP.PASTE"></span>
             </md-button>

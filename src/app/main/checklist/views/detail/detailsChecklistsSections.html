@@ -15,7 +15,6 @@
     </div>
 
     <div layout="row" flex="15" layout-align="end center">
-
       <md-icon md-font-icon="icon-paperclip" class="is-important indicator-icon s18" ng-click="vm.openUploadAttachmentDialog($event, 'section', section.id, $index, section.attachments)"
         ng-if="section.attachments.length>0">
       </md-icon>
@@ -86,9 +85,10 @@
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-click="vm.showAllHeaders('heading',section.id, $event)" aria-label="Show All Headers"
+            <md-button ng-click="vm.toggle('section',section);vm.showAllHeaders(section.headings)" aria-label="Show All Headers"
               translate-attr-aria-label="CHECKLIST.HEADERS">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+   
               <span translate="CHECKLIST.HEADERS">Show All Headers</span>
             </md-button>
           </md-menu-item>
@@ -108,7 +108,7 @@
           </md-menu-item>
           <md-divider class="md-default-theme"></md-divider>
           <md-menu-item>
-            <md-button ng-click="vm.cutDialog($event, group.id)" aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
+            <md-button ng-click="vm.cutDialog('section', section.id, section.idCHK)" aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
               <span translate="GROUP.CUT"></span>
             </md-button>
@@ -122,7 +122,7 @@
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-click="vm.pasteDialog($event, group.id)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
+            <md-button ng-click="vm.pasteDialog('section', section.id, section.idCHK)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
               <span translate="GROUP.PASTE"></span>
             </md-button>

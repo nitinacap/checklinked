@@ -2,7 +2,7 @@
   <form name="checklistForm" class="md-inline-form" novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-        <span class="title">Edit Checkbox Item</span>
+        <span class="title">Edit Checkbox Line</span>
         <md-button class="md-icon-button" ng-click="vm.closeDialog()">
           <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
         </md-button>
@@ -12,28 +12,44 @@
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block">
         <label translate="CHECKLIST.EDIT_CHECKBOX_LABEL"></label>
-        <input name="name" ng-model="vm.item.name" required md-autofocus>
+        <input name="name" ng-model="vm.item.name" required md-autofocus maxlength="155"> 
         <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
           <div ng-message="required">
-            <span translate="CHECKLIST.ERRORS.ITEM_NAME_REQUIRED">Checklist Item Name field is required</span>
+            <span translate="CHECKLIST.ERRORS.ITEM_NAME_REQUIRED">Checklist Line Name field is required</span>
           </div>
         </div>
       </md-input-container>
       <!-- //Added by me For Edit Refrences// -->
       <md-input-container class="md-block">
-        <label translate="Refrences"></label>
-        <input name="Refrences" ng-model="vm.item.info" md-autofocus>
+        <label>Refrence Text</label>
+        <input name="Refrences" maxlength="255" ng-model="vm.item.info" md-autofocus>
        </md-input-container>
+
+       <md-input-container class="md-block" ng-show="myLink || vm.item.link!=''" >
+        <input type="url" name="link" ng-model="vm.item.link" placeholder="URL">
+        <div ng-messages="form.link.$error" role="alert">
+          <div ng-message="url" style="opacity: 1; margin-top: 0px;">
+            <span>URL format is not correct</span>
+          </div>
+        </div>
+      </md-input-container>
     </md-dialog-content>
+ 
+
+  
 
     <md-dialog-actions layout="row" layout-align="space-between center">
-      <div layout="row" layout-align="start center">
+      <div layout="row" layout-align="start end">
         <md-button type="submit"
                    ng-click="vm.saveItem()"
                    class="md-raised md-accent"
                    ng-disabled="checklistForm.$invalid || checklistForm.$pristine"
                    aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">
           SAVE
+        </md-button>
+
+        <md-button type="button" md-no-ink ng-click="myLink=myLink ? false : true;" class="md-primary link" aria-label="link">
+          <span> {{(myLink || vm.item.link!='') ? 'Cancel' : 'Insert'}}  Link</span>
         </md-button>
       </div>
 

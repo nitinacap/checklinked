@@ -1,10 +1,9 @@
 <div layout="row" flex>
   <md-input-container flex="70">
-    <md-select ng-model="vm.verticalStepper.step1.folderID" name="folderID" aria-label="Select Project"
+    <md-select  ng-change="vm.fetchGroups()" ng-model="vm.verticalStepper.step1.folderID" name="folderID" aria-label="Select Project"
                placeholder="Select Existing Project" md-autofocus required>
       <md-option ng-repeat="folder in vm.folders" value="{{folder.id}}"
-                 ng-selected="folder.id == vm.verticalStepper.newFolderID"
-                 ng-click="vm.fetchGroups(folder.id)">
+                 ng-selected="folder.id == vm.verticalStepper.newFolderID;">
         {{folder.name}}
       </md-option>
     </md-select>

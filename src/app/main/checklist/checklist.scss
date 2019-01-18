@@ -6,6 +6,9 @@
 .ms-form-wizard-step-text{
   color:black;
 }
+md-tabs-canvas {
+  height: 32px !important;
+}
 .md-inline-form md-radio-group{
   margin: 0px 0 5px !important;
 }
@@ -70,7 +73,12 @@
   }
 
   .md-button.md-icon-button {
-    height: auto !important;
+    margin: 0 6px;
+    min-width: 0;
+    width: 40px;
+    border-radius: 50%;
+    padding:0px !important;
+    height: 30px;
   }
 
 

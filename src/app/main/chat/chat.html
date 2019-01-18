@@ -143,13 +143,8 @@
                     <form data-ng-submit="vm.reply()" flex class="reply-form" layout="row" layout-align="start center">
 
                         <md-input-container flex md-no-float>
-                            <textarea data-ng-keyup="vm.reply($event)"
-                                      md-no-autogrow data-ng-model="vm.replyMessage"
-                                      data-ng-class="{'grow': vm.textareaGrow}"
-                                      placeholder="Type and hit enter to send message"
-                                      translate
-                                      translate-attr-placeholder="CHAT.REPLY_PLACEHOLDER">
-                            </textarea>
+         
+                            <input type="text" data-ng-model="vm.replyMessage">
                         </md-input-container>
 
                         <md-button class="md-fab" type="submit" aria-label="Send message" translate

@@ -1,13 +1,12 @@
-<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-45">
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
 
   <table class="simple row-border hover bordered-table">
-    <thead>
-
+    <thead class="tool-bg">
       <tr>
         <th>
-          <span ng-if="!vm.groups.length">You do not have any workflow</span>
+          <span ng-if="!vm.groups.length  && !vm.isLoader">You do not have any workflow</span>
           <!-- <span ng-if="vm.groups.length">My workflow{{ vm.groups.length > 1 ? "s" : ''}}</span> -->
-          <div layout="row" layout-align="start center">
+          <div layout="row" layout-align="start center" ng-if="vm.groups && !vm.isLoader">
             <md-select class="simplified" ng-model="vm.groupOrder" placeholder="Most Recent" ng-change="vm.groupOrderDescending = vm.groupOrder === 'true ? true : vm.folderOrderDescending">
               <md-option value="name">Most Recent</md-option>
             </md-select>
@@ -100,7 +99,13 @@
                 </md-button>
               </md-menu-item>
               <md-menu-item>
-                <md-button ng-click="vm.Duplicate(group)" aria-label="Edit Duplicate"
+                <!-- <md-button ng-click="vm.Duplicate(group)" aria-label="Edit Duplicate"
+                  translate-attr-aria-label="GROUP.DUPLICATE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
+                  <span translate="GROUP.DUPLICATE">Duplicate</span>
+                </md-button> -->
+
+                <md-button ng-click="vm.openGroupDialog($event, '', 'duplicate')" aria-label="Create Duplicate"
                   translate-attr-aria-label="GROUP.DUPLICATE">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
                   <span translate="GROUP.DUPLICATE">Duplicate</span>

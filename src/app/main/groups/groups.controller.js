@@ -81,21 +81,23 @@
 
     /* Dialog Methods */
 
-    function openGroupDialog(ev, group) {
+    function openGroupDialog(ev, group, type) {
 
       vm.group = group;
       vm.title = 'Edit Workflow';
       vm.newGroup = false;
+      vm.type = type;
 
       if (!vm.group) {
         vm.group = {
           'id': '',
           'name': '',
           'description': '',
+          'link': '',
           'order': '',
           'deleted': false
         };
-        vm.title = 'New Workflow';
+        vm.title = type ? 'Duplicate Workflow' : 'Create New Workflow';
         vm.newGroup = true;
       }
 
@@ -120,6 +122,8 @@
         vm.group = {
           'id': '',
           'name': '',
+          'description': '',
+          'link': '',
           'order': '',
           'deleted': false
         };
@@ -183,7 +187,7 @@
 
     }
 
-    function publishTemplateDialog(ev, id, name) {
+    function publishTemplateDialog(ev, id, name, description) {
 
 
       $mdDialog.show({
@@ -195,7 +199,8 @@
         clickOutsideToClose: true,
         locals: {
           id: id,
-          name: name
+          name: name,
+          description: description
         }
       });
 
@@ -213,7 +218,7 @@
       vm.group.sending = true;
       vm.group.order = 1;
       vm.group.order += vm.groups ? vm.groups.length : '';
-      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description).error(function (res) {
+      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description, vm.group.link).error(function (res) {
         return $rootScope.message("Error Creating Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -260,6 +265,8 @@
       editPack = {
         'type': 'group',
         'text': vm.group.name,
+        'description': vm.group.description,
+        'link': vm.group.link,
         'order': vm.group.order,
         'id': vm.group.id,
         'rid': vm.group.rid,
@@ -481,7 +488,7 @@
       { link: '', title: 'Workflows' },
       { link: 'checklist', title: 'Checklists' },
       { link: 'templates', title: 'Templates' },
-      { link: 'organization', title: 'Others' },
+      { link: 'other', title: 'Other' },
       { link: 'archives', title: 'Archives' }
 
     ];

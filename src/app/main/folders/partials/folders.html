@@ -1,49 +1,35 @@
 <div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
-
   <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
-    <thead>
-
+    <thead class="tool-bg">
     <tr>
       <th>
-        <span ng-if="!vm.folders.length">You do not have any projects</span>
-      
-      
-        <div layout="row" layout-align="start center">
+        <span ng-if="!vm.folders.length && !vm.isLoader">You do not have any projects</span>
+        <div layout="row" layout-align="start center" ng-if="vm.folders.length  && !vm.isLoader">
           <md-select class="simplified" ng-model="vm.folderOrder" placeholder="Most Recent" ng-change="vm.folderOrderDescending = vm.folderOrder === '' ? true : vm.folderOrderDescending">
             <md-option value="name">Most Recent</md-option>
           </md-select>
-        
           <md-button class="md-icon-button"  ng-click="vm.folderOrderDescending = !vm.folderOrderDescending"
             aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
             <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.folderOrderDescending === true" class="s18"></md-icon>
             <md-icon md-font-icon="icon-sort-descending" ng-if="vm.folderOrderDescending === false" class="s18"></md-icon>
           </md-button>
         </div>
-
-      
       </th>
       <th><span ng-if="vm.folders.length">Total projects <strong>({{ vm.folders.length }}) </strong></span></th>
-
-
-
       <th class="text-right">
         <md-menu>
-
           <md-button ng-click="$mdOpenMenu($event)"
                      class="md-icon-button table-md-icon-button" aria-label="Sort" translate
                      translate-attr-aria-label="CONTACTS.SORT">
             <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
           </md-button>
-
           <md-menu-content width="3">
-
             <md-menu-item>
               <md-button ng-click="vm.openFolderDialog()">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
                 <span translate="">Add New Project</span>
               </md-button>
             </md-menu-item>
-
 
             <md-menu-item ng-if="vm.folders">
               <md-button ng-click="vm.archieveDialog($event, '')" aria-label="Archive All"

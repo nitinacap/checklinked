@@ -12,7 +12,7 @@
         "RESTORE": "Restore Archive",
         
         "ERRORS": {
-            "FOLDER_NAME_REQUIRED": "Archieves Name is required"
+            "FOLDER_NAME_REQUIRED": "Archive Name is required"
         }
     }
 }

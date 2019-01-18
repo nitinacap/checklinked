@@ -1,5 +1,5 @@
-<div ng-cloak class="subtab pt-45">
-  <md-tabs md-dynamic-height md-border-bottom  md-selected="0">
+<div ng-cloak class="subtab pt-30" >
+  <md-tabs md-dynamic-height md-border-bottom  md-selected="vm.currentItem">
     <md-tab  ng-click="myvalue = false;">
 
       <md-tab-label>
@@ -11,7 +11,7 @@
 
     </md-tab>
 
-    <md-tab class="pr-30" >
+    <md-tab class="pr-30" ng-disabled="!myvalue">
         <md-tab-label>
           <md-menu>
             <md-icon ng-show="myvalue" md-font-icon="icon-dots-vertical s18" id="lh-5" ng-click="$mdOpenMenu($event)"></md-icon>

@@ -1,6 +1,10 @@
+
 md-dialog {
 .alertMsg label, .md-char-counter{
   color:rgba(0,0,0,0.87) !important;
+}
+#fileattachment .md-required{
+  color:rgba(0,0,0,0.54) !important;
 }
   &.dialog {
     max-width: 720px;

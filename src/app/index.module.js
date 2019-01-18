@@ -99,7 +99,10 @@
       'app.dashboard',
 
       // Login
-      'app.login'
+      'app.login',
+      
+      // Others
+      'app.other'
 
     ]);
 })();

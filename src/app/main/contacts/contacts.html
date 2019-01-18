@@ -1,21 +1,8 @@
 <div id="contacts" class="page-layout simple tabbed pad-0 " layout="column">
-  <!-- HEADER -->
-  <!-- <div class="header md-accent-bg" layout="row" layout-align="start center">
-    <div class="white-fg" layout="row" layout-align="start center" flex>
-      <div layout="column" layout-align="start start">
-        <div class="h2">
-          <span>Contacts</span>
-        </div>
-      </div>
-    </div>
-  </div>
--->
-  <!-- / HEADER -->
-  <!-- CONTENT -->
   <page-toolbar datas="vm.submenu"> </page-toolbar>
-  <div ng-cloak class="subtab pt-45">
+  <div ng-cloak class="subtab pt-30">
 
-    <md-tabs md-dynamic-height md-border-bottom>
+    <md-tabs md-dynamic-height md-border-bottom md-selected="vm.currentItem">
       <md-tab ng-click="myvalue = false;">
         <md-tab-label>
           <span>Internal</span>
@@ -43,7 +30,7 @@
         </md-tab-body>
       </md-tab>
 
-      <md-tab class="pr-30 pull-right">
+      <md-tab class="pr-30 pull-right" ng-disabled="!myvalue">
         <md-tab-label>
           <md-menu>
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"

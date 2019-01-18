@@ -225,6 +225,7 @@
 
     /* Add New Folder */
     function addNewFolder(item) {
+      debugger;
       vm.folder.sending = true;
       vm.folder.order = 1;
       vm.folder.order += vm.folders ? vm.folders.length : 0;
@@ -234,12 +235,15 @@
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Creating Project", 'warning');
-        } else if (res.code) {
-          return $rootScope.message(res.message, 'warning');
+        } else if (!res.type) {
           vm.closeDialog();
+          return $rootScope.message(res.message, 'warning');
+        
         } else {
 
           /* Reset Folder Object */
+          vm.closeDialog();
+          $rootScope.message('Project has been created successfully');
           vm.folder.id = res.folder.id;
           vm.folder.name = res.folder.name;
           vm.folder.description = res.folder.description;
@@ -247,7 +251,6 @@
           vm.folder.id_parent = res.folder.id_parent;
 
           //Toaster Notification
-          $rootScope.message('Project has been created successfully');
 
           //Add New Folder to Folders object
           if(res.folder.length > 0){
@@ -407,7 +410,7 @@
       { link: 'groups', title: 'Workflow' },
       { link: 'checklist', title: 'Checklists' },
       { link: 'templates', title: 'Templates' },
-      { link: '#', title: 'Others' },
+      { link: 'other', title: 'Other' },
       { link: 'archives', title: 'Archives' }
 
     ];

@@ -1,5 +1,5 @@
 <div class="simple-table-container form-container md-background-bg md-whiteframe-1dp">
-  <table class="simple row-border hover" ms-responsive-table>
+  <table class="simple row-border hover bordered-table" cellspacing="0" cellpadding="0" ms-responsive-table>
     <thead>
     <tr class="hide-xs">
 
@@ -31,7 +31,7 @@
           ng-switch="member.roles.setting.indexOf(role)!==-1"
           class="text-center hide-xs">
 
-        <button type="button"
+        <!-- <button type="button"
                 ng-disabled="viewAs.notMe || !permissions.canChange"
                 ng-switch-when="false"
                 ng-switch="has = member.roles.has.indexOf(role)!==-1"
@@ -40,7 +40,18 @@
                 aria-label="role">
           <md-icon ng-switch-when="false" md-font-icon="icon-checkbox-blank-outline" class="md-accent-fg s18"></md-icon>
           <md-icon ng-switch-when="true" md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18"></md-icon>
+        </button> -->
+        <button type="button"
+                ng-switch-when="false"
+                ng-switch="has = member.roles.has.indexOf(role)!==-1"
+                ng-click="member.roles.set(role,!has)"
+                class="button-icon-reset"
+                aria-label="role">
+          <md-icon ng-switch-when="false" md-font-icon="icon-checkbox-blank-outline" class="md-accent-fg s18"></md-icon>
+          <md-icon ng-switch-when="true" md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18"></md-icon>
         </button>
+
+        
       </td>
 
       <td ng-switch="(offboarding = (vm.members.offboard.inProgress.indexOf(member.idCON) > -1))"

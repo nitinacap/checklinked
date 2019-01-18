@@ -1,14 +1,13 @@
 #contacts {
-  .subtab md-tabs-wrapper {
-    background: #fff!important;
-}
+
 .subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2) {
   float: left !important;
 
 }
-md-tabs-wrapper{
-  border-color: #517CC2 !important;
+label{
+  color:black;
 }
+
 .md-tab {
   margin-right: 30px !important;
 }

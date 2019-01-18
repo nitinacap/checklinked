@@ -1,9 +1,6 @@
-
-<div class="todo-items" ng-sortable="vm.sortableOptions" ng-model="vm.checklists"
-     ng-class="{'sortable': vm.checklistOrder === ''}">
-  <div class="todo-item" md-ink-ripple layout="row" layout-align="start center"
-       ng-repeat="checklist in vm.checklists | orderBy:vm.checklistOrder:vm.checklistOrderDescending | filter: globalSearch.searchTerm | filter:vm.checklistFilters.search track by $index"
-       ng-class="{'starred': checklist.starred, 'selected': checklist.selected, 'completed': checklist.completed}">
+<div class="todo-items" ng-sortable="vm.sortableOptions" ng-if="vm.checklists" ng-class="{'sortable': vm.checklistOrder === ''}">
+  <div class="todo-item" md-ink-ripple layout="row" layout-align="start center" ng-repeat="checklist in vm.checklists | orderBy:vm.checklistOrder:vm.checklistOrderDescending | filter: globalSearch.searchTerm | filter:vm.checklistFilters.search track by $index"
+    ng-class="{'starred': checklist.starred, 'selected': checklist.selected, 'completed': checklist.completed}">
 
 
     <div layout="row" layout-align="start center" flex>
@@ -13,46 +10,43 @@
           <a href="/checklist/detail/{{checklist.idCHK ? checklist.idCHK : checklist.id_child }}">
             {{checklist.name}}
 
-  
+
           </a>
         </div>
       </div>
- <div class="buttons" layout="row" layout-align="start center">
-        <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg"
-                 ng-if="checklist.important"></md-icon>
+      <div class="buttons" layout="row" layout-align="start center">
+        <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg" ng-if="checklist.important"></md-icon>
 
         <md-menu>
-          <md-button ng-click="$mdOpenMenu($event)"
-                     class="md-icon-button" aria-label="More" translate
-                     translate-attr-aria-label="CHECKLIST.MORE">
+          <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
+            translate-attr-aria-label="CHECKLIST.MORE">
             <md-icon md-font-icon="icon-dots-vertical" class="s18"></md-icon>
           </md-button>
 
           <md-menu-content width="3">
             <md-menu-item>
               <md-button ng-click="vm.deleteConfirm('checklist',checklist)" aria-label="Delete Checklist"
-                         translate-attr-aria-label="CHECKLIST.DELETE_CHECKLIST">
-                <md-icon class="red-600-fg s18"
-                         md-font-icon="icon-trash"></md-icon>
+                translate-attr-aria-label="CHECKLIST.DELETE_CHECKLIST">
+                <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                 <span translate="CHECKLIST.DELETE_CHECKLIST">Delete Checklist</span>
               </md-button>
             </md-menu-item>
 
             <md-menu-item>
               <md-button ng-click="vm.openChecklistDialog($event, checklist)" aria-label="Edit Checklist Name"
-                         translate-attr-aria-label="CHECKLIST.EDIT_CHECKLIST_NAME">
-                <md-icon class="md-accent s18"
-                         md-font-icon="icon-pencil"></md-icon>
+                translate-attr-aria-label="CHECKLIST.EDIT_CHECKLIST_NAME">
+                <md-icon class="md-accent s18" md-font-icon="icon-pencil"></md-icon>
                 <span translate="CHECKLIST.EDIT_CHECKLIST_NAME">Edit Checklist Name</span>
               </md-button>
             </md-menu-item>
 
             <md-menu-item>
-                <md-button ng-click="vm.archieveDialog($event, checklist.id)" aria-label="Archive All" translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
-                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
-                  <span translate="CHECKLIST.ARCHIVE"></span>
-                </md-button>
-              </md-menu-item>
+              <md-button ng-click="vm.archieveDialog($event, checklist.id)" aria-label="Archive All"
+                translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
+                <span translate="CHECKLIST.ARCHIVE"></span>
+              </md-button>
+            </md-menu-item>
 
           </md-menu-content>
         </md-menu>
@@ -61,36 +55,30 @@
   </div>
 
 
-  <div class="" md-ink-ripple layout="row" layout-align="start center" ng-if="!vm.checklists.length"
-       ng-class="{'starred': checklist.starred, 'selected': checklist.selected, 'completed': checklist.completed}">
+  <div class="tool-bg" md-ink-ripple layout="row" layout-align="start center" ng-if="!vm.checklists.length  && !vm.isLoader"
+    ng-class="{'starred': checklist.starred, 'selected': checklist.selected, 'completed': checklist.completed}">
 
 
     <div layout="row" layout-align="start center" flex>
-
-      <div flex >
-        <div class="title" padding>
-          You do not have any checklists in this folder
+      <div flex>
+        <div class="title pl-20 warning">
+          You do not have any checklists in this workflow
         </div>
       </div>
 
       <div class="buttons" layout="row" layout-align="start center">
         <md-menu>
 
-          <md-button ng-click="$mdOpenMenu($event)"
-                     class="md-icon-button"
-                     aria-label="More" translate
-                     translate-attr-aria-label="CHECKLIST.MORE">
+          <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
+            translate-attr-aria-label="CHECKLIST.MORE">
             <md-icon md-font-icon="icon-dots-vertical" class="s18"></md-icon>
           </md-button>
 
           <md-menu-content width="3">
 
             <md-menu-item>
-              <md-button ng-click="vm.addChecklistDialog($event)"
-                         aria-label="Add Checklist"
-                         translate-attr-aria-label="CHECKLIST.ADD_CHECKLIST">
-                <md-icon class="md-accent-fg s18"
-                         md-font-icon="icon-plus-circle-outline"></md-icon>
+              <md-button ng-click="vm.addChecklistDialog($event)" aria-label="Add Checklist" translate-attr-aria-label="CHECKLIST.ADD_CHECKLIST">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
                 <span translate="CHECKLIST.ADD_CHECKLIST">Add New Checklist</span>
               </md-button>
             </md-menu-item>

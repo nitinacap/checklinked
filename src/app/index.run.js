@@ -26,11 +26,13 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
     .module('checklinked')
     .run(runBlock);
   /** @ngInject */
-  function runBlock($rootScope, $timeout, $state, $stateParams, $location, $http, toastr, api, $filter) {
-
+  function runBlock($rootScope, $timeout, $state, $cookies, $stateParams, $location, $http, toastr, api, $filter) {
+debugger;
     // Activate loading indicator
     var silent;
-
+if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get("token")==''){
+    $state.go('app.login');
+}
     // Authinication
     $rootScope.checkLogin = function (event, toState) {
       //console.log('checkLogin', toState);
@@ -124,6 +126,7 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
         case 'teammembers':
         case 'templates':
         case 'contacts':
+        case 'other':
         case 'chat':
         case 'eee':
         case 'mail':
@@ -983,12 +986,14 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
       if (mod[1] === 'login') {
         //console.log('is the login');
       } else if (mod[1] === 'logout') {
-        debugger;
         var token = { token: $rootScope.token };
         $http.post(BASEURL + 'logout.php', token).then(
           function (d) { //success
             //$rootScope.socketio.disconnect();
             $rootScope.user = void 0;
+            $cookies.remove("username");
+            $cookies.remove("useridCON");
+            $cookies.remove("token");
             var loginTime = '';
             loginCheck = $rootScope.checkLogin(event, toState);
             if (!loginCheck) {
@@ -1073,6 +1078,23 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
     $rootScope.$broadcast('event:startDoomsDayDevice', $rootScope);
 
     //console.log('$rootScope.feed', $rootScope.feed);
+
+  //   window.onunload = function () {
+  //     alert("Window is closed");
+
+  // }
+  window.onunload = function(event) {
+    debugger;
+    alert('onunload');
+    // $cookies.remove("username");
+    // $cookies.remove("useridCON");
+    // $cookies.remove("token");
+    $state.go('app.login');
+
+  };
+  // window.onbeforeunload = function(event) {
+  //   $state.go('app.login');
+  //   };
 
 
   }

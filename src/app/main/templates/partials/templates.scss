@@ -8,6 +8,9 @@ span.ms-form-wizard-step-text {
     padding: 24px;
     margin-bottom: 24px;
   }
+  .isdec td{
+    border-bottom: none !important;
+  }
 
   .table-md-icon-button {
     padding: 0 8px !important;
@@ -22,8 +25,9 @@ span.ms-form-wizard-step-text {
     width: 40px;
     border-radius: 50%;
   }
-
-
+  .subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2){
+    float:left !important;
+  }
 
 }
 

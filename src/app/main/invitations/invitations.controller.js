@@ -30,10 +30,9 @@
     vm.closeDialog = closeDialog;
     vm.addNewGroup = addNewGroup;
     vm.addNewFolder = addNewFolder;
-    vm.fetchGroups = fetchGroups;
 
     vm.passID = $stateParams.passID;
-
+    vm.isLoader = true;
     console.log('vm.passID', vm.passID);
 
     vm.folders = [];
@@ -150,6 +149,7 @@
         return api.checklists.invite.get().error(function (res) {
           return vm.inviteControl.error = 'Unknown error talking to server.';
         }).success(function (res) {
+          vm.isLoader = false;
           if (res.code) {
             console.log('res.code', res);
             return vm.inviteControl.error = res.message;
@@ -347,14 +347,11 @@
           vm.verticalStepper = {
             newFolderID: res.folder.id
           }
-
+          cancelGroupInput();
           $rootScope.$broadcast('event:updateModels');
           vm.folders.push(res.folder);
           $rootScope.organizeData();
-
-          vm.fetchGroups(res.folder.id);
-
-
+          fetchGroups(res.folder.id);
           $rootScope.message('Project Added');
 
           //Hide Buttons
@@ -371,24 +368,27 @@
 
       //Set order variable for sql insert
       vm.group.order = 1;
-      vm.group.order += vm.groups.length;
+      vm.group.order += vm.groups ? vm.groups.length : 0;
       vm.group.text = groupName;
       vm.group.id_parent = folderID;
 
       api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent).error(function (res) {
-        return $rootScope.message("Error Adding Folder", 'warning');
+        return $rootScope.message("Error Adding Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
-          return $rootScope.message("Error Adding Folder", 'warning');
+          return $rootScope.message("Error Adding Project", 'warning');
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
 
           console.log('res.groups', res.groups);
           $rootScope.$broadcast('event:updateModels');
-          vm.groups.push(res.group);
+          if(res.group && res.group.length > 0){
+            vm.groups.push(res.group);
+          }
+        
           $rootScope.organizeData();
-
+          ftchFolder(folderID)
           vm.verticalStepper.newGroupID = res.group.id;
           vm.verticalStepper.newFolderID = res.group.id_parent;
 
@@ -396,23 +396,28 @@
           vm.wizard.switch = false;
 
 
-          $rootScope.message('Folder Added');
+          $rootScope.message('Project Added');
         }
       });
     };
 
     function fetchGroups(id) {
-      vm.groups = $rootScope.children('groups', id);
-      console.log('vm.groups pre organizeData id / vm.groups', id, vm.groups)
-      $rootScope.organizeData();
-      console.log('fetching', id, vm.groups);
+      ftchFolder(id ? id :vm.verticalStepper.step1.folderID)
+      vm.groups = $rootScope.children('groups', id ? id :vm.verticalStepper.step1.folderID);
+       $rootScope.organizeData();
 
-      if (!vm.groups.length > 0) {
-        vm.wizard.switch = true;
-      } else {
-        vm.wizard.switch = false;
-      }
+      // if (!vm.groups.length > 0) {
+      //   vm.wizard.switch = true;
+      // } else {
+      //   vm.wizard.switch = false;
+      // }
     };
+    function ftchFolder(id) {
+      api.groups.get(id).then(function (d) {
+        vm.groups = d.data.groups;
+        $rootScope.nextStep()
+      });
+    }
 
 
     function closeDialog() {
@@ -422,10 +427,9 @@
     // Content sub menu
     vm.submenu = [
       { link: '#', title: 'Alerts' },
-      { link: '#', title: 'Action Items' },
+      { link: '', title: 'Action Items' },
       { link: 'chat', title: 'Messages' },
-      { link: 'mail.threads', title: 'Notifications' },
-      { link: '', title: 'Invitations' }
+      { link: 'mail.threads', title: 'Notifications' }
 
     ];
 

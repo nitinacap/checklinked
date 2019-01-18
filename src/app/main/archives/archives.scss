@@ -1,4 +1,7 @@
 #archives {
+  .bordered-table thead th{
+    padding: 0px !important;
+  }
   table.dataTable {
 
     tbody {
@@ -34,6 +37,7 @@
     width: 40px;
     border-radius: 50%;
   }
+
 
 }
 

@@ -6,10 +6,9 @@
     .controller('LoginController', LoginController);
 
   /** @ngInject */
-  function LoginController($rootScope, $scope, $stateParams, $http, $state, $cookies, api, $httpParamSerializer) 
+  function LoginController($rootScope, $scope, $stateParams, $http, $state, $mdSidenav, $cookies, api, $httpParamSerializer) 
   {
     var vm = this;
-
     vm.isLoader = false;
   if ($stateParams.token){
       var token = $stateParams.token;
@@ -39,8 +38,6 @@
 
 
 function login() {
-
-
   vm.isLoader =true;
   $http.post(BASEURL + "login-doAuth.php", {
     user: vm.email,
@@ -53,14 +50,21 @@ function login() {
   }).success(function (res) {
     vm.isLoader = false;
     if(res.code=='-1'){
-      console.log(res);
       $scope.login_error = "Please enter correct username and password";    
+      setTimeout(function(){
+        $scope.$apply(function(){
+          $scope.login_error = '';
+        })
+      },1800)
 
     }
     else if(res.code==0){
-        $cookies.put("token", res.user.token);
-        $rootScope.token = res.user.token;
-        $rootScope.user = res.user;
+    
+      $cookies.put("username", res.user.name.full);
+      $cookies.put("useridCON", res.user.idCON);
+      $cookies.put("token", res.user.token);
+      $rootScope.token = res.user.token;
+      $rootScope.userData = res.user;
      //var organizationError = res.user.organizationError;
       var organizationError = res.user.organization;
       console.log('organizationError in login controller');
@@ -100,6 +104,7 @@ function login() {
     /** End new code  */
 
     function logout() {
+      debugger;
       $rootScope.token = null;
       $rootScope.user = null;
       debugger;

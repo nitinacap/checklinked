@@ -1,8 +1,6 @@
 <div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
-
   <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
-    <thead>
-
+    <thead  class="tool-bg">
       <tr>
         <th>
           <span ng-if="!vm.archives.length">You do not have any archives</span>
@@ -19,41 +17,14 @@
           </div>
         </th>
         <th  colspan="3"><span ng-if="vm.archives.length">Total Archives <strong>({{ vm.archives.length }}) </strong></span></th>
-
-        <!-- <th class="text-right">
-        <md-menu>
-          <md-button ng-click="$mdOpenMenu($event)"
-                     class="md-icon-button table-md-icon-button" aria-label="Sort" translate
-                     translate-attr-aria-label="CONTACTS.SORT">
-            <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
-          </md-button>
-          <md-menu-content width="3">
-            <md-menu-item>
-              <md-button ng-click="vm.restoreArchiveDialog($event)">
-                <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
-                <span translate="">Restore Archive </span>
-              </md-button>
-            </md-menu-item>
-
-
-            <md-menu-item>
-              <md-button ng-click="vm.archieveDialog($event)" aria-label="Archive All"
-                         translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
-                <md-icon class="md-accent-fg s18"
-                         md-font-icon="fa fa-download"></md-icon>
-                <span translate="FOLDER.FOLDER_ARCHIVE"></span>
-              </md-button>
-            </md-menu-item>
-          </md-menu-content>
-        </md-menu>
-      </th> -->
       </tr>
-      <tr ng-if="vm.archives.length">
-        <th>Name</th>
-        <th  colspan="3">Type</th>
-      </tr>
+
     </thead>
     <tbody>
+        <tr ng-if="vm.archives.length">
+            <td><span>Name</span></td>
+            <td  colspan="3"> <span>Type</span></td>
+          </tr>
       <tr ng-repeat="archive in vm.archives | orderBy:vm.folderOrder:vm.folderOrderDescending | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
         <td>
           <span> {{archive.name}} </span>

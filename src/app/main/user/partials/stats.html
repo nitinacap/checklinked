@@ -1,25 +1,25 @@
-<div class="form-wrapper md-whiteframe-1dp flex" id="stats">
-  <table class="bordered-table" cellpadding="0" cellspacing="0">
+<div class="form-wrapper  md-whiteframe-1dp flex">
+  <table class="bordered-table" width="100%" cellpadding="0" cellspacing="0">
     <thead>
       <tr>
-        <th></th>
-        <th class="text-center">Last 24 Hours</th>
-        <th class="text-center">Last 7 days</th>
-        <th class="text-center">Last 30 days</th>
-        <th class="text-center">YTD</th>
-        <th class="text-center">Last 12 months</th>
-        <th class="text-center">All times</th>
+        <th  width="15%"></th>
+        <th class="text-center" width="10%">Last 24 Hours</th>
+        <th class="text-center" width="10%">Last 7 days</th>
+        <th class="text-center" width="10%">Last 30 days</th>
+        <th class="text-center" width="10%">YTD</th>
+        <th class="text-center" width="10%">Last 12 months</th>
+        <th class="text-center" width="20%">All time</th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="stat in [1,2,3,4,5,6]" class="text-center">
-        <td>Checklinked</td>
-        <td>1</td>
-        <td>2</td>
-        <td>3</td>
-        <td>4</td>
-        <td>5</td>
-        <td colspan="2">6</td>
+      <tr ng-repeat="stat in  vm.stats" class="text-center">
+        <td style="text-align:left;">{{stat.type}}</td>
+        <td>{{stat.hours_24}}</td>
+        <td>{{stat.last_7_days}}</td>
+        <td>{{stat.last_30_days}}</td>
+        <td>{{stat.ytd}}</td>
+        <td>{{stat.last12month}}</td>
+        <td colspan="2">{{stat.all_time}}</td>
       </tr>
       <tr>
      </tfoot>

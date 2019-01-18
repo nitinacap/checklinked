@@ -16,37 +16,31 @@
     <!-- / DIALOG TOOLBAR -->
 
     <!-- DIALOG CONTENT -->
-    <md-dialog-content>
+    <md-dialog-content  ms-scroll>
       <md-input-container class="md-block">
         <label translate="CHECKLIST.SEARCH_USERS">Search</label>
-        <input id="findLinksQueryString" ng-model="vm.find.criteria" type="text">
+        <input ng-model="vm.find.criteria" type="text">
       </md-input-container>
-    </md-dialog-content>
 
-    <md-dialog-content>
       <md-input-container class="md-block">
-        <label translate="CHECKLIST.SEARCH_USERS_BY_OGR">Search</label>
-        <input id="findLinksQueryString" ng-model="vm.find.organization" type="text">
+        <label translate="CHECKLIST.SEARCH_USERS_BY_OGR">Organization</label>
+        <input ng-model="vm.find.organization" type="text">
       </md-input-container>
-    </md-dialog-content>
+
     <!-- / DIALOG CONTENT -->
 
 
-    <md-dialog-content class="pt-0" ng-show="vm.found.length">
-
-      <table class="simple" ms-responsive-table>
-
+      <h4 class="danger" ng-if="vm.searchItem && vm.found.length==0">Sorry no record found</h4>
+      <table cellpadding="0" cellspacing="0" class="bordered-table" width="100%" ms-responsive-table  ng-show="vm.found.length > 0">
         <thead>
         <tr>
            <th width="10%"></th>
-          <th width="20%" class="bb">Name</th>
-          <th width="70%" class="bb">Organization</th>
+          <th width="40%" class="bb">Name</th>
+          <th width="50%" class="bb">Organization</th>
         </tr>
         </thead>
-
         <tfoot>
         </tfoot>
-
         <tbody>
         <tr ng-repeat="link in vm.found" ng-hide="link.id == vm.user.idCON">
           <td class="text-right">
@@ -88,10 +82,9 @@
 
       <div layout="row" layout-align="start center">
         <md-button type="submit"
-                   class="md-raised md-accent"
+                   class="md-accent"
                    aria-label="SEARCH"
-                   ng-disabled="findLinkForm.$invalid || findLinkForm.$pristine"
-                   ng-disabled="vm.searching">
+                   ng-disabled="findLinkForm.$invalid || findLinkForm.$pristine || vm.searching" >
           SEARCH
         </md-button>
 

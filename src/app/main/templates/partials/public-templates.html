@@ -1,4 +1,4 @@
-<div class="simple-table-container md-background-bg md-whiteframe-1dp pt-45">
+<div class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
   <div ng-cloak class="subtab">
   <md-content>
     <md-tabs md-dynamic-height md-border-bottom>
@@ -63,7 +63,7 @@
               </md-menu-item>
   
               <md-menu-item ng-if="template.idCON == user.idCON">
-                <md-button ng-click="template.remove()" translate-attr-aria-label="">
+                <md-button ng-click="vm.deleteItemConfirm(template,  $event)" translate-attr-aria-label="">
                   <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                   <span translate="">Delete Template</span>
                 </md-button>
@@ -97,16 +97,34 @@
                 <th class="text-left">
                   <div class="table-header">
                     <span class="column-title">Name</span>
+                    <md-button class="md-icon-button"  ng-click="vm.sortBy('name')"
+                    aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+                    <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.templateOrder!='name'" class="s18"></md-icon>
+                    <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reverse && vm.templateOrder=='name'" class="s18"></md-icon>
+                    <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='name'" class="s18"></md-icon>
+                  </md-button>
                   </div>
                 </th>
                 <th class="text-left">
                   <div class="table-header">
                     <span class="column-title">Author</span>
+                    <md-button class="md-icon-button"  ng-click="vm.sortBy('organization')"
+                    aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+                    <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.templateOrder!='organization'" class="s18"></md-icon>
+                    <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reverse && vm.templateOrder=='organization'" class="s18"></md-icon>
+                    <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='organization'" class="s18"></md-icon>
+                  </md-button>
                   </div>
                 </th>
                 <th class="text-left">
                   <div class="table-header">
                     <span class="column-title">Type</span>
+                    <md-button class="md-icon-button"  ng-click="vm.sortBy('type')"
+                    aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+                    <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.templateOrder!='type'" class="s18"></md-icon>
+                    <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reverse && vm.templateOrder=='type'" class="s18"></md-icon>
+                    <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='type'" class="s18"></md-icon>
+                  </md-button>
                   </div>
                 </th>
                 <th class="text-left">
@@ -117,14 +135,15 @@
                 <th></th>
               </tr>
             </thead>
-            <tbody>
-              <tr ng-if="template.internal==0" ng-repeat="template in vm.templates.list | filter: globalSearch.searchTerm track by $index">
-                <td width="15%"><a href="">
-                    <md-icon style="padding-top:0px;" class="plus md-accent-fg s18 cplus ng-scope md-font icon-plus material-icons md-default-theme"
+            <tbody ng-if="template.internal==0" ng-repeat="template in vm.templates.list  | orderBy:vm.templateOrder:vm.reverse">
+              <tr ng-class="{'isdec':isDescp==true}">
+                <td width="25%"><a href="">
+                    <md-icon style="padding-top:0px;" ng-click="isDescp = isDescp== true ? false :true;" class="plus md-accent-fg s18 cplus ng-scope md-font icon-plus material-icons md-default-theme"
                       md-font-icon="icon-plus" aria-hidden="true">
                     </md-icon>
                   </a>
-                  <span class="textcolor">{{template.name}}</span></td>
+                  <span class="textcolor pointer" ng-click="vm.download.begin($event, template.id, template.type=='group' ? 'group' :  'checklist')" >{{template.name}}</span>
+                </td>
                 <td width="15%"><span class="textcolor">{{template.organization}}</span></td>
                 <td width="15%" ng-if="template.type">{{template.type}}</td>
                 <td width="15%" ng-if="template.type">{{template.created * 1000 | date : "medium" }}</td>
@@ -152,12 +171,12 @@
                         </md-button>
                       </md-menu-item>
           
-                      <md-menu-item ng-if="template.idCON == user.idCON">
-                        <md-button ng-click="template.remove()" translate-attr-aria-label="">
-                          <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
-                          <span translate="">Delete Template</span>
-                        </md-button>
-                      </md-menu-item>
+                        <!-- <md-menu-item ng-if="template.idCON == user.idCON">
+                          <md-button ng-click="template.remove()" translate-attr-aria-label="">
+                            <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                            <span translate="">Delete Template</span>
+                          </md-button>
+                        </md-menu-item> -->
 
                       <md-menu-item>
                         <md-button ng-click="vm.archieveDialog($event, template.id, 'public template')" aria-label="Archive All">
@@ -172,6 +191,9 @@
           
                 </td>
           
+              </tr>
+              <tr ng-show="isDescp">
+                <td colspan="5">{{template.description ? template.description : 'Description is not available'}}</td>
               </tr>
             </tbody>
           </table>

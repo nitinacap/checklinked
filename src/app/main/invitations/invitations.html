@@ -1,19 +1,5 @@
 <page-toolbar datas="vm.submenu"> </page-toolbar>
-<!-- HEADER -->
-<!-- <div class="header md-accent-bg" layout="row" layout-align="start center">
-    <div class="white-fg" layout="row" layout-align="start center" flex>
-      <div layout="column" layout-align="start start">
-        <div class="h2">
-           <span>Linking</span> 
-        </div>
-      </div>
-    </div>
-  </div>
--->
-<!-- / HEADER -->
-
-<!-- CONTENT -->
-<div ng-cloak class="subtab pt-40" id="invitations">
+<div ng-cloak class="subtab pt-30" id="invitations">
   <md-tabs md-dynamic-height md-border-bottom>
 
     <md-tab>
@@ -39,4 +25,7 @@
   </md-tabs>
 
 </div>
+<div class="bd-loader" ng-if="vm.isLoader">
+    <md-progress-circular md-diameter="40"></md-progress-circular>
+  </div>
 <!-- / CONTENT -->

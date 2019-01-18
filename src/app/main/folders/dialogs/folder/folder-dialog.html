@@ -40,13 +40,13 @@
         </md-dialog-content>
 
         <md-dialog-actions layout="row" layout-align="space-between center">
-            <div layout="row" layout-align="start center">
+            <div layout="row" layout-align="end center" flex>
                 <md-button type="submit"
                            ng-if="!vm.newFolder"
                            ng-click="vm.saveFolder(vm.datas)"
                            class="md-raised md-accent"
                            ng-disabled="folderForm.$invalid || folderForm.$pristine"
-                           aria-label="Save">{{vm.type ? 'Ok': 'Edit Workflow'}}</md-button>
+                           aria-label="Save">{{vm.type ? 'Ok': 'Edit Project'}}</md-button>
 
 
                 <md-button type="submit" ng-if="vm.newFolder"
@@ -54,7 +54,7 @@
                            class="md-raised md-accent"
                            ng-disabled="folderForm.$invalid || folderForm.$pristine"
                            aria-label="Add Folder">
-                           {{vm.type ? 'Ok': 'Save Workflow'}}  
+                           {{vm.type ? 'Ok': 'Save Project'}}  
                 </md-button>
 
                 <md-button ng-show="vm.type" 
@@ -67,7 +67,7 @@
                 aria-label="Include Attachments"
                 ng-true-value="'yes'"
                 ng-false-value="''"
-                class="md-success md-align-top-left" flex>
+                class="md-success md-align-top-left">
                 Include Attachments
              </div>
 

@@ -10,7 +10,7 @@
 
     // State
     $stateProvider.state('app.invitations', {
-      url: '/invitations',
+      url: '/action',
       views: {
         'content@app': {
           templateUrl: 'app/main/invitations/invitations.html',

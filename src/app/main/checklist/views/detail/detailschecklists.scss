@@ -2,7 +2,7 @@
 
   .todo-list-pane .todo-items .todo-item {
     padding: 0px 9px 4px 20px !important;
-    border-top: 1px solid #4472c4;
+    border-bottom: 1px solid #4472c4;
 }
 
   // Single scroll
@@ -129,14 +129,20 @@
       margin-left: 3px;
       text-transform: capitalize;
     }
+    .item icon-dots-vertical{
+      padding:0PX !important;
+
+    }
 
     .checkbox {
       text-align: left;
       /*font-size: 31px;
       line-height: 31px;*/
       padding: 0;
-      /*height: 48px;*/
-      width: 40px;
+      height: 40px;
+      width: 60px;
+      display: flex;
+      align-items: center;
     }
 
     .checkbox-list {

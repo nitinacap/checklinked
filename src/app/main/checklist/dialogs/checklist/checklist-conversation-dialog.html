@@ -46,26 +46,27 @@
       </md-input-container>
 
       <div class="simple-table-container">
-        <table class="simple" ms-responsive-table>
+        <table class="simple bordered-table" ms-responsive-table>
           <tbody>
           <tr ng-repeat="post in vm.conversation.posts | orderBy: timestamp">
-            <td>
+            <td width="20%">
               {{post.user}}
             </td>
-            <td>
+            <td width="40%">
               <!--<div class="item-main">
                 <p class="item-text">-->{{post.text}}<!--</p>
               </div>-->
             </td>
-            <td>
+            <td width="20%">
               {{post.organization}}
             </td>
-            <td>
+            <td width="20%">
               <div ng-switch="vm.old(post.timestamp)" class="user">
               <span ng-switch-when="true"
-                    class="timestamp pull-right">{{post.timestamp | date:'shortDate'}}</span>
+                    class="timestamp pull-right"> {{post.timestamp | timeSince }}</span>
                 <span ng-switch-when="false"
-                      class="timestamp pull-right">{{post.timestamp | date:'mediumTime'}}</span>
+                class="timestamp pull-right">
+                {{post.timestamp | timeSince }}</span>
               </div>
             </td>
           </tr>

@@ -22,7 +22,7 @@
         </th>
         <th class="secondary-text hide-xs" colspan="2">
           <div class="table-header">
-            <span class="column-title">Email</span>
+            <span class="column-title">Organozation Email</span>
           </div>
         </th>
 
@@ -30,7 +30,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-if="contact.contacts.originator.organization!=contact.contacts.accepter.organization || contact.deleted_by!==vm.user.idCON" ng-repeat="contact in vm.contacts | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
+      <tr ng-if="contact.contacts.originator.organization!=contact.contacts.accepter.organization && contact.deleted_by!==vm.user_id" ng-repeat="contact in vm.contacts | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
         ng-switch="(which = vm.showWhichInviteContactData(contact))" ng-click="vm.openContactDialog($event, contact)"
         ng-class="{'md-green-100-bg':vm.passID==contact.id}">
         <td>

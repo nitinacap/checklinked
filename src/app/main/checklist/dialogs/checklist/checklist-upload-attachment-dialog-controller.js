@@ -19,6 +19,8 @@
     vm.uniqueString = uniqueString;
 
     function closeDialog() {
+    
+      vm.upload = false;
       $mdDialog.hide();
     }
 

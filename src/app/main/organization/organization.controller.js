@@ -6,25 +6,23 @@
     .controller('OrganizationController', OrganizationController)
 
   /** @ngInject */
-  function OrganizationController($rootScope, $mdDialog, $document, $stateParams, $state, $http, $scope, api, $mdSidenav) {
+  function OrganizationController($rootScope, $mdDialog, $cookies, $document, $stateParams, $state, $http, $scope, api, $mdSidenav) {
 
     var vm = this;
-
     if ($stateParams.type) {
       vm.type = $stateParams.type
 
     }
+    vm.currentItem = parseInt($rootScope.curreManuItem);
 
     setTimeout(function () {
-      vm.user = $rootScope.user;
-
+      $scope.$apply(function () {
+        vm.user = $rootScope.user;
+      });
       vm.createOrg = createOrg;
-
       vm.createOrganization = false;
       vm.openOrgInfoDialog = openOrgInfoDialog;
-
       var blank, ref, ref1, ref2;
-
       blank = {
         name: '',
         address: {
@@ -43,7 +41,6 @@
       };
 
       if (((ref = vm.user) != null ? ref.organization : void 0) === void 0 || ((ref1 = vm.user) != null ? ref1.organization : void 0) === null || ((ref2 = vm.user) != null ? ref2.organization.length : void 0) === 0) {
-        console.log('blank');
         vm.orgTmp = blank;
       } else {
         if (!vm.user.organizationError) {
@@ -53,16 +50,12 @@
           vm.orgTmp = blank;
         }
 
-
       }
-
-
       if (vm.orgTmp.idACC > 0) {
         vm.createOrganization = true;
-        console.log("woworg" + JSON.stringify(vm.orgTmp) + vm.createOrganization);
       }
 
-    }, 1000);
+    }, 800);
 
     vm.toggleSidenav = toggleSidenav;
     vm.closeDialog = closeDialog;
@@ -90,7 +83,7 @@
           if (resp.code == void 0 || resp === null || resp === '') {
             return $rootScope.message('Server response is unreadable.', 'warning');
           } else if (resp.code) {
-           // $mdDialog.hide();
+            // $mdDialog.hide();
             return $rootScope.message(resp.message);
           } else {
             //$rootScope.user = resp.user;
@@ -175,7 +168,7 @@
 
 
     setTimeout(function () {
-      if ($rootScope.user.organizationError) {
+      if ($rootScope.user && $rootScope.user.organizationError) {
         openOrgInfoDialog(event, $rootScope.user);
         //vm.disableModelClose = true;
 
@@ -212,15 +205,15 @@
         templateUrl: 'app/main/organization/dialogs/organizations/alert.html',
         parent: angular.element(document.body),
         targetEvent: ev,
-        clickOutsideToClose:false
+        clickOutsideToClose: false
       })
-      .then(function(answer) {
-         vm.update();
-         $scope.changedInfoDialog($rootScope.user);
-        $scope.status = 'You said the information was "' + answer + '".';
-      }, function() {
-        $scope.status = 'You cancelled the dialog.';
-      });
+        .then(function (answer) {
+          vm.update();
+          $scope.changedInfoDialog($rootScope.user);
+          $scope.status = 'You said the information was "' + answer + '".';
+        }, function () {
+          $scope.status = 'You cancelled the dialog.';
+        });
 
       // var confirm = $mdDialog.confirm()
       //   .title('Are you sure to update this organization')
@@ -236,12 +229,12 @@
 
       // }, function () {
       //   openOrgInfoDialog(event, $rootScope.user);
-       
+
       // });
     }
 
     //organization detail after saved and edit
-     $scope.changedInfoDialog = function(item) {
+    $scope.changedInfoDialog = function (item) {
       vm.item = item.organization;
       $mdDialog.show({
         scope: $scope,
@@ -253,17 +246,36 @@
       });
     };
 
-    $scope.hide = function() {
+    $scope.hide = function () {
       $mdDialog.hide();
     };
 
-    $scope.cancel = function() {
+    $scope.cancel = function () {
       $mdDialog.cancel();
     };
 
-    $scope.answer = function(answer) {
+    $scope.answer = function (answer) {
       $mdDialog.hide(answer);
     };
+
+
+    function Stats() {
+      $http.post(BASEURL + 'organization-stats.php', {'token':$cookies.get('token') },
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          cache: false
+        }).error(function () {
+        }).success(function (resp) {
+          if (resp.type == 'success') {
+            vm.stats = resp.stats;
+          } else {
+           console.log('server error while getting stats');
+
+          }
+
+        })
+    };
+    Stats();
 
   };
 
