@@ -1,13 +1,12 @@
-<div ng-show="!section.notApplicable"
-     ng-class="{'completed': section.notApplicable, 'green':vm.passedNotification.id==section.id}" class="checklist-item  checklist-section-bg" md-ink-ripple
-     layout="row" layout-align="start center">
+<div ng-show="!section.notApplicable" ng-class="{'completed': section.notApplicable, 'green':vm.passedNotification.id==section.id}"
+  class="checklist-item  checklist-section-bg" md-ink-ripple layout="row" layout-align="start center">
 
   <div data-as-sortable-item-handle class="handle" ng-click="vm.preventDefault($event)">
     <md-icon md-font-icon="icon-drag-vertical" class="icon"></md-icon>
   </div>
 
-  <div layout="row" layout-align="start center"
-       ng-click="vm.toggle('section',section); vm.fetchHeadingBlock(section, checklist.id)" flex>
+  <div layout="row" layout-align="start center" ng-click="vm.toggle('section',section); vm.fetchHeadingBlock(section, checklist.id)"
+    flex>
 
     <div class="info" flex>
       <div class="section">
@@ -16,15 +15,17 @@
     </div>
 
     <div layout="row" flex="15" layout-align="end center">
-
-      <md-icon md-font-icon="icon-paperclip" class="is-important indicator-icon s18"
-               ng-click="vm.openUploadAttachmentDialog($event, 'section', section.id, $index, section.attachments)"
-               ng-if="section.attachments.length>0">
+      <md-icon md-font-icon="icon-paperclip" class="is-important indicator-icon s18" ng-click="vm.openUploadAttachmentDialog($event, 'section', section.id, $index, section.attachments)"
+        ng-if="section.attachments.length>0">
       </md-icon>
 
-      <md-icon md-font-icon="icon-comment-text-outline" class="is-important indicator-icon s18"
+      <!-- <md-icon md-font-icon="icon-comment-text-outline" class="is-important indicator-icon s18"
                ng-click="vm.openConversationDialog($event, 'section', section.id, section.name)"
                ng-if="section.postCount>0">
+      </md-icon> -->
+
+      <md-icon md-font-icon="icon-comment-text-outline" class="is-important indicator-icon s18" ng-click="vm.openConversationDialog('section', section.id, section.name)"
+        ng-if="section.postCount>0">
       </md-icon>
 
     </div>
@@ -34,79 +35,113 @@
 
 
       <md-menu>
-        <md-button ng-click="$mdOpenMenu($event)"
-                   class="md-icon-button" aria-label="More" translate
-                   translate-attr-aria-label="CHECKLIST.MORE">
+        <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
+          translate-attr-aria-label="CHECKLIST.MORE">
           <md-icon md-font-icon="icon-dots-vertical" class="s18"></md-icon>
         </md-button>
 
         <md-menu-content width="3" class="menu-height">
 
           <md-menu-item>
+            <md-button ng-click="vm.toggle('na', section)" aria-label="Section Disabled N/A" translate-attr-aria-label="CHECKLIST.SECTION_NA">
+              <md-icon ng-show="section.notApplicable" class="md-accent-fg s18" md-font-icon="icon-checkbox-marked-outline"></md-icon>
+              <md-icon ng-hide="section.notApplicable" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline"></md-icon>
+              <span translate="CHECKLIST.SECTION_NA">Section N/A</span>
+            </md-button>
+          </md-menu-item>
+
+          <md-menu-item>
             <md-button ng-click="vm.add('heading',section.id, $event)" aria-label="Add New Heading"
-                       translate-attr-aria-label="CHECKLIST.ADD_HEADING">
-              <md-icon class="md-accent-fg s18"
-                       md-font-icon="icon-plus-circle-outline"></md-icon>
+              translate-attr-aria-label="CHECKLIST.ADD_HEADING">
+              <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
               <span translate="CHECKLIST.ADD_HEADING">Add New Heading</span>
             </md-button>
           </md-menu-item>
 
-          <md-divider class="md-default-theme"></md-divider>
-
           <md-menu-item>
-            <md-button ng-click="vm.openConversationDialog('section', section.id, section.name)"
-                       aria-label="Start Conversation"
-                       translate-attr-aria-label="CHECKLIST.CONVOS">
-              <md-icon class="md-accent-fg s18"
-                       md-font-icon="icon-comment-multipe-outline"></md-icon>
-              <span translate="CHECKLIST.CONVOS">Conversations</span>
+            <md-button ng-click="vm.addTable('heading',section.id, $event)" aria-label="Add New Heading"
+              translate-attr-aria-label="CHECKLIST.ADD_TABLE">
+              <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+              <span translate="CHECKLIST.ADD_TABLE">Add Table</span>
             </md-button>
           </md-menu-item>
-
           <md-menu-item>
             <md-button ng-click="vm.toggle('references',section)" aria-label="Show References"
-                       translate-attr-aria-label="CHECKLIST.SHOW_REFERENCES">
+              translate-attr-aria-label="CHECKLIST.SHOW_REFERENCES">
 
-              <md-icon ng-show="section.showReferences" class="md-accent-fg s18"
-                       md-font-icon="icon-checkbox-marked-outline"></md-icon>
-              <md-icon ng-hide="section.showReferences" class="md-accent-fg s18"
-                       md-font-icon="icon-checkbox-blank-outline"></md-icon>
+              <md-icon ng-show="section.showReferences" class="md-accent-fg s18" md-font-icon="icon-checkbox-marked-outline"></md-icon>
+              <md-icon ng-hide="section.showReferences" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline"></md-icon>
 
               <span translate="CHECKLIST.SHOW_REFERENCES">Show References</span>
             </md-button>
           </md-menu-item>
 
-          <md-divider class="md-default-theme"></md-divider>
+          <md-menu-item>
+            <md-button ng-click="vm.openConversationDialog('section', section.id, section.name)" aria-label="Start Conversation"
+              translate-attr-aria-label="CHECKLIST.CONVOS">
+              <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
+              <span translate="CHECKLIST.CONVOS">Conversations</span>
+            </md-button>
+          </md-menu-item>
 
           <md-menu-item>
+            <md-button ng-click=" vm.toggle('section',section);vm.showAllHeaders(section.headings)" aria-label="Show All Headers"
+              translate-attr-aria-label="CHECKLIST.HEADERS">
+              <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+   
+              <span translate="CHECKLIST.HEADERS">Show All Headers</span>
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-click="vm.openSectionDialog($event, section)" aria-label="Edit Section Name"
+              translate-attr-aria-label="CHECKLIST.EDIT_SECTION_NAME">
+              <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+              <span translate="CHECKLIST.EDIT_SECTION_NAME">Edit Section Name</span>
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-click="vm.deleteConfirm('section',section)" aria-label="Delete Section"
+              translate-attr-aria-label="CHECKLIST.DELETE_SECTION">
+              <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+              <span translate="CHECKLIST.DELETE_SECTION">Delete Section</span>
+            </md-button>
+          </md-menu-item>
+          <md-divider class="md-default-theme"></md-divider>
+          <md-menu-item>
+            <md-button ng-click="vm.cutDialog('section', section.id, section.idCHK)" aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
+              <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
+              <span translate="GROUP.CUT"></span>
+            </md-button>
+          </md-menu-item>
+
+          <md-menu-item>
+            <md-button ng-click="vm.coypDialog($event, group.id)" aria-label="Copy" translate-attr-aria-label="GROUP.COPY">
+              <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
+              <span>Copy</span>
+            </md-button>
+          </md-menu-item>
+
+          <md-menu-item>
+            <md-button ng-click="vm.pasteDialog('section', section.id, section.idCHK)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
+              <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
+              <span translate="GROUP.PASTE"></span>
+            </md-button>
+          </md-menu-item>
+
+          <md-menu-item>
+            <md-button ng-click="vm.undoDialog($event, group.id)" aria-label="Undo" translate-attr-aria-label="GROUP.UNDO">
+              <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>
+              <span translate="GROUP.UNDO"></span>
+            </md-button>
+          </md-menu-item> 
+          <md-menu-item>
             <md-button ng-click="vm.openUploadAttachmentDialog($event, 'section', section.id, $index,section.attachments)"
-                       aria-label="Attachments"
-                       translate-attr-aria-label="CHECKLIST.ATTACHMENTS">
-              <md-icon class="md-accent-fg s18"
-                       md-font-icon="icon-attachment"></md-icon>
+              aria-label="Attachments" translate-attr-aria-label="CHECKLIST.ATTACHMENTS">
+              <md-icon class="md-accent-fg s18" md-font-icon="icon-attachment"></md-icon>
               <span translate="CHECKLIST.ATTACHMENTS">Attachments</span>
             </md-button>
           </md-menu-item>
 
-          <md-divider class="md-default-theme"></md-divider>
-
-          <md-menu-item>
-            <md-button ng-click="vm.openSectionDialog($event, section)" aria-label="Edit Section Name"
-                       translate-attr-aria-label="CHECKLIST.EDIT_SECTION_NAME">
-              <md-icon class="md-accent-fg s18"
-                       md-font-icon="icon-pencil"></md-icon>
-              <span translate="CHECKLIST.EDIT_SECTION_NAME">Edit Section Name</span>
-            </md-button>
-          </md-menu-item>
-
-          <md-menu-item>
-            <md-button ng-click="vm.deleteConfirm('section',section)" aria-label="Delete Section"
-                       translate-attr-aria-label="CHECKLIST.DELETE_SECTION">
-              <md-icon class="red-600-fg s18"
-                       md-font-icon="icon-trash"></md-icon>
-              <span translate="CHECKLIST.DELETE_SECTION">Delete Section</span>
-            </md-button>
-          </md-menu-item>
 
 
 
@@ -114,16 +149,11 @@
 
 
 
-          <md-menu-item>
-            <md-button ng-click="vm.toggle('na', section)" aria-label="Section Disabled N/A"
-                       translate-attr-aria-label="CHECKLIST.SECTION_NA">
-              <md-icon ng-show="section.notApplicable" class="md-accent-fg s18"
-                       md-font-icon="icon-checkbox-marked-outline"></md-icon>
-              <md-icon ng-hide="section.notApplicable" class="md-accent-fg s18"
-                       md-font-icon="icon-checkbox-blank-outline"></md-icon>
-              <span translate="CHECKLIST.SECTION_NA">Section N/A</span>
-            </md-button>
-          </md-menu-item>
+
+
+
+
+
 
 
 

@@ -23,13 +23,13 @@
     $translatePartialLoaderProvider.addPart('app/main/dashboard');
 
     // Navagation
-    msNavigationServiceProvider.saveItem('reports.dashboard', {
-      title: 'Dashboard',
-      //icon: 'icon-poll-box',
-      icon: 'dashboard',
-      state: 'app.dashboard',
-      weight: 2
-    });
+    // msNavigationServiceProvider.saveItem('reports.dashboard', {
+    //   title: 'Dashboard',
+    //   //icon: 'icon-poll-box',
+    //   icon: 'dashboard',
+    //   state: 'app.dashboard',
+    //   weight: 2
+    // });
 
   }
 

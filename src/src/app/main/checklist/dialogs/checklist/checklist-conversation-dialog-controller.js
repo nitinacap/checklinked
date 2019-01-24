@@ -14,14 +14,13 @@
     vm.convoName = convoName;
     vm.title = vm.convoName + ' Conversation';
     vm.producerType = producerType,
-    vm.itemType = 'post';
+      vm.itemType = 'post';
     vm.setSocketStuff = setSocketStuff;
     vm.closeDialog = closeDialog;
     vm.old = old;
     vm.getLatestPosts = getLatestPosts;
     vm.pushPosts = pushPosts;
     vm.submitPost = submitPost;
-
     vm.form = {
       'from': $rootScope.user.name.full,
       'subject': 'Re: ' + vm.convoName,
@@ -117,8 +116,8 @@
           if (post.id_parent === vm.conversation.id) {
             console.log('post accepted', post);
             if (!((ref1 = $filter('filter')(vm.conversation.posts, {
-                rid: post.rid
-              }, true)) != null ? ref1.length : void 0)) {
+              rid: post.rid
+            }, true)) != null ? ref1.length : void 0)) {
               vm.conversation.posts.unshift(post);
               results.push(vm.conversation.currentSkip += 1);
             } else {
@@ -131,29 +130,65 @@
         return results;
       }
     };
-
+ $scope.setFile = function(element) {
+        $scope.$apply(function($scope) {
+            $scope.theFile = element.files[0];
+        });
+    };
     function submitPost() {
       vm.newPost.submitting = true;
-      console.log('vm.type', vm.type);
-      console.log('submitting convo entry', vm.conversation.id, vm.newPost.text, vm.itemType, vm.producerType);
-      return api.conversations.add(vm.conversation.id, vm.newPost.text, vm.itemType, vm.producerType).error(function (res) {
-        return $rootScope.message('Error posting.', 'warning');
-      }).success(function (res) {
-        if (res.code) {
-          return $rootScope.message(res.message, 'warning');
-        } else {
-          return $rootScope.socketio.emit('message', res.posts[0]);
-        }
-      })["finally"](function () {
-        vm.closeDialog();
-        /*
-         return vm.newPost = {
-         text: vm.newPost.text,
-         submitting: false
-         };
-         */
+      vm.file_name = $scope.files[0].name;
+   
+      var fd = new FormData();
+      angular.forEach($scope.files, function (file) {
+        fd.append('file', file);
       });
-    };
+
+      var filedata = { id: vm.conversation.id, text: vm.newPost.text, itemType: vm.itemType, producerType: vm.producerType };
+      fd.append('data', JSON.stringify(filedata));
+
+
+      $http.post(BASEURL + 'posts-post.php', fd, {
+        headers: { 'Content-Type': undefined },
+        cache: false
+      }).error(function (res) {
+        return $rootScope.message('Could not send message. Unknown error.', 'warning');
+      }).success(function (res) {
+        if (res.type == 'success') {
+          vm.file_name = '';
+          vm.newPost.submitting = false;
+          vm.checklistCionversion = true;
+          vm.newPost.text = '';
+          vm.conversation.posts.unshift(res.posts[0]);
+          // vm.conversation.posts.unshift(res.posts[0]);
+          // return $rootScope.socketio.emit('message', res.posts[0]);
+        } else {
+          return $rootScope.message(res.message, 'warning');
+        }
+      })
+    }
+
+
+    //   return api.conversations.add(fd).error(function (res) {
+    //     return $rootScope.message('Error posting.', 'warning');
+    //   }).success(function (res) {
+    //     if (res.type == 'success') {
+    //       vm.newPost.submitting = false;
+    //       vm.checklistCionversion = true;
+    //       vm.newPost.text = '';
+    //       vm.conversation.posts.unshift(res.posts[0]);
+    //     } else {
+    //       return $rootScope.message(res.message, 'warning');
+    //     }
+    //   })["finally"](function () {
+    //     vm.closeDialog();
+    //      return vm.newPost = {
+    //      text: vm.newPost.text,
+    //      submitting: false
+    //      };
+
+    //   });
+    // };
 
     function closeDialog() {
       $mdDialog.hide();

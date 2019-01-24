@@ -1,10 +1,22 @@
+.bordered-table button.md-ink-ripple *{
+    padding: 0 !important;
+}
+div#stats {
+    padding: 16px 0;
+    padding-top: 30px;
+}
 #user {
 
 md-input-container {
     width: 50% !important;
     flex:inherit !important;
 }
-
+div#stats {
+    padding: 16px 0;
+}
+#stats{
+    padding-top: 30px !important;
+}
 
 md-input-container input {
     width: 96% !important;                
@@ -15,6 +27,9 @@ md-input-container label{
     margin-left:2%;
     margin-right:2%;
     font-size: 14px !important;
+}
+.form-wrapper{
+    padding: 0px;
 }
 
 }
@@ -46,6 +61,22 @@ padding-left: 15px !important;
 .px-15{
   padding-left: 15px;
   padding-right: 15px;
+}
+.userinfo .bordered-table thead th {
+    padding-bottom: 0 !important;
+}
+table.bordered-table.userinfo th button.md-icon-button, table.bordered-table.userinfo th button.md-icon-button * {
+    padding: 0 !important;
+}
+.support-icon{
+    color:#fff;
+    font-size: 14px;
+}
+.fff{
+   color:#fff !important;
+}
+.support-buton{
+    text-transform: none !important;
 }
 
 // RESPONSIVE

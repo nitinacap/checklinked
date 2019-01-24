@@ -1,4 +1,4 @@
-<div layout="row" flex>
+<div layout="column" flex>
   <md-input-container flex="100">
     <label translate="FOLDER.NAME">Project Name</label>
     <input name="name" ng-model="vm.folder.name" md-autofocus required>
@@ -8,4 +8,8 @@
       </div>
     </div>
   </md-input-container>
+  <md-input-container flex="100">
+    <label translate="FOLDER.DESCRIPTION" class="ng-scope" for="input_93">Project Description</label>
+    <input name="description" ng-model="vm.folder.description" class="ng-pristine ng-valid md-input ng-empty ng-touched" id="input_93" aria-invalid="false" style=""><div class="md-errors-spacer"></div>
+</md-input-container>
 </div>

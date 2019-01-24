@@ -1,11 +1,13 @@
-#stats {
+#organization {
   
     table { width:100%; }
     tr{
         border-bottom:1px solid red;
     }
     
-    
+  .form-wrapper{
+padding:0px;
+  }  
 }
 
 .bordered-table tbody td {
@@ -64,4 +66,18 @@ md-menu-content.custom {
 }
 #stats a span .noactive{
     color:black;
+}
+
+#lh-5{
+    line-height: 5px !important;
+}
+.orgdetail{
+    max-width: 30% !important;
+
+    .name{
+        font-size: 24px;
+    }
+table{
+padding:15px !important;
+    }
 }

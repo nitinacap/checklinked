@@ -1,0 +1,18 @@
+{
+    "ARCHIVE": {
+        "TOGGLE_SIDENAV": "Toggle sidenav",
+        "FILTER": "Filter",
+        "ORDER": "Order",
+        "TITLE": "Title",
+        "SORT_DIRECTION": "Sort direction",
+        "ASCENDING": "Ascending",
+        "DESCENDING": "Descending",
+        "ALL_FOLDERS": "All Projects",
+        "DELETE": "Delete",
+        "RESTORE": "Restore Archive",
+        
+        "ERRORS": {
+            "FOLDER_NAME_REQUIRED": "Archive Name is required"
+        }
+    }
+}

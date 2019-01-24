@@ -1,4 +1,4 @@
-/deep/ .md-tab-label {
+.md-tab-label {
   min-width: 1000px !important;
 }
 
@@ -7,6 +7,12 @@
     background-color: rgba(0,0,0,0.12);
     background-size: cover;
 
+    .subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2) {
+        float: left !important;
+    }
+    div#stats{
+        padding:0px;
+    }
 
     #account-form-wrapper {
         flex: 1 0 auto;

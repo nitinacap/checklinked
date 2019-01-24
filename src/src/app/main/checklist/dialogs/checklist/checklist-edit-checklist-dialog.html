@@ -2,7 +2,7 @@
   <form name="checklistForm" class="md-inline-form" novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-        <span class="title">Edit Checklist Name</span>
+        <span class="title">{{vm.title}}</span>
         <md-button class="md-icon-button" ng-click="vm.closeDialog()">
           <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
         </md-button>
@@ -12,20 +12,26 @@
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block">
         <label translate="CHECKLIST.NAME">{{vm.checklist.name}} Name</label>
-        <input name="name" ng-model="vm.checklist.name" required md-autofocus>
+        <input name="name" ng-model="vm.checklist.name" maxlength="150" required md-autofocus>
         <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
           <div ng-message="required">
             <span translate="CHECKLIST.ERRORS.CHECKLIST_NAME_REQUIRED">Checklist Name field is required</span>
           </div>
         </div>
       </md-input-container>
+
+      <md-input-container class="md-block">
+        <label translate="CHECKLIST.DESCRIPTION">{{vm.checklist.description}}</label>
+        <input name="name" ng-model="vm.checklist.description">
+
+      </md-input-container>
     </md-dialog-content>
 
     <md-dialog-actions layout="row" layout-align="space-between center">
-      <div layout="row" layout-align="start center">
+      <div layout="row" layout-align="end center" flex>
         <md-button type="submit"
                    ng-if="!vm.newChecklist"
-                   ng-click="vm.saveChecklist()"
+                   ng-click="vm.saveChecklist(vm.type)"
                    class="md-raised md-accent"
                    ng-disabled="checklistForm.$invalid || checklistForm.$pristine"
                    aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">

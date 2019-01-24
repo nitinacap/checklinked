@@ -1,128 +1,233 @@
-<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
 
-  <table class="simple row-border hover">
-    <thead>
+  <table class="simple row-border hover bordered-table">
+    <thead class="tool-bg">
+      <tr>
+        <th>
+          <span ng-if="!vm.groups.length  && !vm.isLoader">You do not have any workflow</span>
+          <!-- <span ng-if="vm.groups.length">My workflow{{ vm.groups.length > 1 ? "s" : ''}}</span> -->
+          <div layout="row" layout-align="start center" ng-if="vm.groups && !vm.isLoader">
+            <md-select class="simplified" ng-model="vm.groupOrder" placeholder="Most Recent" ng-change="vm.groupOrderDescending = vm.groupOrder === 'true ? true : vm.folderOrderDescending">
+              <md-option value="name">Most Recent</md-option>
+            </md-select>
+          
+            <md-button class="md-icon-button"  ng-click="vm.groupOrderDescending = !vm.groupOrderDescending"
+              aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+              <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.groupOrderDescending === true" class="s18"></md-icon>
+              <md-icon md-font-icon="icon-sort-descending" ng-if="vm.groupOrderDescending === false" class="s18"></md-icon>
+            </md-button>
+          </div>
 
-    <tr>
-      <th>
-        <span ng-if="!vm.groups.length">You do not have any workflow</span>
-        <span ng-if="vm.groups.length">My workflow{{ vm.groups.length > 1 ? "s" : ''}}</span>
-      </th>
+        </th>
 
+        <th class="text-right">
+          <md-menu>
+            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
+              translate translate-attr-aria-label="GROUPS.SORT">
+              <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
+            </md-button>
 
+            <md-menu-content width="3">
 
-      <th class="text-right">
-        <md-menu>
+              <md-menu-item>
+                <md-button ng-click="vm.openGroupDialog($event)">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                  <span translate="">Add New Workflow</span>
+                </md-button>
+              </md-menu-item>
 
-          <md-button ng-click="$mdOpenMenu($event)"
-                     class="md-icon-button table-md-icon-button" aria-label="Sort" translate
-                     translate-attr-aria-label="GROUPS.SORT">
-            <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
-          </md-button>
+              <!-- <md-menu-item ng-if="vm.groups">
+                <md-button ng-click="vm.archieveDialog($event, '')" aria-label="Archive All" translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
+                  <span translate="FOLDER.FOLDER_ARCHIVE_ALL"></span>
+                </md-button>
+              </md-menu-item> -->
 
-          <md-menu-content width="3">
+            </md-menu-content>
 
-            <md-menu-item>
-              <md-button ng-click="vm.openGroupDialog($event)">
-                <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
-                <span translate="">Add New Workflow</span>
-              </md-button>
-            </md-menu-item>
-
-          </md-menu-content>
-
-        </md-menu>
-      </th>
-    </tr>
+          </md-menu>
+        </th>
+      </tr>
     </thead>
     <tbody>
-    <tr
-      ng-repeat="group in vm.groups | orderBy:vm.groupOrder:vm.groupOrderDescending | filter: globalSearch.searchTerm | filter:vm.groupFilters.search track by $index">
-      <td>
-        <a href="/checklist/{{group.id}}">
-          {{group.name}} 
-        </a>
-      </td>
+      <tr ng-hide="item[$index]"   ng-repeat="group in vm.groups | orderBy:vm.groupOrder:vm.groupOrderDescending | filter: globalSearch.searchTerm | filter:vm.groupFilters.search track by $index">
+        <td>
+          <a href="/checklist/{{group.id}}" >
+            {{group.name}}
+          </a>
+          <!-- <span ng-hide="item.show"> {{group.name}}</span>
+          <span ng-click="item.show = !item.show">Show</span> -->
+        </td>
 
 
-      <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
-          class="text-right">
+        <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))" class="text-right">
 
-        <md-menu>
-          <md-button ng-click="$mdOpenMenu($event)"
-                     class="md-icon-button table-md-icon-button" aria-label="More" translate
-                     translate-attr-aria-label="GROUP.MORE">
-            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
-          </md-button>
+          <md-menu>
+            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
+              translate translate-attr-aria-label="GROUP.MORE">
+              <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+            </md-button>
 
-          <md-menu-content width="3">
-            <md-menu-item>
-              <md-button ng-click="vm.deleteGroup(group, $event)" aria-label="Delete Group"
-                         translate-attr-aria-label="GROUP.DELETE_GROUP">
-                <md-icon class="red-600-fg s18"
-                         md-font-icon="icon-trash"></md-icon>
-                <span translate="GROUP.DELETE_GROUP">Delete Group</span>
-              </md-button>
-            </md-menu-item>
+            <md-menu-content width="3" class="menu-height">
+              <!-- <md-menu-item ng-show="permissions.has('inviteToChecklist')">
+                <md-button ng-click="vm.sendLinkRequestDialog($event, group)" aria-label="Send Link Request"
+                  translate-attr-aria-label="GROUP.SEND_LINK_REQUEST">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-account-plus" class="s18"></md-icon>
+                  <span translate="GROUP.SEND_LINK_REQUEST">Send Link Request</span>
+                </md-button>
+              </md-menu-item> -->
+              <md-menu-item>
+                <md-button ng-click="vm.sendLinkRequestDialog($event, group)" aria-label="Send Link Request"
+                  translate-attr-aria-label="GROUP.SEND_LINK_REQUEST">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-account-plus" class="s18"></md-icon>
+                  <span translate="GROUP.SEND_LINK_REQUEST">Send Link Request</span>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item>
+                <md-button ng-click="vm.showLinkedUsers($event, group)" aria-label="Show Linked Users"
+                  translate-attr-aria-label="GROUP.SHOW_LINKED_USERS">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-account-switch"></md-icon>
+                  <span translate="GROUP.SHOW_LINKED_USERS">Show Linked Users</span>
+                </md-button>
+              </md-menu-item>
 
-            <md-menu-item>
-              <md-button ng-click="vm.openGroupDialog($event, group)" aria-label="Edit Group"
-                         translate-attr-aria-label="GROUP.EDIT_GROUP">
-                <md-icon class="md-accent-fg s18"
-                         md-font-icon="icon-pencil"></md-icon>
-                <span translate="GROUP.EDIT_GROUP">Edit Group</span>
-              </md-button>
-            </md-menu-item>
+              <md-menu-item>
+                <md-button ng-click="vm.openGroupDialog($event, group)" aria-label="Edit Group"
+                  translate-attr-aria-label="GROUP.EDIT_GROUP">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                  <span translate="GROUP.EDIT_GROUP">Edit Name</span>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item>
+                <!-- <md-button ng-click="vm.Duplicate(group)" aria-label="Edit Duplicate"
+                  translate-attr-aria-label="GROUP.DUPLICATE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
+                  <span translate="GROUP.DUPLICATE">Duplicate</span>
+                </md-button> -->
 
-            <md-menu-item ng-show="permissions.has('inviteToChecklist')">
-              <md-button ng-click="vm.sendLinkRequestDialog($event, group)" aria-label="Send Link Request"
-                         translate-attr-aria-label="GROUP.SEND_LINK_REQUEST">
-                <md-icon class="md-accent-fg s18"
-                         md-font-icon="icon-account-plus" class="s18"></md-icon>
-                <span translate="GROUP.SEND_LINK_REQUEST">Send Link Request</span>
-              </md-button>
-            </md-menu-item>
+                <md-button ng-click="vm.openGroupDialog(group, '', 'duplicate')" aria-label="Create Duplicate"
+                  translate-attr-aria-label="GROUP.DUPLICATE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
+                  <span translate="GROUP.DUPLICATE">Duplicate</span>
+                </md-button>
+              </md-menu-item>
+              <!-- <md-menu-item ng-show="permissions.has('publishTemplate')">
+                          <md-button ng-click="vm.publishTemplateDialog($event, group.id, group.name)" aria-label="Publish as Template"
+                            translate-attr-aria-label="GROUP.PUBLISH_TEMPLATE">
+                            <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-upload"></md-icon>
+                            <span translate="GROUP.PUBLISH_TEMPLATE">Publish as Template</span>
+                          </md-button>
+                        </md-menu-item>         -->
 
-            <md-menu-item ng-show="permissions.has('publishTemplate')">
-              <md-button ng-click="vm.publishTemplateDialog($event, group.id, group.name)"
-                         aria-label="Publish as Template"
-                         translate-attr-aria-label="GROUP.PUBLISH_TEMPLATE">
-                <md-icon class="md-accent-fg s18"
-                         md-font-icon="icon-cloud-upload"></md-icon>
-                <span translate="GROUP.PUBLISH_TEMPLATE">Publish as Template</span>
-              </md-button>
-            </md-menu-item>
+              <md-menu-item>
+                <md-button ng-click="vm.publishTemplateDialog($event, group.id, group.name)" aria-label="Publish as Template"
+                  translate-attr-aria-label="GROUP.PUBLISH_TEMPLATE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-upload"></md-icon>
+                  <span translate="GROUP.PUBLISH_TEMPLATE">Publish as Template</span>
+                </md-button>
+              </md-menu-item>
 
-            <md-menu-item>
-              <md-button ng-click="vm.linkExistingDialog($event, group)" aria-label="Link to Existing"
-                         translate-attr-aria-label="GROUP.LINK_EXISTING">
-                <md-icon class="md-accent-fg s18"
-                         md-font-icon="icon-link-variant"></md-icon>
-                <span translate="GROUP.LINK_EXISTING">Link to Existing</span>
-              </md-button>
-            </md-menu-item>
+              <md-menu-item>
+                <md-button ng-click="vm.downloadPDF($ev, group.id, group.name)" aria-label="Download PDF"
+                  translate-attr-aria-label="GROUP.DOWNLOAD_PDF">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-file-pdf"></md-icon>
+                  <span translate="GROUP.DOWNLOAD_PDF">Download PDF</span>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item>
+                  <md-button ng-click="vm.archieveDialog($event, group.id)" aria-label="Archive"
+                    translate-attr-aria-label="GROUP.ARCHIVE">
+                    <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
+                    <span translate="GROUP.ARCHIVE"></span>
+                  </md-button>
+                </md-menu-item>
+               <md-divider></md-divider> 
 
-            <md-divider class="md-default-theme"></md-divider>
+               <md-menu-item>
+                  <md-button ng-click="vm.cutDialog(group.id_parent, group.id, 'cut',$index)" aria-label="Cut"
+                    translate-attr-aria-label="GROUP.CUT">
+                    <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
+                    <span translate="GROUP.CUT"></span>
+                  </md-button>
+                </md-menu-item>
 
-            <md-menu-item>
-              <md-button ng-click="vm.addGroupDialog($event)" aria-label="Add New Group"
-                         translate-attr-aria-label="GROUP.ADD_NEW_GROUP">
-                <md-icon class="md-accent-fg s18"
-                         md-font-icon="icon-plus"></md-icon>
-                <span translate="GROUP.ADD_NEW_GROUP">Add New Group</span>
-              </md-button>
-            </md-menu-item>
+                <md-menu-item>
+                    <md-button ng-click="vm.coypDialog($event, group.id)" aria-label="Copy"
+                      translate-attr-aria-label="GROUP.COPY">
+                      <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
+                      <span translate="GROUP.COPY">Copy</span>
+                    </md-button>
+                  </md-menu-item>
 
-          </md-menu-content>
-        </md-menu>
+                  <md-menu-item>
+                      <md-button ng-click="vm.pasteDialog(group.id_parent, group.id, 'paste',$index)" aria-label="Paste"
+                        translate-attr-aria-label="GROUP.PASTE">
+                        <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
+                        <span translate="GROUP.PASTE"></span>
+                      </md-button>
+                    </md-menu-item>
 
-      </td>
+                    <md-menu-item>
+                        <md-button ng-click="vm.undoDialog($event, group.id)" aria-label="Undo"
+                          translate-attr-aria-label="GROUP.UNDO">
+                          <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>
+                          <span translate="GROUP.UNDO"></span>
+                        </md-button>
+                      </md-menu-item>
+              <md-menu-item>
+                <md-button ng-click="vm.deleteGroup(group, $event)" aria-label="Delete Group" translate-attr-aria-label="GROUP.DELETE_GROUP">
+                  <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                  <span translate="GROUP.DELETE_GROUP">Delete Group</span>
+                </md-button>
+              </md-menu-item>
 
-    </tr>
+
+
+              <!-- <md-menu-item ng-show="permissions.has('inviteToChecklist')">
+                <md-button ng-click="vm.sendLinkRequestDialog($event, group)" aria-label="Send Link Request"
+                  translate-attr-aria-label="GROUP.SEND_LINK_REQUEST">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-account-plus" class="s18"></md-icon>
+                  <span translate="GROUP.SEND_LINK_REQUEST">Send Link Request</span>
+                </md-button>
+              </md-menu-item> -->
+
+
+
+              <!-- <md-menu-item ng-show="permissions.has('publishTemplate')">
+                <md-button ng-click="vm.publishTemplateDialog($event, group.id, group.name)" aria-label="Publish as Template"
+                  translate-attr-aria-label="GROUP.PUBLISH_TEMPLATE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-upload"></md-icon>
+                  <span translate="GROUP.PUBLISH_TEMPLATE">Publish as Template</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.linkExistingDialog($event, group)" aria-label="Link to Existing"
+                  translate-attr-aria-label="GROUP.LINK_EXISTING">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-link-variant"></md-icon>
+                  <span translate="GROUP.LINK_EXISTING">Link to Existing</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-divider class="md-default-theme"></md-divider>
+
+              <md-menu-item>
+                <md-button ng-click="vm.addGroupDialog($event)" aria-label="Add New Group" translate-attr-aria-label="GROUP.ADD_NEW_GROUP">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-plus"></md-icon>
+                  <span translate="GROUP.ADD_NEW_GROUP">Add New Group</span>
+                </md-button>
+              </md-menu-item> -->
+
+            
+
+            </md-menu-content>
+          </md-menu>
+
+        </td>
+
+      </tr>
     </tbody>
   </table>
 
 
 </div>
-
-

@@ -1,0 +1,141 @@
+#others {
+
+.subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2) {
+  float: left !important;
+
+}
+.rbb rbb{
+  border-bottom: none !important;
+}
+.breadcrum a{
+  color:#0a748f !important;
+}
+.breadcrum{
+  color:#50dbfe !important;
+}
+
+
+th{
+  width: 150px;
+}
+
+md-menu{
+  float:right;
+
+}
+// .md-tab.md-active{
+//   border-bottom:none !important;
+//   color:black !important;
+// }
+// .md-tab span{
+//   color:#a6a6a6 !important;
+// }
+// .md-tab.md-active span {
+//   color: #000 !important;
+// } 
+md-tab-item:nth-last-child(2){
+max-width: 100% !important;
+}  
+
+  table.dataTable {
+
+    tbody {
+
+      td {
+        padding: 16px 8px;
+        vertical-align: middle;
+
+        &:first-child {
+          padding-left: 24px;
+        }
+
+        &:last-child {
+          padding-right: 24px;
+        }
+
+      }
+
+    }
+
+  }
+
+  .table-md-icon-button {
+    padding: 0 8px !important;
+    height: auto !important;
+  }
+
+  .md-button.md-icon-button {
+    margin: 0 0px;
+    min-width: 0;
+    line-height: 18px !important;
+    width: 30px;
+    border-radius: 50%;
+    margin-left: 0px !important;
+    padding-left:0px !important;
+  }
+ .column-title{
+    display: table-cell;
+    vertical-align: baseline;
+}
+
+.table-header {
+    display: table;
+}
+.table-header button.md-icon-button.md-button.ng-scope.md-ink-ripple.md-default-theme {
+  vertical-align: middle !important;
+}
+
+}
+
+// RESPONSIVE
+@media screen and (max-width: $layout-breakpoint-xs) {
+
+  #contacts {
+
+    md-tab-content {
+      padding: 0 !important;
+    }
+
+    .table-md-icon-button {
+      padding: 0 8px !important;
+      height: auto !important;
+    }
+
+  }
+}
+
+.custom-dialog md-input-container {
+    margin: 0;
+}
+
+md-dialog.dialog md-input-container .md-errors-spacer {
+    min-height: 10px;
+}
+
+md-dialog.dialog md-input-container input {
+    border-bottom-color: #4472c4 !important;
+}
+.custom-dialog md-input-container {
+    margin: 0;
+}
+
+md-dialog.dialog md-input-container .md-errors-spacer {
+    min-height: 10px;
+}
+
+md-dialog.dialog md-input-container input {
+    border-bottom-color: #4472c4 !important;
+}
+.custom-dialog md-input-container > label {
+    font-size: 13px;
+}
+md-dialog md-dialog-content {
+    padding: 32px 12px 0px 24px !important;
+}
+.custom-dialog form {
+      border: 1px solid rgb(65,110,163);
+}
+.customicon .s18{
+  padding-top: 0px !important;
+}
+

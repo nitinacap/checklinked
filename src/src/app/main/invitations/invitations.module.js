@@ -10,7 +10,7 @@
 
     // State
     $stateProvider.state('app.invitations', {
-      url: '/invitations',
+      url: '/action',
       views: {
         'content@app': {
           templateUrl: 'app/main/invitations/invitations.html',
@@ -34,16 +34,16 @@
     $translatePartialLoaderProvider.addPart('app/main/invitations');
 
     // Navigation
-    msNavigationServiceProvider.saveItem('checklists.invitations', {
-      title: 'Invitations',
-      //icon: 'icon-google-circles-invite',
-      icon: 'codiepie',
-      state: 'app.invitations',
-      badge: {
-        color: '#F44336'
-      },
-      weight: 4
-    });
+    // msNavigationServiceProvider.saveItem('checklists.invitations', {
+    //   title: 'Invitations',
+    //   //icon: 'icon-google-circles-invite',
+    //   icon: 'codiepie',
+    //   state: 'app.invitations',
+    //   badge: {
+    //     color: '#F44336'
+    //   },
+    //   weight: 4
+    // });
 
   }
 

@@ -1,0 +1,46 @@
+<div ng-cloak class="subtab pt-30" >
+  <md-tabs md-dynamic-height md-border-bottom  md-selected="vm.currentItem">
+    <md-tab  ng-click="myvalue = false;">
+
+      <md-tab-label>
+        <span>Stats</span>
+      </md-tab-label>
+      <md-tab-body>
+        <div ng-include="'app/main/organization/stats/stats.html'"></div>
+      </md-tab-body>
+
+    </md-tab>
+
+    <md-tab class="pr-30" ng-disabled="!myvalue">
+        <md-tab-label>
+          <md-menu>
+            <md-icon ng-show="myvalue" md-font-icon="icon-dots-vertical s18" id="lh-5" ng-click="$mdOpenMenu($event)"></md-icon>
+            <md-menu-content class="custom">
+              <md-menu-item>
+                <md-button ng-click="vm.openOrgInfoDialog($event, info)" aria-label="Edit Organization"
+                  translate-attr-aria-label="edit">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                  <span>Edit</span>
+                </md-button>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+        </md-tab-label>
+        <md-tab-body>
+          <div ng-include="'app/main/organization/stats/info.html'"></div>
+        </md-tab-body>
+      </md-tab>
+
+
+    <md-tab class="pr-30" ng-click="myvalue = true;">
+      <md-tab-label>
+        <span>Info</span>
+      </md-tab-label>
+      <md-tab-body>
+        <div ng-include="'app/main/organization/stats/info.html'"></div>
+
+      </md-tab-body>
+
+    </md-tab>
+  </md-tabs>
+</div>

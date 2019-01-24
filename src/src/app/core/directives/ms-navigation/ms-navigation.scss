@@ -108,7 +108,8 @@
                 }
 
                 &.active {
-                    color: #FFFFFF;
+                    color: #FFFFFF !important;
+                    opacity: 1 !important;
 
                     .icon {
                         color: #FFFFFF;

@@ -6,25 +6,21 @@
     .controller('UserController', UserController);
 
   /** @ngInject */
-  function UserController($rootScope, $stateParams,$location, $mdDialog, $document,  $http, $state, $scope, api, $mdSidenav) {
+  function UserController($rootScope, $mdDialog, $state, $document, $http, $cookies, $scope, api, $mdSidenav) {
 
     var vm = this;
     vm.editDialog = editDialog;
     vm.changePassword = changePassword;
     vm.closeDialog = closeDialog;
-
+    vm.userStats =userStats;
     vm.updateUser = updateUser;
-    setTimeout(function(){
-      if (!$rootScope.user) {
-        $state.go('app.login');
-      }
-    }, 1000);
 
-    if ($stateParams.type) {
-      vm.type = $stateParams.type
-
-    }
-
+    if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get("token")==''){
+      $state.go('app.login');
+  }
+     
+    // }
+    vm.currentItem = parseInt($rootScope.curreManuItem);
     vm.update = {
       editable: false,
       sending: false,
@@ -40,10 +36,13 @@
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Error talking to server', 'warning');
           } else if (res.code) {
-            $rootScope.user = res.user;
+           $rootScope.user = res.user;
             return $rootScope.message(res.message, 'warning');
           } else {
-            $rootScope.user = res.user;
+            $scope.user = res.user;
+            $cookies.put("username", res.user.name.full);
+            $rootScope.$broadcast('updatedUsername', res.user.name.full);
+            $mdDialog.hide();
             vm.update.editable = false;
             return $rootScope.message(res.message);
           }
@@ -59,7 +58,8 @@
         },
         email: '',
         password: '',
-        phone: ''
+        phone: '',
+        token: ''
       }
     };
 
@@ -73,7 +73,7 @@
         email: u.email,
         password: u.password,
         phone: u.phone,
-        token: $rootScope.token
+        token: $rootScope.user.token
       };
     };
 
@@ -121,25 +121,62 @@
     }
 
 
-    function closeDialog() {
+    function closeDialog(type) {
       $mdDialog.hide();
-      //$scope.getFolder();
+      if(type=='profile'){
+        vm.updateUser($rootScope.user);
+      }
 
-   }
-    function changePassword(){
-      vm.updating = true;
-      return $http.post(BASEURL + 'organization-update-post.php', {
-        user: vm.user
-      }, 
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }
+    vm.changeprocess = false;
+    function changePassword() {
+      vm.changeprocess = true;
+      $http.post(BASEURL + 'password-change.php', vm.user,
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           cache: false
         }).error(function () {
+          vm.changeprocess = false;
           return $rootScope.message('Error talking to server.', 'warning');
         }).success(function (resp) {
-          return $rootScope.message('Password has been successfully', 'success');
-         
+          if (resp.type == 'error') {
+            vm.changeprocess = false;
+            return $rootScope.message(resp.message, 'warning');
+
+          } else {
+            vm.changeprocess = false;
+            $mdDialog.hide();
+            return $rootScope.message(resp.message, 'success');
+
+          }
+
         })
-    }
+    };
+
+    function userStats() {
+      $http.post(BASEURL + 'user-stats.php', {'token':$cookies.get('token') },
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          cache: false
+        }).error(function () {
+        }).success(function (resp) {
+          if (resp.type == 'success') {
+            vm.stats = resp.stats;
+          } else {
+           console.log('server error while getting stats');
+
+          }
+
+        })
+    };
+    userStats();
+
+    vm.submenu = [
+      { link: '', title: 'My Profile' },
+      { link: 'contacts', title: 'Contacts' },
+      { link: 'organization', title: 'Organization' },
+      { link: 'account', title: 'Account' }
+    ];
 
 
 

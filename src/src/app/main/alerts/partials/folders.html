@@ -1,0 +1,145 @@
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
+
+  <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
+    <thead>
+
+    <tr>
+      <th>
+        <span ng-if="!vm.folders.length">You do not have any projects</span>
+      
+      
+        <div layout="row" layout-align="start center">
+          <md-select class="simplified" ng-model="vm.folderOrder" placeholder="Most Recent" ng-change="vm.folderOrderDescending = vm.folderOrder === '' ? true : vm.folderOrderDescending">
+            <md-option value="name">Most Recent</md-option>
+          </md-select>
+        
+          <md-button class="md-icon-button"  ng-click="vm.folderOrderDescending = !vm.folderOrderDescending"
+            aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.folderOrderDescending === true" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.folderOrderDescending === false" class="s18"></md-icon>
+          </md-button>
+        </div>
+
+      
+      </th>
+      <th><span ng-if="vm.folders.length">Total projects <strong>({{ vm.folders.length }}) </strong></span></th>
+
+
+
+      <th class="text-right">
+        <md-menu>
+
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="Sort" translate
+                     translate-attr-aria-label="CONTACTS.SORT">
+            <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event)">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                <span translate="">Add New Project</span>
+              </md-button>
+            </md-menu-item>
+
+
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Archive All"
+                         translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
+                <md-icon class="md-accent-fg s18"
+                         md-font-icon="fa fa-download"></md-icon>
+                <span translate="FOLDER.FOLDER_ARCHIVE"></span>
+              </md-button>
+            </md-menu-item>
+          </md-menu-content>
+
+        </md-menu>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr
+      ng-repeat="folder in vm.folders | orderBy:vm.folderOrder:vm.folderOrderDescending | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
+      <td colspan="2">
+        <a ng-href="/workflows/{{folder.id}}" ng-class="{ folder.id_child=='no': 'folderchild' }" class="{{folder.id_child=='no' ? 'folderchild': '' }}">
+          <md-icon ng-if="folder.id_child=='yes'" style="color:#9dacff !important; padding-top:0px;" class="md-accent-fg s18 cplus ng-scope md-font icon-plus material-icons md-default-theme" md-font-icon="icon-plus" aria-hidden="true"></md-icon> 
+          {{folder.name}}
+        </a>
+      </td>
+
+
+      <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
+          class="text-right">
+
+        <md-menu>
+
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="More" translate
+                     translate-attr-aria-label="FOLDER.MORE">
+            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+            <!--<md-menu-item>
+              <md-button ng-click="vm.deleteFolder(folder, $event)" aria-label="Delete Workflow"
+                         translate-attr-aria-label="FOLDER.DELETE_FOLDER">
+                <md-icon class="red-600-fg s18"
+                         md-font-icon="icon-trash"></md-icon>
+                <span translate="FOLDER.DELETE_FOLDER">Delete Workflow</span>
+              </md-button>
+            </md-menu-item>
+          -->
+
+          <!--  <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Add New Workflow"
+                         translate-attr-aria-label="FOLDER.ADD_NEW_FOLDER">
+                <md-icon class="md-accent-fg s18"
+                         md-font-icon="icon-plus-circle-outline"></md-icon>
+                <span translate="FOLDER.ADD_NEW_FOLDER"></span>
+              </md-button>
+            </md-menu-item>
+          -->
+           
+
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event, folder)" aria-label="Edit Project"
+                         translate-attr-aria-label="FOLDER.EDIT_FOLDER">
+                <md-icon class="md-accent-fg s18"
+                         md-font-icon="icon-pencil"></md-icon>
+                <span translate="FOLDER.EDIT_FOLDER"></span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event, folder)" aria-label="Duplicate"
+                         translate-attr-aria-label="FOLDER.FOLDER_DUPLICATE">
+                <md-icon class="md-accent-fg s18"
+                         md-font-icon="fa fa-files-o"></md-icon>
+                <span translate="FOLDER.FOLDER_DUPLICATE"></span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Archive All"
+                         translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE">
+                <md-icon class="md-accent-fg s18"
+                         md-font-icon="fa fa-download"></md-icon>
+                <span translate="FOLDER.FOLDER_ARCHIVE"></span>
+              </md-button>
+            </md-menu-item>
+
+            <md-divider class="md-default-theme"></md-divider>
+
+
+          </md-menu-content>
+        </md-menu>
+
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>

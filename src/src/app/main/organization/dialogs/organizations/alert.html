@@ -1,0 +1,29 @@
+<md-dialog aria-label="Alert" id="alert-message">
+    <form ng-cloak>
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <h6>{{vm.title}}</h6>
+          <span flex></span>
+          <md-button class="md-icon-button" ng-click="cancel()">
+            <i class="fa fa-times"></i>
+          </md-button>
+        </div>
+      </md-toolbar>
+      <md-dialog-content>
+        <div class="md-dialog-content ">
+          <h2 class="text-center">{{vm.warning}}</h2>
+          <p ng-bind-html="vm.description"></p>
+         
+        </div>
+      </md-dialog-content>
+  
+      <md-dialog-actions layout="row">
+        <md-button ng-click="cancel()">
+       Cancel
+        </md-button>
+        <md-button ng-click="answer('ok')" class="md-primary">
+         OK
+        </md-button>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>

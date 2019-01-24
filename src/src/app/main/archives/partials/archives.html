@@ -1,0 +1,70 @@
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+  <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
+    <thead  class="tool-bg">
+      <tr>
+        <th>
+          <span ng-if="!vm.archives.length">You do not have any archives</span>
+          <div layout="row" layout-align="start center"  ng-if="vm.archives.length">
+            <md-select class="simplified" ng-model="vm.folderOrder" placeholder="Most Recent" ng-change="vm.folderOrderDescending = vm.folderOrder === '' ? true : vm.folderOrderDescending">
+              <md-option value="name">Most Recent</md-option>
+            </md-select>
+
+            <md-button class="md-icon-button" ng-click="vm.folderOrderDescending = !vm.folderOrderDescending"
+              aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+              <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.folderOrderDescending === true" class="s18"></md-icon>
+              <md-icon md-font-icon="icon-sort-descending" ng-if="vm.folderOrderDescending === false" class="s18"></md-icon>
+            </md-button>
+          </div>
+        </th>
+        <th  colspan="3"><span ng-if="vm.archives.length">Total Archives <strong>({{ vm.archives.length }}) </strong></span></th>
+      </tr>
+
+    </thead>
+    <tbody>
+        <tr ng-if="vm.archives.length">
+            <td><span>Name</span></td>
+            <td  colspan="3"> <span>Type</span></td>
+          </tr>
+      <tr ng-repeat="archive in vm.archives | orderBy:vm.folderOrder:vm.folderOrderDescending | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
+        <td>
+          <span> {{archive.name}} </span>
+        </td>
+        <td  colspan="2">
+            <span> {{archive.type}} </span>
+          </td>
+
+        <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))" class="text-right">
+
+          <md-menu>
+            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
+              translate translate-attr-aria-label="FOLDER.RESTORE">
+              <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+            </md-button>
+            <md-menu-content>
+
+              <md-menu-item>
+                <md-button ng-click="vm.restoreArchive(archive.id, archive.type)" aria-label="Restore" translate-attr-aria-label="ARCHIVE.RESTORE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-window-restore"></md-icon>
+                  <span translate="ARCHIVE.RESTORE"></span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.deleteArchivesDialog(archive.id)" aria-label="Delete" translate-attr-aria-label="ARCHIVE.DELETE">
+                  <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                  <span translate="ARCHIVE.DELETE"></span>
+                </md-button>
+              </md-menu-item>
+
+
+
+            </md-menu-content>
+          </md-menu>
+
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+
+</div>

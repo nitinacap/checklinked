@@ -1,4 +1,4 @@
-<div id="contacts" class="page-layout simple tabbed pad-0" layout="column">
+<div id="groups" class="page-layout simple tabbed pad-0" layout="column">
 
   <!-- HEADER -->
  <!-- <div class="header md-accent-bg" layout="row" layout-align="start center">
@@ -14,68 +14,12 @@
   <!-- / HEADER -->
 
   <!-- CONTENT -->
-  <div class="content">
-    <md-tabs md-dynamic-height class="">
-<md-tab>
-  <md-tab-label>
-    <a class="link org" href="/folders">
-      <span translate="" class="active">Projects</span>
-    </a>
-  </md-tab-label>
-          <md-tab-body class="pad-0">
-            <div ng-include="'app/main/groups/partials/groups.html'"></div>
-          </md-tab-body>
-</md-tab>
-
-      <md-tab ng-disabled>
-        <md-tab-label>
-          <span translate="">My Workflows</span>
-        </md-tab-label>
-      </md-tab>
-
-        <md-tab>
-          <md-tab-label>
-            <a class="link org" href="/checklist">
-              <span translate="" class="notactive">Checklists</span>
-            </a>
-          </md-tab-label>
-        
-       
-        </md-tab>
-
-        <md-tab>
-          <md-tab-label>
-            <a class="link org" href="/templates">
-              <span translate="" class="notactive">Templates</span>
-            </a>
-          </md-tab-label>
-      
-        </md-tab>
-  <md-tab>
-    <md-tab-label>
-      <a class="link org" href="/templates">
-        <span translate="" class="notactive">Others</span>
-      </a>
-    </md-tab-label>
-  
-   
-  </md-tab>
-
-    <md-tab>
-      <md-tab-label>
-        <a class="link org" href="#">
-          <span translate="" class="notactive">Archives</span>
-        </a>
-      </md-tab-label>
-    
-     
-    </md-tab>
-
-    </md-tabs>
+ 
+  <page-toolbar datas="vm.submenu"> </page-toolbar>
+    <div ng-include="'app/main/groups/partials/groups.html'"></div>
 <div class="bd-loader" ng-if="vm.isLoader">
   <md-progress-circular md-diameter="40"></md-progress-circular>
 </div>
-  </div>
   <!-- / CONTENT -->
 
 </div>

@@ -1,8 +1,15 @@
-#templates{
+span.ms-form-wizard-step-text {
+  color: black;
+}
+#template{
+  height:100%;
 
   .form-container {
     padding: 24px;
     margin-bottom: 24px;
+  }
+  .isdec td{
+    border-bottom: none !important;
   }
 
   .table-md-icon-button {
@@ -11,17 +18,31 @@
   }
 
   .md-button.md-icon-button {
-    margin: 0 6px;
+    margin: 0 0px;
     min-width: 0;
     line-height: 18px !important;
-    padding: 8px;
-    width: 40px;
+    padding: 0px;
+    width: 20px;
     border-radius: 50%;
   }
-
-.ms-form-wizard-step-text{
-  color:black;
+  .subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2){
+    float:left !important;
+  }
+  span.column-title.ng-binding {
+    display: table-cell;
+    vertical-align: bottom;
 }
+
+.table-header {
+    display: table;
+}
+.bordered-table thead th {
+  padding:0px !important;
+}
+button.md-icon-button.md-button.ng-scope.md-ink-ripple.md-default-theme {
+  vertical-align: middle;
+}
+
 }
 
 

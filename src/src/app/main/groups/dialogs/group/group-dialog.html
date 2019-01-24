@@ -8,41 +8,71 @@
         </md-button>
       </div>
     </md-toolbar>
+    <md-dialog-content ms-scroll ng-if="!vm.projectParamId">
+      <md-input-container class="md-block mb-0">
+        <label translate="GROUP.NAME">Group Name {{vm.projects}}</label>
+        <md-select name="project_id" required ng-model="vm.group.Id" placeholder="Select a Project">
+          <md-option ng-value="project.id" ng-repeat="project in vm.projects">{{project.name}}</md-option>
+        </md-select>
+        <div ng-messages="groupForm.project_id.$error" ng-show="groupForm.project_id.$touched" role="alert">
+          <div ng-message="required">
+            <span>Project field is required</span>
+          </div>
+        </div>
+      </md-input-container>
+    </md-dialog-content>
 
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block mb-0">
-        <label translate="GROUP.NAME">Group Name</label>
+        <label>{{ vm.type ? '' : 'Workflow' }} Name</label>
         <input name="name" ng-model="vm.group.name" required md-autofocus>
         <div ng-messages="groupForm.name.$error" ng-show="groupForm.name.$touched" role="alert">
           <div ng-message="required">
-            <span translate="GROUP.ERRORS.GROUP_NAME_REQUIRED">Group Name field is required</span>
+            <span translate="GROUP.ERRORS.GROUP_NAME_REQUIRED">Workflow Name field is required</span>
+          </div>
+        </div>
+      </md-input-container>
+    </md-dialog-content>
+
+    <md-dialog-content ms-scroll>
+      <md-input-container class="md-block mb-0">
+        <label translate="GROUP.WORKFLOW_DESCRIPTION"></label>
+        <input name="description" ng-model="vm.group.description">
+      </md-input-container>
+    </md-dialog-content>
+
+    <md-dialog-content ms-scroll ng-show="insertLink && vm.type">
+    <md-input-container class="md-block mb-0" >
+        <label>Insert Link</label>
+        <input type="url" name="link" ng-model="vm.group.link" md-autofocus>
+        <div ng-messages="groupForm.link.$error" ng-show="folderForm.link.$touched" role="alert">
+          <div ng-message="required">
+            <span>Link is required</span>
           </div>
         </div>
       </md-input-container>
     </md-dialog-content>
 
     <md-dialog-actions layout="row" layout-align="space-between center">
-      <div layout="row" layout-align="start center">
-        <md-button type="submit" ng-if="!vm.newGroup" ng-click="vm.saveGroup()"
-                   class="md-raised md-accent"
-                   ng-disabled="groupForm.$invalid || groupForm.$pristine"
-                   aria-label="Save" translate="GROUP.SAVE" translate-attr-aria-label="GROUP.SAVE">
+      <div layout="row" layout-align="end center" flex>
+        <md-button type="submit" ng-if="!vm.newGroup" ng-click="vm.saveGroup()" class="md-raised md-accent" ng-disabled="groupForm.$invalid || groupForm.$pristine"
+          aria-label="Save" translate="GROUP.SAVE" translate-attr-aria-label="GROUP.SAVE">
           SAVE GROUP
         </md-button>
 
-        <md-button type="submit" ng-if="vm.newGroup" ng-click="vm.addNewGroup(vm.folderID, $event)"
-                   class="md-raised md-accent"
-                   ng-disabled="groupForm.$invalid || groupForm.$pristine"
-                   aria-label="Save" translate="GROUP.SAVE" translate-attr-aria-label="GROUP.SAVE">
+        <md-button type="submit" ng-if="vm.newGroup" ng-click="vm.addNewGroup(vm.folderID)" class="md-raised md-accent"
+          ng-disabled="groupForm.$invalid || groupForm.$pristine" aria-label="Save" translate="GROUP.SAVE"
+          translate-attr-aria-label="GROUP.SAVE">
           ADD GROUP
         </md-button>
-
+        <md-button ng-show="vm.type" ng-click="insertLink = insertLink == true ? false : true;" class="md-accent capitalize">
+          {{insertLink ? 'Cancel' : 'Insert'}} Link
+        </md-button>
       </div>
 
       <div layout="row">
-        <md-button ng-if="!vm.newGroup" class="md-icon-button" ng-click="vm.deleteGroup($event, vm.group)"
-                   aria-label="Delete" translate
-                   translate-attr-aria-label="GROUP.DELETE">
+        <md-button ng-if="!vm.newGroup" class="md-icon-button" ng-click="vm.deleteGroup($event, vm.group)" aria-label="Delete"
+          translate translate-attr-aria-label="GROUP.DELETE">
           <md-icon md-font-icon="icon-delete"></md-icon>
           <md-tooltip><span translate="GROUP.DELETE">DELETE</span></md-tooltip>
         </md-button>

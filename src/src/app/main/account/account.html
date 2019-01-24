@@ -1,36 +1,29 @@
-<div class="page-layout simple tabbed" layout="column">
-    <div class="content">
-        <md-tabs md-dynamic-height>
-
+<div class="page-layout simple tabbed" layout="column" id="account">
+    <div class="subtab pt-30">
+        <page-toolbar datas="vm.submenu"> </page-toolbar>
+        <md-tabs md-dynamic-height md-border-bottom  md-selected="0">
             <md-tab>
-                <md-tab-label>
-                    <a href="/user/stats" class="link org">
-                        <span class="notactive">My Profile</span>
-                    </a>
-                </md-tab-label>
-                    <md-tab-body>
-                        <div ng-include="'app/main/account/partials/permission.html'"></div>
-                    </md-tab-body>
-
+        
+              <md-tab-label>
+                <span>Permissions	</span>
+              </md-tab-label>
+              <md-tab-body>
+                <div ng-include="'app/main/account/partials/permission.html'"></div>
+              </md-tab-body>
+        
             </md-tab>
-
-            <md-tab>
-                <md-tab-label>
-                    <a href="/contacts/internal" class="link org">
-                        <span class="notactive">Contacts</span></a>
-                </md-tab-label>
-                
+        
+            <md-tab class="pr-30">
+              <md-tab-label>
+                <span>Subscription</span>
+              </md-tab-label>
+              <md-tab-body>
+                <div ng-include="'app/main/account/partials/permission.html'"></div>
+              </md-tab-body>
+        
             </md-tab>
+          </md-tabs>
 
-        <md-tab ng-disabled="true">
-            <md-tab-label>
-                <a class="link org active" href="/account">
-                    <span>Account</span>
-                </a>
-            </md-tab-label>
-        </md-tab>
-
-        </md-tabs>
 
     </div>
 </div>

@@ -11,7 +11,7 @@
     // State
     $stateProvider
     .state('app.organization', {
-      url: '/organization/:type',
+      url: '/organization',
       views: {
         'content@app': {
           templateUrl: 'app/main/organization/organization.html',

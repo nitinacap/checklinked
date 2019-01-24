@@ -19,7 +19,7 @@
 
 
 	vm.user = $rootScope.user;
-
+  vm.searchItem = false;
     vm.find = {
       inProgress: false,
       showError: function(msg, code) {
@@ -92,17 +92,22 @@
           status: info.status,
           invite: info.invites[0],
           request: function() {
+            debugger;
           	console.log('vm', vm);
             var itemID, link;
             link = this;
             link.requesting = true;
             itemID = vm.type === 'group' ? vm.item : vm.idCHK;
-            return api.checklists.invite.send(raw.id, itemID, true, raw.idACC, vm.type).success(function(res) {
+           //  $rootScope.createStats('checklist', 'links', itemID);
+            return api.checklists.invite.send(raw.id, itemID, true, raw.idACC, vm.type, $rootScope.user.idCON, $rootScope.user.token).success(function(res) {
               var status;
               if (res === void 0 || res === null || res === '') {
                 return $rootScope.message('Error sending Link Request.  Server not responding properly.', 'warning');
-              } else if (res.code) {
-                return $rootScope.message("Error sending Link Request. (" + res.code + "): " + res.message, 'warning');
+              } else if (res.code=='-1') {
+                return $rootScope.message("Error sending Link Request." + res.message, 'warning');
+              }else if (res.code==0) {
+                 $rootScope.createStats('checklist', 'links', itemID);
+                return $rootScope.message("Link request has been sent successfully", 'success');
               } else {
                 vm.invites.push(res.invites[0]);
                 status = vm.find.status(link);
@@ -124,11 +129,11 @@
       submit: function() {
       	console.log('submit search');
         var criteria, organization;
-        if (this.criteria === '') {
-          $rootScope.message('No find criteria provided!');
-          $("#findLinksQueryString").focus();
-          return false;
-        }
+        // if (this.criteria === '') {
+        //   $rootScope.message('No find criteria provided!');
+        //   $("#findLinksQueryString").focus();
+        //   return false;
+        // }
         criteria = encodeURI(this.criteria);
         organization = encodeURI(this.organization);
         this.inProgress = true;
@@ -152,6 +157,7 @@
             console.log('server response: ', res);
             vm.find.error.show = false;
             vm.invites = res.invites;
+            vm.searchItem = true;
             found = {
               organizations: res.organizations.map(vm.find.processLink),
               contacts: res.contacts.map(vm.find.processLink)

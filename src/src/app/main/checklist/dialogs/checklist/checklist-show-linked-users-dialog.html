@@ -14,7 +14,7 @@
 
     <div class="simple-table-container">
 
-      <table class="simple" ms-responsive-table>
+      <table class="simple bordered-table" ms-responsive-table>
         <thead>
         <tr>
           <th>User</th>
@@ -35,8 +35,8 @@
               ng-click="vm.toggleShowCheckboxes(show)"
               ng-disabled="(show.isShowing && showingUsers.length == 1) || ((showingUsers.length &gt;=2) && !show.isShowing)"
               class="icon-button">
-              <md-icon ng-hide="show.isShowing" md-font-icon="icon-checkbox-blank-outline" class="md-accent-fg s18"></md-icon>
-              <md-icon ng-show="show.isShowing" md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18"></md-icon>
+              <md-icon ng-hide="show.isShowing" md-font-icon="icon-checkbox-blank-outline" style="min-height: 0px !important; line-height: 0px; height: 0px;" class="md-accent-fg s18"></md-icon>
+              <md-icon ng-show="show.isShowing" md-font-icon="icon-checkbox-marked-outline" style="min-height: 0px !important; line-height: 0px; height: 0px;" class="md-accent-fg s18"></md-icon>
             </md-button>
 
           </td>
