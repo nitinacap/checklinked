@@ -1195,16 +1195,5 @@
     function toggleSidenav(sidenavId) {
       $mdSidenav(sidenavId).toggle();
     }
-
-
-    // Content sub menu
-    vm.submenu = [
-      { link: '#', title: 'Alerts' },
-      { link: 'invitations', title: 'Action Items' },
-      { link: 'chat', title: 'Messages' },
-      { link: '', title: 'Notifications' }
-
-    ];
-
   }
 })();

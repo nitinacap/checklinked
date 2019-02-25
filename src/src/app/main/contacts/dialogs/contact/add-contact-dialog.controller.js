@@ -127,7 +127,6 @@
     };
     
     function removeConnectionInvitation(idCON) {
-
       return api.contacts.invite.remove(idCON).success(function() {
         var i, invite, invites, len, results;
         invites = $filter('filter')(vm.friends, {
@@ -149,7 +148,6 @@
           invite = invites[i];
           results.push(vm.friends.remove(invite));
         }
-  
         return results;
       });
     };

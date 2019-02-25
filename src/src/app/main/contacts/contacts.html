@@ -1,92 +1,67 @@
-<div id="contacts" class="page-layout simple tabbed pad-0 " layout="column">
-  <page-toolbar datas="vm.submenu"> </page-toolbar>
-  <div ng-cloak class="subtab pt-30">
+<div id="contacts" class="page-layout simple tabbed pad-0" layout="column">
 
-    <md-tabs md-dynamic-height md-border-bottom md-selected="vm.currentItem">
-      <md-tab ng-click="myvalue = false;">
-        <md-tab-label>
-          <span>Internal</span>
-        </md-tab-label>
-        <md-tab-body>
-          <div ng-include="'app/main/contacts/partials/internal.html'"></div>
-        </md-tab-body>
-      </md-tab>
-
-      <md-tab class="pr-30" ng-click="myvalue = true;">
-        <md-tab-label>
-          <span>Direct</span>
-        </md-tab-label>
-        <md-tab-body>
-          <div ng-include="'app/main/contacts/partials/direct.html'"></div>
-        </md-tab-body>
-      </md-tab>
-
-      <md-tab class="pr-30" ng-click="myvalue = false;">
-        <md-tab-label>
-          <span>Secondary</span>
-        </md-tab-label>
-        <md-tab-body>
-          <div ng-include="'app/main/contacts/partials/secondary.html'"></div>
-        </md-tab-body>
-      </md-tab>
-
-      <md-tab class="pr-30 pull-right" ng-disabled="!myvalue">
-        <md-tab-label>
-          <md-menu>
-            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
-              translate translate-attr-aria-label="CONTACTS.SORT">
-              <md-icon  ng-show="myvalue" md-font-icon="icon-dots-vertical s18" id="lh-5" ng-click="$mdOpenMenu($event)"></md-icon>
-            </md-button>
-
-            <md-menu-content width="3">
-
-              <md-menu-item>
-                <md-button ng-click="vm.find($event)">
-                  <md-icon class="md-accent-fg s18" md-font-icon="icon-account-plus"></md-icon>
-                  <span translate="">Add Contact</span>
-                </md-button>
-              </md-menu-item>
-
-              <md-menu-item>
-                <md-button ng-click="vm.filterChange('all')">
-                  <md-icon class="md-accent-fg s18" md-font-icon="icon-account-multiple"></md-icon>
-                  <span translate="CONTACTS.ALL_CONTACTS">All Contacts</span>
-                </md-button>
-              </md-menu-item>
-
-              <md-menu-item>
-                <md-button ng-click="vm.filterChange('invitations')">
-                  <md-icon class="md-accent-fg s18" md-font-icon="icon-google-circles"></md-icon>
-                  <!-- <span translate="CONTACTS.PENDING_INVITATIONS">Pending Contact Invitations</span> -->
-                  <span>Pending Link Invitations</span>
-                </md-button>
-              </md-menu-item>
-
-              <md-menu-item>
-                <md-button ng-click="vm.filterChange('requests')">
-                  <md-icon class="md-accent-fg s18" md-font-icon="icon-google-circles-invite"></md-icon>
-                  <!-- <span translate="CONTACTS.PENDING_REQUESTS">Pending Contact Requests</span> -->
-                  <span>Pending Link Requests</span>
-                </md-button>
-              </md-menu-item>
-
-            </md-menu-content>
-
-          </md-menu>
-
-
-        </md-tab-label>
-        <md-tab-body>
-          <div ng-include="'app/main/contacts/partials/direct.html'"></div>
-
-        </md-tab-body>
-
-      </md-tab>
-
-    </md-tabs>
-  </div>
-  <div class="bd-loader" ng-if="vm.isLoader">
-      <md-progress-circular md-diameter="40"></md-progress-circular>
+  <!-- HEADER -->
+ <!-- <div class="header md-accent-bg" layout="row" layout-align="start center">
+    <div class="white-fg" layout="row" layout-align="start center" flex>
+      <div layout="column" layout-align="start start">
+        <div class="h2">
+          <span>Contacts</span>
+        </div>
+      </div>
     </div>
+  </div>
+-->
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+    <md-tabs md-dynamic-height class="">
+<md-tab>
+  <md-tab-label>
+    <a class="link org" href="/user/stats">
+  <span translate="" class="notactive">My Profile
+
+  </span>
+    </a>
+    </md-tab-label>
+    <md-tab-body class="pad-0">
+      <div ng-if="!vm.type" ng-include="'app/main/contacts/partials/contacts.html'"></div>
+      <div ng-if="vm.type=='internal'" ng-include="'app/main/contacts/partials/internal.html'"></div>
+      <div ng-if="vm.type=='direct'" ng-include="'app/main/contacts/partials/direct.html'"></div>
+      <div ng-if="vm.type=='secondary'" ng-include="'app/main/contacts/partials/secondary.html'"></div>
+    </md-tab-body>
+ 
+</md-tab>
+      <md-tab ng-disabled="true">
+        <md-tab-label>
+          <span translate="">Contacts</span>
+        </md-tab-label>
+
+        <md-tab-body class="pad-0">
+          <div ng-include="'app/main/contacts/partials/contacts.html'"></div>
+        </md-tab-body>
+      </md-tab>
+
+<md-tab>
+  <md-tab-label>
+      <a class="link org" href="/organization/stats">
+  <span translate="" class="notactive">Organization</span>
+  </a>
+  </md-tab-label>
+</md-tab>
+
+<md-tab>
+  <md-tab-label>
+      <a class="link org" href="/account">
+    <span translate="" class="notactive">Account</span>
+    </a>
+  </md-tab-label>
+</md-tab>
+
+
+</md-tabs>
+
+  </div>
+  <!-- / CONTENT -->
 
 </div>

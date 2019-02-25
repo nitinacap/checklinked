@@ -9,7 +9,8 @@
   function config($stateProvider, $translatePartialLoaderProvider, msApiProvider, msNavigationServiceProvider) {
 
     $stateProvider.state('app.other', {
-      url: '/others',
+      parent: 'app.folders',
+      url: 'others',
       views: {
         'content@app': {
           templateUrl: 'app/main/others/others.html',

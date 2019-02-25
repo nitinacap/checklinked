@@ -6,7 +6,7 @@
     .controller('OrganizationController', OrganizationController)
 
   /** @ngInject */
-  function OrganizationController($rootScope, $mdDialog, $cookies, $document, $stateParams, $state, $http, $scope, api, $mdSidenav) {
+  function OrganizationController($rootScope, $cookieStore, $mdDialog, $cookies, $document, $stateParams, $state, $http, $scope, api, $mdSidenav) {
 
     var vm = this;
     if ($stateParams.type) {
@@ -17,7 +17,7 @@
 
     setTimeout(function () {
       $scope.$apply(function () {
-        vm.user = $rootScope.user;
+      vm.user =$rootScope.user;
       });
       vm.createOrg = createOrg;
       vm.createOrganization = false;
@@ -55,7 +55,7 @@
         vm.createOrganization = true;
       }
 
-    }, 800);
+    }, 2000);
 
     vm.toggleSidenav = toggleSidenav;
     vm.closeDialog = closeDialog;

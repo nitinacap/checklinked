@@ -1,13 +1,8 @@
 <!-- CHAT APP -->
-
-
-        <page-toolbar datas="vm.submenu"> </page-toolbar>
-
-
-<div id="chat-app" class="page-layout carded fullwidth pt-45">
+<div id="chat-app" class="page-layout carded fullwidth">
 
     <!-- TOP BACKGROUND -->
-    <!-- <div class="top-bg md-accent-bgtop-bg"></div> -->
+    <div class="top-bg md-accent-bg"></div>
     <!-- / TOP BACKGROUND -->
 
     <!-- CENTER -->
@@ -113,7 +108,7 @@
                     <div class="chat-messages" data-ng-if="vm.chat">
 
                         <!-- MESSAGE -->
-                        <div layout="row" data-ng-repeat="dialog in vm.chat | orderBy:'-timestamp':true" class="md-padding message-row"
+                        <div layout="row" data-ng-repeat="dialog in vm.chat | orderBy:'timestamp':true" class="md-padding message-row"
                              data-ng-class="dialog.who">
 
                             <!-- <img src="assets/images/avatars/profile.jpg"
@@ -124,7 +119,7 @@
 
                             <div class="bubble">
                                 <div class="message">{{dialog.text}}</div>
-                                <div class="time secondary-text">{{ dialog.timestamp * 1000 | date : "medium" }}</div>
+                                <div class="time secondary-text">{{dialog.timestamp |  date:'medium'}}</div>
                             </div>
 
                         </div>
@@ -143,8 +138,13 @@
                     <form data-ng-submit="vm.reply()" flex class="reply-form" layout="row" layout-align="start center">
 
                         <md-input-container flex md-no-float>
-         
-                            <input type="text" data-ng-model="vm.replyMessage">
+                            <textarea data-ng-keyup="vm.reply($event)"
+                                      md-no-autogrow data-ng-model="vm.replyMessage"
+                                      data-ng-class="{'grow': vm.textareaGrow}"
+                                      placeholder="Type and hit enter to send message"
+                                      translate
+                                      translate-attr-placeholder="CHAT.REPLY_PLACEHOLDER">
+                            </textarea>
                         </md-input-container>
 
                         <md-button class="md-fab" type="submit" aria-label="Send message" translate

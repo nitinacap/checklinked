@@ -1,16 +1,19 @@
 #invite {
     height: 100%;
-    background-color: rgba(0,0,0,0.12);
-    background-size: cover;
-
+     background-color: #fff;
+    //background-size: cover;
+    md-input-container{
+        padding: 0px !important;
+        margin: 0px  !important;;
+    }
     #invite-form-wrapper {
         flex: 1 0 auto;
         padding: 32px;
 
         #invite-form {
-            width: 384px;
+            width: 300px;
             max-width: 384px;
-            padding: 32px;
+            padding: 15px;
             background: #FFFFFF;
             text-align: center;
 

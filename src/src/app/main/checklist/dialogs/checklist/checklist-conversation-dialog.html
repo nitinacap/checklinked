@@ -5,7 +5,7 @@
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <span class="title">{{vm.title}}</span>
         <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog" translate
-          translate-aria-label="MAIL.CLOSE_DIALOG">
+                   translate-aria-label="MAIL.CLOSE_DIALOG">
           <md-icon md-font-icon="icon-close"></md-icon>
         </md-button>
       </div>
@@ -20,7 +20,8 @@
 
       <md-input-container class="md-block">
         <label translate="MAIL.SUBJECT">Subject</label>
-        <input name="subject" ng-model="vm.form.subject" type="text" required>
+        <input name="subject" ng-model="vm.form.subject"
+               type="text" required>
         <div ng-messages="conversationForm.subject.$error" ng-show="conversationForm.subject.$touched" role="alert">
           <div ng-message="required">
             <span translate="MAIL.ERRORS.SUBJECT">Subject field is required</span>
@@ -28,52 +29,47 @@
         </div>
       </md-input-container>
 
-      <md-input-container class="md-block alertMsg">
+      <md-input-container class="md-block">
         <label translate="MAIL.MESSAGE">Message</label>
         <div class="md-resize-wrapper">
-          <textarea name="text" ng-model="vm.newPost.text" required md-autofocus class="ng-valid md-input ng-not-empty ng-dirty ng-valid-parse ng-valid-md-maxlength ng-touched"
-            md-maxlength="500" maxlength="500" max-rows="5" ng-trim="false"></textarea>
+          <textarea name="text" ng-model="vm.newPost.text" required md-autofocus
+                    class="ng-valid md-input ng-not-empty ng-dirty ng-valid-parse ng-valid-md-maxlength ng-touched"
+                    md-maxlength="150" max-rows="5"
+                    ng-trim="false"></textarea>
 
+          <div class="md-resize-handle" style="touch-action: pan-x;"></div>
         </div>
-        <!-- <div ng-messages="conversationForm.text.$error" ng-show="conversationForm.text.$touched" role="alert">
+        <div ng-messages="conversationForm.text.$error" ng-show="conversationForm.text.$touched" role="alert">
           <div ng-message="required">
-            <span>Message field is required</span>
+            <span translate="MAIL.ERRORS.MESSAGE">Message field is required</span>
           </div>
-        </div> -->
+        </div>
       </md-input-container>
 
       <div class="simple-table-container">
-        <table class="simple bordered-table" ms-responsive-table>
+        <table class="simple" ms-responsive-table>
           <tbody>
-            <tr ng-repeat="post in vm.conversation.posts | orderBy: timestamp">
-              <td width="30%">
-                <button aria-label="Linked" ng-click="vm.downloadAttachment($event, attachment.storage.temporary)">
-                  <md-icon md-font-icon="fa fa-eye"></md-icon>
-                </button>
-                <a href="{{vm.downloadFile}}" ng-init="vm.removeFileHttp(attachment.storage.temporary)" download target="_blank">
-                  <md-icon md-font-icon="icon-cloud-download"></md-icon>
-                </a>
-   
-                </md-button>
-                {{post.user}}
-              </td>
-              <td width="40%">
-                <!--<div class="item-main">
-                <p class="item-text">-->{{post.text}}
-                <!--</p>
+          <tr ng-repeat="post in vm.conversation.posts | orderBy: timestamp">
+            <td>
+              {{post.user}}
+            </td>
+            <td>
+              <!--<div class="item-main">
+                <p class="item-text">-->{{post.text}}<!--</p>
               </div>-->
-              </td>
-              <td width="20%">
-                {{post.organization}}
-              </td>
-              <td width="10%">
-                <div ng-switch="vm.old(post.timestamp)" class="user">
-                  <span ng-switch-when="true" class="timestamp pull-left"> {{post.timestamp | timeSince }}</span>
-                  <span ng-switch-when="false" class="timestamp pull-left">
-                    {{post.timestamp | timeSince }}</span>
-                </div>
-              </td>
-            </tr>
+            </td>
+            <td>
+              {{post.organization}}
+            </td>
+            <td>
+              <div ng-switch="vm.old(post.timestamp)" class="user">
+              <span ng-switch-when="true"
+                    class="timestamp pull-right">{{post.timestamp | date:'shortDate'}}</span>
+                <span ng-switch-when="false"
+                      class="timestamp pull-right">{{post.timestamp | date:'mediumTime'}}</span>
+              </div>
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -82,22 +78,15 @@
 
     <md-dialog-actions layout="row" layout-align="space-between center">
       <div layout="row" layout-align="start center">
-        <md-button type="submit" aria-label="" class="md-raised md-accent" ng-disabled="vm.newPost.submitting || conversationForm.$invalid || conversationForm.$pristine"
-          translate="MAIL.SEND" translate-attr-aria-label="MAIL.SEND">
+        <md-button type="submit"
+                   aria-label=""
+                   class="md-raised md-accent"
+                   ng-disabled="vm.newPost.submitting || conversationForm.$invalid || conversationForm.$pristine"
+                   translate="MAIL.SEND"
+                   translate-attr-aria-label="MAIL.SEND">
           SEND
         </md-button>
 
-        <div class="upload-btn-wrapper">
-          <button class="btn">
-            <md-icon class="md-accent-fg s18" style="font-size: 22px !important; line-height: 7px !important; margin-right: 0px !important;"
-              md-font-icon="icon-attachment"></md-icon>
-          </button>
-          <input  onchange="angular.element(this).scope().setFile(this)" file-model="files" alt="Attach file" multiple ng-model="vm.file" type="file" name="myfile" /> 
-        <span ng-bind="theFile.name"></span>
-        </div>
-
-
-      </div>
     </md-dialog-actions>
   </form>
 

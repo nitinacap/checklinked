@@ -27,16 +27,16 @@
 
       </tr>
     </thead>
-    <tbody>
 
-      <tr ng-if="vm.secondary" ng-repeat="contact in vm.secondary | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
-        ng-switch="(which = vm.showWhichInviteContactData(contact))" ng-click="vm.openContactDialog($event, contact)"
-        ng-class="{'md-green-100-bg':vm.passID==contact.id}" ng-if="!deleted_by">
+    <tbody>
+      <tr ng-if="vm.secondary" ng-repeat="contact in vm.secondary  | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
+        ng-switch="(which = vm.showWhichInviteContactData(contact))"
+        ng-class="{'md-green-100-bg':vm.passID==contact.id}">
         <td>
           <span class="link-color"> {{contact.contacts[which].name.full}}</span>
         </td>
         <td class="hide-xs">
-        <span class="link-color">  {{contact.contacts[which].organization}}
+        <span class="link-color"  ng-click="vm.openContactDialog($event, contact)">  {{contact.contacts[which].organization}}
           </span>
         </td>
 
@@ -63,13 +63,19 @@
                   <span translate="CONTACTS.DELETE_CONTACT">Delete Contact</span>
                 </md-button>
               </md-menu-item> -->
-
-              <md-menu-item ng-if="contact.accepted">
+            
+              <md-menu-item>
+                <md-button   ng-click="vm.inviteToConnect(contact.contacts[which].id)">
+                  <md-icon class="fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
+                  <span>Add Direct Contact</span>
+                </md-button>
+              </md-menu-item>
+              <!-- <md-menu-item ng-if="contact.accepted">
                 <md-button ng-click="vm.openDirectMessageDialog(contact, contact.name.full, $event)">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
                   <span translate="CONTACTS.DIRECT_MESSAGING">Direct Message</span>
                 </md-button>
-              </md-menu-item>
+              </md-menu-item> -->
 
               <!-- <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
                 <md-button ng-click="vm.acceptConnectionInvitation(contact.contacts.originator.id, $index)">

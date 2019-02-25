@@ -98,6 +98,7 @@
           'deleted': false
         };
         vm.title = type ? 'Duplicate Workflow' : 'Create New Workflow';
+        vm.folderID = ev;
         vm.newGroup = true;
       }
 
@@ -213,12 +214,12 @@
     /* Add New Group */
     vm.projectParamId = $stateParams.id ? $stateParams.id : '';
 
-    function addNewGroup() {
+    function addNewGroup(duplicate) {
       vm.group.parentId = $stateParams.id ? $stateParams.id : vm.group.Id;
       vm.group.sending = true;
       vm.group.order = 1;
       vm.group.order += vm.groups ? vm.groups.length : '';
-      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description, vm.group.link).error(function (res) {
+      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description, vm.group.link, duplicate ? duplicate.id: '').error(function (res) {
         return $rootScope.message("Error Creating Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -484,7 +485,7 @@
     };
     // Content sub menu
     vm.submenu = [
-      { link: 'folders', title: 'Projects' },
+      { link: 'folders.folders', title: 'Projects' },
       { link: '', title: 'Workflows' },
       { link: 'checklist', title: 'Checklists' },
       { link: 'templates', title: 'Templates' },

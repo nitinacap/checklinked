@@ -1,7 +1,7 @@
 <div layout="row" layout-align="start center" ng-class="{'md-primary-bg':viewAs.notMe==true}">
 <div class="logo-holder">
-  <img alt="Checklinked Logo" hide-xs class="pull-left logo-icon" src="/assets/images/logos/small-logo.jpg">
-  <img alt="Checklinked Logo" hide-xs class="pull-left" src="/assets/images/logos/checklinked-logo.png">
+  <img alt="Checklinked Logo" class="pull-left logo-icon" src="/assets/images/logos/small-logo.jpg">
+  <img alt="Checklinked Logo" hide-xs class="pull-left checklinked-logo" src="/assets/images/logos/checklinked-logo.png">
   </div>
 
   <div layout="row" layout-align="start center" flex ng-show="globalSearchCollapse">
@@ -98,16 +98,33 @@
               </md-menu-content>
             </md-menu>
           </md-menu-item>
-          <md-menu-divider></md-menu-divider>
+          <md-menu-item class="md-indent" ui-sref="app.teammembers">
+            <md-menu>
+          <md-button>
+              <md-icon md-font-icon="fa fa-users" class="icon"></md-icon>
+            Teammembers
+          </md-button>
+            </md-menu>
+        </md-menu-item>
+        <md-menu-divider></md-menu-divider>
 
-          <md-menu-item class="md-indent" ui-sref="app.logout">
-              <md-menu>
-            <md-button>
-                <md-icon md-font-icon="icon-logout" class="icon"></md-icon>
-              Logout
-            </md-button>
-              </md-menu>
-          </md-menu-item>
+          <md-menu-item ui-sref="app.usersetting">
+            <md-menu>
+          <md-button>
+              <md-icon md-font-icon="fa fa-cog" class="icon"></md-icon>
+         Setting
+          </md-button>
+            </md-menu>
+        </md-menu-item>
+        <md-menu-item class="md-indent" ui-sref="app.logout">
+          <md-menu>
+        <md-button>
+            <md-icon md-font-icon="icon-logout" class="icon"></md-icon>
+          Logout
+        </md-button>
+          </md-menu>
+      </md-menu-item>
+
         </md-menu-content>
 
       </md-menu>
@@ -125,9 +142,7 @@
     <div class="toolbar-separator" ng-show="globalSearchCollapse"></div>
 
     <ms-search-bar on-search="vm.search(query)" on-result-click="vm.searchResultClick(item)" debounce="300"></ms-search-bar>
-<md-button ng-click="vm.support()" class="active support-top-button text-center text-left flex-1 support-buton">
-  <md-icon md-font-icon="fa fa-question-circle" class="fff"></md-icon>
-</md-button>
+
   </div>
 
 </div>

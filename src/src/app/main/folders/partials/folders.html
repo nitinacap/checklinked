@@ -1,42 +1,56 @@
-<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
+
   <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
-    <thead class="tool-bg">
+    <thead>
+
     <tr>
       <th>
-        <span ng-if="!vm.folders.length && !vm.isLoader">You do not have any projects</span>
-        <div layout="row" layout-align="start center" ng-if="vm.folders.length  && !vm.isLoader">
+        <span ng-if="!vm.folders.length">You do not have any projects</span>
+      
+      
+        <div layout="row" layout-align="start center">
           <md-select class="simplified" ng-model="vm.folderOrder" placeholder="Most Recent" ng-change="vm.folderOrderDescending = vm.folderOrder === '' ? true : vm.folderOrderDescending">
             <md-option value="name">Most Recent</md-option>
           </md-select>
+        
           <md-button class="md-icon-button"  ng-click="vm.folderOrderDescending = !vm.folderOrderDescending"
             aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
             <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.folderOrderDescending === true" class="s18"></md-icon>
             <md-icon md-font-icon="icon-sort-descending" ng-if="vm.folderOrderDescending === false" class="s18"></md-icon>
           </md-button>
         </div>
+
+      
       </th>
       <th><span ng-if="vm.folders.length">Total projects <strong>({{ vm.folders.length }}) </strong></span></th>
+
+
+
       <th class="text-right">
         <md-menu>
+
           <md-button ng-click="$mdOpenMenu($event)"
                      class="md-icon-button table-md-icon-button" aria-label="Sort" translate
                      translate-attr-aria-label="CONTACTS.SORT">
             <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
           </md-button>
+
           <md-menu-content width="3">
+
             <md-menu-item>
-              <md-button ng-click="vm.openFolderDialog()">
+              <md-button ng-click="vm.openFolderDialog($event)">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
                 <span translate="">Add New Project</span>
               </md-button>
             </md-menu-item>
 
-            <md-menu-item ng-if="vm.folders">
-              <md-button ng-click="vm.archieveDialog($event, '')" aria-label="Archive All"
+
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Archive All"
                          translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
                 <md-icon class="md-accent-fg s18"
                          md-font-icon="fa fa-download"></md-icon>
-                <span translate="FOLDER.FOLDER_ARCHIVE_ALL"></span>
+                <span translate="FOLDER.FOLDER_ARCHIVE"></span>
               </md-button>
             </md-menu-item>
           </md-menu-content>
@@ -49,22 +63,10 @@
     <tr
       ng-repeat="folder in vm.folders | orderBy:vm.folderOrder:vm.folderOrderDescending | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
       <td colspan="2">
-
-        <!-- <a  ng-click="ShowHideDescription()" ng-show="folder.description !='Null' ">
-                <md-icon class="md-accent-fg s18 pt-0" md-font-icon="icon-plus"></md-icon>
+        <a ng-href="/groups/{{folder.id}}" ng-class="{ folder.id_child=='no': 'folderchild' }" class="{{folder.id_child=='no' ? 'folderchild': '' }}">
+          <md-icon ng-if="folder.id_child=='yes'" style="color:#9dacff !important; padding-top:0px;" class="md-accent-fg s18 cplus ng-scope md-font icon-plus material-icons md-default-theme" md-font-icon="icon-plus" aria-hidden="true"></md-icon> 
+          {{folder.name}}
         </a>
-        <a ng-href="/workflows/{{folder.id}}"  class="{{folder.description=='Null' ? 'folderchild': '' }}">
-          {{folder.name}} 
-        </a>
-        <p class="pl-25" ng-show = "IsVisibledesc">{{folder.description}}</p> -->
-
-          <a  ng-click="ShowHideDescription()" ng-show="folder.description !='Null' ">
-                        <md-icon class="md-accent-fg s18 pt-0" md-font-icon="icon-plus"></md-icon>
-                </a>
-                <a ng-href="/workflows/{{folder.id}}"  class="{{folder.id_child=='no' ? 'folderchild': '' }}">
-                  {{folder.name}} 
-                </a>
-                <p class="pl-25" ng-show = "IsVisibledesc">{{folder.description}}</p>
       </td>
 
 
@@ -100,12 +102,12 @@
             </md-menu-item>
           -->
            
-      <md-menu-item>
-        <md-button ng-click="vm.deleteFolder(folder, $event)" aria-label="Delete Workflow" translate-attr-aria-label="FOLDER.DELETE_FOLDER">
-          <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
-          <span translate="FOLDER.DELETE_FOLDER">Delete Workflow</span>
-        </md-button>
-      </md-menu-item>
+<md-menu-item>
+  <md-button ng-click="vm.deleteFolder(folder, $event)" aria-label="Delete Workflow" translate-attr-aria-label="FOLDER.DELETE_FOLDER">
+    <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+    <span translate="FOLDER.DELETE_FOLDER">Delete Workflow</span>
+  </md-button>
+</md-menu-item>
             <md-menu-item>
               <md-button ng-click="vm.openFolderDialog($event, folder)" aria-label="Edit Project"
                          translate-attr-aria-label="FOLDER.EDIT_FOLDER">
@@ -116,7 +118,7 @@
             </md-menu-item>
 
             <md-menu-item>
-              <md-button ng-click="vm.openFolderDialog(folder, '' , 'duplicate')" aria-label="Duplicate"
+              <md-button ng-click="vm.openFolderDialog($event, folder)" aria-label="Duplicate"
                          translate-attr-aria-label="FOLDER.FOLDER_DUPLICATE">
                 <md-icon class="md-accent-fg s18"
                          md-font-icon="fa fa-files-o"></md-icon>
@@ -125,16 +127,20 @@
             </md-menu-item>
 
             <md-menu-item>
-              <md-button ng-click="vm.archieveDialog($event, folder.id)" aria-label="Archive All"
+              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Archive All"
                          translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE">
                 <md-icon class="md-accent-fg s18"
                          md-font-icon="fa fa-download"></md-icon>
                 <span translate="FOLDER.FOLDER_ARCHIVE"></span>
               </md-button>
             </md-menu-item>
+
             <md-divider class="md-default-theme"></md-divider>
+
+
           </md-menu-content>
         </md-menu>
+
       </td>
 
     </tr>

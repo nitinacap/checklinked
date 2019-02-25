@@ -16,8 +16,9 @@ Array.prototype.diff = function (a) {
 
 //var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
 // Azure
+var DOMAIN_NAME = 'https://checklinked.azurewebsites.net';
 var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
- //var BASEURL = 'http://localhost:8081/dist/ajax/';
+//var BASEURL = 'http://localhost:8081/dist/ajax/';
 
 
 (function () {
@@ -27,12 +28,11 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
     .run(runBlock);
   /** @ngInject */
   function runBlock($rootScope, $timeout, $state, $cookies, $stateParams, $location, $http, toastr, api, $filter) {
-debugger;
     // Activate loading indicator
     var silent;
-if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get("token")==''){
-    $state.go('app.login');
-}
+    if (!$cookies.get("token") || $cookies.get("token") == 'undefined' || $cookies.get("token") == '') {
+      $state.go('app.login');
+    }
     // Authinication
     $rootScope.checkLogin = function (event, toState) {
       //console.log('checkLogin', toState);
@@ -56,9 +56,9 @@ if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get
             api.cache.local.put('navTo', toState.name);
           }
           console.log('success');
-         /* for new changes db */
-        /*  return $state.go(module.path); */
-     
+          /* for new changes db */
+          /*  return $state.go(module.path); */
+
           return $state.go(toState.name);
         }
         /*
@@ -123,6 +123,7 @@ if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get
         case 'folders':
         case 'archives':
         case 'groups':
+        case 'usersetting':
         case 'teammembers':
         case 'templates':
         case 'contacts':
@@ -197,7 +198,7 @@ if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get
 
     $rootScope.userAuthenticated = function () {
       var ref;
-          if ((ref = $rootScope.user) != null ? ref.authenticated : void 0) { 
+      if ((ref = $rootScope.user) != null ? ref.authenticated : void 0) {
         return true;
       }
     };
@@ -495,11 +496,11 @@ if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get
         w: type,
         d: data
       }, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        cache: false
-      });
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          cache: false
+        });
     };
 
 
@@ -540,6 +541,10 @@ if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get
             }
             break;
           case 'deleteTemplate':
+            if ($rootScope.user.roles.indexOf('basic') !== -1) {
+              return true;
+            }
+            break;
           case 'offboardMember':
             if (+data.idCON === +$rootScope.user.idCON) {
               return true;
@@ -590,7 +595,7 @@ if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get
           case 'downloadTemplate':
           case 'publishTemplate':
           case 'inviteToChecklist':
-            if ($rootScope.user.roles.indexOf('basic') !== -1) {
+            if ($rootScope.user && $rootScope.user.roles.indexOf('basic') !== -1) {
               return true;
             }
             break;
@@ -675,9 +680,11 @@ if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get
       });
       //console.log('received event:userLoaded', $rootScope.user);
       if ($location.search().devMode === true) {
-        realtime = 'http://wdc1.acapqa.net:8085/';
+        realtime = 'https://socket.checklinked.com/';
+      // realtime = 'http://168.61.165.204:8085/';
+       
       } else {
-        realtime = 'http://wdc1.acapqa.net:8085/';
+        realtime = 'https://socket.checklinked.com/';
       }
       $rootScope.socketio = io(realtime, {
         transports: ['websocket', 'polling', 'flashsocket'],
@@ -1079,23 +1086,34 @@ if(!$cookies.get("token") || $cookies.get("token") =='undefined' || $cookies.get
 
     //console.log('$rootScope.feed', $rootScope.feed);
 
-  //   window.onunload = function () {
-  //     alert("Window is closed");
+    //   window.onunload = function () {
+    //     alert("Window is closed");
 
-  // }
-  window.onunload = function(event) {
-    debugger;
-    alert('onunload');
-    // $cookies.remove("username");
-    // $cookies.remove("useridCON");
-    // $cookies.remove("token");
-    $state.go('app.login');
+    // }
+    window.onunload = function (event) {
+      alert('onunload');
+      // $cookies.remove("username");
+      // $cookies.remove("useridCON");
+      // $cookies.remove("token");
+      $state.go('app.login');
 
-  };
-  // window.onbeforeunload = function(event) {
-  //   $state.go('app.login');
-  //   };
+    };
+    // window.onbeforeunload = function(event) {
+    //   $state.go('app.login');
+    //   };
+    $rootScope.removeDuplicates = function (originalArray, prop) {
+      var newArray = [];
+      var lookupObject = {};
 
+      for (var i in originalArray) {
+        lookupObject[originalArray[i][prop]] = originalArray[i];
+      }
+
+      for (i in lookupObject) {
+        newArray.push(lookupObject[i]);
+      }
+      return newArray;
+    }
 
   }
 })();

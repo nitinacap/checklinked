@@ -10,7 +10,7 @@
 
     // State
     $stateProvider.state('app.teammembers', {
-      url: '/teammembers',
+      url: '/accounts',
       views: {
         'content@app': {
           templateUrl: 'app/main/teammembers/teammembers.html',

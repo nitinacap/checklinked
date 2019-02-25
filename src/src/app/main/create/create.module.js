@@ -23,8 +23,7 @@
                 }
             },
             bodyClass: 'create'
-        })
-        
+        });
         
         // Translation
         $translatePartialLoaderProvider.addPart('app/main/create');

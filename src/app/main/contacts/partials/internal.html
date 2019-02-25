@@ -30,7 +30,7 @@
                     </tr>
                     </thead>
       <tbody>
-      <tr ng-if="contact.contacts.originator.organization==contact.contacts.accepter.organization"
+        <tr ng-if="contact.contacts.originator.organization==contact.contacts.accepter.organization"
         ng-repeat="contact in vm.contacts | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
         ng-switch="(which = vm.showWhichInviteContactData(contact))"
         

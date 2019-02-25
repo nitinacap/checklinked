@@ -1,0 +1,47 @@
+<md-dialog class="dialog" aria-label="">
+  <form name="roleTypeForm" class="md-inline-form" novalidate>
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">{{vm.title}}</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content ms-scroll>
+
+<table class="roletype">
+  <tr ng-repeat="role in [1,2,3]">
+    <th height="30" width="50">
+        <i class="fa fa-trash s18 danger pointer" ng-click="vm.ConfirmDeleteRoleType(role)"></i> 
+        <i class="fa fa-pencil s18 pointer" ng-click="vm.EditRoleType(role)"></i> 
+      </th>
+    <th> Admin</th>
+  </tr>
+</table>
+<md-divider></md-divider>
+
+
+      <md-input-container class="md-block">
+        <label>Add Role Type</label>
+        <input name="role_type" ng-model="vm.role_type" required md-autofocus>
+        <div ng-messages="roleTypeForm.role_type.$error" ng-show="roleTypeForm.role_type.$touched" role="alert">
+            <div ng-message="required">
+                <span>Role type field is required</span>
+            </div>
+        </div>
+  </md-input-container>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="end center" flex>
+        <md-button type="submit"  ng-click="vm.saveRoleType(vm.roledata)" class="md-raised md-accent" ng-disabled="roleTypeForm.$invalid || groupForm.$pristine"
+          aria-label="Save">
+      {{vm.roledata ? 'Update' : 'Ok'}}
+        </md-button>
+      </div>
+
+    </md-dialog-actions>
+    
+  </form>
+</md-dialog>

@@ -1,6 +1,4 @@
 <ul>
-   <i class="fa fa-angle-{{vm.folded ? 'right' : 'left'}}  s16 side-toggle pl-30" ng-click="vm.toggleMsNavigationFolded()"></i>
-  
   <li ng-repeat="node in vm.navigation" ms-navigation-node="node" ng-class="{'collapsed': vm.collapsed, 'has-children': vm.hasChildren}"
     ng-include="'navigation-nested.html'"></li>
 

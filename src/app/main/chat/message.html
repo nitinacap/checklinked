@@ -1,0 +1,109 @@
+<page-toolbar datas="vm.submenu"> </page-toolbar>
+<div class="simple-table-container md-background-bg md-whiteframe-1dp pt-20" id="message">
+
+    <div layout="row" ng-if="!vm.messages">
+        <h2 class="pl-30 pt-20">No message created yet</h2>
+    </div>
+    <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0" ng-show="!vm.closeList">
+        <thead class="tool-bg">
+            <tr>
+                <th class="max-10" height="50" width="20%">Most Recent
+                    <md-button class="md-icon-button" ng-click="vm.sortBy('file.label')" aria-label="Sort Direction"
+                        translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+                        <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.attachmentOrder!='file.label'" class="s18"></md-icon>
+                        <md-icon md-font-icon="icon-sort-ascending" ng-show="vm.reverse  && vm.attachmentOrder=='file.label'"
+                            class="s18"></md-icon>
+                        <md-icon md-font-icon="icon-sort-descending" ng-show="!vm.reverse  && vm.attachmentOrder=='file.label'"
+                            class="s18"></md-icon>
+                    </md-button>
+                </th>
+            </tr>
+        </thead>
+
+        <tbody ng-repeat="messages in  vm.messages" ng-if="messages">
+            <tr>
+                <td>
+
+                    <span class="breadcrumcolor pointer capitalize">{{messages.project_name }} – {{messages.folder_name
+                        }} – {{messages.checklist_name }} </span>
+
+                </td>
+            </tr>
+            <tr ng-repeat="message in  messages.conversions | orderBy:'-created_at'" class="removeborder" ng-if="message.post">
+
+                <td>
+                    <div layout="row">
+                        <div class="column">
+                            <span class="headingcolor">{{message.user_full_name}} {{message.organization_name }}</span>
+
+                        </div>
+                        <div class="column">
+                            <span ng-init="vm.notificationDate(message.created_at)"></span>
+                            <small class="pl-30"> {{ vm.unixtimestamp[$index] | date: "M/d/yy h:mm a" }}</small>
+
+                            <a href="{{message.image}}" download="{{message.image}}" ng-show="message.image">
+                                <i class="fa fa-paperclip s18 pl-10"></i>
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <p class="message">
+                        <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true"
+                            ng-show="!myvalue"></i>
+                        <i class="fa fa-chevron-down" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true"
+                            ng-show="myvalue"></i>
+                        <span>
+                            {{message.post}}
+                        </span>
+                        <div ng-show="myvalue">
+                            <form name="mesageForm" class="md-inline-form" novalidate>
+                                <div layout="row">
+                                    <div layout="column">
+                                        <div class="upload-btn-wrapper">
+                                            <button class="btn">
+                                                <img src="/assets/images/logos/attach.png" style="vertical-align:bottom;">
+                                            </button>
+                                            <input onchange="angular.element(this).scope().setFile(this)" file-model="{{'myFile' + message.checklist_id + $index}}"
+                                                id="{{'myFile' + message.checklist_id + $index}}" alt="Attach file"
+                                                multiple ng-model="vm.file" type="file" name="myfile" />
+
+
+                                        </div>
+                                    </div>
+                                    <div layout="column" flex=75>
+                                        <textarea nput name="message_name" ng-model="message_name" required id="text{{message.checklist_id}}{{$index}}"
+                                            type="text" class="textmessage"></textarea>
+
+                                        <div ng-messages="mesageForm.message_name.$error" ng-show="mesageForm.message_name.$touched"
+                                            role="alert">
+                                            <div ng-message="required">
+                                                <span class="danger">Message field is required</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div layout="column" flex=10>
+                                        <md-button ng-disabled="mesageForm.$invalid || mesageForm.$pristine" class="icon-button text-left"
+                                            ng-click="vm.submitMessage(message, $index, 'myFile' + message.checklist_id + $index)">
+                                            <img alt="send" class="send" ng-if="!vm.spinner" src="/assets/icons/send.png">
+                                            <i class="fa fa-spinner fa-spin" ng-if="vm.spinner" style="font-size:24px"></i>
+
+                                        </md-button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="bd-loader" ng-if="vm.isLoader">
+        <md-progress-circular md-diameter="40"></md-progress-circular>
+    </div>
+
+</div>

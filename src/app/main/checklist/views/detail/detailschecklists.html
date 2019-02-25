@@ -1,7 +1,7 @@
 <page-toolbar datas="vm.submenu"> </page-toolbar>
 
 
-<div ng-show="vm.loaded.checklist && !vm.isLinked">
+<div ng-show="vm.loaded.checklist && !vm.isLinked && !vm.isLoader">
   <div class="alert alert-warning pt-40"><strong>NOT LINKED!</strong>
     <p>You are not linked to this Checklist.</p>
   </div>
@@ -16,7 +16,7 @@
 
         <div class="info" flex="50">
           <div class="checklist">
-            {{checklist.name}} 
+            {{checklist.name}}
           </div>
 
         </div>
@@ -169,7 +169,7 @@
                   </md-menu-item>
 
                   <md-menu-item>
-                      <md-button ng-disabled="vm.isCuted"  ng-click="vm.pasteDialog('checklist', checklist.id, checklist.idCHK)" aria-label="Paste"
+                      <md-button ng-disabled="vm.isCuted"  ng-click="vm.pasteDialog('section', checklist.id, checklist.idCHK)" aria-label="Paste"
                         translate-attr-aria-label="GROUP.PASTE">
                         <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
                         <span translate="GROUP.PASTE"></span>
@@ -247,8 +247,8 @@
 
             <div class="checklist-items" data-as-sortable="vm.dragControlListenersItems" data-ng-model="heading.items">
 
-              <div data-as-sortable-item md-ink-ripple ng-show="!heading.notApplicable && vm.isExpanded('heading', heading)"
-                data-ng-repeat="item in heading.items | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+              <div data-as-sortable-item md-ink-ripple ng-show="!heading.notApplicable && vm.isExpanded('heading', heading) || vm.isHeader"
+                data-ng-repeat="item in heading.items | orderBy:'order' | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
 
                 <div ng-include="'app/main/checklist/views/detail/detailsChecklistsItems.html'"></div>
 

@@ -40,12 +40,13 @@
     $translatePartialLoaderProvider.addPart('app/main/chat');
 
     // Navigation
-    // msNavigationServiceProvider.saveItem('conversations.chat', {
-    //   title: 'Messages',
-    //   icon: 'commenting-o',
-    //   state: 'app.chat' ,
-    //   weight: 2
-    // });
+    msNavigationServiceProvider.saveItem('conversations.chat', {
+      title: 'Messages',
+      //icon: 'icon-hangouts',
+      icon: 'commenting-o',
+      state: 'app.chat' ,
+      weight: 2
+    });
 
   }
 

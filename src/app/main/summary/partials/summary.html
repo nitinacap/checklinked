@@ -43,8 +43,7 @@
           <md-menu-content width="3">
 
             <md-menu-item>
-              <md-button ng-click="vm.reports.request()"
-                         translate-attr-aria-label="">
+              <md-button ng-click="vm.reports.request()" translate-attr-aria-label="">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-file-multiple"></md-icon>
                 <span translate="">Generate New Reports</span>
               </md-button>
@@ -61,26 +60,28 @@
     <tbody>
     <tr ng-repeat="report in vm.reports.list | orderBy: '-requested' | filter: globalSearch.searchTerm track by $index"
         ng-hide="vm.reports.viewing && vm.reports.viewing.id != $index"
-        ng-class="{'md-green-100-bg': vm.reports.success && $index==0}">
-      <td ng-class="{'md-accent-fg': !vm.reports.viewing}" class="text-left">
+        ng-class="{'headingcolor': vm.reports.success && $index==0}">
+      <td ng-class="{'md-accent-fg': !vm.reports.viewing}" class="text-left"  width="20%">
     
-        <md-icon ng-if="!vm.reports.viewing"  ng-click="vm.reports.view(report, $index)" class="fa fa-angle-down  s18" md-font-icon="icon-file-document"></md-icon>
-        <md-icon ng-if="vm.reports.viewing" ng-click="vm.reports.clear()" class="s18" md-font-icon="fa fa-angle-up"></md-icon>
+        <md-icon ng-if="!vm.reports.viewing"  ng-click="vm.reports.view(report, $index)" class="fa fa-angle-down  s18 pointer" md-font-icon="icon-file-document"></md-icon>
+        <md-icon ng-if="vm.reports.viewing" ng-click="vm.reports.clear()" class="s18 pointer" md-font-icon="fa fa-angle-up"></md-icon>
      
-        {{ report.requested * 1000 | date:'short'}}
+        {{ report.requested * 1000 | date:'medium'}}
       </td>
-<td class="text-center">
-        {{report.type}}
+     <td class="text-center">
+        {{report.count_conflicts}}
+
       </td>
 
       <td class="text-center">
-        {{report.lines.length}}
-      </td>
+          {{report.idsCHK.length}}
+         
+        </td>
       <td class="text-center">
-        {{report.lines.length}}
+        {{report.totMessage}}
       </td>
       <td class="text-center"> 
-        {{report.lines.length}}
+        {{report.totActive}}
       </td>
       
     
@@ -131,16 +132,29 @@
   <table class="simple row-border hover  bordered-table" ms-responsive-table>
     <tbody>
     <tr
-      ng-class="{'md-green-100-bg': vm.reports.viewingSub.id == $index}"
+      ng-class="{'': vm.reports.viewingSub.id == $index}"
       ng-repeat="checklist in vm.reports.viewing.checklists"
       ng-show="checklist.lines.length">
 
-      <td width="50%"
+      <td width="20%"
           ng-click="vm.reports.viewSub(checklist, $index, checklist.lastActive)"
-          ng-class="{'md-accent-fg': vm.reports.viewingSub.id !== $index}">{{ checklist.name }}
+          ng-class="{'md-accent-fg': vm.reports.viewingSub.id !== $index}" class="headingcolor">{{ checklist.name }}
       </td>
-      <td width="25%" class="text-center">{{ checklist.lines.length }}</td>
-      <td width="25%"></td>
+      <td class="text-center" width="20%">
+        {{ checklist.lines[0].tot_count_conflicts }}
+      </td>
+      <td class="text-center" width="20%">
+      
+      </td>
+      <td class="text-center" width="20%">
+        {{ checklist[$index].totActiveUserByChk}}
+      </td>
+
+      <td class="text-center" width="20%">
+        {{ checklist.postCount }}
+      </td>
+<td width="46" style="padding: 0 23px !important;"></td>
+
     </tr>
     </tbody>
   </table>
@@ -150,17 +164,12 @@
 
 <div ng-show="vm.reports.viewingSub" class="md-background-bg md-whiteframe-1dp">
 
-  <div layout="row" layout-align="start center" class="p-24">
+ <div layout="row" layout-align="start center" class="p-24">
     <div flex="50" layput-align="start center">
-      <b># Posts:</b>
-      <span class="badge">{{vm.reports.viewingSub.postCount}}</span>
+      <h3 class="headingcolor">{{vm.reports.viewingSub.name}}</h3>
     </div>
 
-    <div flex="50" layput-align="start center" class="text-right">
-      <b>Last Active:</b> {{vm.reports.viewingSub.lastActive}}
-    </div>
-
-  </div>
+  </div> 
   <div ng-show="checklist.location.length" layout="row" layout-align="start center">
     <div><b>Location:</b></div>
     <div layout-align="end center">
@@ -182,89 +191,45 @@
               Organization
             </div>
           </th>
-          <th>
-            <div class="text-center">
-              Checklist
-            </div>
-          </th>
           <th class="text-center">
-            <div class="text-center">
-              <small>Conflicts</small>
-            </div>
-          </th>
-          <th class="text-center">
-            <div class="text-center">
-              <small>NC</small>
-            </div>
-          </th>
-          <th hide show-gt-xs class="text-center">
-            <div class="text-center">
-              <small>Complete</small>
-            </div>
-          </th>
-          <th></th>
+              <div class="text-center">
+            Issue
+              </div>
+            </th>
+
+            <th class="text-center">
+                <div class="text-center">
+                New Messages
+                </div>
+              </th>
+              <th class="text-center">
+                  <div class="text-center">
+                    <small>Complete</small>
+                  </div>
         </tr>
         </thead>
-        <tbody>
-        <tr ng-repeat="line in vm.reports.viewingSub.lines">
-          <td>{{line.contact.name.full}}</td>
-          <td hide show-gt-xs class="text-center">{{line.contact.org}}</td>
-          <td class="text-center">{{line.cfcName}}</td>
-          <td class="text-center">{{line.counts.conflicts}}</td>
-          <td class="text-center">{{line.counts.nonCompliant}}</td>
-          <td hide show-gt-xs class="text-center">
-            <span ng-show="line.cfcComplete">Y</span>
-            <span ng-hide="line.cfcComplete">N</span>
-          </td>
-
-          <td class="text-center">
-            <md-menu>
-              <md-button ng-click="$mdOpenMenu($event)"
-                         class="md-icon-button table-md-icon-button" aria-label="More" translate
-                         translate-attr-aria-label="">
-                <md-icon class="fa fa-angle-down  s18" md-font-icon="icon-file-document"></md-icon>
-              </md-button>
-
-              <md-menu-content width="3">
-
-                <md-menu-item ng-hide="viewAs.notMe">
-                  <md-button ng-click="vm.showComparison(vm.reports.viewingSub, line.contact, line.conflicted)"
-                             translate-attr-aria-label="">
-                    <md-icon class="md-accent-fg s18" md-font-icon="icon-checkbox-multiple-marked-outline"></md-icon>
-                    <span translate="">Compare Checklists</span>
-                  </md-button>
-                </md-menu-item>
-
-                <md-menu-item ng-show="line.contact.idACC == user.organization.idACC">
-                  <md-button ng-click="vm.viewChecklistAsUser(vm.reports.viewingSub,line.contact)"
-                             translate-attr-aria-label="">
-                    <md-icon class="md-accent-fg s18" md-font-icon="icon-eye"></md-icon>
-                    <span translate="">View As</span>
-                  </md-button>
-                </md-menu-item>
-
-                <md-menu-item ng-show="line.contact.idACC == user.organization.idACC">
-                  <!-- <md-button
-                    ng-click="vm.openConversationDialog($event, 'checklist', vm.reports.viewingSub.idCNV_mostRecent, line.cfcName)">
-                    <md-icon md-font-icon="icon-comment-multipe-outline" class="md-accent-fg s18"
-                             md-menu-align-target></md-icon>
-                    Conversations
-                  </md-button> -->
-
-                  <md-button
-                  ng-click="vm.openConversationDialog('checklist', vm.reports.viewingSub.idCNV_mostRecent, line.cfcName)">
-                  <md-icon md-font-icon="icon-comment-multipe-outline" class="md-accent-fg s18"
-                           md-menu-align-target></md-icon>
-                  Conversations
-                </md-button>
-                </md-menu-item>
-
-              </md-menu-content>
-            </md-menu>
-
+        <tbody  ng-repeat="lines in vm.reports.viewingSub.lines">
+        <tr ng-repeat="line in lines.userByMessage">
+          <td class="headingcolor">{{line.user_full_name}}</td>
+          <td hide show-gt-xs class="text-center headingcolor">{{line.org_name}}</td>
+          <td class="text-center">{{line.user_issue}}</td>
+          <td class="text-center">{{line.userMessage}}</td>
+          <td hide show-gt-xs class="text-center" colspan="2">
+            <span>{{ lines.cfcComplete!=='0' ? 'Y' : 'N'}}</span>
           </td>
 
         </tr>
+
+        <!-- <tr ng-repeat="line in vm.reports.viewingSub.lines">
+          <td class="headingcolor">{{line.userByMessage.full}}</td>
+          <td hide show-gt-xs class="text-center headingcolor">{{line.contact.org}}</td>
+          <td class="text-center">{{line.counts.posts}}</td>
+          <td class="text-center">{{line.counts.posts}}</td>
+          <td hide show-gt-xs class="text-center" colspan="2">
+            <span>{{ line.cfcComplete!=='0' ? 'Y' : 'N'}}</span>
+          </td>
+
+        </tr> -->
         </tbody>
       </table>
     </div>

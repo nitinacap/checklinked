@@ -10,7 +10,8 @@
 
     // State
     $stateProvider.state('app.templates', {
-      url: '/templates',
+      parent: 'app.folders',
+      url: 'templates',
       views: {
         'content@app': {
           templateUrl: 'app/main/templates/templates.html',

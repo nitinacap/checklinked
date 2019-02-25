@@ -10,7 +10,7 @@
 
     // State
     $stateProvider.state('app.summary', {
-      url: '/summary',
+      url: '/issue',
       views: {
         'content@app': {
           templateUrl: 'app/main/summary/summary.html',

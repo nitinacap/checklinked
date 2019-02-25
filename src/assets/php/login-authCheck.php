@@ -6,7 +6,8 @@
  *
  *
  */
-$url = 'http://checklinked.co/ajax/login-authCheck.php';
+//$url = 'http://checklinked.co/ajax/login-authCheck.php';
+$url = 'https://checklinked.azurewebsites.net/api_security/ajax/login-authCheck.php';
 
 //open connection
 $ch = curl_init();

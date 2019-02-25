@@ -29,6 +29,7 @@
         <div flex="10" layout="row" layout-align="start end">
           <ul class="checkbox-list">
             <li ng-repeat="show in showingUsers track by $index">
+              <!-- {{item}} -->
 
               <!-- <button type="button" ng-click="vm.toggleCheckbox(item,'applies',$index)" ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON)"
                 class="checkbox">
@@ -36,11 +37,19 @@
                 <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
                 <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'APPLY':show.name}}</span>
               </button> -->
-              <button ng-disabled="checklist.complete || viewAs.notMe || (show.idCON != item.inviterDetails.idCON)" type="button" ng-click="vm.toggleCheckbox(item,'applies',item.checkbox[$index].item_type,$index)" class="checkbox" ng-show="item.checkbox[$index].item_type !='textbox'">
+              <!-- <button ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== item.inviterDetails.idCON)" type="button" ng-click="vm.toggleCheckbox(item,'applies',item.checkbox[$index].item_type,$index)" class="checkbox" ng-show="item.checkbox[$index].item_type !='textbox'"> -->
+              <button  ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON)" type="button" ng-click="vm.toggleCheckbox(item,'applies',item.item_typeof,$index)" class="checkbox" ng-show="item.item_typeof !='textbox'">
                 <i ng-hide="item.checkbox[$index].applies" class="icon-checkbox-blank-outline"></i>
                 <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
-                <span class="checkboxLabel">{{(show.idCON ==
-                  item.inviterDetails.idCON)?(showingUsers.length>1)?'YOU': (item.checkbox[$index].item_type=='yn' ? 'Yes' : 'Req'):show.name}}</span>
+                <!-- <span class="checkboxLabel">{{(show.idCON ==
+                  item.inviterDetails.idCON)?(showingUsers.length>1)?'YOU': (item.checkbox[$index].item_type=='yn' ? 'Yes' : 'Req'):show.name}}</span> -->
+
+                  <!-- changed on 13-02-2019 -->
+                 <!-- <span class="checkboxLabel">{{(show.idCON ==
+                  item.inviterDetails.idCON)?(showingUsers.length>1)?'YOU': (item.item_typeof=='yn' ? 'Yes' : 'Req'):(item.item_typeof=='yn' ? 'Yes' : 'Req') + '(' + show.name + ')' }}</span> -->
+
+                  <span class="checkboxLabel">{{(show.idCON ==
+                      showingUsers.idCON)?(showingUsers.length>1)?'YOU': (item.item_typeof=='yn' ? 'Yes' : 'Req'):(item.item_typeof=='yn' ? 'Yes' : 'Req') + '(' + show.name + ')' }}</span>
               </button>
 
               <!-- <button type="button" ng-click="vm.toggleCheckbox(item,'applies','yn',$index)" class="checkbox" ng-if="item.checkbox[$index].item_type=='yn'">
@@ -58,11 +67,12 @@
           <div ng-class="{'text-bold form-line-question': vm.isForm(item)}" class="item" layout-align="start center"
             layout="row" flex>
             {{item.name}}
+             <!-- = {{$index}} -->
           </div>
-
-          <div ng-show="item.info.length && (checklist.showReferences || section.showReferences || heading.showReferences) && !vm.isForm(item)"
+          <div ng-show="(item.info.length || item.link) && (checklist.showReferences || section.showReferences || heading.showReferences) && !vm.isForm(item)"
             layout="column" class="item" flex>
-            <div layout="row" flex  ng-bind-html="item.info | sanitize">  <sup>{{ item.info }}</sup>{{ which.showReferences }}</div>
+            <div layout="row" flex >  <sup>{{ item.info !='rrr' ? item.info : 'Reference is not available' }}</sup></div>
+            <!-- <div layout="row" flex  ng-bind-html="item.info | sanitize">  <sup>{{ item.info ? item.info : 'Reference is not available' }}</sup>{{ which.showReferences }}</div> -->
           <div layout="row" flex>  <a href="{{item.link}}" target="_blank">{{item.link}}</a>
           </div>
 
@@ -78,7 +88,7 @@
           <div ng-show="vm.isForm(item)" layout="row" class="item" flex>
 
             <!--<input name="name" ng-model="item.info" ng-show="vm.isForm(item)" ng-click="vm.openFormLineDialog($event, item)">-->
-            <span>{{ item.info }}</span>
+            <span>{{ item.info ? item.info : 'Reference is not available'}}</span>
 
 
           </div>
@@ -103,6 +113,7 @@
 
           <ul class="checkbox-list">
             <li ng-repeat="show in showingUsers track by $index">
+
               <!-- <button type="button"
                         ng-click="vm.toggleCheckbox(item,'complies',$index)"
                         ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON)"
@@ -112,12 +123,14 @@
                   <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'COMPLY':show.name}}</span>
                 </button> -->
 
-              <button  ng-disabled="checklist.complete || viewAs.notMe || (show.idCON != item.inviterDetails.idCON)"  type="button" ng-click="vm.toggleCheckbox(item,'complies',item.checkbox[$index].item_type,$index)" class="checkbox" ng-show="item.checkbox[$index].item_type !='textbox'">
+              <button  ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON)"  type="button" ng-click="vm.toggleCheckbox(item,'complies',item.item_typeof,$index)" class="checkbox" ng-show="item.item_typeof!='textbox'">
                 <i ng-hide="item.checkbox[$index].complies" class="icon-checkbox-blank-outline"></i>
                 <i ng-show="item.checkbox[$index].complies" class="icon-checkbox-marked-outline"></i>
+
+
               <span class="checkboxLabel">{{(show.idCON ==
-                    item.inviterDetails.idCON)?(showingUsers.length>1)?'YOU': (item.checkbox[$index].item_type=='yn' ? 'No' : 'Comp'):show.name}}</span>
-              </button>
+                  showingUsers.idCON)?(showingUsers.length>1)?'YOU': (item.item_typeof=='yn' ? 'No' : 'Req'):(item.item_typeof=='yn' ? 'No' : 'Comp') + '(' + show.name + ')' }}</span>
+            </button>
 
               <!-- <button type="button" ng-click="vm.toggleCheckbox(item,'complies','yn',$index)" class="checkbox" ng-if="item.checkbox[$index].item_type=='yn'">
                   <i ng-hide="item.checkbox[$index].complies" class="icon-checkbox-blank-outline"></i>
@@ -210,8 +223,8 @@
             </md-button>
           </md-menu-item>
 
-          <md-menu-item>
-            <md-button ng-click="vm.undoDialog($event, group.id)" aria-label="Undo" translate-attr-aria-label="GROUP.UNDO">
+          <md-menu-item ng-if="item.move_item_id" >
+            <md-button ng-click="vm.undoDialog(item.move_item_id)" aria-label="Undo" translate-attr-aria-label="GROUP.UNDO">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>
               <span translate="GROUP.UNDO"></span>
             </md-button>

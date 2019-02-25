@@ -6,7 +6,7 @@
     .controller('ChatController', ChatController);
 
   /** @ngInject */
-  function ChatController($rootScope, $state, $stateParams, $scope, $filter, $mdSidenav, $timeout, $document, $mdMedia, api) {
+  function ChatController($rootScope, $cookies, $stateParams, $scope, $filter,$http, $mdSidenav, $timeout, $document, $mdMedia, api) {
 
     var vm = this;
 
@@ -17,6 +17,7 @@
     var array_test = [];
     vm.leftSidenavView = false;
     vm.chat = undefined;
+    vm.isLoader = false;
     vm.newPost = {
       text: '',
       submitting: false
@@ -27,7 +28,6 @@
       id: id,
       type: type
     };
-
     // Methods
     vm.getChat = getChat;
     vm.toggleSidenav = toggleSidenav;
@@ -39,6 +39,7 @@
     vm.openConversation = openConversation;
     vm.setSocketStuff = setSocketStuff;
     vm.submitPost = submitPost;
+    vm.submitMessage= submitMessage;
     vm.old = old;
     vm.closeConversation = closeConversation;
     vm.pushPosts = pushPosts;
@@ -46,8 +47,6 @@
     vm.getLatestPosts = getLatestPosts;
 
     vm.passID = $stateParams.passID;
-
-    console.log('vm.passID', vm.passID);
 
     //Build Fetch contactsTest
     var i = '';
@@ -81,21 +80,21 @@
       }
       console.log('contacts processed', vm.contacts);
 
-      if(vm.passID){
+      if (vm.passID) {
 
         console.log('we are here', vm.contacts.length);
 
-          for (var i = 0; i < vm.contacts.length; i++) {
-            if (vm.contacts[i].id === vm.passID) {
-              //vm.open(vm.threads[i]);
+        for (var i = 0; i < vm.contacts.length; i++) {
+          if (vm.contacts[i].id === vm.passID) {
+            //vm.open(vm.threads[i]);
 
-              console.log('hello charlie', vm.contacts[i]);
+            console.log('hello charlie', vm.contacts[i]);
 
-              vm.openConversation(vm.contacts[i].contact_id, 'message', vm.contacts[i].name, vm.contacts[i]);
+            vm.openConversation(vm.contacts[i].contact_id, 'message', vm.contacts[i].name, vm.contacts[i]);
 
-              break;
-            }
+            break;
           }
+        }
 
 
       }
@@ -211,11 +210,12 @@
     function scrollToBottomOfChat() {
       $timeout(function () {
         var chatContent = angular.element($document.find('#chat-content'));
+        console.log(' chatContent', chatContent)
 
         chatContent.animate({
           scrollTop: chatContent[0].scrollHeight
         }, 400);
-      }, 0);
+      }, 2000);
 
     }
 
@@ -255,9 +255,7 @@
       })[0];
     };
 
-
     function openConversation(id, type, name, contact) {
-
       console.log('id', id);
       console.log('type', type);
       console.log('name', name);
@@ -281,10 +279,14 @@
       console.log('vm.viewingConversation', vm.viewingConversation);
 
       console.log('opening conversation', vm.viewingConversation);
-     
 
-      $rootScope.socketio.emit('join', "/conversation/" + vm.viewingConversation.id);
       vm.getLatestPosts(vm.viewingConversation.id, vm.viewingConversation.type);
+
+
+      setInterval(function () {
+        $rootScope.socketio.emit('join', "/conversation/" + vm.viewingConversation.id);
+
+      }, 5000)
 
       // Reset the reply textarea
       resetReplyTextarea();
@@ -357,18 +359,93 @@
     function postProcessPosts(posts) {
       console.log('post processing posts', posts);
       for (i = 0; i < posts.length; i++) {
-
         if ($rootScope.user.idCON == posts[i].id_contact) {
           posts[i].who = 'user';
         } else {
           posts[i].who = 'contact';
           //	vm.chat.name = vm.chat[i].user
         }
-
       }
       console.log('posts postprocessed', posts);
       return posts;
     }
+
+    //new conversion
+    $scope.setFile = function(element) {
+    //  var files = document.getElementById(element.id).files[0];
+      $scope.$apply(function($scope) {
+          $scope.theFile = element.files[0];
+      });
+  };
+    function getNewLatestPosts(id) {
+      vm.isLoader = true;
+      api.conversations.getnew(id).success(function (res) {
+        vm.chat = [];
+        vm.isLoader = false;
+        if (res.type == 'success') {
+          var datas = res.posts.data;
+          //vm.messages = res.posts.data;
+          var newArray = [];
+          for (var item = 0; item < datas.length; item++) {
+            if (datas[item].conversions && datas[item].conversions.length) {
+              newArray.push(datas[item]);
+            }
+          }   
+      
+        vm.messages = newArray;
+
+        }
+      })
+    };
+    vm.notificationDate = notificationDate;
+    vm.unixtimestamp = [];
+    function notificationDate(item){
+      if(item!=='undefined' || item!==undefined){
+       vm.unixtimestamp.push((new Date(item.replace('-','/'))).getTime());
+
+      }
+    }
+    getNewLatestPosts($cookies.get('useridCON'));
+
+  function submitMessage(message, index, filename){
+    vm.isLoader = false;
+    vm.file_name  = [];
+    var text = $("#text"+ message.checklist_id +index).val();
+
+    var files = document.getElementById(filename).files[0];
+    vm.file_name[index] =  files;
+
+    var fd = new FormData();
+    fd.append('file', files);
+    var filedata = { id: message.checklist_id, text: text, itemType: 'post', producerType: 'checklist' };
+    fd.append('data', JSON.stringify(filedata));
+
+    $http.post(BASEURL + 'posts-post.php', fd, {
+      headers: { 'Content-Type': undefined },
+      cache: false
+    }).error(function (res) {
+      return $rootScope.message('Could not send message. Unknown error.', 'warning');
+    }).success(function (res) {
+      if (res.type == 'success') {
+        getNewLatestPosts($cookies.get('useridCON'));
+
+        //$scope.messages.unshift(res.posts[0]); 
+        $rootScope.message('Message send successfully', 'success');
+        $("#text"+ message.checklist_id +index).val('');;
+        var fileElement = angular.element('#fileAttachment');
+        angular.element(fileElement).val(null);
+        $scope.theFile = [];
+        vm.file_name = '';
+        vm.newPost.submitting = false;
+        vm.checklistCionversion = true;
+       
+        //vm.conversation.posts.unshift(res.posts[0]);
+      } 
+    })
+  };
+
+
+
 
     function getLatestPosts(id) {
 
@@ -402,6 +479,8 @@
     };
 
 
+
+
     function pushPosts(posts, filter) {
       console.log('checking received message(s)', posts, filter);
       var i, len, post, ref1, results;
@@ -413,8 +492,8 @@
           post = posts[i];
           if (post.id_parent === vm.viewingConversation.id) {
             if (!((ref1 = $filter('filter')(vm.chat, {
-                rid: post.rid
-              }, true)) != null ? ref1.length : void 0)) {
+              rid: post.rid
+            }, true)) != null ? ref1.length : void 0)) {
               vm.chat.push(post);
               vm.conversation.currentSkip++;
               scrollToBottomOfChat();
@@ -449,7 +528,6 @@
     };
 
 
-
     if ($stateParams.id !== undefined && $stateParams.id != null) {
 
       console.log('user id', $stateParams.id);
@@ -467,7 +545,7 @@
       { link: '#', title: 'Alerts' },
       { link: 'invitations', title: 'Action Items' },
       { link: '', title: 'Messages' },
-      { link: 'mail.threads', title: 'Notifications' }  
+      { link: 'notification', title: 'Notifications' }
 
     ];
 

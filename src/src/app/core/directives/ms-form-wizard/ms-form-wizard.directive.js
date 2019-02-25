@@ -9,7 +9,7 @@
         .directive('msFormWizardForm', msFormWizardFormDirective);
 
     /** @ngInject */
-    function MsFormWizardController($rootScope)
+    function MsFormWizardController()
     {
         var vm = this;
 
@@ -63,15 +63,6 @@
          * Go to next step
          */
         function nextStep()
-        {
-            if ( isLastStep() )
-            {
-                return;
-            }
-
-            vm.selectedIndex++;
-        }
-        $rootScope.nextStep = function()
         {
             if ( isLastStep() )
             {

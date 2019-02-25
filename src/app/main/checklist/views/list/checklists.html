@@ -39,7 +39,14 @@
                 <span translate="CHECKLIST.EDIT_CHECKLIST_NAME">Edit Checklist Name</span>
               </md-button>
             </md-menu-item>
-
+            <md-menu-item>
+              <md-button ng-click="vm.openChecklistDialog('' , checklist, 'duplicate')" aria-label="Duplicate"
+                         translate-attr-aria-label="FOLDER.FOLDER_DUPLICATE">
+                <md-icon class="md-accent-fg s18"
+                         md-font-icon="fa fa-files-o"></md-icon>
+                <span>Duplicate</span>
+              </md-button>
+            </md-menu-item>
             <md-menu-item>
               <md-button ng-click="vm.archieveDialog($event, checklist.id)" aria-label="Archive All"
                 translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
@@ -88,6 +95,5 @@
       </div>
     </div>
   </div>
-
 
 </div>

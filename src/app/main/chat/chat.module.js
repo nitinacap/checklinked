@@ -18,6 +18,15 @@
         }
       }
     })
+    .state('app.chat.message', {
+      url: '/message',
+      views: {
+        'content@app': {
+          templateUrl: 'app/main/chat/message.html',
+          controller: 'ChatController as vm'
+        }
+      }
+    })
       .state('app.chat.user', {
       url: '/:id',
       views: {

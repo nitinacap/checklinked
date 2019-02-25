@@ -12,16 +12,34 @@
         <th class="text-left">
           <div class="table-header">
             <span class="column-title">Name</span>
+            <md-button class="md-icon-button"  ng-click="vm.sortBy('name')"
+            aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.templateOrder!='name'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reverse && vm.templateOrder=='name'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='name'" class="s18"></md-icon>
+          </md-button>
           </div>
         </th>
         <th class="text-left">
           <div class="table-header">
             <span class="column-title">Author</span>
+            <md-button class="md-icon-button"  ng-click="vm.sortBy('author')"
+            aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.templateOrder!='author'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reverse && vm.templateOrder=='author'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='author'" class="s18"></md-icon>
+          </md-button>
           </div>
         </th>
         <th class="text-left">
           <div class="table-header">
             <span class="column-title">Type</span>
+            <md-button class="md-icon-button"  ng-click="vm.sortBy('type')"
+            aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.templateOrder!='type'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reverse && vm.templateOrder=='type'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='type'" class="s18"></md-icon>
+          </md-button>
           </div>
         </th>
   
@@ -29,7 +47,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-if="template.internal==1" ng-repeat="template in vm.templates.list | filter: globalSearch.searchTerm track by $index">
+      <tr ng-if="template.internal==1" ng-repeat="template in vm.templates.list | orderBy:vm.templateOrder:vm.reverse">
         <td width="15%"><a href="">
             <md-icon style="padding-top:0px;" class="plus md-accent-fg s18 cplus ng-scope md-font icon-plus material-icons md-default-theme"
               md-font-icon="icon-plus" aria-hidden="true">
@@ -62,7 +80,7 @@
                 </md-button>
               </md-menu-item>
   
-              <md-menu-item ng-if="template.idCON == user.idCON">
+              <md-menu-item ng-show="permissions.has('deleteTemplate')" ng-if="template.idCON == user.idCON">
                 <md-button ng-click="vm.deleteItemConfirm(template,  $event)" translate-attr-aria-label="">
                   <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                   <span translate="">Delete Template</span>

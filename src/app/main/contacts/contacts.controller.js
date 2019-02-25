@@ -124,6 +124,9 @@
         } else {
           vm.contacts = res.friendships;
           vm.secondary = res.secondary;
+          vm.internal = res.internal;
+        
+        //  vm.secondary =  $rootScope.removeDuplicates(res.secondary, 'contacts');
           vm.isLoader = false;
           return vm.loaded.friends = true;
         }
@@ -189,6 +192,7 @@
         return vm.removeConnectionInvitation(idCON, type);
       }
     };
+    
     function find(ev) {
       vm.findContacts = {
         criteria: {
@@ -204,6 +208,7 @@
       vm.openAddContactDialog(ev);
       return null;
     };
+
     vm.findContactsMessage = true;
     function queryContacts() {
       if (vm.findContacts.criteria.name === '') {

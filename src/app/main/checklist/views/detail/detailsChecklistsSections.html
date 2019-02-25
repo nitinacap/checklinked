@@ -10,7 +10,8 @@
 
     <div class="info" flex>
       <div class="section">
-        {{section.name}}
+        {{section.name}} 
+        <!-- =  = {{section.id}} = isparent {{section.id_parent}} -->
       </div>
     </div>
 
@@ -85,7 +86,7 @@
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-click="vm.toggle('section',section);vm.showAllHeaders(section.headings)" aria-label="Show All Headers"
+            <md-button ng-click=" vm.toggle('section',section);vm.showAllHeaders(section.headings)" aria-label="Show All Headers"
               translate-attr-aria-label="CHECKLIST.HEADERS">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
    
@@ -115,14 +116,14 @@
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-click="vm.coypDialog($event, group.id)" aria-label="Copy" translate-attr-aria-label="GROUP.COPY">
+            <md-button ng-click="vm.cutDialog('section', section.id, section.id_parent)"  aria-label="Copy" translate-attr-aria-label="GROUP.COPY">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
               <span>Copy</span>
             </md-button>
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-click="vm.pasteDialog('section', section.id, section.idCHK)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
+            <md-button ng-click="vm.pasteDialog('heading', section.id, section.id)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
               <span translate="GROUP.PASTE"></span>
             </md-button>

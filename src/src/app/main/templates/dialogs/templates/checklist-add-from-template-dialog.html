@@ -1,4 +1,4 @@
-<md-dialog class="dialog" aria-label="Download">
+<md-dialog class="dialog" aria-label="">
   <md-toolbar class="md-accent md-hue-2">
     <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
       <span class="title">{{vm.title}}</span>
@@ -12,7 +12,7 @@
   <md-dialog-content class="no-padding">
 
     <!-- FORM WIZARD-->
-    <ms-form-wizard>
+    <ms-form-wizard flex>
 
       <md-tabs md-dynamic-height md-selected="msWizard.selectedIndex">
         <md-tab>
@@ -52,7 +52,7 @@
                                       ng-if="vm.verticalStepper.step2.groupID">
                                     <i class="icon-check s16"></i>
                                 </span>
-                                <span class="ms-form-wizard-step-text">Select Workflow</span>
+                                <span class="ms-form-wizard-step-text">Select Folder</span>
                             </span>
           </md-tab-label>
 

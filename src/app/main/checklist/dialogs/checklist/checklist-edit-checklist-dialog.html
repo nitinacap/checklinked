@@ -2,7 +2,7 @@
   <form name="checklistForm" class="md-inline-form" novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-        <span class="title">Edit Checklist Name</span>
+        <span class="title">{{vm.title}}</span>
         <md-button class="md-icon-button" ng-click="vm.closeDialog()">
           <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
         </md-button>
@@ -31,7 +31,7 @@
       <div layout="row" layout-align="end center" flex>
         <md-button type="submit"
                    ng-if="!vm.newChecklist"
-                   ng-click="vm.saveChecklist()"
+                   ng-click="vm.saveChecklist(vm.type)"
                    class="md-raised md-accent"
                    ng-disabled="checklistForm.$invalid || checklistForm.$pristine"
                    aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">

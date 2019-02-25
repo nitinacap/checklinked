@@ -2,16 +2,59 @@
 {
     'use strict';
     
-    angular
+    angular  
         .module('app.core')
         .filter('toTrusted', toTrustedFilter)
         .filter('htmlToPlaintext', htmlToPlainTextFilter)
         .filter('nospace', nospaceFilter)
         .filter('extension', extensionFilter)
+        .filter('tostring', tostringFilter)
+        .filter('tonumber', tonumberFilter)
         .filter('timeSince', timeSinceFilter)
+        .filter('unique', uniqueFilter)
         .filter('humanizeDoc', humanizeDocFilter);
 
     /** @ngInject */
+
+
+    function uniqueFilter($sce){
+
+        return function (arr, field) {
+        //     console.log('unique',field);
+        //     var o = {}, i, l = arr.length, r = [];
+        //     for(i=0; i<l;i+=1) {
+        //       o[arr[i][field]] = arr[i];
+        //     }
+        //     for(i in o) {
+        //       r.push(o[i]);
+        //     }
+        //     return r;
+        //   };
+
+        var jobs = arr.map(function (item) {
+            return item.occupation;
+        });
+        console.log('unique',jobs);
+    }
+    }
+
+    //  convert to string 
+    
+    function tostringFilter()
+    {
+        return function(input) { 
+            return input.toString();
+          };
+    }
+
+    function tonumberFilter()
+    {
+        return function(input) {
+          return parseInt(input, 10);
+        };
+    };
+
+
     function toTrustedFilter($sce)
     {
         return function (value)

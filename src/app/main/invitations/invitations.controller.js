@@ -428,8 +428,8 @@
     vm.submenu = [
       { link: '#', title: 'Alerts' },
       { link: '', title: 'Action Items' },
-      { link: 'chat', title: 'Messages' },
-      { link: 'mail.threads', title: 'Notifications' }
+      { link: 'chat.message', title: 'Messages' },
+      { link: 'notification', title: 'Notifications' }
 
     ];
 

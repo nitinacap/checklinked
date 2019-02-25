@@ -462,27 +462,9 @@
   }
 
   /** @ngInject */
-  function MsNavigationController($scope, msNavigationService, $rootScope) {
+  function MsNavigationController($scope, msNavigationService) {
     var vm = this;
-    vm.folded = false;
-    vm.toggleMsNavigationFolded = toggleMsNavigationFolded;
 
-    function toggleMsNavigationFolded() {
-      vm.folded = !vm.folded;
-      $rootScope.folded = vm.folded;
-      if (vm.folded) {
-        $('.title, .menuheading').hide();
-       
-         $('.fulllogo').show();
-        $('md-sidenav').addClass('vertical-navigation-hide');
-        $('.admin-logo').attr('src', '/assets/images/logos/small-logo.jpg').addClass('pl-20 small');
-      } else {
-         $('.fulllogo').hide();
-        $('.title, .menuheading').show();
-        $('md-sidenav').removeClass('vertical-navigation-hide');
-       $('.admin-logo').attr('src', '/assets/images/logos/checklinked.png').removeClass('pl-20 small');
-      }
-    }
     // Data
     if ($scope.root) {
       debugger;

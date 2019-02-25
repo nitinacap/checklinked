@@ -26,17 +26,18 @@
 
     // Navigation
     msNavigationServiceProvider.saveItem('reports', {
-      //title: 'Issues',
+      title: 'Reports',
       group: true,
       weight: 3
     });
 
     // Navigation
     msNavigationServiceProvider.saveItem('reports.summary', {
-      title: 'Analyze',
-      icon: 'fa fa-bar-chart',
+      title: 'Reports',
+     // icon: 'icon-credit-card',
+      icon: 'credit-card',
       state: 'app.summary',
-      weight: 3
+      weight: 1
     });
 
   }

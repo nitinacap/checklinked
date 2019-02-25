@@ -1,5 +1,5 @@
-<div class="form-wrapper md-whiteframe-1dp flex  userinfo" id="stats">
-  <!-- <table class="bordered-table" cellpadding="0" cellspacing="0"> 
+<div class="form-wrapper md-whiteframe-1dp flex" id="stats">
+  <table class="bordered-table" cellpadding="0" cellspacing="0"> 
     <thead>
       <tr>
         <th width="5%"><a href="/user/stats"><span class="notactive">Stats</span></a></th>
@@ -24,9 +24,9 @@
               </md-menu-item>
              <md-divider></md-divider>
               <md-menu-item>
-                <md-button ng-click="vm.editDialog($event, 'editprofile')" aria-label="Edit profile" translate-attr-aria-label="FOLDER.EDIT_FOLDER">
+                <md-button ng-click="vm.editDialog($event, 'editprofile')" aria-label="Edit Workflow" translate-attr-aria-label="FOLDER.EDIT_FOLDER">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
-                  <span>Edit Profile</span>
+                  <span translate="FOLDER.EDIT_FOLDER">Edit Profile</span>
                 </md-button>
               </md-menu-item>
 
@@ -39,7 +39,7 @@
       </tr>
     </thead>
 
-  </table> -->
+  </table>
 
   <table class="bordered-table" width="100%" cellpadding="0" cellspacing="0">
 
@@ -52,7 +52,7 @@
       </tr>
       <tr>
         <td><small>Email</small><br>
-          <span><a href="mailto:{{user.email}}" class="">{{user.email}}</a></span></td>
+          <span>{{ user.email }}</span></td>
         <td><small>Phone</small><br>
           <span>{{user.phone}}</span></td>
       </tr>

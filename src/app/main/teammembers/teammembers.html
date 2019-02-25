@@ -1,20 +1,36 @@
 <div id="team-members" class="page-layout simple tabbed pad-0" layout="column">
+<div class="subtab pt-30">
+        <page-toolbar datas="vm.submenu"> </page-toolbar>
+        <md-tabs md-dynamic-height md-border-bottom  md-selected="0">
+            <md-tab>
+              <md-tab-label>
+                <span>Permissions	</span>
+              </md-tab-label>
+              <md-tab-body>
+                    <div ng-include="'app/main/teammembers/partials/permission.html'"></div>
+              </md-tab-body>
+        
+            </md-tab>
+        
+            <md-tab class="pr-30">
+              <md-tab-label>
+                <span>Subscription</span>
+              </md-tab-label>
+              <md-tab-body>
+                    <div ng-include="'app/main/teammembers/partials/subscription.html'"></div>
+              </md-tab-body>
+        
+            </md-tab>
+          </md-tabs>
 
-    <!-- HEADER -->
-    <!-- <div class="header md-accent-bg" layout="row" layout-align="start center">
-        <div class="white-fg" layout="row" layout-align="start center" flex>
-            <div layout="column" layout-align="start start">
-                <div class="h2">
-				<span>Team Members</span>
-                </div>
-            </div>
         </div>
-    </div> -->
-    <!-- / HEADER -->
+    </div>
+<!-- 
+<div id="team-members" class="page-layout simple tabbed pad-0" layout="column">
+        <page-toolbar datas="vm.submenu"> </page-toolbar>
 
-    <!-- CONTENT -->
-    <div class="content">
-        <md-tabs md-dynamic-height class="">
+    <div class="content pt-30">
+        <md-tabs md-dynamic-height md-selected="0">
 
             <md-tab>
                 <md-tab-label>
@@ -41,6 +57,6 @@
         </md-tabs>
 
     </div>
-    <!-- / CONTENT -->
 
-</div>
+
+</div> -->

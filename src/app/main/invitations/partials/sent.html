@@ -18,7 +18,7 @@
           <span class="column-title">Oraganization</span>
         </div>
       </th>
-      <th></th>
+      <th colspan="2">Type</th>
     </tr>
     <tr ng-if="!vm.invites.sent.length">
       <th class="secondary-text">
@@ -38,9 +38,14 @@
         {{invite.users.recipient.name}}
       </td>
 
-      <td class="hide-xs">
+      <td>
         {{invite.users.recipient.organization}}
       </td>
+
+      <td>
+        <span class="capitalize">{{invite.type=='group' ? 'Workflow' : invite.type }}</span>
+      </td>
+
 
       <td class="text-right">
 

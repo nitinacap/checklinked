@@ -21,9 +21,5 @@
                 $rootScope.$broadcast('msSplashScreen::remove');
             }
         });
-
-        
     }
 })();
-
-

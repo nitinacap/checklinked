@@ -3,7 +3,7 @@
     <thead  class="tool-bg">
       <tr>
         <th>
-          <span ng-if="!vm.archives.length">You do not have any archives</span>
+          <h3 ng-if="!vm.archives.length">You do not have any archives</h3>
           <div layout="row" layout-align="start center"  ng-if="vm.archives.length">
             <md-select class="simplified" ng-model="vm.folderOrder" placeholder="Most Recent" ng-change="vm.folderOrderDescending = vm.folderOrder === '' ? true : vm.folderOrderDescending">
               <md-option value="name">Most Recent</md-option>

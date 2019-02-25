@@ -140,12 +140,12 @@ img {
 
     .padding-#{$i * 5},
     .p-#{$i * 5} {
-        padding: #{($i * 5) + 'px' + '!important'} 
+        padding: #{($i * 5) + 'px'};
     }
 
     .padding-top-#{$i * 5},
     .pt-#{$i * 5} {
-        padding-top: #{($i * 5) + 'px' + '!important'};
+        padding-top: #{($i * 5) + 'px'};
     }
 
     .padding-right-#{$i * 5},
@@ -231,7 +231,7 @@ img {
 
     .margin-top-#{$i * 5},
     .mt-#{$i * 5} {
-        margin-top: #{($i * 5) + 'px !important'};
+        margin-top: #{($i * 5) + 'px'};
     }
 
     .margin-right-#{$i * 5},

@@ -384,7 +384,6 @@ var indexOf = [].indexOf || function (item) {
 
       },
       orderChanged: function (event) {
-
         console.log('event', event);
 
         // Location where section was dragged to
@@ -415,7 +414,7 @@ var indexOf = [].indexOf || function (item) {
           var reorderOrder = (((itemNext.order) / 2));
           //console.log('nope');
           //return;
-        } else if (itemPrevious.order != 0 && typeof itemNext === 'undefined') {
+        } else if (itemPrevious && itemPrevious.order != 0 && typeof itemNext === 'undefined') {
           var reorderOrder = (itemPrevious.order + 1);
 
         }
@@ -432,7 +431,7 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.sections', vm.sections);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, token).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, arrayKeyNext ? arrayKeyNext : '', itemNext ? itemNext.id : '', arrayKeyMoved ? arrayKeyMoved : 0, itemMoved ? itemMoved.id : 0, arrayKeyPrevious ? arrayKeyPrevious:0, itemPrevious ? itemPrevious.id:0).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           if (res.code) {
@@ -441,7 +440,7 @@ var indexOf = [].indexOf || function (item) {
           } else {
 
             vm.isLoader = false;
-            $rootScope.message("Checklist has been modified");
+            $rootScope.message("Section order has been modified");
 
             var itemIndex;
 
@@ -550,7 +549,7 @@ var indexOf = [].indexOf || function (item) {
           var reorderOrder = (((itemNext.order) / 2));
           //console.log('nope');
           //return;
-        } else if (itemPrevious.order != 0 && typeof itemNext === 'undefined') {
+        } else if (itemPrevious && itemPrevious.order != 0 && typeof itemNext === 'undefined') {
           var reorderOrder = (itemPrevious.order + 1);
 
         }
@@ -567,7 +566,7 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.headings', vm.headings);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, token).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, arrayKeyNext ? arrayKeyNext : '', itemNext ? itemNext.id : '', arrayKeyMoved ? arrayKeyMoved : 0, itemMoved ? itemMoved.id : 0, arrayKeyPrevious ? arrayKeyPrevious:0, itemPrevious ? itemPrevious.id:0).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           vm.isLoader = false;
@@ -575,7 +574,7 @@ var indexOf = [].indexOf || function (item) {
             return $rootScope.message("Error updating reorder information. (" + res.code + ": " + res.message + ")");
           } else {
 
-            $rootScope.message("Checklist has been modified");
+            $rootScope.message("Heading order has been modified");
 
             var itemIndex;
 
@@ -654,11 +653,11 @@ var indexOf = [].indexOf || function (item) {
 
       },
       orderChanged: function (event) {
-
+debugger;
         console.log('event', event);
 
         // Location where item was dragged to
-
+        event.dest.index =  event.dest.index==0 ?  event.dest.index + 1 :  event.dest.index;
 
         var arrayKeyNext = (event.dest.index + 1);
         var arrayKeyMoved = (event.dest.index);
@@ -686,7 +685,7 @@ var indexOf = [].indexOf || function (item) {
           console.log('reorderOrder', reorderOrder);
           console.log('arrayKeyPrevious == -1 && itemNext.order != 0');
           //return;
-        } else if (itemPrevious.order != 0 && typeof itemNext === 'undefined') {
+        } else if (itemPrevious && itemPrevious.order != 0 && typeof itemNext === 'undefined') {
           var reorderOrder = (itemPrevious.order + 1);
           console.log('reorderOrder', reorderOrder);
           console.log('itemPrevious.order != 0 && typeof itemNext === undefined');
@@ -705,38 +704,37 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.items', vm.items);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, token).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, arrayKeyNext ? arrayKeyNext : '', itemNext ? itemNext.id : '', arrayKeyMoved ? arrayKeyMoved : 0, itemMoved ? itemMoved.id : 0, arrayKeyPrevious ? arrayKeyPrevious:0, itemPrevious ? itemPrevious.id:0).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           var i, len, old, packet, ref1;
           if (res.code) {
             return $rootScope.message("Error updating reorder information. (" + res.code + ": " + res.message + ")");
           } else {
-
-            $rootScope.message("Checklist has been modified");
-
+            $rootScope.message("Order has been modified");
             var itemIndex;
+            loadChecklist(vm.idCHK)
+         
+            // itemIndex = vm.items.indexOf(itemMoved);
+            // console.log('itemIndex', itemIndex);
+            // vm.items[itemIndex].order = vm.reorder.order;
 
-            itemIndex = vm.items.indexOf(itemMoved);
-            console.log('itemIndex', itemIndex);
-            vm.items[itemIndex].order = vm.reorder.order;
+         
 
-            vm.organizeData();
+            // console.log('post vm.items', vm.items);
 
-            console.log('post vm.items', vm.items);
-
-            var packet;
-            packet = {
-              catalog: 'items',
-              type: 'reorder',
-              user: {
-                idCON: $rootScope.user.idCON,
-                name: $rootScope.user.name
-              },
-              record: vm.items[itemIndex]
-            };
-            console.log('emitting data', packet);
-            $rootScope.socketio.emit('data', packet);
+            // var packet;
+            // packet = {
+            //   catalog: 'items',
+            //   type: 'reorder',
+            //   user: {
+            //     idCON: $rootScope.user.idCON,
+            //     name: $rootScope.user.name
+            //   },
+            //   record: vm.items[itemIndex]
+            // };
+            // console.log('emitting data', packet);
+            // $rootScope.socketio.emit('data', packet);
 
           }
         });
@@ -849,7 +847,6 @@ var indexOf = [].indexOf || function (item) {
     function expand(what, which, parentID) {
 
 
-
       var catalog, item, items, key, whats;
       if (parentID == null) {
         parentID = null;
@@ -916,12 +913,14 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function toggle(what, which, parentID) {
-
+if(parentID=='allheader'){
+  return true;
+}
       if (parentID == null) {
         parentID = null;
       }
       if (what === 'item' && which.name.length <= vm.itemShortLength) {
-        return false;
+        return true;
       }
       if (what === 'references') {
         which.showReferences = !which.showReferences;
@@ -932,6 +931,7 @@ var indexOf = [].indexOf || function (item) {
         return false;
       }
       if (vm.isExpanded(what, which)) {
+
         return vm.collapse(what, which, parentID);
       } else {
         return vm.expand(what, which, parentID);
@@ -1328,7 +1328,6 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function createSegment(what, name, to, type, info, item_type, alert) {
-      vm.isLoader = false;
       console.log("optiondata=" + vm.newItem.dataType);
       var count, order, ref1, svc, whats;
       if (to == null) {
@@ -1490,7 +1489,7 @@ var indexOf = [].indexOf || function (item) {
             vm.type =
               {
                 title: 'Text Box',
-                label: 'Text Box Label',
+                label: 'Name',
                 type: 'textbox',
 
               }
@@ -1616,11 +1615,11 @@ var indexOf = [].indexOf || function (item) {
       item = api.summary.evaluateItem(item, item.checkbox, token);
       addConflicts = operation * +item.conflicts;
       vm.conflicts += addConflicts;
-      if (((ref1 = item.checkbox) != null ? ref1[0] : void 0) !== void 0) {
+      if (((ref1 = item.checkbox) != null ? ref1[0] : void 0) !== void 0 && item.checkbox[0] && item.checkbox[0].item_type!='yn') {
         leftNonCompliant = operation * +item.checkbox[0].nonCompliant;
         vm.nonCompliant[0] += leftNonCompliant;
       }
-      if (((ref2 = item.checkbox) != null ? ref2[1] : void 0) !== void 0) {
+      if (((ref2 = item.checkbox) != null ? ref2[1] : void 0) !== void 0 && item.checkbox[0] && item.checkbox[0].item_type!='yn') {
         rightNonCompliant = operation * +item.checkbox[1].nonCompliant;
         vm.nonCompliant[1] += rightNonCompliant;
       }
@@ -2576,8 +2575,7 @@ var indexOf = [].indexOf || function (item) {
       });
     };
 
-    function addNewChecklist(checklistName, checklistDescription, groupID, folderID) {
-      debugger;
+    function addNewChecklist(checklistName, checklistDescription, groupID, folderID, checklist_id,sub_type) {
     
       //Set sending variable for buttons
       vm.checklist.sending = true;
@@ -2587,7 +2585,7 @@ var indexOf = [].indexOf || function (item) {
       vm.checklist.order += vm.checklists.length;
 
       //name, order, to
-      api.checklists.add(checklistName, vm.checklist.order, groupID, token, checklistDescription).error(function (res) {
+      api.checklists.add(checklistName, vm.checklist.order, groupID, token, checklistDescription, checklist_id ? checklist_id : '', sub_type ? sub_type : '').error(function (res) {
         return $rootScope.message("Error Adding Checklist", 'warning');
       }).success(function (res) {
 
@@ -2599,17 +2597,16 @@ var indexOf = [].indexOf || function (item) {
 
         // } 
         else {
-       
+           $rootScope.message(res.message, 'success');
+           $scope.getChecklinked();
          // $rootScope.createStats('checklist', 'created', res.checklist.id);
-          api.sections.add('sections', 1, res.checklist.id).error(function (res) {
+          api.sections.add('sections', 1, res.checklist.id ? res.checklist.id : checklist_id).error(function (res) {
             return $rootScope.message("Error Adding Section", 'warning');
           }).success(function (res) {
          
             if (res === void 0 || res === null || res === '') {
               return $rootScope.message("Error Adding Section", 'warning');
-            // } 
-            // else if (res.code) {
-            //   return $rootScope.message(res.message, 'warning');
+
             } else {
               vm.sections.push(res.section);
 
@@ -2622,7 +2619,7 @@ var indexOf = [].indexOf || function (item) {
           }
 
           $rootScope.organizeData();
-          $rootScope.message('Checklist Added');
+          $rootScope.message(res.type, 'success');
 
         }
       });
@@ -2959,14 +2956,14 @@ var indexOf = [].indexOf || function (item) {
      };
      */
 
-    function openChecklistDialog(ev, checklist) {
+    function openChecklistDialog(ev, checklist, type) {
 
+      vm.title = type ? 'Create Duplicate' : 'Edit Checklist';
       vm.checklist = checklist;
-      vm.title = 'Edit Checklist';
-
+      vm.type = type;
       console.log('vm.checklist', vm.checklist);
 
-
+  
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
@@ -2977,10 +2974,12 @@ var indexOf = [].indexOf || function (item) {
       });
     }
 
-    function saveChecklist() {
+    function saveChecklist(type) {
+     if(type){
+      addNewChecklist(vm.checklist.name, vm.checklist.description, vm.checklist.item_bread.project_id, vm.checklist.item_bread.folder_id, vm.checklist.id,'duplicate')
+    }else{
 
       var editPack;
-
       editPack = {
         'id': vm.checklist.idCHK,
         'rid': vm.checklist.rid,
@@ -3010,7 +3009,11 @@ var indexOf = [].indexOf || function (item) {
           //Close Dialog Window
           vm.closeDialog();
         }
+
+        
       });
+    }
+
     }
 
     function openSectionDialog(ev, section) {
@@ -3176,7 +3179,7 @@ var indexOf = [].indexOf || function (item) {
           $rootScope.message(res.message, 'warning');
         } else {
           $rootScope.createStats('item', 'created', vm.item.id);
-          $rootScope.message('Section has been changed successfully', 'success');
+          $rootScope.message('Item has been changed successfully', 'success');
 
           vm.item.sending = false;
 
@@ -3387,7 +3390,7 @@ var indexOf = [].indexOf || function (item) {
               for (i = 0; i < res.headings.length; i++) {
 
                 console.log('looping', i);
-                vm.headings.push(res.headings[i]);
+               // vm.headings.push(res.headings[i]);
               }
 
             } else {
@@ -3489,6 +3492,7 @@ var indexOf = [].indexOf || function (item) {
 
     function fetchItemBlock(heading, idCHK) {
      // vm.showallheaders =  false;
+     vm.isHeader  = false;
       
       var id_parent = heading.id;
       var i;
@@ -3497,7 +3501,7 @@ var indexOf = [].indexOf || function (item) {
       console.log('heading', heading);
       console.log('id_parent', id_parent);
 
-      if (!heading.items.length && id_parent) {
+      if (!heading.items && !heading.items.length && id_parent) {
 
         api.items.getParent(id_parent).success(function (res) {
           //console.log('api.item.get');
@@ -3559,7 +3563,7 @@ var indexOf = [].indexOf || function (item) {
       console.log('heading', heading);
       console.log('id_parent', id_parent);
 
-      if (!heading.items.length && id_parent) {
+      if (!heading.items && !heading.items.length && id_parent) {
 
         api.items.getParent(id_parent).success(function (res) {
           //console.log('api.item.get');
@@ -3790,6 +3794,7 @@ var indexOf = [].indexOf || function (item) {
     // };
 
     function cutDialog(type, id, parent_id) {
+      alert(type);
       $scope.cutObj = { type: type, id: id, parent_destination_id: parent_id };
       localStorage.setItem('cutObj',  JSON.stringify($scope.cutObj));
      // alert(localStorage.getItem('cutObj'));
@@ -3808,13 +3813,28 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function pasteDialog(item_type, item_id, parent_origin_id) {
+     // alert(parent_origin_id);
       $scope.cutObj = JSON.parse(localStorage.getItem('cutObj'));
+      switch(item_type){
+        case 'section':
+        break;
+        case 'heading':
+        break;
+        case 'item':
+        $scope.parent_destination_id =  $scope.cutObj.parent_destination_id
+        break;
 
+      }
+    
       if (parent_origin_id == $scope.cutObj.parent_destination_id) {
-        $rootScope.alertMessage('You can not paste in the same item');
+        $rootScope.alertMessage('You can not paste ' + item_type + ' in the same location');
+      }
+      else if($scope.cutObj.type!== item_type){
+        $rootScope.alertMessage('You paste item should be ' + item_type);
       }
       else {
-        pateItem(parent_origin_id, $scope.cutObj.parent_destination_id,  $scope.cutObj.type,'paste','');
+        //alert( $scope.cutObj.id);
+        pateItem($scope.cutObj.parent_destination_id, item_id, $scope.cutObj.type,'cut',$scope.cutObj.id);
       }
 
     };
@@ -3825,13 +3845,23 @@ var indexOf = [].indexOf || function (item) {
         return $rootScope.message("Error creating on paste item", 'warning');
       }).success(function (res) {
         $rootScope.alertMessage('Paste successfully');
+        vm.loadChecklist($stateParams.id);
+
       });
 
     };
 
-    function undoDialog() {
-      vm.isCuted = false;
+    function undoDialog(id){
+      api.item.undo(id).error(function (res) {
+        return $rootScope.message("Error creating on undo item", 'warning');
+      }).success(function (res) {
+        $rootScope.alertMessage('Undo successfully');
+       loadChecklist($stateParams.id);
+
+      });
     };
+
+
 
     $rootScope.alertMessage = function (message) {
       var confirm = $mdDialog.confirm()
@@ -3867,17 +3897,22 @@ var indexOf = [].indexOf || function (item) {
 
     vm.removeFileHttp = removeFileHttp;
     function removeFileHttp(file) {
-      var originalFile = file.replace('http://checklinked.azurewebsites.net', '');
+      var originalFile = file.replace(DOMAIN_NAME, '');
       vm.downloadFile = originalFile;
     }
+   // vm.toggle('section',section); vm.fetchHeadingBlock(section, checklist.id)
 
-    function showAllHeaders(section){
-      section.forEach(function(items) {
-          vm.fetchItemBlock(items, items.id);
-          vm.toggle('heading', items);
-          vm.fetchItemBlock(items, items.id);
-
-
+   //vm.toggle('heading', heading); vm.fetchItemBlock(heading, checklist.id)
+   
+    function showAllHeaders(heading){
+      vm.toggle('section',heading);
+      heading.forEach(function(heading_item) {
+      vm.isHeader = vm.isExpanded('heading', heading_item);
+     // alert( vm.isHeader);
+      if(toggle('heading',heading_item)){
+        
+      }
+      
       });
      // vm.isExpanded('heading', headings);
       //vm.showallheaders = true;

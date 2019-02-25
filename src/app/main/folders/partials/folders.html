@@ -61,7 +61,7 @@
           <a  ng-click="ShowHideDescription()" ng-show="folder.description !='Null' ">
                         <md-icon class="md-accent-fg s18 pt-0" md-font-icon="icon-plus"></md-icon>
                 </a>
-                <a ng-href="/workflows/{{folder.id}}"  class="{{folder.id_child=='no' ? 'folderchild': '' }}">
+                <a ng-href="/process/workflows/{{folder.id}}"  class="{{folder.id_child=='no' ? 'folderchild': '' }}">
                   {{folder.name}} 
                 </a>
                 <p class="pl-25" ng-show = "IsVisibledesc">{{folder.description}}</p>

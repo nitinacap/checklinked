@@ -6,11 +6,18 @@
     .controller('TeamMembersController', TeamMembersController);
 
   /** @ngInject */
-  function TeamMembersController($rootScope, $http, $scope, api, $mdSidenav) {
+  function TeamMembersController($rootScope, $http, $scope, api, $mdSidenav, $mdDialog, $document) {
 
     var vm = this;
 
     vm.toggleSidenav = toggleSidenav;
+    vm.openSubscriptionDialog = openSubscriptionDialog;
+    vm.openRoleTypeDialog  = openRoleTypeDialog;
+    vm.saveRoleType = saveRoleType;
+    vm.ConfirmDeleteRoleType = ConfirmDeleteRoleType;
+    vm.EditRoleType = EditRoleType;
+    vm.closeDialog = closeDialog;
+
     vm.members = [];
     //$scope.members = [];
 
@@ -338,6 +345,61 @@
     });
 
     console.log('vm.members', vm.members);
+
+    function openSubscriptionDialog(item){
+      vm.item = item;
+      vm.title = 'Add Licenses';
+
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-dialog.html',
+        clickOutsideToClose: true
+      });
+    };
+
+    function openRoleTypeDialog(item){
+     // alert(JSON.stringify(item));
+      vm.item = item;
+      vm.title = 'Role Type';
+
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/role-dialog.html',
+        clickOutsideToClose: true
+      });
+
+    };
+
+    function closeDialog() {
+      $mdDialog.hide();
+
+
+    }
+
+    function saveRoleType(update_data){
+alert(vm.role_type);
+//alert(update_data)
+    }
+
+    function ConfirmDeleteRoleType(item){
+alert(item);
+    }
+    vm.roledata  = false;
+    function EditRoleType(item){
+      vm.roledata = item;
+      vm.role_type = item;
+    }
+
+
+    vm.submenu = [
+      { link: 'user', title: 'My Profile' },
+      { link: 'contacts', title: 'Contacts' },
+      { link: 'organization', title: 'Organization' },
+      { link: '', title: 'Account' }
+    ];
+
   }
 
 })();

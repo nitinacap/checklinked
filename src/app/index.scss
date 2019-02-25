@@ -131,9 +131,20 @@ md-tabs-canvas{
     color:#50dbfe;
     font-size: 13px;
 }
+.breadcrumcolor{
+    color:#28b5f5;
+}
+.headingcolor{
+    color:#0770c4;
+}
 .white{
     color: #fff !important;
       font-size: 12px !important;
+}
+.messagebox{
+    border: 1px solid rgb(51, 115, 199) !important;
+     width: 50%; 
+     height: 25px;
 }
 md-pagination-wrapper a.link.org, md-pagination-wrapper md-tab-item.md-active {
     font-size: 13px;
@@ -197,6 +208,8 @@ small {
     z-index: 70;
     width: 100%;
     top: 48px;
+    background: #000;
+    overflow-x: auto;
 }
 
 .nav-fixed-top * {
@@ -221,8 +234,12 @@ small {
 .topbar-nav {
     display: flex;
     justify-content: flex-start;
+    flex-wrap: nowrap;
 }
-
+.form-wrapper, .table-responsive, .simple-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
 #vertical-navigation .ms-navigation-button {
     background-color: #000 !important;
     opacity: 0.6;
@@ -273,6 +290,7 @@ margin-right: 8px;
 .logo-holder {
     position: fixed;
     left: 20px;
+    top: 4px;
 }
 .md-tab{
     font-size: 13px !important;
@@ -411,3 +429,35 @@ md-pagination-wrapper{
     }
  
 }
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+
+  
+  .btn {
+    color: gray;
+    background-color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+  }
+}
+
+// Media Query starts here
+@media (max-width: 959px){
+    .logo-holder {
+        margin-left: 30px;
+    }    
+}
+// End Media Query

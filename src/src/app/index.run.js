@@ -14,10 +14,8 @@ Array.prototype.diff = function (a) {
 
 
 
-//var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
-// Azure
-var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
-//var BASEURL = 'http://localhost:8081/dist/ajax/';
+ var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
+ //var BASEURL = 'http://localhost:8081/dist/ajax/';
 
 
 (function () {
@@ -26,12 +24,14 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
     .module('checklinked')
     .run(runBlock);
   /** @ngInject */
-  function runBlock($rootScope, $timeout, $state, $cookies, $stateParams, $location, $http, toastr, api, $filter) {
+  function runBlock($rootScope, $timeout, $state, $stateParams, $location, $http, toastr, api, $filter) {
+
     // Activate loading indicator
     var silent;
-    if (!$cookies.get("token") || $cookies.get("token") == 'undefined' || $cookies.get("token") == '') {
-      $state.go('app.login');
-    }
+
+
+
+
     // Authinication
     $rootScope.checkLogin = function (event, toState) {
       //console.log('checkLogin', toState);
@@ -55,9 +55,9 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
             api.cache.local.put('navTo', toState.name);
           }
           console.log('success');
-          /* for new changes db */
-          /*  return $state.go(module.path); */
-
+         /* for new changes db */
+        /*  return $state.go(module.path); */
+     
           return $state.go(toState.name);
         }
         /*
@@ -100,10 +100,6 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
           console.log('navigating to term');
           return true;
           break;
-        case 'supports':
-          console.log('navigating to supports');
-          return true;
-          break;
         case 'reset':
           console.log('navigating to term');
           return true;
@@ -117,16 +113,12 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
         case 'checklist':
         case 'invitations':
         case 'organization':
-        case 'notification':
         case 'subscriptions':
         case 'folders':
-        case 'archives':
         case 'groups':
-        case 'usersetting':
         case 'teammembers':
         case 'templates':
         case 'contacts':
-        case 'other':
         case 'chat':
         case 'eee':
         case 'mail':
@@ -181,7 +173,7 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
                 var ref;
                 if (!((ref = $rootScope.user) != null ? ref.authenticated : void 0)) {
                   console.log('user not authenticated already after error on user pull, checking path now');
-                  return check(path);
+                 // return check(path);
                 }
               }
             );
@@ -197,7 +189,7 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
 
     $rootScope.userAuthenticated = function () {
       var ref;
-      if ((ref = $rootScope.user) != null ? ref.authenticated : void 0) {
+          if ((ref = $rootScope.user) != null ? ref.authenticated : void 0) { 
         return true;
       }
     };
@@ -495,11 +487,11 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
         w: type,
         d: data
       }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          cache: false
-        });
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        cache: false
+      });
     };
 
 
@@ -675,9 +667,9 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
       });
       //console.log('received event:userLoaded', $rootScope.user);
       if ($location.search().devMode === true) {
-        realtime = 'http://wdc1.acapqa.net:8085/';
+        realtime = 'http://localhost:3000/';
       } else {
-        realtime = 'http://wdc1.acapqa.net:8085/';
+        realtime = 'http://localhost:3000/';
       }
       $rootScope.socketio = io(realtime, {
         transports: ['websocket', 'polling', 'flashsocket'],
@@ -986,14 +978,12 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
       if (mod[1] === 'login') {
         //console.log('is the login');
       } else if (mod[1] === 'logout') {
+        debugger;
         var token = { token: $rootScope.token };
         $http.post(BASEURL + 'logout.php', token).then(
           function (d) { //success
             //$rootScope.socketio.disconnect();
             $rootScope.user = void 0;
-            $cookies.remove("username");
-            $cookies.remove("useridCON");
-            $cookies.remove("token");
             var loginTime = '';
             loginCheck = $rootScope.checkLogin(event, toState);
             if (!loginCheck) {
@@ -1078,35 +1068,5 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
     $rootScope.$broadcast('event:startDoomsDayDevice', $rootScope);
 
     //console.log('$rootScope.feed', $rootScope.feed);
-
-    //   window.onunload = function () {
-    //     alert("Window is closed");
-
-    // }
-    window.onunload = function (event) {
-      alert('onunload');
-      // $cookies.remove("username");
-      // $cookies.remove("useridCON");
-      // $cookies.remove("token");
-      $state.go('app.login');
-
-    };
-    // window.onbeforeunload = function(event) {
-    //   $state.go('app.login');
-    //   };
-    $rootScope.removeDuplicates = function(originalArray, prop){
-      var newArray = [];
-      var lookupObject  = {};
- 
-      for(var i in originalArray) {
-         lookupObject[originalArray[i][prop]] = originalArray[i];
-      }
- 
-      for(i in lookupObject) {
-          newArray.push(lookupObject[i]);
-      }
-       return newArray;
-}
-
   }
 })();

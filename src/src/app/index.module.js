@@ -47,9 +47,6 @@
       // Folders
       'app.folders',
 
-      //Archives
-      'app.archives',
-
       // Groups
       'app.groups',
 
@@ -65,29 +62,15 @@
       // Contacts
       'app.contacts',
 
-      // Alerts 
-      'app.alerts',
-
       // Create Account
       'app.create',
 
-      // Create term
+      // Create Account
       'app.term',
-
-      // Create privacy
-      //'app.privacy',
-
-      // Create support
-      'app.supports',
-
-      // Settings
-      'app.usersetting',
 
       // Reset Password
       'app.reset',
 
-      //notification
-      'app.notification',
 
       // Account Account
       'app.account',
@@ -104,11 +87,11 @@
       // Dassboard Module
       'app.dashboard',
 
-      // Login
-      'app.login',
+      // Dassboard Module
+      //'app.todo',
 
-      // Others
-      'app.other'
+      // Login
+      'app.login'
 
     ]);
 })();

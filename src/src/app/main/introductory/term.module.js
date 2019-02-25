@@ -6,43 +6,25 @@
         .config(config);
 
     /** @ngInject */
-    function config($stateProvider, $translatePartialLoaderProvider, $urlRouterProvider) {
+    function config($stateProvider, $translatePartialLoaderProvider, msNavigationServiceProvider) {
         // State
-        $stateProvider
-            .state('app.term', {
-                url: '',
-                views: {
-                    'main@': {
-                        templateUrl: 'app/core/layouts/content-only.html',
-                        controller: 'MainController as vm'
-                    },
-                    'content@app.term': {
-                        templateUrl: 'app/main/introductory/privacy.html'
-                    }
+        $stateProvider.state('app.term', {
+            url: '/term',
+            views: {
+                'main@': {
+                    templateUrl: 'app/core/layouts/content-only.html',
+                    controller: 'MainController as vm'
+                },
+                'content@app.term': {
+                    templateUrl: 'app/main/term/term.html',
+                    controller: 'TermController as vm'
                 }
-
-            })
-            .state('app.term.term', {
-                parent: 'app.term',
-                url: '/term-and-condition',
-                views: {
-                    'content@app.term': {
-                        templateUrl: 'app/main/introductory/term.html'
-                    }
-                }
-            })
-            .state('app.term.privacy', {
-                parent: 'app.term',
-                url: '/privacy-and-policy',
-                views: {
-                    'content@app.term': {
-                        templateUrl: 'app/main/introductory/privacy.html'
-                    }
-                }
-            });
+            },
+            bodyClass: 'term'
+        });
 
         // Translation
-        $translatePartialLoaderProvider.addPart('app/main/introductory');
+        $translatePartialLoaderProvider.addPart('app/main/term');
     }
 
 })();

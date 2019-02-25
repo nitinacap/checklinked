@@ -1,35 +1,15 @@
 (function ()
 {
     'use strict';
-    
+
     angular
         .module('app.core')
         .filter('toTrusted', toTrustedFilter)
         .filter('htmlToPlaintext', htmlToPlainTextFilter)
         .filter('nospace', nospaceFilter)
-        .filter('extension', extensionFilter)
-        .filter('timeSince', timeSinceFilter)
-        .filter('unique', uniqueFilter)
         .filter('humanizeDoc', humanizeDocFilter);
 
     /** @ngInject */
-
-
-    function uniqueFilter($sce){
-
-        return function (arr, field) {
-            var o = {}, i, l = arr.length, r = [];
-            for(i=0; i<l;i+=1) {
-              o[arr[i][field]] = arr[i];
-            }
-            for(i in o) {
-              r.push(o[i]);
-            }
-            return r;
-          };
-    }
-
-
     function toTrustedFilter($sce)
     {
         return function (value)
@@ -75,41 +55,5 @@
             return doc.label || doc.name;
         };
     }
-
-     /** @ngInject */
-     function extensionFilter(){
-        return function(input) {
-            return input.split('.').pop()
-          };
-     }
-
-          /** @ngInject */
-     function timeSinceFilter() {
-        return function (date)
-        {
-            var seconds = Math.floor(((new Date().getTime()/1000) - date)),
-            interval = Math.floor(seconds / 31536000);
-            if (interval > 1) return interval + " years";
-        
-            interval = Math.floor(seconds / 2592000);
-            if (interval > 1) return interval + " Months";
-        
-            interval = Math.floor(seconds / 86400);
-            if (interval >= 1) return interval + " Days";
-        
-            interval = Math.floor(seconds / 3600);
-            if (interval >= 1) return interval + " Hours ago";
-        
-            interval = Math.floor(seconds / 60);
-            if (interval > 1) return interval + " Minutes ago";
-        
-          //  return Math.floor(seconds) + "just now";
-            return " just now";
-      }
-    }
-
-    
-    
-      
 
 })();

@@ -7,7 +7,7 @@
         .controller('GroupPublishTemplateDialogController', GroupPublishTemplateDialogController);
 
     /** @ngInject */
-    function GroupPublishTemplateDialogController($mdDialog, api, id, name, description, $document, $mdSidenav, $http, $rootScope, $scope) {
+    function GroupPublishTemplateDialogController($mdDialog, api, id, name, $document, $mdSidenav, $http, $rootScope, $scope) {
 
         var vm = this;
 	vm.publishTemplate = publishTemplate;
@@ -15,7 +15,6 @@
 	vm.publish = {
       id: id,
       name: name,
-      description: description ? description : '',
       pvt: false,
       submitting: false,
       togglePrivate: function() {
@@ -43,7 +42,7 @@
         if (((ref = vm.publish.id) != null) && ((ref1 = vm.publish.name) != null)) {
         //if (((ref = vm.publish.id) != null ? ref.length : void 0) && ((ref1 = vm.publish.name) != null ? ref1.length : void 0)) {
           vm.publish.submitting = true;
-          return api.checklists.publish(vm.publish.id, vm.publish.name,vm.publish.description, 'group', vm.publish.pvt).error(function(res) {
+          return api.checklists.publish(vm.publish.id, vm.publish.name, 'group', vm.publish.pvt).error(function(res) {
             return $rootScope.message('Unknown error publishing Group Template.', 'warning');
           }).success(function(res) {
             if (res.code) {

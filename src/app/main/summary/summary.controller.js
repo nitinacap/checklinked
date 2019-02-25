@@ -21,6 +21,19 @@
       $mdSidenav(sidenavId).toggle();
     }
 
+  //   $scope.getTotal = function(item){
+  //     var total = 0;
+  //     var lines = item.lines;
+  //     $scope.totalChkMessage = [0];
+  //     for(var i = 0; i < lines.length; i++){
+  //          total += lines[i].counts.posts;
+
+  //     }
+  //    $scope.totalChkMessage.push(total);
+    
+   
+  // }
+
     vm.reports = {
       list: [],
       loading: false,

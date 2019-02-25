@@ -1,6 +1,6 @@
-<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
 
-  <table class="simple row-border hover bordered-table">
+  <table class="simple row-border hover">
     <thead>
 
     <tr>
@@ -84,7 +84,7 @@
     <tr>
       <th><a href="contacts/internal"><span>Internal</span></a></th>
       <th><a href="contacts/direct"><span>Direct</span></a></th>
-      <th colspan="2"><a href="contacts/secondary"><span>Secondary</span></a></th>
+      <th><a href="contacts/secondary"><span>secondary</span></a></th>
     </tr>
     <tr ng-if="filteredContacts.length>0">
       <th class="secondary-text">
@@ -97,12 +97,13 @@
           <span class="column-title">Email</span>
         </div>
       </th>
-      <th class="secondary-text" colspan="2">
+      <th class="secondary-text">
         <div class="table-header">
           <span class="column-title">Organization</span>
         </div>
       </th>
-
+      <th>
+      </th>
     </tr>
     </thead>
     <tbody>
@@ -111,7 +112,7 @@
       ng-switch="(which = vm.showWhichInviteContactData(contact))"
       
       ng-click="vm.openContactDialog($event, contact)"
-      ng-class="{'md-green-100-bg':vm.passID==contact.id}" ng-if="!deleted_by">
+      ng-class="{'md-green-100-bg':vm.passID==contact.id}">
       <td>
         {{contact.contacts[which].name.full}}
       </td>
@@ -135,15 +136,15 @@
 
           <md-menu-content width="3">
 
-            <md-menu-item ng-if="contact.accepted">
+            <md-menu-item ng-if="contact.accepted!==''">
               <md-button
-                ng-click="vm.Confirmation($event, contact.contacts[which], contact.contacts[which].id, 'delete')">
+                ng-click="vm.deleteContactConfirm($event, contact.contacts[which], contact.contacts[which].id)">
                 <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                 <span translate="CONTACTS.DELETE_CONTACT">Delete Contact</span>
               </md-button>
             </md-menu-item>
 
-            <md-menu-item ng-if="contact.accepted">
+            <md-menu-item ng-if="contact.accepted!==''">
               <md-button ng-click="vm.openDirectMessageDialog(contact, contact.name.full, $event)">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
                 <span translate="CONTACTS.DIRECT_MESSAGING">Direct Message</span>
@@ -158,40 +159,18 @@
             </md-menu-item>
 
             <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
-              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.originator.id,'reject')">
+              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.originator.id)">
                 <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
                 <span translate="CONTACTS.REJECT_INVITE">Reject Invitation</span>
               </md-button>
             </md-menu-item>
 
             <md-menu-item ng-if="contact.accepted=='' && which=='accepter'">
-              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.accepter.id,'withdrawn')">
+              <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.accepter.id)">
                 <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
                 <span translate="CONTACTS.WITHDRAW_INVITE">Withdraw Invitation</span>
               </md-button>
             </md-menu-item>
-
-<!-- <md-menu-item ng-if="contact.accepted=='' && which=='originator'" >
-  <md-button  ng-click="vm.acceptConnectionInvitation(contact.contacts.originator.id, $index)">
-    <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
-    <span translate="CONTACTS.ACCEPT_INVITE">Accept Invitation</span>
-  </md-button>
-</md-menu-item>
-
-<md-menu-item  ng-if="contact.accepted=='' && which=='originator'">
-  <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.originator.id)">
-    <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
-    <span translate="CONTACTS.REJECT_INVITE">Reject Invitation</span>
-  </md-button>
-</md-menu-item>
-
-<md-menu-item  ng-if="contact.accepted=='' && which=='accepter'">
-  <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.accepter.id)">
-    <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
-    <span translate="CONTACTS.WITHDRAW_INVITE">Withdraw Invitation</span>
-  </md-button>
-</md-menu-item> -->
-
 
           </md-menu-content>
         </md-menu>

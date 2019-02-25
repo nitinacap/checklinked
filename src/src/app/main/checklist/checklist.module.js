@@ -13,8 +13,7 @@
   function config($stateProvider, msApiProvider, msNavigationServiceProvider, $translatePartialLoaderProvider) {
 
     // State
-    $stateProvider
-    .state('app.checklist', {
+    $stateProvider.state('app.checklist', {
       url: '/checklist',
       views: {
         'content@app': {
@@ -83,16 +82,15 @@
 
     // Navigation
     msNavigationServiceProvider.saveItem('checklists', {
-     // title: 'Checklists',
+      title: 'Checklists',
       group: true,
       weight: 1
     });
-    console.log("WOW");
+
     msNavigationServiceProvider.saveItem('checklists.checklist', {
-    //  title: 'My Checklists',
-      title: 'Process',
+      title: 'My Checklists',
       icon: 'check-square',
-      state: 'app.folders',
+      state: 'app.checklist',
       weight: 1
     });
 

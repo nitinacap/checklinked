@@ -6,10 +6,15 @@ md-dialog {
 #fileattachment .md-required{
   color:rgba(0,0,0,0.54) !important;
 }
+.conversion-title{
+  text-transform: capitalize !important;
+}
   &.dialog {
     max-width: 720px;
     width: 720px;
-
+    md-tabs-wrapper {
+      background-color: #406EA0 !important;
+  }
     md-dialog-content {
 
       display: block;

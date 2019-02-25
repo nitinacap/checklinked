@@ -13,6 +13,8 @@
     api.baseUrl = 'app/data/';
 
     var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
+    var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
+
    //var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
 
     //var BASEURL = 'http://localhost:8081/dist/ajax/';
@@ -252,14 +254,16 @@
           return res.groups;
         });
       },
-      add: function (name, order, to, description, link) {
+      add: function (name, order, to, description, link, duplicate) {
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'group',
           name: name,
           order: order,
           parentID: to,
           description: description,
-          link: link
+          link: link,
+          id: duplicate ? duplicate : '',
+          sub_type: duplicate ? 'duplicate' : ''
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -320,14 +324,16 @@
           return res.checklists;
         });
       },
-      add: function (name, order, to, token,description) {
+      add: function (name, order, to, token, description, checklist_id,sub_type) {
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'checklist',
           name: name,
           order: order,
           parentID: to,
           token: token,
-          description:description
+          description:description,
+          id: checklist_id,
+          sub_type: sub_type
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -459,6 +465,7 @@
               idCON: idCON,
               idACC: idACC,
               findLink: true,
+              user_id: user_id,
               token: token
             };
           } else {
@@ -737,12 +744,19 @@
           return true;
         }
       },
-      reorder: function (id, dropPosition, type, parentID) {
+      reorder: function (id, dropPosition, type, parentID, arrayNextOrder, arrayNextId, arrayMovedOrder,arrayMovedId,arrayPreviousOrder, arrayPreviousId) {
         return $http.post(BASEURL + 'coe-reorder.php', {
           id: id,
           dropPosition: dropPosition,
           type: type,
-          parentID: parentID
+          parentID: parentID,
+          nextOrder: arrayNextOrder,
+          nextId: arrayNextId,
+          movedOrder: arrayMovedOrder,
+          movedId: arrayMovedId,
+          previousOrder: arrayPreviousOrder,
+          previousId: arrayPreviousId
+
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -996,6 +1010,15 @@
           skip = 0;
         }
         return $http.get(BASEURL + "posts-get.php?id=" + id + "&s=" + skip, {
+          cache: false
+        }).error(function (res) {
+          return $rootScope.message('Error talking to server', 'warning');
+        }).success(function (res) {
+          return res;
+        });
+      },
+      getnew: function (id) {
+        return $http.get(BASEURL + "message-get.php?id=" + id, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1341,7 +1364,8 @@
 
     api.item = {
       paste: function(origin, destination, type, action_type, move_item_id ){
-        return $http.post(BASEURL + 'cut-copy-paste.php', {
+        return $http.post(BASEURL + 'coe-post.php', {
+          type: 'cutCopyPaste',
           parent_origin_id: origin,
           parent_destination_id: destination,
           item_move_type: type ,
@@ -1353,6 +1377,9 @@
             },
             cache: false
           });
+      },
+      undo: function(id){
+        return $http.get(BASEURL + 'coe-get.php?t=undo&id=' + id); 
       }
     }
 
@@ -1376,6 +1403,19 @@
     //   }
     // };
 
+
+    ////////////////////// NOTIFICATIONS
+    api.notifications = {
+      get: function (token) {
+       // return $http.get(BASEURL + 'coe-get.php?t=folder&token=' + token);
+       //return $http.get(BASEURL + "notification.php?token=" + token);
+       return $http.get(BASEURL + "coe-get.php?t=notification&token=" + token);
+      }
+
+    };
+
+
+
     $rootScope.createStats = function(type, title, id){
       $http.post(BASEURL + 'user-stats.php', {
         type: type,
@@ -1387,10 +1427,6 @@
              cache: false
         });
     };
-    
-
-
-
 
     return api;
   }

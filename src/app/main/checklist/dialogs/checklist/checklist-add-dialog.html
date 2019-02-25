@@ -45,7 +45,7 @@
                     <label ng-switch="vm.newItem.dataType==1">
                         <!-- <span ng-switch-when="true">Reference</span>
                         <span ng-switch-when="false">Data</span> -->
-                      <span>Reference</span>  
+                      <span>{{vm.type.type=='textbox' ? 'Description': 'Reference'}}</span>  
                     </label>
                     <input maxlength="255" name="description" type="text" ng-model="vm.newItem.info">
 
@@ -67,8 +67,8 @@
 
                             <md-radio-group ng-model="vm.newItem.dataTypes">
                                 
-                                <md-radio-button ng-disabled="vm.type.type != 'yn'" value="{{vm.type.type=='yn' ? 'applies' : ''}}" class="md-primary">No</md-radio-button>
-                                <md-radio-button ng-disabled="vm.type.type != 'yn'" value="{{vm.type.type=='yn' ? 'complies' : ''}}"> Yes </md-radio-button>
+                                <md-radio-button ng-disabled="vm.type.type != 'yn'" value="{{vm.type.type=='yn' ? 'applies' : ''}}" class="md-primary">Yes</md-radio-button>
+                                <md-radio-button ng-disabled="vm.type.type != 'yn'" value="{{vm.type.type=='yn' ? 'complies' : ''}}"> No </md-radio-button>
                             </md-radio-group>
 
                             <md-radio-group ng-model="vm.newItem.dataTypes">

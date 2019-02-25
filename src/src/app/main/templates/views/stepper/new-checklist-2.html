@@ -1,7 +1,7 @@
 <div layout="row" flex>
   <md-input-container flex="70">
     <md-select ng-model="vm.verticalStepper.step2.groupID" name="groupID"
-               placeholder="Select Existing  Workflow" required>
+               placeholder="Select Existing  Folder" required>
       <md-option ng-repeat="group in vm.groups" value="{{group.id}}"
                  ng-selected="group.id == vm.verticalStepper.newGroupID">
         {{group.name}}
@@ -10,7 +10,7 @@
     <div ng-messages="vm.verticalStepper.step2.groupID.$error"
          role="alert">
       <div ng-message="required">
-        <span>Workflow is required.</span>
+        <span>Folder is required.</span>
       </div>
     </div>
   </md-input-container>
@@ -19,9 +19,9 @@
 
     <md-button class="md-raised md-accent"
                ng-click="vm.openGroupInput()"
-               aria-label="Create New Workflow"
-               >
-      NEW WORKFLOW
+               aria-label="Create New Folder"
+               translate-attr-aria-label="CHECKLIST.NEW_GROUP">
+      NEW FOLDER
     </md-button>
 
   </md-input-container>

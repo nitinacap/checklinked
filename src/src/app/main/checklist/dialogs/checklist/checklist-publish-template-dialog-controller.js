@@ -7,13 +7,13 @@
         .controller('ChecklistPublishTemplateDialogController', ChecklistPublishTemplateDialogController);
 
     /** @ngInject */
-    function ChecklistPublishTemplateDialogController($mdDialog, api, idCHK,checklist_name, $document, $mdSidenav, $http, $rootScope, $scope)
+    function ChecklistPublishTemplateDialogController($mdDialog, api, idCHK, $document, $mdSidenav, $http, $rootScope, $scope)
     {
         var vm = this;
-debugger;
-    vm.idCHK = idCHK;
+
+		vm.idCHK = idCHK;
         // Data
-    vm.title = 'Publish Template';
+        vm.title = 'Publish Template';
 		vm.closeDialog = closeDialog;
 
 	function closeDialog()
@@ -24,7 +24,7 @@ debugger;
 
     vm.publish = {
       idCHK: null,
-      name: checklist_name ? checklist_name : '',
+      name: null,
       pvt: true,
       submitting: false,
       gatherInfo: function(idCHK) {
@@ -47,7 +47,7 @@ debugger;
         var ref1, ref2;
         if (((ref1 = vm.publish.idCHK) != null ? ref1.length : void 0) && ((ref2 = vm.publish.name) != null ? ref2.length : void 0)) {
           vm.publish.submitting = true;
-          return api.checklists.publish(vm.publish.idCHK, vm.publish.name,vm.publish.description, 'checklist', vm.publish.pvt).error(function(res) {
+          return api.checklists.publish(vm.publish.idCHK, vm.publish.name, 'checklist', vm.publish.pvt).error(function(res) {
             return $rootScope.message('Unknown error publishing Template.', 'warning');
           }).success(function(res) {
             if (res.code) {

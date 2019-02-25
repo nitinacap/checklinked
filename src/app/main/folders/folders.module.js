@@ -10,28 +10,36 @@
 
     // State
     $stateProvider.state('app.folders', {
-     // url: '/folders',
-      url: '/projects',
+      url: '/process/',
       views: {
         'content@app': {
           templateUrl: 'app/main/folders/folders.html',
           controller: 'FoldersController as vm'
         }
       }
-    });
+    }).
+      state('app.folders.folders', {
+        url: 'projects',
+        views: {
+          'content@app': {
+            templateUrl: 'app/main/folders/folders.html',
+            controller: 'FoldersController as vm'
+          }
+        }
+      })
 
-    // Translation
-    $translatePartialLoaderProvider.addPart('app/main/folders');
+        // Translation
+        $translatePartialLoaderProvider.addPart('app/main/folders');
 
-    // Navigation
+        // Navigation
 
-    // msNavigationServiceProvider.saveItem('checklists.folders', {
-    //   title: 'Process',
-    //   icon: 'check-square',
-    //   state: 'app.folders',
-    //   weight: 1
-    // });
+        // msNavigationServiceProvider.saveItem('checklists.folders', {
+        //   title: 'Process',
+        //   icon: 'check-square',
+        //   state: 'app.folders',
+        //   weight: 1
+        // });
 
-  }
+      }
 
-})();
+}) ();

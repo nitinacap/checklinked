@@ -4,7 +4,9 @@
  
   <md-button ui-sref="app.{{data.link}}" class="{{ data.link ? 'notactive' : 'active' }}" ui-sref="{{data.link}}" ng-repeat="data in datas">{{data.title}}</md-button>
 
-
+  <md-button ng-click="vm.support()" class="active support-top-button text-center text-left flex-1 support-buton">
+    <md-icon md-font-icon="fa fa-question-circle" class="fff"></md-icon>
+  </md-button>
 </section>
 
 </div>

@@ -8,20 +8,18 @@
          <!--    <div class="title" ng-if="!firstLogin"><p>{{ successtoken ? 'Welcome!' : 'Log in' }}</p> -->
                 <div class="title"><p>Reset Password</p>
                 
-            <p layout-padding ng-if="vm.token_verify && !vm.change_verify" ng-bind="vm.token_verify" class="{{ vm.check_valid_token ? 'success' : 'danger' }}"></p>
-            <p layout-padding ng-if="vm.change_verify" ng-bind="vm.change_verify" class="{{ vm.change_verified ? 'success' : 'danger' }}"></p> 
+               <p layout-padding ng-if="errtoken" ng-bind="errtoken" ng-class="errtoken ? 'error-text' : '' "></p> 
            
             
             </div>
             <div class="change-title" flex="90">  
-            <p translate="RESET.CHANGE_TITLE" ng-if="vm.token && !vm.token_verify"></p>
-            <p translate="RESET.EMAIL_TITLE" ng-if="!vm.token && !vm.token_verify"></p>
+            <p translate="RESET.CHANGE_TITLE" ng-if="token"></p>
+            <p translate="RESET.EMAIL_TITLE" ng-if="!token"></p>
             </div>
               
-            <div class="title text-left" ng-if="vm.error" ng-bind="vm.error" class="danger"></div>
-            <div class="title text-left"  ng-if="vm.success" ng-bind="vm.success" class="success"></div>
+            <div class="title text-left"  ng-if="vm.login_error" ng-bind="vm.login_error" style="color:red; font-size:12px;"></div>
 
-            <form ng-if="!vm.token" name="resetForm" novalidate ng-submit="vm.resetPassword()">
+            <form ng-if="!token" name="resetForm" novalidate ng-submit="vm.resetPassword()">
                 <md-input-container class="md-block" md-no-float>
                     <input type="email" name="email" ng-model="vm.email" placeholder="Email" ng-pattern="/^.+@.+\..+$/" required>
                     <div ng-messages="resetForm.email.$error" role="alert" multiple>
@@ -40,7 +38,7 @@
             </form>
 
 
-            <form ng-if="vm.token && vm.check_valid_token" name="changeForm" novalidate ng-submit="vm.changePassword()">
+            <form ng-if="token" name="changeForm" novalidate ng-submit="vm.changePassword()">
                
                     <md-input-container class="md-block" md-no-float>
                         <input type="password" name="password" ng-model="vm.password" minlength="6" placeholder="Password"
@@ -76,7 +74,7 @@
                                 </div>
                             </div>
          
-                <md-button type="submit" ng-disabled="changeForm.$invalid || changeForm.$pristine" class="md-raised md-accent submit-button mx-auto" aria-label="Log in" ng-disabled="resetForm.$invalid || resetForm.$pristine">
+                <md-button type="submit" class="md-raised md-accent submit-button mx-auto" aria-label="Log in" ng-disabled="resetForm.$invalid || resetForm.$pristine">
                    Ok
                 </md-button>
             </form>

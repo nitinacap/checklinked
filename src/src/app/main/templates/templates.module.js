@@ -25,12 +25,12 @@
     $translatePartialLoaderProvider.addPart('app/main/templates');
 
     // Navigation
-    // msNavigationServiceProvider.saveItem('checklists.templates', {
-    //   title: 'Templates',
-    //   icon: 'users',
-    //   state: 'app.templates',
-    //   weight: 3
-    // });
+    msNavigationServiceProvider.saveItem('checklists.templates', {
+      title: 'Templates',
+      icon: 'users',
+      state: 'app.templates',
+      weight: 3
+    });
 
 
   }

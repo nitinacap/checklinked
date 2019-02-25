@@ -4,10 +4,11 @@
     angular
         .module('app.core')
         .directive('pageToolbar', pagetoolbarDirective)
+        .directive('fileModelDymamic', fileModelDymamicDirective)
         .directive('fileModel', fileModelDirective);
 
     /** @ngInject */
-
+    
     function pagetoolbarDirective() {
 
         return {
@@ -31,7 +32,6 @@
 
 
     function fileModelDirective($parse){
-
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {
@@ -41,6 +41,27 @@
                });
             }
          };
+    }
+
+
+    function fileModelDymamicDirective($parse){
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                var model, modelSetter;
+    
+                attrs.$observe('fileModelDymamic', function(fileModelDymamic){
+                    model = $parse(attrs.fileModelDymamic);
+                    modelSetter = model.assign;
+                });
+    
+                element.bind('change', function(){
+                    scope.$apply(function(){
+                        modelSetter(scope.$parent, element[0].files[0]);
+                    });
+                });
+            }
+        };
     }
 
 

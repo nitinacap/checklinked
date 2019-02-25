@@ -1,3 +1,28 @@
-.md-tab.md-disabled {
-    opacity: 1;
+#notification{
+    .bordered-table .tool-bg th{
+        border-bottom: none !important;
+        padding: 0px !important;
+    }
+   .bordered-table td {
+        padding-left: 30px !important;
+    }
+    .bordered-table .tool-bg th {
+        padding-left: 30px !important;
+    }
+    .bordered-table thead th button.md-icon-button {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+    }
+    
+   .bordered-table thead th button.md-icon-button md-icon {
+        margin-left: 5px;
+        margin-top: 3px;
+    }
+    
+    .bordered-table thead th {
+        color:rgb(56, 56, 56)(252, 246, 246) !important;
+    }
+    .rbb td{
+        border-bottom: none !important;
+    }
 }

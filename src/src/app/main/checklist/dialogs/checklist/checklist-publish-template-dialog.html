@@ -12,18 +12,12 @@
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block">
         <label translate="CHECKLIST.TEMPLATE_NAME">Template Name</label>
-        <input name="name" ng-model="vm.publish.name" ng-bind="vm.checklist_name" required md-autofocus>
+        <input name="name" ng-model="vm.publish.name" required md-autofocus>
         <div ng-messages="templateForm.name.$error" ng-show="templateForm.name.$touched" role="alert">
           <div ng-message="required">
-            <span>Template name is required</span>
+            <span translate="CHECKLIST.TEMPLATE_NAME">Template Name field is required</span>
           </div>
         </div>
-      </md-input-container>
-
-      <md-input-container class="md-block">
-        <label>Template Description</label>
-        <input name="description" ng-model="vm.publish.description" md-autofocus>
-
       </md-input-container>
 
       <md-input-container class="md-block">

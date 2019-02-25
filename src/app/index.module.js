@@ -74,12 +74,18 @@
       // Create term
       'app.term',
 
+      // Create privacy
+      //'app.privacy',
+
       // Create support
       'app.supports',
 
+      // Settings
+      'app.usersetting',
+
       // Reset Password
       'app.reset',
-      
+
       //notification
       'app.notification',
 
@@ -100,7 +106,7 @@
 
       // Login
       'app.login',
-      
+
       // Others
       'app.other'
 

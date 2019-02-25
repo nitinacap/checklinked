@@ -76,23 +76,19 @@
     };
 
     function fetchGroups(id) {
-      ftchFolder(id)
-      // vm.groups = $rootScope.children('groups', id);
-      // $rootScope.organizeData();
 
-      // if (!vm.groups.length > 0) {
-      //   vm.wizard.switch = true;
-      // } else {
-      //   vm.wizard.switch = false;
-      // }
-    };
-    function ftchFolder(id) {
-      api.groups.get(id).then(function (d) {
-        vm.groups = d.data.groups
-        $rootScope.nextStep();
+      vm.groups = $rootScope.children('groups', id);
+      console.log('vm.groups pre organizeData id / vm.groups', id, vm.groups)
+      $rootScope.organizeData();
+      console.log('fetching', id, vm.groups);
+
+      if (!vm.groups.length > 0) {
         vm.wizard.switch = true;
-      });
-    }
+      } else {
+        vm.wizard.switch = false;
+      }
+    };
+
 
     function openFolderInput() {
       vm.folder = '';
@@ -180,7 +176,7 @@
 
       //Set order variable for sql insert
       vm.group.order = 1;
-      vm.group.order += vm.groups ? vm.groups.length : 0;
+      vm.group.order += vm.groups.length;
       vm.group.text = groupName;
       vm.group.id_parent = folderID;
        
@@ -315,11 +311,13 @@
           return $http.get(BASEURL + "templates-get.php?org=1&noXML=1").success(function (res) {
             vm.isLoader = false;
             if (res === void 0 || res === null || res === '') {
+              console.log('Error loading templates: ', res);
               return vm.templates.load.error = 'Error loading Templates! (Server not responding properly.)';
             } else if (res.code) {
               return vm.templates.load.error = "Error loading Templates: (" + res.code + ") " + res.message;
             } else if (res.templates !== void 0 && res.templates.length) {
               vm.templates.list = res.templates.map(process);
+              console.log('vm.templates.list', vm.templates.list);
             }
           }).error(function (err) {
             console.log('Error loading team members: ', err);
@@ -346,7 +344,7 @@
               //$rootScope.message(res.display, 'warning');
             }
             vm.publicTemplates = res.templates;
-          //  console.log('vm.publicTemplates', vm.publicTemplates);
+            console.log('vm.publicTemplates', vm.publicTemplates);
           })["finally"](function () {
           });
         },
@@ -427,6 +425,7 @@
           } else {
 
             $rootScope.$broadcast('event:updateModels');
+
             $rootScope.message('Template has been downloaded', 'success');
             $rootScope.organizeData();
             vm.closeDialog();
@@ -439,128 +438,6 @@
 
     vm.templates.load.start();
     vm.templates.load.startInternal();
-    //Archieve Dialog
-    vm.archieveDialog = archieveDialog;
-    vm.saveArchieve = saveArchieve;
-
-    function archieveDialog(ev, id, type) {
-      vm.title = 'Create New Archieve';
-      vm.type = type ? type : '';
-
-      if (id) {
-        vm.id = parseInt(id);
-      }
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/templates/dialogs/templates/archieve-dialog.html',
-        parent: angular.element($document.find('#checklist')),
-        targetEvent: ev,
-        clickOutsideToClose: true
-      });
-    };
-
-    
-    // Save Archive
-
-    function saveArchieve(id, type){
-      vm.spinner =true;
-      $http.post(BASEURL + "create-archieve-post.php", { 'name': vm.archieve.name, 'type': type, 'id': id ? id : '' })
-      .success(function (res) {
-        vm.spinner =false;
-        if (res.type == 'success') {
-          vm.archieve.name = '';
-          vm.templates.load.start();
-          vm.closeDialog();
-          return $rootScope.message(res.message, 'success');
-         
-        } else {
-          return $rootScope.message(res.message, 'warning');
-        }
-
-      }).error(function (err) {
-        console.log('Error found to make archieve');
-      })
-
-    };
-
-    // Content sub menu
-    vm.submenu = [
-      { link: 'folders', title: 'Projects' },
-      { link: 'groups', title: 'Workflow' },
-      { link: 'checklist', title: 'Checklists' },
-      { link: '', title: 'Templates' },
-      { link: 'other', title: 'Other' },
-      { link: 'archives', title: 'Archives' }
-
-    ];
-
-
-    vm.sortBy = sortBy;
-    vm.propertyName = '';
-    vm.reverse = true;
-     function sortBy(templateOrder) {
-       vm.reverse = (vm.templateOrder === templateOrder) ? !vm.reverse : false;
-       vm.templateOrder = templateOrder;
-     };
-vm.deleteItemConfirm = deleteItemConfirm;
-
-         /* Delete Folder */
-    function deleteItemConfirm(template, event) {
-      vm.title = 'Delete Template Information';
-      vm.warning = 'Warning: This can’t be undone';
-      vm.description = "Please confirm you want to delete this <span class='link'>" + template.name +"</span><br>All of the contents will be deleted and can’t be recovered"
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/organization/dialogs/organizations/alert.html',
-        clickOutsideToClose:false
-      })
-      .then(function(answer) {
-        deleteItem(template);
-      }, function() {
-        $scope.status = 'You cancelled the dialog.';
-      });
-
-
-   function deleteItem(template){
-     $http.post(BASEURL + "template_delete-post.php", { template: template}, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      cache: false
-    }).success(function (res) {
-      if (res.type=='success') {
-        vm.templates.load.start();
-        $rootScope.message('Template has been deleted successfully', 'success');
-       
-      } else if (res.type!='success') {
-        return $rootScope.message("Error deleting Template: (" + res.code + "): " + res.message, 'warning');
-      } else {
-        vm.templates.load.start();
-        return $rootScope.message('Template has been deleted');
-      }
-    });
-
-   }
-
-
-    }
-
-
-    $scope.hide = function() {
-      $mdDialog.hide();
-    };
-
-    $scope.cancel = function() {
-      $mdDialog.cancel();
-    };
-
-    $scope.answer = function(answer) {
-      $mdDialog.hide(answer);
-    };
-
-
   }
 
 })();

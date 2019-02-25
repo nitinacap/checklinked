@@ -1,5 +1,10 @@
 #team-members {
 
+
+
+  .subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2){
+    float: left !important;
+  }
   table.dataTable {
 
     tbody {

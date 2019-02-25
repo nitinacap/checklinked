@@ -70,7 +70,7 @@
     msNavigationServiceProvider.saveItem('conversations.mail', {
       title: 'Communicate',
       icon: 'commenting',
-      state: 'app.mail.threads',
+      state: 'app.notification',
       badge      : {
         color  : '#09d261'
       },

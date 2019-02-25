@@ -65,13 +65,25 @@ max-width: 100% !important;
   }
 
   .md-button.md-icon-button {
-    margin: 0 6px;
+    margin: 0 0px;
     min-width: 0;
     line-height: 18px !important;
-    padding: 8px;
-    width: 40px;
+    width: 30px;
     border-radius: 50%;
+    margin-left: 0px !important;
+    padding-left:0px !important;
   }
+ .column-title{
+    display: table-cell;
+    vertical-align: baseline;
+}
+
+.table-header {
+    display: table;
+}
+.table-header button.md-icon-button.md-button.ng-scope.md-ink-ripple.md-default-theme {
+  vertical-align: middle !important;
+}
 
 }
 

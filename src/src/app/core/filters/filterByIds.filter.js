@@ -12,7 +12,7 @@
         return function (items, ids)
         {
 
-            if (items && items.length === 0 || !ids )
+            if ( items.length === 0 || !ids )
             {
                 return items;
             }

@@ -1,25 +1,79 @@
-<div class="form-wrapper md-whiteframe-1dp flex" id="stats">
-    <table class="bordered-table" cellpadding="0" cellspacing="0">
-     <thead>
+<div class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+  <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0" ng-show="!vm.closeList">
+    <thead class="tool-bg">
       <tr>
-        <th  class="text-center max-10" height="50">Project</th>
-        <th  class="text-center">Checklist Changes</th>
-        <th  class="text-center">User  Changes</th>
-        <th  class="text-center">Marked Complete</th>
+        <th class="max-10" height="50" width="20%">Projects
+          <md-button class="md-icon-button" ng-click="vm.sortBy('file.label')" aria-label="Sort Direction" translate
+            translate-attr-aria-label="GROUP.SORT_DIRECTION">
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.attachmentOrder!='file.label'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-show="vm.reverse  && vm.attachmentOrder=='file.label'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-show="!vm.reverse  && vm.attachmentOrder=='file.label'"
+              class="s18"></md-icon>
+          </md-button>
+
+        </th>
+        <th width="10%">Checklist Changes
+        </th>
+        <th width="10%">User Changes</th>
+        <th>Marked Complete</th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="stat in [1,2,3,4,5,6]"  class="text-center">
-        
-        <td class="max-10">135</td>
-        <td >2</td>
-        <td>3</td>
-        <td>4</td>
+      <tr ng-repeat="notification in  vm.notifications">
+        <td class="max-10"><span class="link-color pointer"  ng-click="vm.projectList(notification.list, notification.project_name);">{{notification.project_name}}</span></td>
+        <td><span ng-init="vm.totUsers(notification[0])"></span> {{notification.list.length}}</td>
+        <td>{{notification.user_changes ? notification.user_changes : 0 }}</td>
+        <td>{{notification.flag_complete ? notification.flag_complete : 0 }}</td>
       </tr>
-     
-        
     </tbody>
   </table>
-  
-  </div>
-  
+
+  <!-- Project List-->
+  <table class="simple row-border hover bordered-table list" cellpadding="0" cellspacing="0" ng-if="vm.projectlists &&  vm.closeList">
+    <thead>
+      <tr>
+        <th  height="50" width="50%">
+           <span class="link-color"> {{ vm.projectlists}} </span>
+           </span>
+        </th>
+        <th width="50%" colspan="4">
+            <md-button class="md-icon-button flex-end pull-right" ng-click="vm.notificationList()">
+            <md-icon md-font-icon="icon-sort-ascending" class="fa fa-times-circle danger"></md-icon>
+        
+            </md-button>
+        </th>
+      
+      </tr>
+
+      <tr>
+          <th class="max-10" height="50" width="25%">Checklist
+          </th>
+          <th width="15%">User
+          </th>
+          <th width="15%">Organization</th>
+          <th> Issue</th>
+          <th width="15%">Date</th>
+        </tr>
+    </thead>
+
+    <tbody  ng-repeat="projectlist in  vm.checklistDetail" ng-click="vm.projectDetail(projectlist)">
+      <tr ng-class="myvalue ? 'rbb' : '' ">
+        <td>
+          <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true" ng-show="!myvalue"></i>
+          <i class="fa fa-chevron-down" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true" ng-show="myvalue"></i>
+          <span class="link-color">    {{ projectlist.checklist_name}}</span></td>
+        <td><span class="link-color">{{projectlist.user}} </span></td>
+        <td><span class="link-color">{{projectlist.organization}}</span></td>
+        <td>{{projectlist.issue}}</td>
+        <td>
+          <span ng-init="vm.notificationDate(projectlist.updated_at.date)"></span>
+          {{ vm.unixtimestamp[$index] | date: "MMM d, y h:mm a" }}
+        </td>
+      </tr>
+      <tr ng-show="myvalue">
+          <td colspan="5">{{projectlist.description}}</td>
+          </tr>
+    </tbody>
+  </table>
+
+</div>

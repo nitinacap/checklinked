@@ -1,3 +1,26 @@
+#message{
+    .md-button{
+        min-width:30px !important;
+
+    }
+    .removeborder td{
+        border-bottom: none !important;
+    }
+    .upload-btn-wrapper .btn{
+        padding: 0px 10px !important;
+    }
+    P{
+        margin: 0px;
+    }
+    .textmessage{
+        border:1px solid #555;
+        width:100% !important;
+        min-width: 100% !important;
+    }
+
+}
+
+
 #chat-app {
     height: 100% !important;
 

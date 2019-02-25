@@ -1,10 +1,5 @@
 #checklist {
 
-  .todo-list-pane .todo-items .todo-item {
-    padding: 0px 9px 4px 20px !important;
-    border-bottom: 1px solid #4472c4;
-}
-
   // Single scroll
   &.single-scroll {
 
@@ -123,15 +118,11 @@
     }
 
     .checkboxLabel {
-     // font-size: 6pt;
+      font-size: 6pt;
       float: left;
       margin-top: -1px;
       margin-left: 3px;
-      text-transform: capitalize;
-    }
-    .item icon-dots-vertical{
-      padding:0PX !important;
-
+      text-transform: uppercase;
     }
 
     .checkbox {
@@ -139,10 +130,8 @@
       /*font-size: 31px;
       line-height: 31px;*/
       padding: 0;
-      height: 40px;
-      width: 60px;
-      display: flex;
-      align-items: center;
+      /*height: 48px;*/
+      width: 40px;
     }
 
     .checkbox-list {

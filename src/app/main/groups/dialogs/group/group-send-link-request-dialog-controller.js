@@ -7,7 +7,7 @@
         .controller('GroupSendLinkRequestDialogController', GroupSendLinkRequestDialogController);
 
     /** @ngInject */
-    function GroupSendLinkRequestDialogController($mdDialog, api, GROUP, $document, $filter, $mdSidenav, $rootScope, $scope, $http)
+    function GroupSendLinkRequestDialogController($mdDialog, api, GROUP, $cookies, $filter, $mdSidenav, $rootScope, $scope, $http)
     {
 
      var vm = this;
@@ -96,13 +96,14 @@
             link = this;
             link.requesting = true;
             itemID = item;
-            return api.checklists.invite.send(raw.id, itemID, true, raw.idACC, 'group', $rootScope.user.id, $rootScope.token).success(function(res) {
+            return api.checklists.invite.send(raw.id, itemID, true, raw.idACC, 'group', $cookies.get('useridCON'), $cookies.get('token')).success(function(res) {
               var id, invite, status;
               if (res === void 0 || res === null || res === '') {
                 return $rootScope.message('Error sending Link Request.  Server not responding properly.', 'warning');
               } else if (res.code) {
                 return $rootScope.message("Error sending Link Request. (" + res.code + "): " + res.message, 'warning');
               } else {
+                $rootScope.message("Link request has been sent successfully", 'success');
                 invite = res.invites[0];
                 id = invite.id;
 

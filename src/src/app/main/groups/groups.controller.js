@@ -9,38 +9,20 @@
   function GroupsController($scope, $rootScope, api, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $state, $filter) {
     var vm = this;
     vm.isLoader = true;
-
-    debugger
-    //   if ($stateParams.id == '') {
-    //     $location.path('/folders');
-    //   } else {
-    //     $scope.getGroups();
-    //     vm.projects = $rootScope.folders;
-    //    console.log('WOW=');
-    //    var e=$rootScope.$emit('event:userLoaded');
-    //    console.log(e.targetScope.folders);
-    // }
-    // $scope.getGroups();
-    //vm.projects = $rootScope.folders;
-
-
-    $scope.getAllFolders = function () {
-      api.folders.get().then(function (d) {
-        vm.projects = d.data.folders;
-      });
-    };
-
-    $scope.getAllFolders();
-
-    $scope.getGroups = function () {
-      vm.groups = [];
-      vm.folder_id = $stateParams.id;
-      api.groups.get($stateParams.id).then(function (d) {
-        vm.groups = d.data.groups;
-        vm.isLoader = false;
-      });
+    setTimeout(function () { 
+    if ($stateParams.id !== undefined && $stateParams.id != null) {
+      if ($stateParams.id == '') {
+        $location.path('/folders');
+      } else {
+        vm.groups = [];
+        vm.folder_id = $stateParams.id;
+        api.groups.get($stateParams.id,$rootScope.user.token).then(function (d) {
+          vm.groups = d.data.groups;
+          vm.isLoader = false;
+        });
+      }
     }
-    $scope.getGroups();
+  },400);
 
     console.log('vm.groups', vm.groups);
 
@@ -81,24 +63,21 @@
 
     /* Dialog Methods */
 
-    function openGroupDialog(ev, group, type) {
+    function openGroupDialog(ev, group) {
 
       vm.group = group;
       vm.title = 'Edit Workflow';
       vm.newGroup = false;
-      vm.type = type;
 
       if (!vm.group) {
         vm.group = {
           'id': '',
           'name': '',
           'description': '',
-          'link': '',
           'order': '',
           'deleted': false
         };
-        vm.title = type ? 'Duplicate Workflow' : 'Create New Workflow';
-        vm.folderID = ev;
+        vm.title = 'New Workflow';
         vm.newGroup = true;
       }
 
@@ -123,8 +102,6 @@
         vm.group = {
           'id': '',
           'name': '',
-          'description': '',
-          'link': '',
           'order': '',
           'deleted': false
         };
@@ -188,7 +165,7 @@
 
     }
 
-    function publishTemplateDialog(ev, id, name, description) {
+    function publishTemplateDialog(ev, id, name) {
 
 
       $mdDialog.show({
@@ -200,8 +177,7 @@
         clickOutsideToClose: true,
         locals: {
           id: id,
-          name: name,
-          description: description
+          name: name
         }
       });
 
@@ -212,14 +188,14 @@
     }
 
     /* Add New Group */
-    vm.projectParamId = $stateParams.id ? $stateParams.id : '';
+    function addNewGroup() {
 
-    function addNewGroup(duplicate) {
-      vm.group.parentId = $stateParams.id ? $stateParams.id : vm.group.Id;
+      vm.group.parentId = $stateParams.id;
       vm.group.sending = true;
       vm.group.order = 1;
-      vm.group.order += vm.groups ? vm.groups.length : '';
-      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description, vm.group.link, duplicate ? duplicate.id: '').error(function (res) {
+      vm.group.order += vm.groups.length;
+
+      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, $rootScope.user.token).error(function (res) {
         return $rootScope.message("Error Creating Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -239,18 +215,14 @@
 
           //Toaster Notification
           $rootScope.message('Workflow Created');
-          $scope.getGroups();
-          vm.closeDialog();
 
           //Add New Group to Groups object
-          if (res.group.length > 0) {
-            vm.groups.unshift(vm.groups);
-
-          }
+          vm.groups.unshift(vm.group);
 
           vm.group.sending = false;
 
           //Close Dialog Window
+          vm.closeDialog();
         }
       });
 
@@ -266,11 +238,10 @@
       editPack = {
         'type': 'group',
         'text': vm.group.name,
-        'description': vm.group.description,
-        'link': vm.group.link,
         'order': vm.group.order,
         'id': vm.group.id,
         'rid': vm.group.rid,
+        'token': $rootScope.user.token
       };
 
       api.groups.edit(editPack).error(function (res) {
@@ -299,42 +270,39 @@
 
     /* Delete Group */
     function deleteGroup(group, event) {
-      vm.title = 'Delete Workflow Information';
-      vm.warning = 'Warning: This can’t be undone';
-      vm.description = "Please confirm you want to delete this <span class='link'>" + group.name + "</span><br>All of the contents will be deleted and can’t be recovered"
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/organization/dialogs/organizations/alert.html',
-        parent: angular.element(document.body),
-        targetEvent: group,
-        clickOutsideToClose: false
-      })
-        .then(function (type) {
-          deleteGroupItem(group);
-        }, function () {
-          $scope.status = 'You cancelled the dialog.';
-        })
-    };
+      vm.group = group;
 
-    function deleteGroupItem(group) {
-      vm.isLoader = true;
-      api.groups.destroy(group.id, $rootScope.user.token).error(function (res) {
-        return $rootScope.message("Error Deleteing Workflow", 'warning');
-      }).success(function (res) {
-        vm.isLoader = false;
-        if (res === void 0 || res === null || res === '') {
-          $rootScope.message("Error Deleteing Workflow", 'warning');
-        } else if (res.code) {
-          $rootScope.message(res.message, 'warning');
-        } else {
+      console.log('vm.group', vm.group);
 
-          vm.groups.splice(vm.groups.indexOf(group), 1);
-          $rootScope.message('Workflow Deleted', 'success');
-          vm.group.sending = false;
-        }
+      var confirm = $mdDialog.confirm()
+        .title('Are you sure?')
+        .content('This Workflow will be deleted.')
+        .ariaLabel('Delete Workflow')
+        .ok('Delete')
+        .cancel('Cancel')
+        .targetEvent(event);
+
+      $mdDialog.show(confirm).then(function () {
+
+        api.groups.destroy(vm.group.id, $rootScope.user.token).error(function (res) {
+          return $rootScope.message("Error Deleteing Workflow", 'warning');
+        }).success(function (res) {
+          if (res === void 0 || res === null || res === '') {
+            $rootScope.message("Error Deleteing Workflow", 'warning');
+          } else if (res.code) {
+            $rootScope.message(res.message, 'warning');
+          } else {
+
+            /* Remove From Groups Object */
+            vm.groups.splice(vm.groups.indexOf(group), 1);
+
+            $rootScope.message('Workflow Deleted', 'success');
+
+            vm.group.sending = false;
+          }
+        });
       });
-    };
+    }
 
 
     vm.find = {
@@ -381,16 +349,16 @@
             $rootScope.message(res.display, 'warning');
           }
           vm.find.results = res;
-          //console.log('vm.find.results', vm.find.results);
+          console.log('vm.find.results', vm.find.results);
           return vm.find.searchCount++;
         })["finally"](function () {
           return vm.find.searching = false;
         });
       },
       create: function (idCTMPL) {
-        // console.log('idCTMPL', idCTMPL);
-        // console.log('vm.find.template.parentID', vm.find.template.parentID);
-        // console.log('vm.find.template.criteria.type', vm.find.template.criteria.type);
+        console.log('idCTMPL', idCTMPL);
+        console.log('vm.find.template.parentID', vm.find.template.parentID);
+        console.log('vm.find.template.criteria.type', vm.find.template.criteria.type);
         vm.find.creating = true;
         return api.checklists.createFromTemplate(idCTMPL, vm.find.template.parentID, vm.find.template.criteria.type).error(function (res) {
           return $rootScope.message('Unknown error creating Checklist from selected Template.', 'warning');
@@ -399,9 +367,10 @@
             return $rootScope.message("Error creating Checklist from Template: (" + res.code + "): " + res.message, 'warning');
           } else {
             if (vm.find.template.criteria.type === 'group') {
-              //  console.log('vm.find.template.criteria.type', vm.find.template.criteria.type);
-              //   console.log('res on push', res);
+              console.log('vm.find.template.criteria.type', vm.find.template.criteria.type);
+              console.log('res on push', res);
               vm.groups.unshift(res.groups[0]);
+              console.log();
             }
             $rootScope.checklists = $rootScope.checklists.concat(res.checklists);
 
@@ -441,120 +410,7 @@
       vm.groupFilters = angular.copy(vm.groupFiltersDefaults);
     }
 
-    //Archieve Dialog
-    vm.archieveDialog = archieveDialog;
-    vm.saveArchieve = saveArchieve;
-
-    function archieveDialog(ev, id) {
-      vm.title = 'Create New Archieve';
-      if (id) {
-        vm.id = parseInt(id);
-        console.log("Archive=" + "id=" + vm.id);
-      }
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/groups/dialogs/group/archieve-dialog.html',
-        parent: angular.element($document.find('#checklist')),
-        targetEvent: ev,
-        clickOutsideToClose: true
-      });
-    }
-
-    // Save Archive
-
-    function saveArchieve(id) {
-      vm.spinner = true;
-      $http.post(BASEURL + "create-archieve-post.php", { 'name': vm.archieve.name, 'type': 'workflow', 'id': id ? id : '' })
-        .success(function (res) {
-          vm.spinner = false;
-          if (res.type == 'success') {
-            vm.archieve.name = '';
-            $scope.getGroups();
-            vm.closeDialog();
-            return $rootScope.message(res.message, 'success');
-
-          } else {
-            return $rootScope.message(res.message, 'warning');
-          }
-
-        }).error(function (err) {
-          console.log('Error found to make archieve');
-        })
-
-    };
-    // Content sub menu
-    vm.submenu = [
-      { link: 'folders', title: 'Projects' },
-      { link: '', title: 'Workflows' },
-      { link: 'checklist', title: 'Checklists' },
-      { link: 'templates', title: 'Templates' },
-      { link: 'other', title: 'Other' },
-      { link: 'archives', title: 'Archives' }
-
-    ];
-
-    //cut functionality
-    vm.cutDialog = cutDialog;
-    vm.pasteDialog = pasteDialog;
-    $scope.item = [];
-    function cutDialog(id_parent, group_id, type, item) {
-      $scope.item[item] = true;
-      $rootScope.id_parent = id_parent;
-
-
-    }
-
-    function pasteDialog(id_parent, group_id, type, item) {
-      if ($stateParams.id && $stateParams.id == $rootScope.id_parent) {
-        $rootScope.alertMessage('You can not paste in the same workflow');
-      }
-      else {
-        $rootScope.alertMessage('Paste successfully');
-
-      }
-
-    }
-    $rootScope.alertMessage = function (message) {
-      var confirm = $mdDialog.confirm()
-        .title(message)
-        //.content('This Workflow will be deleted.')
-        .ok('Ok')
-      $mdDialog.show(confirm);
-    }
-
-    // create duplicate project
-
-    vm.Duplicate = Duplicate;
-    function Duplicate(group) {
-      vm.isLoader = true;
-      api.groups.add(group.name + '-copy', 1, group.id_parent, group.description).error(function (res) {
-      }).success(function (res) {
-        vm.isLoader = false;
-        if (res.type == 'success') {
-          vm.groups.push(res.group);
-          // $scope.getGroups();
-          return $rootScope.message("Workflow has been copied successfully", 'success');
-        } else {
-          return $rootScope.message("Error found while creating workflow", 'warning');
-        }
-
-
-      });
-    };
-
-//Alert Cancel an close
-    $scope.hide = function () {
-      $mdDialog.hide();
-    };
-
-    $scope.cancel = function () {
-      $mdDialog.cancel();
-    };
-
-    $scope.answer = function (answer) {
-      $mdDialog.hide(answer);
-    };
+    console.log('vm GroupController', vm);
 
   }
 

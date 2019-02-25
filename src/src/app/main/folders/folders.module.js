@@ -10,8 +10,7 @@
 
     // State
     $stateProvider.state('app.folders', {
-     // url: '/folders',
-      url: '/projects',
+      url: '/folders',
       views: {
         'content@app': {
           templateUrl: 'app/main/folders/folders.html',
@@ -24,13 +23,13 @@
     $translatePartialLoaderProvider.addPart('app/main/folders');
 
     // Navigation
-
-    // msNavigationServiceProvider.saveItem('checklists.folders', {
-    //   title: 'Process',
-    //   icon: 'check-square',
-    //   state: 'app.folders',
-    //   weight: 1
-    // });
+    msNavigationServiceProvider.saveItem('checklists.folders', {
+      title: 'My Projects',
+     // icon: 'icon-folder-multiple',
+      icon: 'folder',
+      state: 'app.folders',
+      weight: 2
+    });
 
   }
 

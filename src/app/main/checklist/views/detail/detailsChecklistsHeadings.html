@@ -105,8 +105,9 @@
           </md-menu-item>
           <md-divider class="md-default-theme"></md-divider>
           <md-menu-item>
-            <md-button ng-click="vm.cutDialog($event, group.id)" aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
+            <md-button ng-click="vm.cutDialog('heading', heading.id, heading.id_parent)"  aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
+           
               <span translate="GROUP.CUT"></span>
             </md-button>
           </md-menu-item>
@@ -119,14 +120,14 @@
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-click="vm.pasteDialog('item', heading.id, heading.rid)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
+            <md-button  ng-click="vm.pasteDialog('item', heading.id, heading.id)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
               <span translate="GROUP.PASTE"></span>
             </md-button>
           </md-menu-item>
 
-          <md-menu-item>
-            <md-button ng-click="vm.undoDialog($event, group.id)" aria-label="Undo" translate-attr-aria-label="GROUP.UNDO">
+          <md-menu-item ng-if="heading.move_item_id">
+            <md-button ng-click="vm.undoDialog(heading.move_item_id)" aria-label="Undo" translate-attr-aria-label="GROUP.UNDO">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>
               <span translate="GROUP.UNDO"></span>
             </md-button>

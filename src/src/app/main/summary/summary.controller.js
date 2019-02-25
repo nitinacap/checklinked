@@ -10,7 +10,7 @@
     var vm = this;
 
     vm.toggleSidenav = toggleSidenav;
-    vm.isLoader = true;
+
     vm.viewChecklistAsUser = viewChecklistAsUser;
     vm.showComparison = showComparison;
     vm.requestReportsProgress = requestReportsProgress;
@@ -35,13 +35,11 @@
         vm.reports.loading = true;
         vm.reports.viewing = false;
         return api.summary.reports.get().success(function (res) {
-          vm.isLoader = false;
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Reports not loaded.', 'warning');
           } else if (res.code) {
-           // return $rootScope.message("Error loading reports: (" + res.code + ": " + res.message + ")");
+            return $rootScope.message("Error loading reports: (" + res.code + ": " + res.message + ")");
           } else {
-          
             res.reports.forEach(function (report) {
               var checklists;
               checklists = [];
@@ -255,13 +253,7 @@
 
 
     vm.reports.refresh();
-    // Content sub menu
-    vm.submenu = [
-      { link: '', title: 'Issues' },
-      { link: 'checklist', title: 'Schedules' },
-      { link: '#', title: 'Reports' },
-      { link: 'dashboard', title: 'Dashboard' }
-    ];
+
 
   }
 

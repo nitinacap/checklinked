@@ -427,7 +427,6 @@
           } else {
 
             $rootScope.$broadcast('event:updateModels');
-
             $rootScope.message('Template has been downloaded', 'success');
             $rootScope.organizeData();
             vm.closeDialog();
@@ -440,7 +439,6 @@
 
     vm.templates.load.start();
     vm.templates.load.startInternal();
-
     //Archieve Dialog
     vm.archieveDialog = archieveDialog;
     vm.saveArchieve = saveArchieve;
@@ -534,7 +532,6 @@ vm.deleteItemConfirm = deleteItemConfirm;
     }).success(function (res) {
       if (res.type=='success') {
         vm.templates.load.start();
-       
         $rootScope.message('Template has been deleted successfully', 'success');
        
       } else if (res.type!='success') {

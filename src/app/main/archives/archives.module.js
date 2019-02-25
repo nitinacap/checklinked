@@ -10,6 +10,7 @@
 
     // State
     $stateProvider.state('app.archives', {
+      parent: 'app.folders',
       url: '/archives',
       views: {
         'content@app': {

@@ -19,8 +19,6 @@
     vm.uniqueString = uniqueString;
 
     function closeDialog() {
-    
-      vm.upload = false;
       $mdDialog.hide();
     }
 
@@ -54,7 +52,7 @@
 
       vm.file = $('#AWSFileUploadInput')[0].files[0];
 
-      if (vm.file.name) {
+      if (vm.file) {
         vm.file.label = vm.lable;
         console.log('vm.file', vm.file);
         console.log('vm.file.label', vm.label);

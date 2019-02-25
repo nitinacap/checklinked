@@ -1,34 +1,33 @@
-<div class="simple-table-container md-background-bg md-whiteframe-1dp pt-40">
+<div class="simple-table-container md-background-bg md-whiteframe-1dp">
 
   <div layout="row" layout-align="start center" class="pl-25" ng-hide="!vm.reports.progress">
     <md-progress-circular ng-disabled="!vm.reports.progress" md-mode="indeterminate"
                           md-diameter="20"></md-progress-circular>
   </div>
 
-  <table class="bordered-table" cellpadding="0" cellspacing="0" ms-responsive-table width="100%">
+  <table class="simple row-border hover" ms-responsive-table>
+
     <thead>
-    <tr >
-      <th width="20%" class="text-left" ng-if="vm.reports.list.length">
-      Date/Title
+    <tr>
+      <th width="25%" class="secondary-text" ng-if="vm.reports.list.length">
+        Date Generated
       </th>
-      <th width="20%" class="text-center" ng-if="vm.reports.list.length">
-      Issues
+      <th width="25%" class="secondary-text" ng-if="vm.reports.list.length">
+        Type
       </th>
-      <th width="20%" class="text-center" ng-if="vm.reports.list.length">
-        Checklists
+      <th width="25%" class="text-center" ng-if="vm.reports.list.length">
+        <div class="secondary-text">
+          Line Items
+        </div>
       </th>
-      <th width="20%" class="text-center" ng-if="vm.reports.list.length">
-      New Messages 
-      </th>
-      <th width="20%" class="text-center" ng-if="vm.reports.list.length">
-    Active Users
-      </th>
-      <th class="text-center" ng-if="!vm.reports.list">
+
+      <th class="secondary-text" ng-if="!vm.reports.list">
         <div class="table-header">
           <span class="column-title">(0) Reports Available</span>
         </div>
       </th>
       <th width="25%" ng-if="vm.reports.viewing" class="text-center">
+
       </th>
 
       <th width="25%" ng-if="!vm.reports.viewing" class="text-right">
@@ -62,28 +61,18 @@
     <tr ng-repeat="report in vm.reports.list | orderBy: '-requested' | filter: globalSearch.searchTerm track by $index"
         ng-hide="vm.reports.viewing && vm.reports.viewing.id != $index"
         ng-class="{'md-green-100-bg': vm.reports.success && $index==0}">
-      <td ng-class="{'md-accent-fg': !vm.reports.viewing}" class="text-left">
-    
-        <md-icon ng-if="!vm.reports.viewing"  ng-click="vm.reports.view(report, $index)" class="fa fa-angle-down  s18" md-font-icon="icon-file-document"></md-icon>
-        <md-icon ng-if="vm.reports.viewing" ng-click="vm.reports.clear()" class="s18" md-font-icon="fa fa-angle-up"></md-icon>
-     
+      <td ng-click="vm.reports.view(report, $index)"
+          ng-class="{'md-accent-fg': !vm.reports.viewing}">
         {{ report.requested * 1000 | date:'short'}}
       </td>
-<td class="text-center">
+
+      <td>
         {{report.type}}
       </td>
 
       <td class="text-center">
         {{report.lines.length}}
       </td>
-      <td class="text-center">
-        {{report.lines.length}}
-      </td>
-      <td class="text-center"> 
-        {{report.lines.length}}
-      </td>
-      
-    
 
       <td ng-if="!vm.reports.viewing" class="text-right">
 
@@ -99,7 +88,7 @@
             <md-menu-item>
               <md-button ng-click="vm.reports.view(report, $index)"
                          translate-attr-aria-label="">
-                <md-icon class="fa fa-angle-down  s18" md-font-icon="icon-file-document"></md-icon>
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-file-document"></md-icon>
                 <span translate="">View Report</span>
               </md-button>
             </md-menu-item>
@@ -109,7 +98,7 @@
 
       </td>
 
- <td ng-if="vm.reports.viewing" class="text-right">
+      <td ng-if="vm.reports.viewing" class="text-right">
 
         <button type="button"
                 ng-show="vm.reports.viewing"
@@ -128,7 +117,7 @@
 
 <div ng-show="vm.reports.viewing" class="simple-table-container md-background-bg md-whiteframe-1dp">
 
-  <table class="simple row-border hover  bordered-table" ms-responsive-table>
+  <table class="simple row-border hover" ms-responsive-table>
     <tbody>
     <tr
       ng-class="{'md-green-100-bg': vm.reports.viewingSub.id == $index}"
@@ -169,36 +158,36 @@
   </div>
   <div layout="row">
     <div class="simple-table-container flex">
-      <table class="simple row-border hover bordered-table" ms-responsive-table>
+      <table class="simple row-border hover" ms-responsive-table>
         <thead>
         <tr>
           <th>
-            <div class="text-left">
+            <div class="secondary-text">
               User
             </div>
           </th>
           <th hide show-gt-xs>
-            <div class="text-center">
+            <div class="secondary-text">
               Organization
             </div>
           </th>
           <th>
-            <div class="text-center">
+            <div class="secondary-text">
               Checklist
             </div>
           </th>
           <th class="text-center">
-            <div class="text-center">
+            <div class="secondary-text">
               <small>Conflicts</small>
             </div>
           </th>
           <th class="text-center">
-            <div class="text-center">
+            <div class="secondary-text">
               <small>NC</small>
             </div>
           </th>
           <th hide show-gt-xs class="text-center">
-            <div class="text-center">
+            <div class="secondary-text">
               <small>Complete</small>
             </div>
           </th>
@@ -208,8 +197,8 @@
         <tbody>
         <tr ng-repeat="line in vm.reports.viewingSub.lines">
           <td>{{line.contact.name.full}}</td>
-          <td hide show-gt-xs class="text-center">{{line.contact.org}}</td>
-          <td class="text-center">{{line.cfcName}}</td>
+          <td hide show-gt-xs>{{line.contact.org}}</td>
+          <td>{{line.cfcName}}</td>
           <td class="text-center">{{line.counts.conflicts}}</td>
           <td class="text-center">{{line.counts.nonCompliant}}</td>
           <td hide show-gt-xs class="text-center">
@@ -217,12 +206,12 @@
             <span ng-hide="line.cfcComplete">N</span>
           </td>
 
-          <td class="text-center">
+          <td class="text-right">
             <md-menu>
               <md-button ng-click="$mdOpenMenu($event)"
                          class="md-icon-button table-md-icon-button" aria-label="More" translate
                          translate-attr-aria-label="">
-                <md-icon class="fa fa-angle-down  s18" md-font-icon="icon-file-document"></md-icon>
+                <i class="material-icons s18">more_vert</i>
               </md-button>
 
               <md-menu-content width="3">
@@ -244,19 +233,12 @@
                 </md-menu-item>
 
                 <md-menu-item ng-show="line.contact.idACC == user.organization.idACC">
-                  <!-- <md-button
+                  <md-button
                     ng-click="vm.openConversationDialog($event, 'checklist', vm.reports.viewingSub.idCNV_mostRecent, line.cfcName)">
                     <md-icon md-font-icon="icon-comment-multipe-outline" class="md-accent-fg s18"
                              md-menu-align-target></md-icon>
                     Conversations
-                  </md-button> -->
-
-                  <md-button
-                  ng-click="vm.openConversationDialog('checklist', vm.reports.viewingSub.idCNV_mostRecent, line.cfcName)">
-                  <md-icon md-font-icon="icon-comment-multipe-outline" class="md-accent-fg s18"
-                           md-menu-align-target></md-icon>
-                  Conversations
-                </md-button>
+                  </md-button>
                 </md-menu-item>
 
               </md-menu-content>
