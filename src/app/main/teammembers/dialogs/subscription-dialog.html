@@ -1,5 +1,5 @@
 <md-dialog class="dialog" aria-label="">
-  <form name="groupForm" class="md-inline-form" novalidate>
+  <form name="groupForm" class="md-inline-form" novalidate id="myForm">
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <span class="title">{{vm.title}}</span>
@@ -8,42 +8,56 @@
         </md-button>
       </div>
     </md-toolbar>
-    <md-dialog-content ms-scroll ng-if="!vm.projectParamId">
-      <md-input-container class="md-block mb-0">
-        <md-radio-group ng-model="cc.selectedId" >
-            <div ng-repeat='person in [1,2]' class="row">
-              <div flex layout='row' layout-padding layout-align="start center" >
-      
-                <div flex>
-               one
+    <md-dialog-content ms-scroll>
+      <md-input-container class="md-block mb-0" ng-show="vm.stepFirst">
+        <md-radio-group ng-model="vm.plan">
+          <div layout="row" ng-repeat="plans in vm.plans" padding>
+            <div class="column" flex="20">
+              <b>{{ plans[$index].name}}</b>
+            </div>
+            <div class="column">
+              <div layout="row">
+                <div layout='column' ng-repeat="plan in plans" padding>
+                  <md-radio-button flex ng-value="plan.braintree_plan" class="md-primary">
+                    ${{plan.cost + "/" + plan.slug}}
+                  </md-radio-button>
                 </div>
-                <md-radio-button flex
-                    ng-value="person.id"
-                    class="md-primary" >
-      
-                two
-      
-                </md-radio-button>
-      
               </div>
             </div>
-          </md-radio-group>
 
+          </div>
+        </md-radio-group>
+      </md-input-container>
+
+      <md-input-container ng-show="vm.plan && vm.stepSeconds" flex="100" style="min-width:100% !important;" ng-show="vm.stepSeconds">
+        <div layout="row" class="justify-content-center">
+          <div flex="40" padding layout="column">
+            <b>{{vm.planDetail.name}}</b>
+
+            
+          </div>
+          <div layout="column" flex="100" id="dropin-container">
+          </div>
+
+          <!-- <input type="hidden" name="id"  value="{{vm.plan.id}}">
+          <input type="hidden" name="braintree_plan" value="{{vm.plan.braintree_plan}}" /> -->
+          <!-- <button type="submit" class="btn btn-outline-dark d-none" id="payment-button">Pay</button> -->
+        </div>
       </md-input-container>
     </md-dialog-content>
 
 
 
     <md-dialog-actions layout="row" layout-align="space-between center">
-      <div layout="row" layout-align="end center" flex>
-        <md-button type="submit" ng-if="!vm.newGroup" ng-click="vm.saveGroup()" class="md-raised md-accent" ng-disabled="groupForm.$invalid || groupForm.$pristine"
-          aria-label="Save" translate="GROUP.SAVE" translate-attr-aria-label="GROUP.SAVE">
-          SAVE GROUP
+      <div layout="row" layout-align="end center" flex >
+        <md-button type="submit" ng-click="vm.getSinglePlanDetail()" ng-show="vm.stepFirst" class="md-raised md-accent"
+          ng-disabled="groupForm.$invalid || groupForm.$pristine" aria-label="Next">
+          Next
         </md-button>
-
+        <md-button type="submit" id="payment-button"  ng-show="vm.stepSeconds" ng-click="vm.addLicence(vm.planDetail)" class="md-raised md-accent d-none">
+          Save 
+        </md-button>
       </div>
-
-
     </md-dialog-actions>
   </form>
 </md-dialog>

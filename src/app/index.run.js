@@ -18,6 +18,8 @@ Array.prototype.diff = function (a) {
 // Azure
 var DOMAIN_NAME = 'https://checklinked.azurewebsites.net';
 var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
+var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
+
 //var BASEURL = 'http://localhost:8081/dist/ajax/';
 
 
@@ -288,14 +290,14 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
       }
 
       ref = $rootScope.groups;
-      //console.log('$rootScope.groups', $rootScope.groups);
+      console.log('$rootScope.groups', $rootScope.groups);
       for (j = 0, len = ref.length; j < len; j++) {
         group = ref[j];
         group.checklists = $rootScope.children('checklists', group.id);
-        //console.log('group.checklists', group.checklists);
+        console.log('group.checklists', group.checklists);
       }
       ref1 = $rootScope.folders;
-      //console.log('$rootScope.folders', $rootScope.folders);
+      console.log('$rootScope.folders', $rootScope.folders);
       for (k = 0, len1 = ref1.length; k < len1; k++) {
         folder = ref1[k];
         folder.groups = $rootScope.children('groups', folder.id);
@@ -678,7 +680,7 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
 
         return $rootScope.organizeData();
       });
-      //console.log('received event:userLoaded', $rootScope.user);
+     console.log('received event:userLoaded', $rootScope.user);
       if ($location.search().devMode === true) {
         realtime = 'https://socket.checklinked.com/';
       // realtime = 'http://168.61.165.204:8085/';
@@ -695,9 +697,9 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
         sock = $rootScope.socketio;
         u = $rootScope.user;
         subs = u.subscriptions;
-        //console.log('broadcasted event:socketConnected');
+        console.log('broadcasted event:socketConnected');
         $rootScope.$broadcast('event:socketConnected');
-        //console.log('subscriptions', subs);
+        console.log('subscriptions', subs);
         ids = subs.contacts || [];
         ids = ids.concat(subs.checklists || []);
         ids = ids.concat(subs.sections || []);
@@ -802,11 +804,11 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
 
 
         if ($rootScope.socketio._callbacks['$checklist_invite_count'] === void 0) {
-          //console.log('socket checklist_invite_count callback is not defined; defining now');
+          console.log('socket checklist_invite_count callback is not defined; defining now');
           $rootScope.socketio.on('checklist_invite_count', function (count) {
-            //console.log('received checklist invite count', count);
+            console.log('received checklist invite count', count);
             if ($rootScope.inviteCounts.checklists !== count) {
-              //console.log('broadcasting event:checklistInviteCountChanged');
+              console.log('broadcasting event:checklistInviteCountChanged');
               $rootScope.$broadcast('event:checklistInviteCountChanged');
             }
             $rootScope.inviteCounts.checklists = count;
@@ -815,9 +817,9 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
         }
 
         if ($rootScope.socketio._callbacks['$labels_changed'] === void 0) {
-          //console.log('socket labels_changed callback is not defined; defining now');
+         console.log('socket labels_changed callback is not defined; defining now');
           $rootScope.socketio.on('labels_changed', function () {
-            //console.log('received labels_changed');
+           console.log('received labels_changed');
             return $rootScope.addUserData('labels-reset').then(function (d) {
               var res;
               if (typeof d !== 'object') {
@@ -837,10 +839,10 @@ var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
         }
 
         if ($rootScope.socketio._callbacks['$friendship_invite_count'] === void 0) {
-          //console.log('socket friendship_invite_count callback is not defined; defining now');
+         console.log('socket friendship_invite_count callback is not defined; defining now');
           $rootScope.socketio.on('friendship_invite_count', function (count) {
             var update;
-            //console.log('received friendship invite count', count);
+           console.log('received friendship invite count', count);
             if (count !== $rootScope.inviteCounts.friendships) {
               update = true;
             }

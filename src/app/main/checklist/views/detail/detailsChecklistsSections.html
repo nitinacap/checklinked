@@ -10,7 +10,7 @@
 
     <div class="info" flex>
       <div class="section">
-        {{section.name}} 
+        {{section.name}}
         <!-- =  = {{section.id}} = isparent {{section.id_parent}} -->
       </div>
     </div>
@@ -43,10 +43,18 @@
 
         <md-menu-content width="3" class="menu-height">
 
-          <md-menu-item>
+          <!-- <md-menu-item>
             <md-button ng-click="vm.toggle('na', section)" aria-label="Section Disabled N/A" translate-attr-aria-label="CHECKLIST.SECTION_NA">
               <md-icon ng-show="section.notApplicable" class="md-accent-fg s18" md-font-icon="icon-checkbox-marked-outline"></md-icon>
               <md-icon ng-hide="section.notApplicable" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline"></md-icon>
+              <span translate="CHECKLIST.SECTION_NA">Section N/A</span>
+            </md-button>
+          </md-menu-item> -->
+
+          <md-menu-item>
+            <md-button ng-click="vm.saveSection(section)" ng-init="vm.chekSectionNA(section.section_na, $index)" aria-label="Section Disabled N/A" translate-attr-aria-label="CHECKLIST.SECTION_NA">
+              <md-icon ng-show="section.section_na=='true'" class="md-accent-fg s18" md-font-icon="icon-checkbox-marked-outline"></md-icon>
+              <md-icon ng-hide="section.section_na=='true'" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline"></md-icon>
               <span translate="CHECKLIST.SECTION_NA">Section N/A</span>
             </md-button>
           </md-menu-item>

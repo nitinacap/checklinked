@@ -6,18 +6,19 @@
     .controller('TeamMembersController', TeamMembersController);
 
   /** @ngInject */
-  function TeamMembersController($rootScope, $http, $scope, api, $mdSidenav, $mdDialog, $document) {
+  function TeamMembersController($rootScope, $http, $scope, api, $mdSidenav, $mdDialog, $stateParams) {
 
     var vm = this;
 
     vm.toggleSidenav = toggleSidenav;
     vm.openSubscriptionDialog = openSubscriptionDialog;
-    vm.openRoleTypeDialog  = openRoleTypeDialog;
+    vm.openRoleTypeDialog = openRoleTypeDialog;
     vm.saveRoleType = saveRoleType;
     vm.ConfirmDeleteRoleType = ConfirmDeleteRoleType;
     vm.EditRoleType = EditRoleType;
     vm.closeDialog = closeDialog;
-
+    vm.addLicence = addLicence;
+    vm.tabOption = 0;
     vm.members = [];
     //$scope.members = [];
 
@@ -84,32 +85,32 @@
                 role: role,
                 setTo: willHave
               }, {
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                cache: false
-              }).success(function (res) {
-                var ref3, ref4;
-                self.setting.remove(role);
-                if (res === void 0 || res === null || res === '') {
-                  $rootScope.message('Error updating Team Member role. Server not responding properly.', 'warning');
-                } else if (res.code) {
-                  $rootScope.message("Error updating Team Member role. (" + res.code + ") " + res.message, 'warning');
-                } else if (willHave) {
-                  self.has.push(role);
-                } else {
-                  self.has.remove(role);
-                }
-                $rootScope.socketio.emit('roles_updated', raw.idCON);
-                if ((ref3 = $rootScope.user.organization) != null ? (ref4 = ref3.idACC) != null ? ref4.length : void 0 : void 0) {
-                  return $rootScope.socketio.emit('members_updated', $rootScope.user.organization.idACC);
-                }
-              }).error(function (err) {
-                self.setting.remove(role);
-                return $rootScope.message('Error updating Team Member role.  Server not responding.', 'warning');
-              })["finally"](function () {
-                return self.setting.remove(role);
-              });
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  cache: false
+                }).success(function (res) {
+                  var ref3, ref4;
+                  self.setting.remove(role);
+                  if (res === void 0 || res === null || res === '') {
+                    $rootScope.message('Error updating Team Member role. Server not responding properly.', 'warning');
+                  } else if (res.code) {
+                    $rootScope.message("Error updating Team Member role. (" + res.code + ") " + res.message, 'warning');
+                  } else if (willHave) {
+                    self.has.push(role);
+                  } else {
+                    self.has.remove(role);
+                  }
+                  $rootScope.socketio.emit('roles_updated', raw.idCON);
+                  if ((ref3 = $rootScope.user.organization) != null ? (ref4 = ref3.idACC) != null ? ref4.length : void 0 : void 0) {
+                    return $rootScope.socketio.emit('members_updated', $rootScope.user.organization.idACC);
+                  }
+                }).error(function (err) {
+                  self.setting.remove(role);
+                  return $rootScope.message('Error updating Team Member role.  Server not responding.', 'warning');
+                })["finally"](function () {
+                  return self.setting.remove(role);
+                });
             }
           });
           processed = raw;
@@ -135,35 +136,35 @@
             $http.post(BASEURL + 'organization_member_offboard-post.php', {
               idCON: member.idCON
             }, {
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              cache: false
-            }).error(function (res) {
-              console.log('member offboard error', member, res);
-              return $rootScope.message('Error offboarding member.', 'warning');
-            }).success(function (res) {
-              if (res === void 0 || res === null || res === '') {
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                cache: false
+              }).error(function (res) {
                 console.log('member offboard error', member, res);
-                return $rootScope.message('Invalid response.', 'warning');
-              } else if (res.code) {
-                console.log('member offboard error', member, res);
-                return $rootScope.message(res.message, 'warning');
-              } else {
-                vm.members.list.remove(member);
-                if (member.idCON === $rootScope.user.idCON) {
+                return $rootScope.message('Error offboarding member.', 'warning');
+              }).success(function (res) {
+                if (res === void 0 || res === null || res === '') {
+                  console.log('member offboard error', member, res);
+                  return $rootScope.message('Invalid response.', 'warning');
+                } else if (res.code) {
+                  console.log('member offboard error', member, res);
+                  return $rootScope.message(res.message, 'warning');
+                } else {
+                  vm.members.list.remove(member);
+                  if (member.idCON === $rootScope.user.idCON) {
 
-                  console.log('offboarded logged in user', res.user);
-                  $rootScope.user = res.user;
-                  if ($rootScope.viewAs.user.idCON !== $rootScope.user.idCON) {
-                    $rootScope.viewAs.set(res.user);
+                    console.log('offboarded logged in user', res.user);
+                    $rootScope.user = res.user;
+                    if ($rootScope.viewAs.user.idCON !== $rootScope.user.idCON) {
+                      $rootScope.viewAs.set(res.user);
+                    }
+                    return $location.path('/teammembers');
                   }
-                  return $location.path('/teammembers');
                 }
-              }
-            })["finally"](function () {
-              return self.inProgress.remove(member.idCON);
-            });
+              })["finally"](function () {
+                return self.inProgress.remove(member.idCON);
+              });
           }
           return false;
         }
@@ -215,24 +216,24 @@
               return $http.post(BASEURL + "checklist_invite-destroy.php", {
                 idCFC: invite.id
               }, {
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                cache: false
-              }).success(function (res) {
-                if (res === void 0 || res === null || res === '') {
-                  return $rootScope.message('Error rejecting Checklist. Server not responding properly.', 'warning');
-                } else if (res.code) {
-                  return $rootScope.message("Error deleting Checklist: (" + res.code + "): " + res.message, 'warning');
-                } else {
-                  vm.queue.list.remove(invite);
-                  return $rootScope.message('Invite Rejected');
-                }
-              }).error(function (err) {
-                return $rootScope.message('Error rejecting Checklist. Server not responding.', 'warning');
-              })["finally"](function () {
-                return invite.deleting = false;
-              });
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  cache: false
+                }).success(function (res) {
+                  if (res === void 0 || res === null || res === '') {
+                    return $rootScope.message('Error rejecting Checklist. Server not responding properly.', 'warning');
+                  } else if (res.code) {
+                    return $rootScope.message("Error deleting Checklist: (" + res.code + "): " + res.message, 'warning');
+                  } else {
+                    vm.queue.list.remove(invite);
+                    return $rootScope.message('Invite Rejected');
+                  }
+                }).error(function (err) {
+                  return $rootScope.message('Error rejecting Checklist. Server not responding.', 'warning');
+                })["finally"](function () {
+                  return invite.deleting = false;
+                });
             }
           });
           return processed;
@@ -346,7 +347,9 @@
 
     console.log('vm.members', vm.members);
 
-    function openSubscriptionDialog(item){
+
+
+    function openSubscriptionDialog(item) {
       vm.item = item;
       vm.title = 'Add Licenses';
 
@@ -354,43 +357,227 @@
         scope: $scope,
         preserveScope: true,
         templateUrl: 'app/main/teammembers/dialogs/subscription-dialog.html',
-        clickOutsideToClose: true
+        clickOutsideToClose: false
       });
     };
 
-    function openRoleTypeDialog(item){
-     // alert(JSON.stringify(item));
+    function openRoleTypeDialog(item) {
+      // alert(JSON.stringify(item));
       vm.item = item;
       vm.title = 'Role Type';
 
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
-        templateUrl: 'app/main/teammembers/dialogs/role-dialog.html',
-        clickOutsideToClose: true
+        templateUrl: 'app/main/teammembers/dialogs/roletype-dialog.html',
+        clickOutsideToClose: false
       });
 
     };
 
     function closeDialog() {
       $mdDialog.hide();
+      vm.stepFirst = true;
 
 
     }
 
-    function saveRoleType(update_data){
-alert(vm.role_type);
-//alert(update_data)
+    function saveRoleType(update, id) {
+
+      return $http.post(BASEURL + 'role-permission.php',
+        {
+          name: vm.name,
+          item_type: 'roleType',
+          type: update ? 'update' : (id ? 'delete' : 'create'),
+          id: update ? update.id : (id ? id : '')
+        },
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          cache: false
+        }).success(function (res) {
+          if (res.type == 'success') {
+            vm.roleTypes = res.roleType;
+            vm.name = update ? vm.name : '';
+            $rootScope.message("New role type has been" + update ? 'updated' : 'created' + "successfully", 'success');
+          }
+          else {
+            $rootScope.message(res.type, 'warning');
+
+          }
+
+        }).error(function (res) {
+          $rootScope.message('Error talking to server', 'warning');
+        });
+      //alert(update_data)
     }
 
-    function ConfirmDeleteRoleType(item){
-alert(item);
+    vm.getRoleType = getRoleType;
+    function getRoleType() {
+      $http.post(BASEURL + 'role-permission.php', {
+        item_type: 'roleType',
+        type: 'get'
+      })
+        .success(function (res) {
+          vm.roleTypes = res.roleType;
+        });
+    };
+    getRoleType();
+
+    function ConfirmDeleteRoleType(id) {
+      saveRoleType('', id);
+
     }
-    vm.roledata  = false;
-    function EditRoleType(item){
+    vm.roledata = false;
+    function EditRoleType(item) {
+      vm.cancelButton = true;
       vm.roledata = item;
-      vm.role_type = item;
+      vm.name = item.name;
     }
+    vm.cancelButton = false;
+    vm.cancelSave = cancelSave;
+    function cancelSave() {
+      vm.roledata = null;
+      vm.name = null;
+      vm.cancelButton = false;
+    }
+
+
+    ///get Plans
+
+    vm.getAllPlans = getAllPlans;
+
+    function getAllPlans() {
+      return $http.post(BASEURL + 'role-permission.php', {
+        item_type: 'plan',
+        type: 'getplan'
+      }).success(function (res) {
+        if (res.type == 'success') {
+          vm.plans = res.plan;
+
+        }
+      })
+    };
+    // if(!$stateParams.payment_method_nonce){
+    //   getAllPlans();
+
+    // }
+    getAllPlans();
+
+    vm.getSinglePlanDetail = getSinglePlanDetail;
+    vm.stepFirst = true;
+    function getSinglePlanDetail() {
+      return $http.post(BASEURL + 'role-permission.php', {
+        item_type: 'plan',
+        type: 'getPlanBySlug',
+        id: vm.plan
+      }).success(function (res) {
+        if (res.type == 'success') {
+          vm.stepFirst = false;
+          vm.stepSeconds = true;
+          vm.planDetail = res.plan[0];
+          var token = res.token;
+
+          braintree.setup(token, 'dropin', {
+            container: 'dropin-container',
+            onReady: function () {
+              jQuery('#payment-button').removeClass('d-none')
+            }
+          });
+
+        }
+      })
+
+    };
+
+    vm.getUserRoles = getUserRoles;
+
+    function getUserRoles() {
+      $http.post(BASEURL + 'role-permission.php', {
+        item_type: 'plan',
+        type: 'getroles'
+      }).success(function (res) {
+        if (res.type == 'success') {
+          vm.memberRoles = res.plan;
+          var permission_set = vm.memberRoles.roles;
+          var newarray = [2, 5,1,8];
+          var permission_set1 =  newarray.sort();
+          console.log('sort=', permission_set.length);
+          vm.roleKeys = Object.keys(vm.memberRoles.roles);
+
+        }
+      })
+    }
+    getUserRoles();
+
+
+    function addLicence(item) {
+
+
+
+      localStorage.setItem('payment_detail', JSON.stringify(item));
+      $scope.payment_detail = item;
+      console.log(item);
+
+      // return $http.post(BASEURL + 'role-permission.php', {
+      //   item_type: 'plan',
+      //   type: 'payment',
+      //   braintree_plan_id: id,
+      //   plan:1,
+
+      // }).success(function (res) {
+      //   if (res.type == 'success') {
+
+      //   }
+      // })
+
+    }
+
+    ;
+    $scope.payment_method_nonce = function () {
+      if ($stateParams.payment_method_nonce && JSON.parse(localStorage.payment_detail)) {
+        var item = JSON.parse(localStorage.payment_detail);
+        $http.post(BASEURL + 'role-permission.php', {
+          item_type: 'plan',
+          type: 'payment',
+          id: item.id,
+          payment_method_nonce: $stateParams.payment_method_nonce,
+          braintree_plan: item.braintree_plan,
+
+        }).success(function (res) {
+          if (res.type == 'success') {
+            $scope.payment_detail = '';
+            vm.tabOption = 1;
+            getUserRoles();
+          }
+        })
+
+      }
+
+    };
+    $scope.payment_method_nonce();
+
+    vm.changeRole = changeRole;
+    function changeRole(id, role_id, toggle) {
+      vm.isLoader = true;
+      $http.post(BASEURL + 'role-permission.php', {
+        item_type: 'plan',
+        type: 'asignroles',
+        user_id: id,
+        role_id: role_id,
+        toggle: toggle == '-1' ? 'add' : 'remove'
+      }).success(function (res) {
+        vm.isLoader = false;
+        if (res.type == 'success') {
+          getUserRoles();
+        } else {
+          $rootScope.message(res.message, 'warning');
+        }
+      })
+
+    }
+
 
 
     vm.submenu = [

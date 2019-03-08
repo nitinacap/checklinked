@@ -10,7 +10,7 @@
 
     // State
     $stateProvider.state('app.teammembers', {
-      url: '/accounts',
+      url: '/accounts/:?payment_method_nonce',
       views: {
         'content@app': {
           templateUrl: 'app/main/teammembers/teammembers.html',

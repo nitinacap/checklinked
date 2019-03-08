@@ -1,7 +1,7 @@
 <div id="team-members" class="page-layout simple tabbed pad-0" layout="column">
 <div class="subtab pt-30">
         <page-toolbar datas="vm.submenu"> </page-toolbar>
-        <md-tabs md-dynamic-height md-border-bottom  md-selected="0">
+        <md-tabs md-dynamic-height md-border-bottom  md-selected="vm.tabOption">
             <md-tab>
               <md-tab-label>
                 <span>Permissions	</span>
@@ -23,6 +23,10 @@
             </md-tab>
           </md-tabs>
 
+        </div>
+
+        <div class="bd-loader" ng-if="vm.isLoader">
+          <md-progress-circular md-diameter="40"></md-progress-circular>
         </div>
     </div>
 <!-- 

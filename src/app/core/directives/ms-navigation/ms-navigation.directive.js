@@ -795,29 +795,32 @@
     vm.queue = queue;
 
     vm.badgeData = $rootScope.inviteCounts;
+    vm.badgeData.notifications = $rootScope.user ?  parseInt($rootScope.user.notifications) : '';
 
     vm.badgeDataFeed = $rootScope.feed;
 
     vm.unread = vm.badgeDataFeed.unread;
 
     vm.unreadCount = vm.unread.length;
-
-    //console.log('vm.unread', vm.unread);
-
-    //console.log('vm.unreadCount', vm.unreadCount);
+    console.log('Notification=', vm.badgeData);
 
 
-    //console.log('$rootScope', $rootScope);
+    console.log('vm.unread', vm.unread);
 
-    //console.log('badge data', vm.badgeData);
+    console.log('vm.unreadCount', vm.unreadCount);
 
-    //console.log('badge data checklists', vm.badgeData.checklists);
 
-    //console.log('badge data friendships', vm.badgeData.friendships);
+    console.log('$rootScope', $rootScope);
 
-    //console.log('badgeDataFeed', vm.badgeDataFeed);
+    console.log('badge data', vm.badgeData);
 
-    //console.log('badgeDataFeed unread', vm.badgeDataFeed.unread);
+    console.log('badge data checklists', vm.badgeData.checklists);
+
+    console.log('badge data friendships', vm.badgeData.friendships);
+
+    console.log('badgeDataFeed', vm.badgeDataFeed);
+
+    console.log('badgeDataFeed unread', vm.badgeDataFeed.unread);
 
 
     if (vm.appState == 'app.queue') {

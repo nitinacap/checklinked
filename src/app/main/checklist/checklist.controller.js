@@ -945,9 +945,10 @@ if(parentID=='allheader'){
       }).success(function (res) {
 
         if (res && res.checklist && res.checklist.complete == 1) {
-          $rootScope.message("Checklist marked not completed", 'success');
-        } else if (res && res.checklist && res.checklist.complete == 0) {
           $rootScope.message("Checklist completed", 'success');
+          
+        } else if (res && res.checklist && res.checklist.complete == 0) {
+          $rootScope.message("Checklist marked not completed", 'success');
         }
 
         if (res === void 0 || res === null || res === '') {
@@ -1412,7 +1413,7 @@ if(parentID=='allheader'){
               break;
           }
           //console.log('about to sent notify event', notifyItem);
-          $rootScope.createStats(what, 'created', vm.resp_id);
+          //$rootScope.createStats(what, 'created', vm.resp_id);
           $rootScope.socketio.emit('notify', [notifyItem]);
           $rootScope.message('Created successfully', 'success');
           // //Added by me for manipulating newly created Checkboxes// 
@@ -1713,7 +1714,7 @@ if(parentID=='allheader'){
           item.checkbox = [];
         }
 
-        $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
+       // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
         //  item.checkbox[userKey] = res.checkboxes[0];
         item.checkbox[userKey] = res.checkboxes[0];
 
@@ -2592,12 +2593,9 @@ if(parentID=='allheader'){
         if (res.type != 'success' || res === '') {
           return $rootScope.message("Error Adding Checklist", 'warning');
         }
-        //else if (res.code) {
-        //   return $rootScope.message(res.message, 'warning');
 
-        // } 
         else {
-           $rootScope.message(res.message, 'success');
+           $rootScope.message("New checklist has been created successfully", 'success');
            $scope.getChecklinked();
          // $rootScope.createStats('checklist', 'created', res.checklist.id);
           api.sections.add('sections', 1, res.checklist.id ? res.checklist.id : checklist_id).error(function (res) {
@@ -2613,13 +2611,13 @@ if(parentID=='allheader'){
             }
           });
           $rootScope.$broadcast('event:updateModels');
-          //vm.checklists = $rootScope.checklists;
+          vm.checklists = $rootScope.checklists;
           if (!$state.is('app.checklist.detail')) {
             vm.checklists.unshift(res.checklist);
           }
 
           $rootScope.organizeData();
-          $rootScope.message(res.type, 'success');
+          //$rootScope.message(res.type, 'success');
 
         }
       });
@@ -3000,7 +2998,7 @@ if(parentID=='allheader'){
         } else if (res.code) {
           $rootScope.message(res.message, 'warning');
         } else {
-          $rootScope.createStats('checklist', 'updated', vm.checklist.idCHK)
+         // $rootScope.createStats('checklist', 'updated', vm.checklist.idCHK)
           //Toaster Notification
           $rootScope.message('Checklist has been changed successfully', 'success');
 
@@ -3034,14 +3032,15 @@ if(parentID=='allheader'){
       });
     }
 
-    function saveSection() {
+    function saveSection(section) {
       var editPack;
       editPack = {
-        'id': vm.section.id,
-        'rid': vm.section.rid,
+        'id': vm.section ? vm.section.id : section.id,
+        'rid': vm.section ? vm.section.rid : section.rid,
         'index': 0,
         'type': 'section',
-        'text': vm.section.name,
+        'text': vm.section ? vm.section.name : section.name,
+        'section_na': section.section_na=='true' ? 'false' : 'true',
         'token': token
       };
 
@@ -3054,14 +3053,53 @@ if(parentID=='allheader'){
           $rootScope.message(res.message, 'warning');
         } else {
           vm.closeDialog();
-          $rootScope.createStats('section', 'updated', vm.section.id);
+          vm.section_na = section.section_na=='true' ? 'false' : 'true';
+          //chekSectionNA(vm.section_na)
+          loadChecklist(vm.idCHK);
           $rootScope.message('Section has been changed successfully', 'success');
-          vm.section.sending = false;
-
-          //  vm.closeDialog();
         }
       });
     }
+
+    // vm.chekSectionNA = chekSectionNA;
+
+    // function chekSectionNA(section_na,index){
+    //   vm.section_na= section_na;
+
+    // }
+
+    //Worked for the section NA
+  // vm.saveSectionNA = saveSectionNA;
+  //   function saveSectionNA(section) {
+  //     debugger;
+  //     var editPack;
+  //     editPack = {
+  //       'id': section.id,
+  //       'rid': section.rid,
+  //       'index': 0,
+  //       'type': 'section',
+  //       'text': section.name,
+  //       'section_na': section.section_na ? 0 : 1,
+  //       'token': token
+  //     };
+
+  //     api.checklists.edit(editPack).error(function (res) {
+  //       $rootScope.message("Error Editing Section", 'warning');
+  //     }).success(function (res) {
+  //       if (res === void 0 || res === null || res === '') {
+  //         $rootScope.message("Error Editing Section", 'warning');
+  //       } else if (res.code) {
+  //         $rootScope.message(res.message, 'warning');
+  //       } else {
+  //         vm.closeDialog();
+  //        // $rootScope.createStats('section', 'updated', vm.section.id);
+  //         $rootScope.message('Section has been changed successfully', 'success');
+  //         vm.section.sending = false;
+
+  //         //  vm.closeDialog();
+  //       }
+  //     });
+  //   }
 
     function openHeadingDialog(ev, heading) {
 
@@ -3101,7 +3139,7 @@ if(parentID=='allheader'){
         } else if (res.code) {
           $rootScope.message(res.message, 'warning');
         } else {
-          $rootScope.createStats('heading', 'created', vm.heading.id);
+          //$rootScope.createStats('heading', 'created', vm.heading.id);
           $rootScope.message('Heading has been changed successfully ', 'success');
 
           vm.heading.sending = false;
@@ -3178,7 +3216,7 @@ if(parentID=='allheader'){
         } else if (res.code) {
           $rootScope.message(res.message, 'warning');
         } else {
-          $rootScope.createStats('item', 'created', vm.item.id);
+         // $rootScope.createStats('item', 'created', vm.item.id);
           $rootScope.message('Item has been changed successfully', 'success');
 
           vm.item.sending = false;
@@ -3266,6 +3304,7 @@ if(parentID=='allheader'){
         return vm[whats][which.index].editing = false;
       },
       submit: function (which) {
+        debugger;
 
         //console.log('which', which);
         var whats;

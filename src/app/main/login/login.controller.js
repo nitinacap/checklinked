@@ -51,7 +51,8 @@
         }).success(function (res) {
           vm.isLoader = false;
           if (res.code == '-1') {
-            $scope.login_error = "Please enter correct username and password";
+           // $scope.login_error = "Please enter correct username and password";
+           $scope.login_error =res.message;
             setTimeout(function () {
               $scope.$apply(function () {
                 $scope.login_error = '';

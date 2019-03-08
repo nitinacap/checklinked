@@ -13,7 +13,6 @@
     api.baseUrl = 'app/data/';
 
     var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
-    var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
 
    //var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
 
@@ -1413,6 +1412,8 @@
       }
 
     };
+
+
 
 
 

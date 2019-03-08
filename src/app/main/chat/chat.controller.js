@@ -383,8 +383,9 @@
         vm.chat = [];
         vm.isLoader = false;
         if (res.type == 'success') {
-          var datas = res.posts.data;
-          //vm.messages = res.posts.data;
+          var datas = res.posts.data.conversions;
+          vm.contacts = res.posts.data.contacts;
+         // vm.messages = res.posts.data;
           var newArray = [];
           for (var item = 0; item < datas.length; item++) {
             if (datas[item].conversions && datas[item].conversions.length) {
@@ -393,6 +394,9 @@
           }   
       
         vm.messages = newArray;
+
+        console.log("conversions=",vm.messages);
+
 
         }
       })
@@ -410,14 +414,15 @@
   function submitMessage(message, index, filename){
     vm.isLoader = false;
     vm.file_name  = [];
-    var text = $("#text"+ message.checklist_id +index).val();
+    var text = $("#text"+ message.fdi_feed_item_id +index).val();
+
 
     var files = document.getElementById(filename).files[0];
     vm.file_name[index] =  files;
 
     var fd = new FormData();
     fd.append('file', files);
-    var filedata = { id: message.checklist_id, text: text, itemType: 'post', producerType: 'checklist' };
+    var filedata = { id: message.checklist_id ? message.checklist_id : '', text: text, itemType: message.type, producerType: 'checklist', parent_id:message.parent_id };
     fd.append('data', JSON.stringify(filedata));
 
     $http.post(BASEURL + 'posts-post.php', fd, {

@@ -38,7 +38,7 @@
                 <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'APPLY':show.name}}</span>
               </button> -->
               <!-- <button ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== item.inviterDetails.idCON)" type="button" ng-click="vm.toggleCheckbox(item,'applies',item.checkbox[$index].item_type,$index)" class="checkbox" ng-show="item.checkbox[$index].item_type !='textbox'"> -->
-              <button  ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON)" type="button" ng-click="vm.toggleCheckbox(item,'applies',item.item_typeof,$index)" class="checkbox" ng-show="item.item_typeof !='textbox'">
+              <button  ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON) || (item.section_na=='true')" type="button" ng-click="vm.toggleCheckbox(item,'applies',item.item_typeof,$index)" class="checkbox" ng-show="item.item_typeof !='textbox'">
                 <i ng-hide="item.checkbox[$index].applies" class="icon-checkbox-blank-outline"></i>
                 <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
                 <!-- <span class="checkboxLabel">{{(show.idCON ==
@@ -63,7 +63,7 @@
           </ul>
         </div>
 
-        <div flex="70" layout="column" layout-align="center start">
+        <div flex="70" layout="column" class="pl-10" layout-align="center start">
           <div ng-class="{'text-bold form-line-question': vm.isForm(item)}" class="item" layout-align="start center"
             layout="row" flex>
             {{item.name}}
@@ -94,7 +94,7 @@
           </div>
         </div>
 
-        <div layout="row" flex="" layout-align="end center">
+        <div layout="row" flex="10" layout-align="end center">
 
           <md-icon md-font-icon="icon-paperclip s20 pt-0" class="is-important indicator-icon s18 black" ng-click="vm.openUploadAttachmentDialog($event, 'item', item.id, $index, item.attachments)"
             ng-if="item.attachments.length>0"></md-icon>
@@ -123,7 +123,7 @@
                   <span class="checkboxLabel">{{(show.idCON == user.idCON)?(showingUsers.length>1)?'YOU':'COMPLY':show.name}}</span>
                 </button> -->
 
-              <button  ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON)"  type="button" ng-click="vm.toggleCheckbox(item,'complies',item.item_typeof,$index)" class="checkbox" ng-show="item.item_typeof!='textbox'">
+              <button  ng-disabled="checklist.complete || viewAs.notMe || (show.idCON !== user.idCON) || (item.section_na=='true')"  type="button" ng-click="vm.toggleCheckbox(item,'complies',item.item_typeof,$index)" class="checkbox" ng-show="item.item_typeof!='textbox'">
                 <i ng-hide="item.checkbox[$index].complies" class="icon-checkbox-blank-outline"></i>
                 <i ng-show="item.checkbox[$index].complies" class="icon-checkbox-marked-outline"></i>
 

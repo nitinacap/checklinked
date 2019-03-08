@@ -12,6 +12,7 @@
 // injector
 // endinjector
 
+
 md-accent-bg{
     background-color: #282D38 !important;
 }
@@ -454,6 +455,8 @@ input[type=file] {
   }
 }
 
+
+
 // Media Query starts here
 @media (max-width: 959px){
     .logo-holder {
@@ -461,3 +464,20 @@ input[type=file] {
     }    
 }
 // End Media Query
+
+
+
+  button#braintree-paypal-button {
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.add-payment-method-form-view label.card-label {
+    border-top: 0;
+    padding-bottom: 5px;
+}
+
+.add-payment-method-form-view label.card-label input {
+    font-size: 14px;
+    margin-top: 10px;
+}
