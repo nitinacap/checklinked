@@ -6,7 +6,7 @@
     .controller('TemplatesController', TemplatesController);
 
   /** @ngInject */
-  function TemplatesController($rootScope, $http, api, $mdSidenav, $mdDialog, $scope, $document, $state) {
+  function TemplatesController($rootScope, $http, api, $mdSidenav, $mdDialog, $scope, $document, $state, $cookies) {
 
     //console.log('$rootScope.user', $rootScope.user);
    
@@ -29,6 +29,11 @@
     vm.showAllTemplates = true;
     vm.templateOrder = '';
     vm.templateOrderDescending = false;
+
+    //permission
+
+    var userpermission =  $cookies.get("userpermission");
+    vm.checkIsPermission = JSON.parse(userpermission);
 
     //Toggle Left Side Nav
     function toggleSidenav(sidenavId) {
@@ -66,8 +71,13 @@
 
     vm.folders = [];
     api.folders.get($rootScope.token).then(function (d) {
-      console.log('d', d);
-      vm.folders = d.data.folders;
+
+      if(d.data.code=='-1'){
+        $scope.subscriptionAlert(d.data.message);  
+      }else{
+        vm.folders = d.data.folders;
+
+      }
     });
 
     vm.wizard = {
@@ -559,6 +569,18 @@ vm.deleteItemConfirm = deleteItemConfirm;
     $scope.answer = function(answer) {
       $mdDialog.hide(answer);
     };
+
+        //Subscription expired alert
+        $scope.subscriptionAlert = function (message) {
+          vm.title = 'Alert';
+          vm.message = message;
+          $mdDialog.show({
+            scope: $scope,
+            preserveScope: true,
+            templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+            clickOutsideToClose: false
+          });
+        }
 
 
   }

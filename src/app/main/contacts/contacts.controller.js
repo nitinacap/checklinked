@@ -119,6 +119,7 @@
     function updateFriends() {
       vm.loading.friends = true;
       return api.contacts.get().success(function (res) {
+        vm.isLoader = false;
         if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
@@ -127,7 +128,6 @@
           vm.internal = res.internal;
         
         //  vm.secondary =  $rootScope.removeDuplicates(res.secondary, 'contacts');
-          vm.isLoader = false;
           return vm.loaded.friends = true;
         }
       })["finally"](function () {
@@ -218,6 +218,7 @@
 
         return api.contacts.find(vm.findContacts.criteria).success(function (res) {
           if (res.code) {
+            vm.isLoader = false;
             return $rootScope.message(res.message, 'warning');
           } else {
             vm.findContactsMessage = res.contacts.length > 0 ? true : false;
@@ -453,7 +454,7 @@
       { link: 'user', title: 'My Profile' },
       { link: '', title: 'Contacts' },
       { link: 'organization', title: 'Organization' },
-      { link: 'account', title: 'Account' }
+      { link: 'teammembers', title: 'Account' }
     ];
     vm.sendToggle = sendToggle;
     vm.isMessage = true;

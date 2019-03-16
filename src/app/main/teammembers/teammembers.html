@@ -1,66 +1,26 @@
 <div id="team-members" class="page-layout simple tabbed pad-0" layout="column">
-<div class="subtab pt-30">
+    <div class="subtab pt-30">
         <page-toolbar datas="vm.submenu"> </page-toolbar>
-        <md-tabs md-dynamic-height md-border-bottom  md-selected="vm.tabOption">
-            <md-tab>
-              <md-tab-label>
-                <span>Permissions	</span>
-              </md-tab-label>
-              <md-tab-body>
-                    <div ng-include="'app/main/teammembers/partials/permission.html'"></div>
-              </md-tab-body>
-        
-            </md-tab>
-        
-            <md-tab class="pr-30">
-              <md-tab-label>
-                <span>Subscription</span>
-              </md-tab-label>
-              <md-tab-body>
-                    <div ng-include="'app/main/teammembers/partials/subscription.html'"></div>
-              </md-tab-body>
-        
-            </md-tab>
-          </md-tabs>
-
-        </div>
-
-        <div class="bd-loader" ng-if="vm.isLoader">
-          <md-progress-circular md-diameter="40"></md-progress-circular>
-        </div>
-    </div>
-<!-- 
-<div id="team-members" class="page-layout simple tabbed pad-0" layout="column">
-        <page-toolbar datas="vm.submenu"> </page-toolbar>
-
-    <div class="content pt-30">
-        <md-tabs md-dynamic-height md-selected="0">
-
+        <md-tabs md-dynamic-height md-border-bottom md-selected="vm.tabOption">
             <md-tab>
                 <md-tab-label>
-                    <span translate="">Onboard</span>
-           	   </md-tab-label>
-
-            <md-tab-body class="pad-0">
-                    <div ng-include="'app/main/teammembers/partials/teammembers.html'"></div>
-                </md-tab-body>
-            </md-tab>
-
-			<md-tab>
-                <md-tab-label>
-                    <span translate="">Invitations</span>
+                    <span>Permissions </span>
                 </md-tab-label>
-
-                <md-tab-body class="pad-0">
-                    <div ng-include="'app/main/teammembers/partials/invitations.html'"></div>
+                <md-tab-body>
+                    <div ng-include="'app/main/teammembers/partials/permission.html'"></div>
                 </md-tab-body>
             </md-tab>
-
-
-
+            <md-tab class="pr-30" ng-show="vm.checkIsPermission.indexOf('assign-permissions') !== -1">
+                <md-tab-label>
+                    <span>Subscription</span>
+                </md-tab-label>
+                <md-tab-body>
+                    <div ng-include="'app/main/teammembers/partials/subscription.html'"></div>
+                </md-tab-body>
+            </md-tab>
         </md-tabs>
-
     </div>
-
-
-</div> -->
+    <div class="bd-loader" ng-if="vm.isLoader">
+        <md-progress-circular md-diameter="40"></md-progress-circular>
+    </div>
+</div>

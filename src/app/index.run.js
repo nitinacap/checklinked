@@ -29,7 +29,7 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
     .module('checklinked')
     .run(runBlock);
   /** @ngInject */
-  function runBlock($rootScope, $timeout, $state, $cookies, $stateParams, $location, $http, toastr, api, $filter) {
+  function runBlock($rootScope, $timeout, $state, $cookies, $mdDialog, $location, $http, toastr, api, $filter) {
     // Activate loading indicator
     var silent;
     if (!$cookies.get("token") || $cookies.get("token") == 'undefined' || $cookies.get("token") == '') {
@@ -680,11 +680,11 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
 
         return $rootScope.organizeData();
       });
-     console.log('received event:userLoaded', $rootScope.user);
+      console.log('received event:userLoaded', $rootScope.user);
       if ($location.search().devMode === true) {
         realtime = 'https://socket.checklinked.com/';
-      // realtime = 'http://168.61.165.204:8085/';
-       
+        // realtime = 'http://168.61.165.204:8085/';
+
       } else {
         realtime = 'https://socket.checklinked.com/';
       }
@@ -817,9 +817,9 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         }
 
         if ($rootScope.socketio._callbacks['$labels_changed'] === void 0) {
-         console.log('socket labels_changed callback is not defined; defining now');
+          console.log('socket labels_changed callback is not defined; defining now');
           $rootScope.socketio.on('labels_changed', function () {
-           console.log('received labels_changed');
+            console.log('received labels_changed');
             return $rootScope.addUserData('labels-reset').then(function (d) {
               var res;
               if (typeof d !== 'object') {
@@ -839,10 +839,10 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         }
 
         if ($rootScope.socketio._callbacks['$friendship_invite_count'] === void 0) {
-         console.log('socket friendship_invite_count callback is not defined; defining now');
+          console.log('socket friendship_invite_count callback is not defined; defining now');
           $rootScope.socketio.on('friendship_invite_count', function (count) {
             var update;
-           console.log('received friendship invite count', count);
+            console.log('received friendship invite count', count);
             if (count !== $rootScope.inviteCounts.friendships) {
               update = true;
             }
@@ -1116,6 +1116,30 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
       }
       return newArray;
     }
+    // var  useridCON = $cookies.get("useridCON");
+    // setInterval(function() {
+    //   $rootScope.getUserPermission = function(useridCON){
+    //     if($cookies.get("useridCON")) {
+    //     $http.post(BASEURL + 'role-permission.php', {
+    //       item_type: 'roleType',
+    //       id: $cookies.get("useridCON"),
+    //       type: 'getuserrole'
+    //     }).success(function (res) {
+    //       var empArray = [];
+    //       angular.forEach(res.roles, function (item) {
+    //         Object.assign(empArray, item);
+    //       });
+    //      $cookies.put("userpermission",JSON.stringify(empArray.permissions));
+    //      console.log('userpermission', empArray.permissions);
+    //     });
+    //   }
+    // }
+    // },15000);
+
+
+
+
+
 
   }
 })();

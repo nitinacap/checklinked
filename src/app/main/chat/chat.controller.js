@@ -6,7 +6,7 @@
     .controller('ChatController', ChatController);
 
   /** @ngInject */
-  function ChatController($rootScope, $cookies, $stateParams, $scope, $filter,$http, $mdSidenav, $timeout, $document, $mdMedia, api) {
+  function ChatController($rootScope, $cookies, $stateParams, $scope, $filter,$http, $mdSidenav, $timeout, $document, $mdMedia, api,  $mdDialog) {
 
     var vm = this;
 
@@ -47,6 +47,7 @@
     vm.getLatestPosts = getLatestPosts;
 
     vm.passID = $stateParams.passID;
+    vm.closeDialog = closeDialog;
 
     //Build Fetch contactsTest
     var i = '';
@@ -54,9 +55,15 @@
     var switchUser;
     var contactsTest = [];
     //var vm.contactsTest = [];
-
+    function closeDialog() {
+      $mdDialog.hide();
+    };
     api.contacts.get().then(function (d) {
       contacts = d.data.friendships;
+
+      if(d.data.code=='-1'){
+        $scope.subscriptionAlert(d.data.message);  
+      }
 
       for (i = 0; i < contacts.length; i++) {
         switchUser = showWhichInviteContactData(contacts[i]);
@@ -553,6 +560,19 @@
       { link: 'notification', title: 'Notifications' }
 
     ];
+
+    
+        //Subscription expired alert
+        $scope.subscriptionAlert = function (message) {
+          vm.title = 'Alert';
+          vm.message = message;
+          $mdDialog.show({
+            scope: $scope,
+            preserveScope: true,
+            templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+            clickOutsideToClose: false
+          });
+        }
 
 
   }

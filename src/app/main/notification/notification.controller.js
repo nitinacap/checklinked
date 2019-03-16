@@ -6,9 +6,10 @@
     .controller('NotificationController', NotificationController)
 
   /** @ngInject */
-  function NotificationController($cookies,$http,api) {
+  function NotificationController($cookies, $mdDialog, api, $scope) {
 
     var vm = this;
+    vm.closeDialog = closeDialog;
 
     // Content sub menu
     vm.submenu = [
@@ -20,14 +21,20 @@
     ];
 
     function getUserNotification() {
-     return api.notifications.get($cookies.get('token')).success(function (resp) {
+      return api.notifications.get($cookies.get('token')).success(function (resp) {
         if (resp) {
-          vm.notifications = resp.notifications;
-          vm.closeList = false;
+          if(resp.code=='-1'){
+            $scope.subscriptionAlert(resp.message);  
+          }else{
+            vm.notifications = resp.notifications;
+            vm.closeList = false;
+    
+          }
+      
 
         }
       }).error(function (resp) {
-  
+
       })
     };
     vm.totUsers = totUsers;
@@ -38,31 +45,47 @@
     vm.chk_changes = [];
     vm.unixtimestamp = []
 
-    function totUsers(item){
+    function totUsers(item) {
       vm.chk_changes.push(Object.keys(item).length - 1);
     }
 
-    function projectList(list,detail){
+    function projectList(list, detail) {
       vm.closeList = true;
       vm.projectlists = detail;
-   
-      vm.checklistDetail = Object.keys(list).map(function(it) { 
+
+      vm.checklistDetail = Object.keys(list).map(function (it) {
         return list[it]
-     })
-     
+      })
+
     };
 
-    function notificationList(){
+    function notificationList() {
       vm.closeList = false;
     }
-    function notificationDate(item){
-      if(item!=='undefined' || item!==undefined){
-       vm.unixtimestamp.push((new Date(item.replace('-','/'))).getTime());
+    function notificationDate(item) {
+      if (item !== 'undefined' || item !== undefined) {
+        vm.unixtimestamp.push((new Date(item.replace('-', '/'))).getTime());
 
       }
     }
-  
+
     getUserNotification();
+
+    //Subscription expired alert
+    $scope.subscriptionAlert = function (message) {
+      vm.title = 'Alert';
+      vm.message = message;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+        clickOutsideToClose: false
+      });
+    };
+
+    function closeDialog() {
+      $mdDialog.hide();
+    }
 
 
   }

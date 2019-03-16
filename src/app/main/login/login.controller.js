@@ -51,8 +51,8 @@
         }).success(function (res) {
           vm.isLoader = false;
           if (res.code == '-1') {
-           // $scope.login_error = "Please enter correct username and password";
-           $scope.login_error =res.message;
+            // $scope.login_error = "Please enter correct username and password";
+            $scope.login_error = res.message;
             setTimeout(function () {
               $scope.$apply(function () {
                 $scope.login_error = '';
@@ -67,21 +67,32 @@
             $cookies.put("token", res.user.token);
             $cookies.put('users', res.user);
             $rootScope.token = res.user.token;
-            $rootScope.userData = res.user;
+            $rootScope.userData =  res.user;
+            getUserRoles(res.user.idCON);
+
+            var empArray = [];
+
+            angular.forEach(res.user.roles_permissions.roles, function (item) {
+              Object.assign(empArray, item);
+    
+            });
+            debugger;
+           $cookies.put("userpermission",JSON.stringify(empArray.permissions));
+
             //var organizationError = res.user.organizationError;
             var organizationError = res.user.organization;
-            console.log('organizationError in login controller',res.user);
+            console.log('organizationError in login controller', res.user);
             console.log(organizationError);
             var destination;
             var OTP = false;
-            if(OTP){
+            if (OTP) {
               vm.twofactor = true;
               verifyTwoFactorOTP();
             }
             else if (res.user.organizationError) {
               destination = 'app.organization';
             } else {
-              destination = 'app.user';
+               destination = 'app.user';
             }
             $state.go(destination);
           }
@@ -92,37 +103,56 @@
 
     }
 
-// Verify OTP for two factor login
+    function getUserRoles(id) {
 
-    
-function verifyTwoFactorOTP() {
-  alert(vm.otp)
-  $http.post(BASEURL +'setting.php', {
-    type: 'OTP',
-    item:vm.otp,
-    token: $cookies.get("token")
+      $http.post(BASEURL + 'role-permission.php', {
+        item_type: 'roleType',
+        id: id,
+        type: 'getuserrole'
+      }).success(function (res) {
+        var roledata = res.roleType.roles;
+        // var empArray = [];
 
-  }, {headers: {'Content-Type': 'application/x-www-form-urlencoded' },
-    cache: false
-  }).success(function (res) {
-    vm.isLoader = false;
-    if(res.code==1){
-       $scope.errtoken =  res.message
-    }
-    else if(res.code==0){
-    $scope.successtoken = "Two factoe login has been updated successfully";
-    if (res.user.organizationError) {
-      destination = 'app.organization';
-    } else {
-      destination = 'app.user';
-    }
-    $state.go(destination);
-    }
-  }).error(function (res) {
-    $scope.errtoken = res.message;
+        // angular.forEach(roledata, function (item) {
+        //   Object.assign(empArray, item);
 
-  })
-}
+        // });
+        // $cookies.put('userpermission',empArray);
+      });
+    }
+
+    // Verify OTP for two factor login
+
+
+    function verifyTwoFactorOTP() {
+      alert(vm.otp)
+      $http.post(BASEURL + 'setting.php', {
+        type: 'OTP',
+        item: vm.otp,
+        token: $cookies.get("token")
+
+      }, {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          cache: false
+        }).success(function (res) {
+          vm.isLoader = false;
+          if (res.code == 1) {
+            $scope.errtoken = res.message
+          }
+          else if (res.code == 0) {
+            $scope.successtoken = "Two factoe login has been updated successfully";
+            if (res.user.organizationError) {
+              destination = 'app.organization';
+            } else {
+              destination = 'app.user';
+            }
+            $state.go(destination);
+          }
+        }).error(function (res) {
+          $scope.errtoken = res.message;
+
+        })
+    }
 
 
     /** End new code  */

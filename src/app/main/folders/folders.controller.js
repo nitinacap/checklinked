@@ -7,9 +7,14 @@
     .controller('FoldersController', FoldersController);
 
   /** @ngInject */
-  function FoldersController($rootScope, api, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $scope) {
+  function FoldersController($rootScope, api, $stateParams, $location, $cookies, $mdDialog, $mdSidenav, $document, $http, $scope) {
     var vm = this;
     vm.isLoader = true
+    var userpermission = $cookies.get("userpermission");
+    vm.checkIsPermission = JSON.parse(userpermission);
+    vm.firstAlert = true;
+
+
     setTimeout(function () {
       if ($stateParams.id !== undefined && $stateParams.id != null) {
         if ($stateParams.id == '') {
@@ -26,9 +31,16 @@
         vm.folders = [];
         $scope.getFolder = function () {
           api.folders.get().then(function (d) {
-            vm.isLoader = false
-            vm.folders = d.data.folders;
-            //  $rootScope.$on('getFolders', d.data.folders);// res - your data
+            vm.isLoader = false;
+            if (d.data && d.data.code == '-1') {
+              if(vm.firstAlert){
+                $scope.subscriptionAlert(d.data.message);
+                vm.firstAlert = false;
+              }
+
+            } else {
+              vm.folders = d.data.folders;
+            }
           });
         }
       }
@@ -177,7 +189,7 @@
       vm.newFolder = false;
       vm.type = type;
       vm.datas = ev;
-     
+
       if (!vm.folder) {
         vm.folder = {
           'id': '',
@@ -219,8 +231,6 @@
     function closeDialog() {
       $mdDialog.hide();
       $scope.getFolder();
-
-
     }
 
     /* Add New Folder */
@@ -230,7 +240,7 @@
       vm.folder.order = 1;
       vm.folder.order += vm.folders ? vm.folders.length : 0;
 
-      api.folders.add(vm.folder.name, vm.folder.description,  vm.folder.link,  vm.folder.attachment, vm.folder.order,item ? item.id: '' ).error(function (res) {
+      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.link, vm.folder.attachment, vm.folder.order, item ? item.id : '').error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -238,7 +248,7 @@
         } else if (!res.type) {
           vm.closeDialog();
           return $rootScope.message(res.message, 'warning');
-        
+
         } else {
 
           /* Reset Folder Object */
@@ -253,7 +263,7 @@
           //Toaster Notification
 
           //Add New Folder to Folders object
-          if(res.folder.length > 0){
+          if (res.folder.length > 0) {
             vm.folders.unshift(vm.folder);
 
           }
@@ -312,20 +322,20 @@
     function deleteFolder(folder, event) {
       vm.title = 'Delete Folder Information';
       vm.warning = 'Warning: This can’t be undone';
-      vm.description = "Please confirm you want to delete this <span class='link'>" + folder.name +"</span><br>All of the contents will be deleted and can’t be recovered"
+      vm.description = "Please confirm you want to delete this <span class='link'>" + folder.name + "</span><br>All of the contents will be deleted and can’t be recovered"
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
         templateUrl: 'app/main/organization/dialogs/organizations/alert.html',
         parent: angular.element(document.body),
         targetEvent: folder,
-        clickOutsideToClose:false
+        clickOutsideToClose: false
       })
-      .then(function(answer) {
-        deleteFoderItem(folder);
-      }, function() {
-        $scope.status = 'You cancelled the dialog.';
-      });
+        .then(function (answer) {
+          deleteFoderItem(folder);
+        }, function () {
+          $scope.status = 'You cancelled the dialog.';
+        });
 
       // var confirm = $mdDialog.confirm()
       //   .title('Are you sure?')
@@ -356,23 +366,23 @@
       // });
     }
 
-    function deleteFoderItem(folder){
+    function deleteFoderItem(folder) {
       vm.isLoader = true;
       api.folders.destroy(folder.id, $rootScope.user.token).error(function (res) {
-            return $rootScope.message("Error Deleteing Project", 'warning');
-          }).success(function (res) {
-            
-            vm.isLoader = false;
-            if (res === void 0 || res === null || res === '') {
-              return $rootScope.message("Error Deleteing Project", 'warning');
-            } else if (res.code) {
-              return $rootScope.message(res.message, 'warning');
-            } else {
-              vm.folders.splice(vm.folders.indexOf(folder), 1);
-              $rootScope.message('Project  ' + folder.name + ' has been deleted');
-              vm.folder.sending = false;
-            }
-          });
+        return $rootScope.message("Error Deleteing Project", 'warning');
+      }).success(function (res) {
+
+        vm.isLoader = false;
+        if (res === void 0 || res === null || res === '') {
+          return $rootScope.message("Error Deleteing Project", 'warning');
+        } else if (res.code) {
+          return $rootScope.message(res.message, 'warning');
+        } else {
+          vm.folders.splice(vm.folders.indexOf(folder), 1);
+          $rootScope.message('Project  ' + folder.name + ' has been deleted');
+          vm.folder.sending = false;
+        }
+      });
     }
 
     /* Side Navigation Methods */
@@ -441,7 +451,7 @@
 
     vm.Duplicate = Duplicate;
     function Duplicate(folder) {
-    //  vm.isLoader = true;
+      //  vm.isLoader = true;
 
       // vm.title = 'Duplicate Project';
       // $mdDialog.show({
@@ -484,17 +494,29 @@
       });
     };
 
-    $scope.hide = function() {
+    $scope.hide = function () {
       $mdDialog.hide();
     };
 
-    $scope.cancel = function() {
+    $scope.cancel = function () {
       $mdDialog.cancel();
     };
 
-    $scope.answer = function(answer) {
+    $scope.answer = function (answer) {
       $mdDialog.hide(answer);
     };
+
+    //Subscription expired alert
+    $scope.subscriptionAlert = function (message) {
+      vm.title = 'Alert';
+      vm.message = message;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+        clickOutsideToClose: false
+      });
+    }
 
   }
 

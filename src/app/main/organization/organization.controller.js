@@ -189,7 +189,7 @@
       { link: 'user', title: 'My Profile' },
       { link: 'contacts', title: 'Contacts' },
       { link: '', title: 'Organization' },
-      { link: 'account', title: 'Account' }
+      { link: 'teammembers', title: 'Account' }
     ];
 
 

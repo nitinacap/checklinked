@@ -1,0 +1,32 @@
+<md-dialog class="license-wrapper">
+  <md-dialog-content ms-scroll>
+    <md-input-container class="md-block">
+      <div layout="row">
+        <img alt="Checklinked Logo" class="pull-left" src="/assets/images/logos/checklinked.png">
+      </div>
+      <div layout="row">
+        <div flex class="text-center pt-20">
+          License Needed
+        </div>
+      </div>
+      <div layout="row">
+        <div flex class="text-center" padding>
+          <p>
+            All of your licenses are in use<br>
+            and to add another user you’ll
+          </p>
+        </div>
+      </div>
+
+    </md-input-container>
+  </md-dialog-content>
+
+  <md-dialog-actions layout="row" layout-align="space-between center">
+    <div layout="row" layout-align="center center" flex>
+      <md-button type="button" ng-click="vm.closeDialog()" class="md-raised md-accent submit-button">
+        Ok
+      </md-button>
+    </div>
+
+  </md-dialog-actions>
+</md-dialog>

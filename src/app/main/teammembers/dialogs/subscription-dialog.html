@@ -11,13 +11,13 @@
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block mb-0" ng-show="vm.stepFirst">
         <md-radio-group ng-model="vm.plan">
-          <div layout="row" ng-repeat="plans in vm.plans" padding>
-            <div class="column" flex="20">
-              <b>{{ plans[$index].name}}</b>
+          <div layout="row" ng-repeat="plans in vm.plans" padding class="pb-20">
+            <div class="column" flex="20"> 
+              <b>{{plans[1].name}}</b>
             </div>
             <div class="column">
               <div layout="row">
-                <div layout='column' ng-repeat="plan in plans" padding>
+                <div layout='column' ng-repeat="plan in plans" padding flex="50">
                   <md-radio-button flex ng-value="plan.braintree_plan" class="md-primary">
                     ${{plan.cost + "/" + plan.slug}}
                   </md-radio-button>

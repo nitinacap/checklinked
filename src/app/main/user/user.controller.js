@@ -33,6 +33,7 @@
         return api.account.update(this.info, $rootScope.token).error(function (res) {
           return $rootScope.message('Server not responsing properly.', 'warning');
         }).success(function (res) {
+
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Error talking to server', 'warning');
           } else if (res.code) {
@@ -160,6 +161,7 @@
           cache: false
         }).error(function () {
         }).success(function (resp) {
+          
           if (resp.type == 'success') {
             vm.stats = resp.stats;
           } else {
@@ -171,11 +173,23 @@
     };
     userStats();
 
+        //Subscription expired alert
+        $scope.subscriptionAlert = function (message) {
+          vm.title = 'Alert';
+          vm.message = message;
+          $mdDialog.show({
+            scope: $scope,
+            preserveScope: true,
+            templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+            clickOutsideToClose: false
+          });
+        }
+
     vm.submenu = [
       { link: '', title: 'My Profile' },
       { link: 'contacts', title: 'Contacts' },
       { link: 'organization', title: 'Organization' },
-      { link: 'account', title: 'Account' }
+      { link: 'teammembers', title: 'Account' }
     ];
 
 

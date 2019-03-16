@@ -6,7 +6,7 @@
     .controller('summaryController', summaryController);
 
   /** @ngInject */
-  function summaryController($rootScope, $http, $scope, api, $mdSidenav, $mdDialog, $document, $stateParams, $timeout, $filter, $location, $state) {
+  function summaryController($rootScope, $http, $scope, api, $mdSidenav, $mdDialog, $document, $cookies, $timeout, $filter, $location, $state) {
     var vm = this;
 
     vm.toggleSidenav = toggleSidenav;
@@ -16,23 +16,16 @@
     vm.requestReportsProgress = requestReportsProgress;
     vm.openConversationDialog = openConversationDialog;
 
+    var userpermission = $cookies.get("userpermission");
+    vm.checkIsPermission = JSON.parse(userpermission);
+    vm.closeDialog = closeDialog;
 
     function toggleSidenav(sidenavId) {
       $mdSidenav(sidenavId).toggle();
     }
-
-  //   $scope.getTotal = function(item){
-  //     var total = 0;
-  //     var lines = item.lines;
-  //     $scope.totalChkMessage = [0];
-  //     for(var i = 0; i < lines.length; i++){
-  //          total += lines[i].counts.posts;
-
-  //     }
-  //    $scope.totalChkMessage.push(total);
-    
-   
-  // }
+    function closeDialog() {
+      $mdDialog.hide();
+    };
 
     vm.reports = {
       list: [],
@@ -49,12 +42,16 @@
         vm.reports.viewing = false;
         return api.summary.reports.get().success(function (res) {
           vm.isLoader = false;
+
+          if (res.code == '-1') {
+            $scope.subscriptionAlert(res.message);
+          }
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Reports not loaded.', 'warning');
           } else if (res.code) {
-           // return $rootScope.message("Error loading reports: (" + res.code + ": " + res.message + ")");
+            // return $rootScope.message("Error loading reports: (" + res.code + ": " + res.message + ")");
           } else {
-          
+
             res.reports.forEach(function (report) {
               var checklists;
               checklists = [];
@@ -218,13 +215,13 @@
       ];
       */
 
-       debugger;
+      debugger;
       //console.log('conflicts2', conflicts2);
       $rootScope.showingUsers = [showMe, showThem];
 
       //console.log('about to show comparison between', $rootScope.showingUsers);
       //return $location.path("/checklist/detail/" + checklist.idCHK);
-      $state.go('app.checklist.conflicts', {id:checklist.idCHK, checklist:checklist, sections:sections, headings:headings, items:conflicts.idsITEM});
+      $state.go('app.checklist.conflicts', { id: checklist.idCHK, checklist: checklist, sections: sections, headings: headings, items: conflicts.idsITEM });
     };
 
     function requestReportsProgress(duration) {
@@ -265,6 +262,18 @@
         return vm.reports.refresh();
       }
     });
+
+    //Subscription expired alert
+    $scope.subscriptionAlert = function (message) {
+      vm.title = 'Alert';
+      vm.message = message;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+        clickOutsideToClose: false
+      });
+    }
 
 
     vm.reports.refresh();

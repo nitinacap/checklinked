@@ -66,28 +66,28 @@
   
             <md-menu-content width="3">
   
-              <md-menu-item ng-if="template.type=='checklist'">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('download-public-templates') !== -1 && template.type=='checklist'">
                 <md-button ng-click="vm.download.begin($event, template.id, 'checklist')" translate-attr-aria-label="">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
                   <span translate="">Download Template</span>
                 </md-button>
               </md-menu-item>
   
-              <md-menu-item ng-if="template.type=='group'">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('download-public-templates') !== -1 && template.type=='group'">
                 <md-button ng-click="vm.download.begin($event, template.id, 'group')" translate-attr-aria-label="">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
                   <span translate="">Download Template</span>
                 </md-button>
               </md-menu-item>
   
-              <md-menu-item ng-show="permissions.has('deleteTemplate')" ng-if="template.idCON == user.idCON">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('delete-their-own-templates') !== -1 && template.idCON == user.idCON">
                 <md-button ng-click="vm.deleteItemConfirm(template,  $event)" translate-attr-aria-label="">
                   <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                   <span translate="">Delete Template</span>
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1">
                 <md-button ng-click="vm.archieveDialog($event, template.id, 'internal template')" aria-label="Archive All">
                   <md-icon class="md-accent-fg s18"
                            md-font-icon="fa fa-download"></md-icon>

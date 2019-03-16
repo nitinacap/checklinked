@@ -6,23 +6,12 @@
     .controller('GroupsController', GroupsController);
 
   /** @ngInject */
-  function GroupsController($scope, $rootScope, api, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $state, $filter) {
+  function GroupsController($scope, $rootScope, api, $stateParams, $cookies, $mdDialog, $mdSidenav, $document, $http) {
     var vm = this;
     vm.isLoader = true;
 
-    debugger
-    //   if ($stateParams.id == '') {
-    //     $location.path('/folders');
-    //   } else {
-    //     $scope.getGroups();
-    //     vm.projects = $rootScope.folders;
-    //    console.log('WOW=');
-    //    var e=$rootScope.$emit('event:userLoaded');
-    //    console.log(e.targetScope.folders);
-    // }
-    // $scope.getGroups();
-    //vm.projects = $rootScope.folders;
-
+    var userpermission =  $cookies.get("userpermission");
+    vm.checkIsPermission = JSON.parse(userpermission);
 
     $scope.getAllFolders = function () {
       api.folders.get().then(function (d) {
@@ -36,8 +25,12 @@
       vm.groups = [];
       vm.folder_id = $stateParams.id;
       api.groups.get($stateParams.id).then(function (d) {
-        vm.groups = d.data.groups;
         vm.isLoader = false;
+        if (d.data && d.data.code == '-1') {
+          $scope.subscriptionAlert(d.data.message);
+        } else {
+          vm.groups = d.data.groups;
+        }
       });
     }
     $scope.getGroups();
@@ -555,6 +548,17 @@
     $scope.answer = function (answer) {
       $mdDialog.hide(answer);
     };
+
+    $scope.subscriptionAlert = function (message) {
+      vm.title = 'Alert';
+      vm.message = message;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+        clickOutsideToClose: false
+      });
+    }
 
   }
 

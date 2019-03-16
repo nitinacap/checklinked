@@ -8,55 +8,50 @@
 </div><!-- CHECKLIST LIST ITEMS -->
 <div class="checklist-items pt-32" id="checklist-details">
   <!--Checklists Iteration-->
-  <div ng-repeat="checklist in vm.checklists | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search track by $index">
+  <div
+    ng-repeat="checklist in vm.checklists | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search track by $index">
 
     <div class="checklist-item checklist-title-bg" md-ink-ripple layout="row" layout-align="start center">
 
       <div layout="row" layout-align="start center" flex>
-
         <div class="info" flex="50">
           <div class="checklist">
             {{checklist.name}}
           </div>
-
         </div>
         <div layout="row" flex="" layout-align="end center">
-
-          <md-icon md-font-icon="icon-paperclip" class="is-important indicator-icon s18 white" ng-click="vm.openUploadAttachmentDialog($event, 'checklist', checklist.idCHK, $index,vm.attachments)"
+          <md-icon md-font-icon="icon-paperclip" class="is-important indicator-icon s18 white"
+            ng-click="vm.openUploadAttachmentDialog($event, 'checklist', checklist.idCHK, $index,vm.attachments)"
             ng-if="vm.attachments.length>0">
           </md-icon>
-
-          <md-icon md-font-icon="icon-comment-text-outline" class="is-important indicator-icon  s18 white" ng-click="vm.openConversationDialog('checklist', checklist.idCHK, checklist.name)"
+          <md-icon md-font-icon="icon-comment-text-outline" class="is-important indicator-icon  s18 white"
+            ng-click="vm.openConversationDialog('checklist', checklist.idCHK, checklist.name)"
             ng-if="checklist.postCount>0">
           </md-icon>
-
-          <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg indicator-icon  s18" ng-click="vm.openConflictsDialog($event)"
-            ng-if="showingUsers.length>1">
+          <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg indicator-icon  s18"
+            ng-click="vm.openConflictsDialog($event)" ng-if="showingUsers.length>1">
           </md-icon>
-
         </div>
 
         <div class="buttons" layout="row" layout-align="start center">
-
-
           <md-menu>
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
               translate-attr-aria-label="CHECKLIST.MORE">
               <md-icon md-font-icon="icon-dots-vertical" class="s18 active"></md-icon>
             </md-button>
-
             <md-menu-content width="3" class="menu-height">
-
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('checklist-cmplete') !== -1">
                 <md-button ng-click="vm.toggleComplete(checklist)" aria-label="Complete Checklist"
                   translate-attr-aria-label="CHECKLIST.COMPLETE_CHECKLIST">
-                  <md-icon ng-if="checklist.complete==1" class="md-accent-fg s18" md-font-icon="icon-checkbox-marked-outline"></md-icon>
-                  <md-icon ng-if="checklist.complete==0" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline"></md-icon>
+                  <md-icon ng-if="checklist.complete==1" class="md-accent-fg s18"
+                    md-font-icon="icon-checkbox-marked-outline"></md-icon>
+                  <md-icon ng-if="checklist.complete==0" class="md-accent-fg s18"
+                    md-font-icon="icon-checkbox-blank-outline"></md-icon>
                   <span translate="CHECKLIST.COMPLETE_CHECKLIST">Complete</span>
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-checklists') !== -1">
                 <md-button ng-click="vm.add('section',checklist.idCHK, $event)" aria-label="Add New Sction"
                   translate-attr-aria-label="CHECKLIST.ADD_SECTION">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
@@ -64,7 +59,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-view-their-own-schedule') !== -1">
                 <md-button ng-click="vm.add('schedule',checklist.idCHK, $event)" aria-label="Add New Schedule"
                   translate-attr-aria-label="CHECKLIST.SCHEDULED">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-calendar"></md-icon>
@@ -72,28 +67,14 @@
                 </md-button>
               </md-menu-item>
 
-              <!-- <md-divider class="md-default-theme"></md-divider> -->
-
-
-
-              <!-- <md-menu-item ng-show="permissions.has('inviteToChecklist')">
-                <md-button ng-click="vm.sendLinkRequest($event, vm.idCHK)" aria-label="Send Link Request"
-                           translate-attr-aria-label="CHECKLIST.LINK_REQUEST">
-                  <md-icon class="md-accent-fg s18"
-                           md-font-icon="icon-account-plus"></md-icon>
-                  <span translate="CHECKLIST.SEND_LINK_REQUEST">Send Link Request</span>
-                </md-button>
-              </md-menu-item> -->
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('send-checklists-links-to-other-users') !== -1">
                 <md-button ng-click="vm.sendLinkRequest($event, vm.idCHK)" aria-label="Send Link Request"
                   translate-attr-aria-label="CHECKLIST.LINK_REQUEST">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-account-plus"></md-icon>
                   <span translate="CHECKLIST.SEND_LINK_REQUEST">Send Link Request</span>
                 </md-button>
               </md-menu-item>
-
-
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('show-linked-users') !== -1">
                 <md-button ng-click="vm.showLinkedUsers($event, checklist)" aria-label="Show Linked Users"
                   translate-attr-aria-label="CHECKLIST.SHOW_LINKED_USERS">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-account-switch"></md-icon>
@@ -101,17 +82,19 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('show-references') !== -1">
                 <md-button ng-click="vm.toggle('references',checklist)" aria-label="Show References"
                   translate-attr-aria-label="CHECKLIST.SHOW_REFERENCES">
-                  <md-icon ng-show="checklist.showReferences" class="md-accent-fg s18" md-font-icon="icon-checkbox-marked-outline"></md-icon>
-                  <md-icon ng-hide="checklist.showReferences" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline"></md-icon>
+                  <md-icon ng-show="checklist.showReferences" class="md-accent-fg s18"
+                    md-font-icon="icon-checkbox-marked-outline"></md-icon>
+                  <md-icon ng-hide="checklist.showReferences" class="md-accent-fg s18"
+                    md-font-icon="icon-checkbox-blank-outline"></md-icon>
 
                   <span translate="CHECKLIST.SHOW_REFERENCES">Show References</span>
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('message-directly') !== -1">
                 <md-button ng-click="vm.openConversationDialog('checklist', checklist.idCHK, checklist.name)"
                   aria-label="Start Conversation" translate-attr-aria-label="CHECKLIST.CONVOS">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
@@ -119,7 +102,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-checklists') !== -1">
                 <md-button ng-click="vm.openChecklistDialog($event, checklist)" aria-label="Edit Checklist Name"
                   translate-attr-aria-label="CHECKLIST.EDIT_CHECKLIST_NAME">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
@@ -127,15 +110,15 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item>
-                  <md-button ng-click="vm.publishTemplate($event, checklist.idCHK, checklist.name)" aria-label="Publish as Template"
-                    translate-attr-aria-label="CHECKLIST.PUBLISH_TEMPLATE">
-                    <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-upload"></md-icon>
-                    <span translate="CHECKLIST.PUBLISH_TEMPLATE">Publish as Template</span>
-                  </md-button>
-                </md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('publish-templates') !== -1">
+                <md-button ng-click="vm.publishTemplate($event, checklist.idCHK, checklist.name)"
+                  aria-label="Publish as Template" translate-attr-aria-label="CHECKLIST.PUBLISH_TEMPLATE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-upload"></md-icon>
+                  <span translate="CHECKLIST.PUBLISH_TEMPLATE">Publish as Template</span>
+                </md-button>
+              </md-menu-item>
 
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('download-as-pdf') !== -1">
                 <md-button ng-click="vm.downloadPDF($ev, checklist.idCHK, checklist.name)" aria-label="Download PDF"
                   translate-attr-aria-label="CHECKLIST.DOWNLOAD_PDF">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-file-pdf"></md-icon>
@@ -143,90 +126,71 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item>
-                  <md-button ng-click="vm.archieveDialog($event, group.id)" aria-label="Archive"
-                    translate-attr-aria-label="CHECKLIST.ARCHIVE">
-                    <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
-                    <span translate="CHECKLIST.ARCHIVE"></span>
-                  </md-button>
-                </md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1">
+                <md-button ng-click="vm.archieveDialog($event, group.id)" aria-label="Archive"
+                  translate-attr-aria-label="CHECKLIST.ARCHIVE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
+                  <span translate="CHECKLIST.ARCHIVE"></span>
+                </md-button>
+              </md-menu-item>
 
               <md-divider class="md-default-theme"></md-divider>
-              <md-menu-item>
-                  <md-button ng-disabled="vm.isCuted"  ng-click="vm.cutDialog('checklist', checklist.id, checklist.idCHK)" aria-label="Cut"
-                    translate-attr-aria-label="GROUP.CUT">
-                    <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
-                    <span translate="GROUP.CUT"></span>
-                  </md-button>
-                </md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+                <md-button ng-disabled="vm.isCuted" ng-click="vm.cutDialog('checklist', checklist.id, checklist.idCHK)"
+                  aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
+                  <span translate="GROUP.CUT"></span>
+                </md-button>
+              </md-menu-item>
 
-                <md-menu-item>
-                    <md-button ng-disabled="vm.isCuted" ng-click="vm.coypDialog($event, group.id)" aria-label="Copy"
-                      translate-attr-aria-label="GROUP.COPY">
-                      <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
-                      <span translate="GROUP.COPY"></span>
-                    </md-button>
-                  </md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+                <md-button ng-disabled="vm.isCuted" ng-click="vm.coypDialog($event, group.id)" aria-label="Copy"
+                  translate-attr-aria-label="GROUP.COPY">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
+                  <span translate="GROUP.COPY"></span>
+                </md-button>
+              </md-menu-item>
 
-                  <md-menu-item>
-                      <md-button ng-disabled="vm.isCuted"  ng-click="vm.pasteDialog('section', checklist.id, checklist.idCHK)" aria-label="Paste"
-                        translate-attr-aria-label="GROUP.PASTE">
-                        <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
-                        <span translate="GROUP.PASTE"></span>
-                      </md-button>
-                    </md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+                <md-button ng-disabled="vm.isCuted" ng-click="vm.pasteDialog('section', checklist.id, checklist.idCHK)"
+                  aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
+                  <span translate="GROUP.PASTE"></span>
+                </md-button>
+              </md-menu-item>
 
-                    <md-menu-item>
-                        <md-button ng-click="vm.undoDialog($event, group.id)" aria-label="Undo"
-                          translate-attr-aria-label="GROUP.UNDO">
-                          <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>
-                          <span translate="GROUP.UNDO"></span>
-                        </md-button>
-                      </md-menu-item>
-              <md-menu-item>
-                <md-button ng-click="vm.openUploadAttachmentDialog($event, 'checklist', checklist.idCHK, $index,vm.attachments)"
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+                <md-button ng-click="vm.undoDialog($event, group.id)" aria-label="Undo"
+                  translate-attr-aria-label="GROUP.UNDO">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>
+                  <span translate="GROUP.UNDO"></span>
+                </md-button>
+              </md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('attachments-to-checklists-and-direct-messages') !== -1">
+                <md-button
+                  ng-click="vm.openUploadAttachmentDialog($event, 'checklist', checklist.idCHK, $index,vm.attachments)"
                   aria-label="Attachments" translate-attr-aria-label="CHECKLIST.ATTACHMENTS">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-attachment"></md-icon>
                   <span translate="CHECKLIST.ATTACHMENTS">Attachments</span>
                 </md-button>
               </md-menu-item>
 
-            
-              
-
-              <md-menu-item ng-show="permissions.has('saveChecklist')">
-                <md-button ng-click="vm.downloadXML($ev, checklist.idCHK, checklist.name)" aria-label="Download Checklist"
-                  translate-attr-aria-label="CHECKLIST.EXPORT_CHECKLIST">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('download-checklist') !== -1">
+                <md-button ng-click="vm.downloadXML($ev, checklist.idCHK, checklist.name)"
+                  aria-label="Download Checklist" translate-attr-aria-label="CHECKLIST.EXPORT_CHECKLIST">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-data"></md-icon>
                   <span translate="CHECKLIST.EXPORT_CHECKLIST">Export Checklist</span>
                 </md-button>
               </md-menu-item>
 
-              <!-- <md-menu-item ng-show="permissions.has('publishTemplate')">
-                <md-button ng-click="vm.publishTemplate($event, checklist.idCHK)" aria-label="Publish as Template"
-                           translate-attr-aria-label="CHECKLIST.PUBLISH_TEMPLATE">
-                  <md-icon class="md-accent-fg s18"
-                           md-font-icon="icon-cloud-upload"></md-icon>
-                  <span translate="CHECKLIST.PUBLISH_TEMPLATE">Publish as Template</span>
-                </md-button>
-              </md-menu-item> -->
-
-            
-
               <md-divider class="md-default-theme"></md-divider>
-
-
-
-              <md-menu-item>
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-checklists') !== -1">
                 <md-button ng-click="vm.deleteConfirm('checklist', checklist, $event)" aria-label="Delete Checklist"
                   translate-attr-aria-label="CHECKLIST.DELETE_CHECKLIST">
                   <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                   <span translate="CHECKLIST.DELETE_CHECKLIST">Delete Checklist</span>
                 </md-button>
               </md-menu-item>
-
-
-
             </md-menu-content>
           </md-menu>
         </div>
@@ -235,30 +199,24 @@
 
     <div class="checklist-items" data-as-sortable="vm.dragControlListenersSections" data-ng-model="checklist.sections">
 
-      <div data-as-sortable-item md-ink-ripple data-ng-repeat="section in checklist.sections | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
-
+      <div data-as-sortable-item md-ink-ripple
+        data-ng-repeat="section in checklist.sections | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
         <div ng-include="'app/main/checklist/views/detail/detailsChecklistsSections.html'"></div>
-        <div class="checklist-items" data-as-sortable="vm.dragControlListenersHeadings" data-ng-model="section.headings">
+        <div class="checklist-items" data-as-sortable="vm.dragControlListenersHeadings"
+          data-ng-model="section.headings">
 
           <div data-as-sortable-item md-ink-ripple ng-show="!section.notApplicable && vm.isExpanded('section',section)"
             data-ng-repeat="heading in section.headings | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
-
             <div ng-include="'app/main/checklist/views/detail/detailsChecklistsHeadings.html'"></div>
-
             <div class="checklist-items" data-as-sortable="vm.dragControlListenersItems" data-ng-model="heading.items">
-
-              <div data-as-sortable-item md-ink-ripple ng-show="!heading.notApplicable && vm.isExpanded('heading', heading) || vm.isHeader"
+              <div data-as-sortable-item md-ink-ripple
+                ng-show="!heading.notApplicable && vm.isExpanded('heading', heading) || vm.isHeader"
                 data-ng-repeat="item in heading.items | orderBy:'order' | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
-
                 <div ng-include="'app/main/checklist/views/detail/detailsChecklistsItems.html'"></div>
-
               </div>
-
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   </div>

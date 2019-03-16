@@ -1,5 +1,18 @@
-#team-members {
+.license-wrapper button {
+  padding: 0;
+  min-width: 55px;
+  font-size: 12px;
+  height: 25px;
+  line-height: 25px;
+}
+.license-wrapper md-dialog-content {
+padding: 10px 10px 0px 10px !important;
+}
+.license-wrapper button:hover, .license-wrapper button:focus, .license-wrapper button:active {
+  background: #32649f !important;
+}
 
+#team-members {
 
   .subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2){
     float: left !important;

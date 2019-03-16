@@ -108,6 +108,10 @@ var indexOf = [].indexOf || function (item) {
       items: [],
       referencess: []
     };
+
+    //check permission
+    var userpermission =  $cookies.get("userpermission");
+    vm.checkIsPermission = JSON.parse(userpermission);
     // CONFLICTS
     vm.fetchConflictsHeadingBlock = fetchConflictsHeadingBlock;
     vm.fetchConflictsItemBlock = fetchConflictsItemBlock;
@@ -122,7 +126,12 @@ var indexOf = [].indexOf || function (item) {
 
     api.folders.get(token).then(function (d) {
       vm.isLoader = false;
-      vm.folders = d.data.folders;
+      if(d.data.code=='-1'){
+        $scope.subscriptionAlert(d.data.message);  
+      }else{
+        vm.folders = d.data.folders;
+
+      }
     });
 
     vm.checklist = {
@@ -157,7 +166,7 @@ var indexOf = [].indexOf || function (item) {
         vm.passChecklist = [];
         api.checklists.getGroup($stateParams.id, token).then(function (d) {
           vm.passChecklist = d.data.checklists;
-          // vm.isLoader = false;
+
 
         });
         vm.setChecklistCtrlBlank();
@@ -260,6 +269,7 @@ var indexOf = [].indexOf || function (item) {
         api.checklists.getGroup($stateParams.idCHK, token).then(function (d) {
           vm.passChecklist = d.data.checklists;
           vm.isLoader = false;
+          
         });
 
         //console.log('$stateParams.id here', $stateParams.id);
@@ -653,7 +663,6 @@ var indexOf = [].indexOf || function (item) {
 
       },
       orderChanged: function (event) {
-debugger;
         console.log('event', event);
 
         // Location where item was dragged to
@@ -1087,6 +1096,8 @@ if(parentID=='allheader'){
 
             api.checklists.get(idCHK, token).success(function (res) {
               var ref;
+                     // vm.isLoader = false;
+   
 
               if ((ref = res.checklists) != null ? ref.length : void 0) {
                 vm.checklists = res.checklists;
@@ -1103,7 +1114,7 @@ if(parentID=='allheader'){
               vm.loaded.checklist = true;
               return $scope.$broadcast('event:checklistLoaded');
               console.log('broadcast event:checklistLoaded');
-            })["finally"](function () {
+           })["finally"](function () {
               vm.loading.checklist = false;
               vm.isLoader = false
               return vm.completeLoad();
@@ -3956,6 +3967,18 @@ if(parentID=='allheader'){
      // vm.isExpanded('heading', headings);
       //vm.showallheaders = true;
     }
+
+        //Subscription expired alert
+        $scope.subscriptionAlert = function (message) {
+          vm.title = 'Alert';
+          vm.message = message;
+          $mdDialog.show({
+            scope: $scope,
+            preserveScope: true,
+            templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+            clickOutsideToClose: false
+          });
+        }
 
   }
 

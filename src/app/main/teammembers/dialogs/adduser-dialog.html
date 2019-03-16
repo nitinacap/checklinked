@@ -1,0 +1,108 @@
+<md-dialog class="dialog" aria-label="New Folder">
+  <form name="form" ng-disabled='vm.inviting' class="md-inline-form" ng-submit="vm.memberInvites.invite.send.execute()"
+    novalidate>
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">{{vm.title}}</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content class="pt-15">
+      <div layout="row">
+        <p>
+          Complete the new user information and send them the email invitation to join. When they
+          complete set up, they will be added to your list of users and you can assign their permissions.
+          Until they reply, this invite can be found in Communicate – Action Items – Awaiting Response.
+        </p>
+      </div>
+      <div layout="row">
+
+        <md-input-container class="mb-10" flex="40">
+          <input type="text" name="fname" ng-model="vm.memberInvites.invite.send.first_name" placeholder="First Name
+                " required>
+   
+
+          <div ng-messages="form.fname.$error" ng-show="form.fname.$touched" role="alert">
+            <div ng-message="required" style="opacity: 1; margin-top: 0px;">
+              <span>First name is required</span>
+            </div>
+          </div>
+        </md-input-container>
+
+
+
+        <md-input-container class="mb-10" flex="40">
+          <input type="text" name="lname" ng-model="vm.memberInvites.invite.send.last_name" placeholder="Last Name
+                    " required>
+          <div ng-messages="form.lname.$error" ng-show="form.lname.$touched" role="alert">
+            <div ng-message="required" style="opacity: 1; margin-top: 0px;">
+              <span>Last name is required</span>
+            </div>
+          </div>
+        </md-input-container>
+
+      </div>
+
+      <div layout="row">
+
+        <md-input-container class="mb-10" flex="40">
+          <input type="email" name="email" ng-model="vm.memberInvites.invite.send.email" placeholder="Email"
+            ng-pattern="/^.+@.+\..+$/" required>
+          <div ng-messages="form.email.$error" role="alert" ng-show="form.email.$touched"  multiple="multiple">
+            <div ng-message="required" style="opacity: 1; margin-top: 0px;">
+              <span>Email address is required</span>
+            </div>
+            <div ng-message="pattern" style="opacity: 1; margin-top: 0px;">
+              <span>Email address must be a valid e-mail address</span>
+            </div>
+          </div>
+        </md-input-container>
+
+        <md-input-container class="mb-10" flex="40">
+          <input type="text" name="phone" ng-model="vm.memberInvites.invite.send.phone" placeholder="Phone
+                      " required>
+          <div ng-messages="form.phone.$error" role="alert" ng-show="form.phone.$touched">
+            <div ng-message="required" style="opacity: 1; margin-top: 0px;">
+              <span>Phone is required</span>
+            </div>
+          </div>
+        </md-input-container>
+
+      </div>
+
+      <div layout="row" layout-gt-sm="row">
+        <md-input-container class="mb-10" flex="40">
+
+            <md-select ng-model="vm.memberInvites.invite.send.role_type" placeholder="Role">
+                <md-option ng-value="role.id" ng-repeat="role in  vm.roleTypes">{{ role.name }}</md-option>
+              </md-select>
+          <div ng-messages="form.role.$error" ng-show="form.role.$touched" role="alert">
+            <div ng-message="required" style="opacity: 1; margin-top: 0px;">
+              <span>Role is required</span>
+            </div>
+          </div>
+        </md-input-container>
+      </div>
+
+
+
+
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="end center" flex>
+        <md-button type="submit" class="md-raised md-accent" aria-label="Submit"
+          ng-disabled="form.$invalid || form.$pristine || vm.inviting">
+          <span ng-hide='vm.inviting'>Ok </span>
+          <span ng-show='vm.inviting'>Sending...</span>
+        </md-button>
+
+      </div>
+
+
+    </md-dialog-actions>
+  </form>
+</md-dialog>

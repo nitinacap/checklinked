@@ -6,9 +6,10 @@
           Two Factor Login
         </th>
         <th aligan="bottom">
-           <md-checkbox ng-model="setting.twoFactor" aria-label="Two Factor Login" ng-click="vm.twoFactorLogin()">
+           <md-checkbox  ng-model="vm.setting.twoFactor" aria-label="Two Factor Login" ng-change="vm.twoFactorLogin()">
         </md-checkbox></th>
       </tr>
+      
   
   </table>
 

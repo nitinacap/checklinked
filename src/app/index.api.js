@@ -14,7 +14,7 @@
 
     var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
 
-   //var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
+    //var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
 
     //var BASEURL = 'http://localhost:8081/dist/ajax/';
 
@@ -196,7 +196,7 @@
       get: function (token) {
         return $http.get(BASEURL + 'coe-get.php?t=folder&token=' + token);
       },
-      add: function (name, description, link, attachment, order,folder_id) {
+      add: function (name, description, link, attachment, order, folder_id) {
         //return $http.post(BASEURL+'coe-post.php', {
 
         return $http.post(BASEURL + 'coe-post.php', {
@@ -323,14 +323,14 @@
           return res.checklists;
         });
       },
-      add: function (name, order, to, token, description, checklist_id,sub_type) {
+      add: function (name, order, to, token, description, checklist_id, sub_type) {
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'checklist',
           name: name,
           order: order,
           parentID: to,
           token: token,
-          description:description,
+          description: description,
           id: checklist_id,
           sub_type: sub_type
         }, {
@@ -475,7 +475,7 @@
               findLink: findLink,
               type: type,
               user_id: user_id,
-              token:token
+              token: token
             };
           }
           return $http.post(BASEURL + 'checklist_invite-post.php', pack, {
@@ -716,10 +716,10 @@
           info: info,
           order: order,
           dataType: option,
-          item_type : item_type,
-          item_alert : alert,
+          item_type: item_type,
+          item_alert: alert,
           parentID: to,
-          option :type
+          option: type
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -743,7 +743,7 @@
           return true;
         }
       },
-      reorder: function (id, dropPosition, type, parentID, arrayNextOrder, arrayNextId, arrayMovedOrder,arrayMovedId,arrayPreviousOrder, arrayPreviousId) {
+      reorder: function (id, dropPosition, type, parentID, arrayNextOrder, arrayNextId, arrayMovedOrder, arrayMovedId, arrayPreviousOrder, arrayPreviousId) {
         return $http.post(BASEURL + 'coe-reorder.php', {
           id: id,
           dropPosition: dropPosition,
@@ -818,10 +818,10 @@
         });
       },
       getdirectmessage: function (data) {
-        return $http.post(BASEURL + 'contact-message.php',data, {
+        return $http.post(BASEURL + 'contact-message.php', data, {
           cache: false
         }).error(function (res) {
-         // $rootScope.message('Error talking to server', 'warning');
+          // $rootScope.message('Error talking to server', 'warning');
         }).success(function (res) {
           return res.contacts;
         });
@@ -830,7 +830,7 @@
         if (q == null) {
           q = '';
         }
-        return $http.post(BASEURL + "contacts-find.php",q, {
+        return $http.post(BASEURL + "contacts-find.php", q, {
           cache: false
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
@@ -892,10 +892,10 @@
               }
             });
         },
-        send: function (idCON,message) {
+        send: function (idCON, message) {
           return $http.post(BASEURL + 'friendship_invite-post.php', {
             idCON: idCON,
-            message:message
+            message: message
           }, {
               headers: {
                 'Content-Type': 'applicatio/x-www-form-urlencoded'
@@ -912,10 +912,10 @@
               }
             });
         },
-        remove: function (idCON,type) {
+        remove: function (idCON, type) {
           return $http.post(BASEURL + 'friendship_invite-destroy.php', {
             idCON: idCON,
-            'action':type
+            'action': type
           }, {
               headers: {
                 'Content-Type': 'applicatio/x-www-form-urlencoded'
@@ -1172,10 +1172,14 @@
             cache: false
           });
       },
-      invite: function (email) {
+      invite: function (email,role_type, phone, first_name, last_name) {
         console.log('inviting', email);
         return $http.post(BASEURL + 'subscription_invite_send-post.php', {
-          email: email
+          email: email,
+          role_type: role_type,
+          phone: phone,
+          first_name: first_name,
+          last_name: last_name
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -1362,12 +1366,12 @@
     }
 
     api.item = {
-      paste: function(origin, destination, type, action_type, move_item_id ){
+      paste: function (origin, destination, type, action_type, move_item_id) {
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'cutCopyPaste',
           parent_origin_id: origin,
           parent_destination_id: destination,
-          item_move_type: type ,
+          item_move_type: type,
           action_type: action_type,
           move_item_id: move_item_id,
         }, {
@@ -1377,8 +1381,8 @@
             cache: false
           });
       },
-      undo: function(id){
-        return $http.get(BASEURL + 'coe-get.php?t=undo&id=' + id); 
+      undo: function (id) {
+        return $http.get(BASEURL + 'coe-get.php?t=undo&id=' + id);
       }
     }
 
@@ -1387,7 +1391,7 @@
       inbox: $resource(api.baseUrl + 'mail/inbox.json')
     };
 
-/// stats API
+    /// stats API
     // api.userstats = {
     //   create: function (type, title, id, user_id) {
     //     return $http.post(BASEURL + 'user-stats.php', {
@@ -1406,26 +1410,24 @@
     ////////////////////// NOTIFICATIONS
     api.notifications = {
       get: function (token) {
-       // return $http.get(BASEURL + 'coe-get.php?t=folder&token=' + token);
-       //return $http.get(BASEURL + "notification.php?token=" + token);
-       return $http.get(BASEURL + "coe-get.php?t=notification&token=" + token);
+        // return $http.get(BASEURL + 'coe-get.php?t=folder&token=' + token);
+        //return $http.get(BASEURL + "notification.php?token=" + token);
+        return $http.get(BASEURL + "coe-get.php?t=notification&token=" + token);
       }
 
     };
 
-
-
-
-
-    $rootScope.createStats = function(type, title, id){
+    $rootScope.createStats = function (type, title, id) {
       $http.post(BASEURL + 'user-stats.php', {
         type: type,
-        title:title,
-        id:id,
+        title: title,
+        id: id,
         user_id: $cookies.get('useridCON')
-      }, { headers: {
-            'Content-Type': 'application/x-www-form-urlencoded' },
-             cache: false
+      }, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+          cache: false
         });
     };
 

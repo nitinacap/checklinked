@@ -75,6 +75,10 @@
     }
 
     api.folders.get().then(function (d) {
+      
+      if (d.data.code == '-1') {
+        $scope.subscriptionAlert(d.data.message);
+      }
       vm.folders = d.data.folders;
       console.log('vm.folders', vm.folders);
     });
@@ -333,7 +337,7 @@
       vm.folder.order = 1;
       vm.folder.attachment = '';
       vm.folder.link = '';
-      vm.folder.order += vm.folders ?  vm.folders.length : '';
+      vm.folder.order += vm.folders ? vm.folders.length : '';
 
       api.folders.add(vm.folder.name, vm.folder.description, vm.folder.link, vm.folder.attachment, vm.folder.order, '', '').error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
@@ -383,10 +387,10 @@
 
           console.log('res.groups', res.groups);
           $rootScope.$broadcast('event:updateModels');
-          if(res.group && res.group.length > 0){
+          if (res.group && res.group.length > 0) {
             vm.groups.push(res.group);
           }
-        
+
           $rootScope.organizeData();
           ftchFolder(folderID)
           vm.verticalStepper.newGroupID = res.group.id;
@@ -402,9 +406,9 @@
     };
 
     function fetchGroups(id) {
-      ftchFolder(id ? id :vm.verticalStepper.step1.folderID)
-      vm.groups = $rootScope.children('groups', id ? id :vm.verticalStepper.step1.folderID);
-       $rootScope.organizeData();
+      ftchFolder(id ? id : vm.verticalStepper.step1.folderID)
+      vm.groups = $rootScope.children('groups', id ? id : vm.verticalStepper.step1.folderID);
+      $rootScope.organizeData();
 
       // if (!vm.groups.length > 0) {
       //   vm.wizard.switch = true;
@@ -414,6 +418,7 @@
     };
     function ftchFolder(id) {
       api.groups.get(id).then(function (d) {
+
         vm.groups = d.data.groups;
         $rootScope.nextStep()
       });
@@ -422,6 +427,19 @@
 
     function closeDialog() {
       $mdDialog.hide();
+    }
+
+
+    //Subscription expired alert
+    $scope.subscriptionAlert = function (message) {
+      vm.title = 'Alert';
+      vm.message = message;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+        clickOutsideToClose: false
+      });
     }
 
     // Content sub menu
