@@ -114,7 +114,7 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         case 'invite':
           console.log('navigating to invite.  return true');
           return true;
-          break;
+         break;
         case 'feed':
         case 'user':
         case 'checklist':
@@ -135,8 +135,11 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         case 'mail':
         case 'queue':
         case 'summary':
+        case 'alerts':
         case 'dashboard':
         case 'checkout':
+        case 'schedule':
+        case 'invite':
         case 'to-do':
         case 'revoke':
           //case 'file-manager':

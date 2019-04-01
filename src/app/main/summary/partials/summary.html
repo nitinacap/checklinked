@@ -46,6 +46,7 @@
                   <span translate="">Generate New Reports</span>
                 </md-button>
               </md-menu-item>
+            
             </md-menu-content>
           </md-menu>
         </th>
@@ -100,6 +101,13 @@
                   <span translate="">View Report</span>
                 </md-button>
               </md-menu-item>
+
+              <md-menu-item >
+                  <md-button ng-click="vm.reports.delete(report.idRPT)" translate-attr-aria-label="">
+                    <md-icon class="fa fa-trash  s18" md-font-icon="icon-file-document"></md-icon>
+                    <span translate="">Delete Report</span>
+                  </md-button>
+                </md-menu-item>
             </md-menu-content>
           </md-menu>
         </td>

@@ -6,14 +6,14 @@
     .config(config);
 
   /** @ngInject */
-  function config($stateProvider, msApiProvider, msNavigationServiceProvider, $translatePartialLoaderProvider) {
+  function config($stateProvider, $translatePartialLoaderProvider) {
 
     // State
     $stateProvider.state('app.alerts', {
       url: '/alerts',
       views: {
         'content@app': {
-          templateUrl: 'app/main/folders/folders.html',
+          templateUrl: 'app/main/alerts/alerts.html',
           controller: 'alertsController as vm'
         }
       }

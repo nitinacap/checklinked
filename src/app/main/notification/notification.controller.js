@@ -13,7 +13,7 @@
 
     // Content sub menu
     vm.submenu = [
-      { link: '#', title: 'Alerts' },
+      { link: 'alerts', title: 'Alerts' },
       { link: 'invitations', title: 'Action Items' },
       { link: 'chat.message', title: 'Messages' },
       { link: '', title: 'Notifications' }

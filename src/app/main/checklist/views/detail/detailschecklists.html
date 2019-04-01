@@ -40,7 +40,7 @@
               <md-icon md-font-icon="icon-dots-vertical" class="s18 active"></md-icon>
             </md-button>
             <md-menu-content width="3" class="menu-height">
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('checklist-cmplete') !== -1">
+              <md-menu-item>
                 <md-button ng-click="vm.toggleComplete(checklist)" aria-label="Complete Checklist"
                   translate-attr-aria-label="CHECKLIST.COMPLETE_CHECKLIST">
                   <md-icon ng-if="checklist.complete==1" class="md-accent-fg s18"

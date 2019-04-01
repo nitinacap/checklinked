@@ -78,14 +78,12 @@
 <!-- Two factor login start here -->
             <div class="column" ng-if="vm.twofactor">
                 <form name="otpForm" novalidate ng-submit="vm.verifyTwoFactorOTP()"> 
+             <div class="title text-left" ng-if="vm.otp_message" ng-bind="vm.otp_message" style="color:red; font-size:12px;"></div>
                 <md-input-container class="md-block" md-no-float>
                     <input type="text" name="otp" ng-model="vm.otp" placeholder="Enter OTP" required>
                     <div ng-messages="otpForm.otp.$error" role="alert">
                         <div ng-message="required">
                             <span>OTP field is required</span>
-                        </div>
-                        <div ng-message="pattern">
-                            <span>Email must be a valid e-mail address</span>
                         </div>
                     </div>
                 </md-input-container>

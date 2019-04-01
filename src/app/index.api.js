@@ -14,7 +14,7 @@
 
     var BASEURL = 'https://checklinked.azurewebsites.net/api_security/ajax/';
 
-    //var BASEURL = 'http://wdc1.acapqa.net:8081/dist/ajax/';
+    //var BASEURL = 'http://wdc1.acapqa.net:8081/api_security/ajax/';
 
     //var BASEURL = 'http://localhost:8081/dist/ajax/';
 
@@ -175,7 +175,23 @@
 
       update: function (info) {
         return $http.post(BASEURL + "account-update-post.php", {
-          info: info
+          info: info,
+         
+        }, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return res;
+          }).success(function (res) {
+            return res;
+          });
+      },    
+       setting: function (value, type) {
+        return $http.post(BASEURL + "account-setting.php", {
+          value: value,
+          type: type
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -187,6 +203,7 @@
             return res;
           });
       }
+      
     };
 
 
@@ -1344,6 +1361,19 @@
           return $http.post(BASEURL + 'conflictReports-request-post.php', {
             idsCHK: [],
             requestedAt: ''
+          }, {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              cache: false
+            });
+        },
+        delete: function (id) {
+          return $http.post(BASEURL + 'conflictReports-request-post.php', {
+            idsCHK: [],
+            requestedAt: '',
+            id: id,
+            type:'delete'
           }, {
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

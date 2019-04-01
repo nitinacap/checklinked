@@ -14,7 +14,6 @@
     vm.checkIsPermission = JSON.parse(userpermission);
     vm.firstAlert = true;
 
-
     setTimeout(function () {
       if ($stateParams.id !== undefined && $stateParams.id != null) {
         if ($stateParams.id == '') {
@@ -48,12 +47,6 @@
     setTimeout(function () {
       $scope.getFolder();
     }, 500);
-
-
-    //   $rootScope.$on("getAllFolders", function () {  
-    //     alert('Ctrl1 MyFunction')  
-    //     $scope.getFolder();
-    // });
 
 
     // Tasks will be filtered against these models

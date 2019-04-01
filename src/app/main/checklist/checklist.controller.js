@@ -1719,6 +1719,7 @@ if(parentID=='allheader'){
     });
 
     function toggleCheckbox(item, which, type, userKey) {
+      debugger;
       vm.evaluateConflicts(item, -1);
       return api.checkbox.toggle(item.id, $rootScope.showingUsers[userKey].idCON, which, type).success(function (res) {
         if (item.checkbox === void 0) {

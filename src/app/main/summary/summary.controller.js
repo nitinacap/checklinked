@@ -89,13 +89,29 @@
           } else if (res.code) {
             return $rootScope.message("Error requesting report: (" + res.code + ": " + res.message + ")");
           } else {
-            vm.reports.list = vm.reports.list.concat(res.reports);
+         
             $rootScope.message("Report is being processed.  Refresh in a little while to see the result.");
           }
         }).error(function (err) {
           return $rootScope.message('Unable to request report.', 'warning');
         })["finally"](function () {
           return vm.reports.requesting = false;
+        });
+      },
+      delete: function (id) {
+
+        return api.summary.reports.delete(id).success(function (res) {
+          if (res === void 0 || res === null || res === '') {
+            return $rootScope.message('Report not requested.', 'warning');
+          } else if (res.type=='success') {
+           vm.reports.refresh();
+           $rootScope.message("Report has been deleted successfully ", 'success');
+          // return  vm.reports.list = res.reports;
+          }
+        }).error(function (err) {
+          return $rootScope.message('Unable to request report.', 'warning');
+        })["finally"](function () {
+          //return vm.reports.requesting = false;
         });
       },
       view: function (report, id) {
@@ -280,7 +296,7 @@
     // Content sub menu
     vm.submenu = [
       { link: '', title: 'Issues' },
-      { link: 'checklist', title: 'Schedules' },
+      { link: 'schedule', title: 'Schedules' },
       { link: '#', title: 'Reports' },
       { link: 'dashboard', title: 'Dashboard' }
     ];

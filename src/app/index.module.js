@@ -7,7 +7,7 @@
 
       // Common 3rd Party Dependencies
       'textAngular',
-
+      
       // Toastr
       'toastr',
 
@@ -108,7 +108,10 @@
       'app.login',
 
       // Others
-      'app.other'
+      'app.other',
+
+       // Schedules
+       'app.schedule'
 
     ]);
 })();

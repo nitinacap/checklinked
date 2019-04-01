@@ -222,7 +222,7 @@
         } else {
 
           /* Reset Group Object */
-          vm.group.id = res.group.id;
+          vm.group.id = res.group.id ? res.group.id : '';
           vm.group.name = res.group.name;
           vm.group.id_parent = res.group.id_parent;
           vm.group.order = res.group.order;

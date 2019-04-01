@@ -1,0 +1,63 @@
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+  <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
+    <thead class="tool-bg">
+
+    <tr>
+      <th>
+
+        Archive to<br>
+        Notifications
+      </th>
+      <th>
+        Date
+      </th>
+      <th>
+        Data Point
+      </th>
+      <th>
+        User
+      </th>
+      <th>
+        Checklist
+      </th>
+
+
+      <th class="text-right">
+        <md-menu>
+          <md-button ng-click="$mdOpenMenu($event)"
+                     class="md-icon-button table-md-icon-button" aria-label="Sort" translate
+                     translate-attr-aria-label="CONTACTS.SORT">
+            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+          </md-button>
+          <md-menu-content width="3">
+            <md-menu-item>
+              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Archive All">
+                <md-icon class="md-accent-fg s18"
+                         md-font-icon="fa fa-download"></md-icon>
+                <span>Archive All</span>
+              </md-button>
+            </md-menu-item>
+          </md-menu-content>
+        </md-menu>
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr
+      ng-repeat="alert in [1,2,3,4,5]">
+      <td width="100">
+       <a href=""> <i class="fa fa-arrow-right s18" aria-hidden="true"></i></a>
+      </td>
+      <td> Wed, June 18 4:25pm</td>
+      <td> Invoice Date</td>
+      <td> Dave Zulaica </td>
+      <td colspan="2"> SF Tower – SF Design</td>
+
+
+     
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>

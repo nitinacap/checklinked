@@ -6,39 +6,23 @@
     .controller('UserSettingController', UserSettingController)
 
   /** @ngInject */
-  function UserSettingController($rootScope, $mdDialog, $cookies, $document, $stateParams, $state, $http, $scope, api, $mdSidenav) {
+  function UserSettingController($rootScope, api) {
     var vm = this;
     vm.twoFactorLogin = twoFactorLogin;
     vm.isLoader = false;
-
+    vm.setting = { twoFactor:$rootScope.userData.two_step ? true : ''};
+    console.log('twoFactor=', vm.setting);
 
     function twoFactorLogin() {
-
-      alert(vm.setting.twoFactor);
-      return api.account.update({'two_factor': vm.setting.twoFactor ? 'true' : 'false'}).error(function (res) {
+      vm.isLoader = true;
+      return api.account.setting(vm.setting.twoFactor ? 1 : 0,'setting').error(function (res) {
         return $rootScope.message('Server not responsing properly.', 'warning');
       }).success(function (res) {
-        alert(JSON.stringify(res))
+        vm.isLoader = false;
+        if(res.type=='success')
+         $rootScope.message('Two factor setting changed successfully', 'success');
       });
-      // $http.post(BASEURL +'setting.php', {
-      //   type: 'twoFacror',
-      //   user_id: $cookies.get("useridCON"),
-      //   token: $cookies.get("token")
 
-      // }, {headers: {'Content-Type': 'application/x-www-form-urlencoded' },
-      //   cache: false
-      // }).success(function (res) {
-      //   vm.isLoader = false;
-      //   if(res.code==1){
-      //      $scope.errtoken =  res.message
-      //   }
-      //   else if(res.code==0){
-      //   $scope.successtoken = "Two factoe login has been updated successfully";
-      //   }
-      // }).error(function (res) {
-      //   $scope.errtoken = res.message;
-  
-      // })
     }
 
     vm.submenu = [
