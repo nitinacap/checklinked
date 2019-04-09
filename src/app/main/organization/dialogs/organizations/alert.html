@@ -1,12 +1,17 @@
 <md-dialog aria-label="Alert" id="alert-message">
     <form ng-cloak>
       <md-toolbar>
-        <div class="md-toolbar-tools">
-          <h6>{{vm.title}}</h6>
-          <span flex></span>
-          <md-button class="md-icon-button" ng-click="cancel()">
-            <i class="fa fa-times"></i>
-          </md-button>
+        <div layout="row">
+          <div flex="100">
+           <span class="font-12 pl-25"> {{vm.title}}</span>
+          </div>
+         <div  flex="100" class="text-right">
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <i class="fa fa-times"></i>
+              </md-button>
+         </div>
+       
+         
         </div>
       </md-toolbar>
       <md-dialog-content>

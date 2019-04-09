@@ -33,7 +33,7 @@
     //permission
 
     var userpermission =  $cookies.get("userpermission");
-    vm.checkIsPermission = JSON.parse(userpermission);
+    vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
 
     //Toggle Left Side Nav
     function toggleSidenav(sidenavId) {

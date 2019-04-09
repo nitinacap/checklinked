@@ -1,0 +1,89 @@
+<table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0" ng-show="!vm.closeList">
+        <tbody ng-repeat="contacts in  vm.contacts" ng-if="contacts || vm.contacts">
+                <tr>
+                    <td>
+                         <i class="fa fa-plus-circle s18" ng-click="myvalue2 = myvalue2 == true ? false : true;" aria-hidden="true"
+                            ng-show="!myvalue2"></i>
+                        <i class="fa fa-minus-circle s18" ng-click="myvalue2 = myvalue2 == true ? false : true;" aria-hidden="true"
+                            ng-show="myvalue2"></i>
+    
+                        <span class="breadcrumcolor pointer capitalize"> </span>
+    
+                    </td>
+                </tr>
+                <tr ng-repeat="contact in contacts | orderBy:'-created_at'" class="removeborder" ng-show="myvalue2" ng-if="contact">
+    
+                    <td>
+                        <div layout="row">
+                            <div class="column">
+                                <span class="headingcolor">{{contact.user_full_name}} {{contact.organization_name }}</span>
+    
+                            </div>
+                            <div class="column">
+                                <span ng-init="vm.notificationDate(contact.created_at)"></span>
+                                <small class="pl-30"> {{ vm.unixtimestamp[$index] | date: "M/d/yy h:mm a" }}</small>
+                                <a href="{{contact.image}}" download="{{contact.image}}" ng-show="contact.image">
+                                        <i class="fa fa-paperclip s18 pl-10"></i>
+                                    </a>
+                            </div>
+    
+                        </div>
+    
+                        <p class="message">
+                            <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true"
+                                ng-show="!myvalue"></i>
+                            <i class="fa fa-chevron-down" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true"
+                                ng-show="myvalue"></i>
+                            <span>
+                                {{contact.post}} 
+                            </span>
+                            <div ng-show="myvalue">
+                                <form name="mesageForm" class="md-inline-form" novalidate>
+                                    <div layout="row">
+                                        <div layout="column">
+                                            <div class="upload-btn-wrapper">
+                                                <button class="btn">
+                                                    <img src="/assets/images/logos/attach.png" style="vertical-align:bottom;">
+                                                </button>
+                                                <input onchange="angular.element(this).scope().setFile(this)" file-model="{{'myFile' + contact.fdi_feed_item_id + $index}}"
+                                                    id="{{'myFile' + contact.fdi_feed_item_id + $index}}" alt="Attach file"
+                                                    multiple ng-model="vm.file" type="file" name="myfile" />
+    
+    
+                                            </div>
+                                        </div>
+                                        <div layout="column" flex=75>
+                                            <textarea nput name="message_name" ng-model="message_name" required id="text{{contact.fdi_feed_item_id}}{{$index}}"
+                                                type="text" class="textmessage"></textarea>
+    
+                                            <div ng-messages="mesageForm.message_name.$error" ng-show="mesageForm.message_name.$touched"
+                                                role="alert">
+                                                <div ng-message="required">
+                                                    <span class="danger">Message field is required</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div layout="column" flex=10>
+                                            <md-button ng-disabled="mesageForm.$invalid || mesageForm.$pristine" class="icon-button text-left"
+                                                ng-click="vm.submitMessage(contact, $index, 'myFile' + contact.fdi_feed_item_id + $index)">
+                                                <img alt="send" class="send" ng-if="!vm.spinner" src="/assets/icons/send.png">
+                                                <i class="fa fa-spinner fa-spin" ng-if="vm.spinner" style="font-size:24px"></i>
+    
+                                            </md-button>
+                                        </div>
+                                    </div>
+    
+                                </form>
+                            </div>
+    
+                        </p>
+                    </td>
+                </tr>
+     </tbody>
+    </table>
+
+    <div layout="row" ng-if="!vm.messages">
+            <h2 class="pl-30 pt-20">No message created yet</h2>
+        </div>
+    
+ 

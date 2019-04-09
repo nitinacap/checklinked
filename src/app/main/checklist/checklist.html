@@ -9,18 +9,18 @@
   <div class="toolbar-list tb-border" layout="row" layout-align="space-between center"
     ng-if="vm.checklists.length && !vm.isLoader">
     <div layout="row" layout-align="start center" class="pl-15">
-      <md-select class="simplified" ng-model="vm.checklistOrder" placeholder="Mosr Recent"
+      <md-select class="simplified" ng-model="vm.checklistOrder" placeholder="Sort By"
         ng-change="vm.checklistOrderDescending = vm.checklistOrder === '' ? false : vm.checklistOrderDescending">
-        <md-option value="name">Checklist</md-option>
+        <md-option value="name">Sort by A-Z</md-option>
+         <md-option value="-name">Sort by Z-A</md-option>
       </md-select>
 
-      <md-button class="md-icon-button" ng-disabled="vm.checklistOrder === ''"
-        ng-click="vm.checklistOrderDescending = !vm.checklistOrderDescending" aria-label="Sort Direction" translate
+      <md-button class="md-icon-button" ng-click="vm.checklistOrderDescending = !vm.checklistOrderDescending" aria-label="Sort Direction" translate
         translate-attr-aria-label="GROUP.SORT_DIRECTION">
         <md-icon style="line-height: 10px !important;" md-font-icon="icon-sort-ascending"
-          ng-if="vm.checklistOrderDescending === false" class="s18"></md-icon>
-        <md-icon style="line-height: 10px !important;" md-font-icon="icon-sort-descending"
           ng-if="vm.checklistOrderDescending === true" class="s18"></md-icon>
+        <md-icon style="line-height: 10px !important;" md-font-icon="icon-sort-descending"
+          ng-if="vm.checklistOrderDescending === false" class="s18"></md-icon>
       </md-button>
     </div>
     <div class="text-right mr-9" layout="row" layout-align="end center">

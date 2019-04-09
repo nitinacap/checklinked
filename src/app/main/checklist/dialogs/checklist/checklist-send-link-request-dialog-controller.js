@@ -101,6 +101,7 @@
            //  $rootScope.createStats('checklist', 'links', itemID);
             return api.checklists.invite.send(raw.id, itemID, true, raw.idACC, vm.type, $rootScope.user.idCON, $rootScope.user.token).success(function(res) {
               var status;
+              $mdDialog.hide();
               if (res === void 0 || res === null || res === '') {
                 return $rootScope.message('Error sending Link Request.  Server not responding properly.', 'warning');
               } else if (res.code=='-1') {

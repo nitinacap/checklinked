@@ -2,12 +2,13 @@
     <img ng-if="!vm.create.success" alt="Checklinked Logo" class="" src="/assets/images/logos/checklinked.png">
 
 
-  <div class="title" translate="REGISTER.TITLE">Accept Invitation</div>
+  <div class="title" translate="REGISTER.TITLE">Accept Invitation {{vm.acceptInvite.reg.contact.name.last}}</div>
 
 
 
     <form name="registerForm" novalidate ng-submit="vm.acceptInvite.signup()">
       <md-input-container class="md-block" md-no-float>
+     <input type="hidden" name="role_type" ng-model="vm.acceptInvite.reg.contact.role_type">
         <input name="first" ng-model="vm.acceptInvite.reg.contact.name.first" placeholder="First Name"
                translate translate-attr-placeholder="REGISTER.FIRST"
                required>
@@ -80,11 +81,11 @@
         <md-checkbox name="terms" ng-model="data.cb1" aria-label="I read and accept" required></md-checkbox>
         <div flex="100">
             <div flex="100" translate="REGISTER.READ_ACCEPT">I have read and accepted the</div>
-            <div flex="100">
+            <!-- <div flex="100">
                 <a class="link" ui-sref="app.term.privacy" class="md-accent-color">
                     privacy policy</a> <span style="color:#929292;">and</span>
                 <a class="link" ui-sref="app.term.term" class="md-accent-color"> terms of use
-            </div>
+            </div> -->
 
         </div>
     </div>
@@ -103,6 +104,7 @@
                  translate-attr-aria-label="REGISTER.CREATE_ACCOUNT">
         CREATE MY ACCOUNT
       </md-button>
+      
       <div class="login" layout="row" layout-xs="column" layout-align="center center">
         <span class="text" translate="REGISTER.ALREADY_HAVE">Already have an account?</span>
         <a class="link"  ng-click="vm.viewToggle('legacy', 'create')"  translate="REGISTER.LOGIN">Log in</a>

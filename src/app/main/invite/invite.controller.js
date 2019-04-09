@@ -86,7 +86,8 @@
               console.log('invite accept error', idSUI, res);
               return $rootScope.message(res.message, 'warning');
             } else {
-              return vm.acceptInvite.succeeded(res.user.token);
+              $state.go('app.logout');
+             // return vm.acceptInvite.succeeded(res.user.token);
             }
           })["finally"](function () {
             return vm.acceptInvite.accepting = false;
@@ -110,7 +111,11 @@
         } else {
           vm.invite = res.invite;
           vm.acceptInvite.signin.username = res.invite.email;
-          return vm.acceptInvite.reg.contact.email = res.invite.email;
+          vm.acceptInvite.reg.contact.email = res.invite.email;
+          vm.acceptInvite.reg.contact.name.first = res.invite.json_data.last_name;
+          vm.acceptInvite.reg.contact.name.last = res.invite.json_data.last_name;
+          vm.acceptInvite.reg.contact.phone = res.invite.json_data.phone;
+          vm.acceptInvite.reg.contact.role_type = res.invite.json_data.role_type;
         }
       });
     }

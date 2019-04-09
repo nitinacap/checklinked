@@ -6,7 +6,7 @@
     .controller('TeamMembersController', TeamMembersController);
 
   /** @ngInject */
-  function TeamMembersController($rootScope, $http, $scope, api, $mdSidenav, $mdDialog, $stateParams,  $cookies) {
+  function TeamMembersController($rootScope, $http, $scope, api, $mdSidenav, $mdDialog, $stateParams, $cookies) {
 
     var vm = this;
 
@@ -20,13 +20,15 @@
     vm.addLicence = addLicence;
     vm.tabOption = 0;
     vm.members = [];
+    vm.cancelSubscription = cancelSubscription;
+    vm.openSubscriptionListDialog = openSubscriptionListDialog;
     //$scope.members = [];
 
     vm.isLoader = true;
     //permission
 
-    var userpermission =  $cookies.get("userpermission");
-    vm.checkIsPermission = JSON.parse(userpermission);
+    var userpermission = $cookies.get("userpermission");
+    vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
 
     //Toggle Left Side Nav
     function toggleSidenav(sidenavId) {
@@ -286,7 +288,7 @@
 
           execute: function () {
             var self;
-            vm.inviting =true;
+            vm.inviting = true;
             self = vm.memberInvites.invite.send;
             if (self.email === $rootScope.user.email) {
               return $rootScope.message('You cannot invite yourself!', 'warning');
@@ -296,7 +298,7 @@
             api.subscriptions.invite(self.email, self.role_type, self.phone, self.first_name, self.last_name).error(function (res) {
               return $rootScope.message('Error inviting.', 'warning');
             }).success(function (res) {
-              vm.inviting =false;
+              vm.inviting = false;
               if (res === void 0 || res === null || res === '') {
                 return $rootScope.message('Invalid response.', 'warning');
               } else if (res.code) {
@@ -314,7 +316,7 @@
         withdraw: {
           inProgress: [],
           execute: function (invite) {
-            vm.inviting =true;
+            vm.inviting = true;
             var self;
             self = vm.memberInvites.invite.withdraw;
             self.inProgress.push(invite.id);
@@ -323,7 +325,7 @@
               console.log('invite withdraw error', invite, res);
               $rootScope.message('Error withdrawing invitation.', 'warning');
             }).success(function (res) {
-              vm.inviting =false;;
+              vm.inviting = false;;
               if (res === void 0 || res === null || res === '') {
                 console.log('invite withdraw error', invite, res);
                 return $rootScope.message('Invalid response.', 'warning');
@@ -597,29 +599,74 @@
     vm.addUser = addUser;
 
     function addUser(item) {
-      if(item!=='subscribed'){
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/teammembers/dialogs/licence-dialog.html',
-        clickOutsideToClose: false
-      });
-    }else{
-      vm.title = 'Add User';
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/teammembers/dialogs/adduser-dialog.html',
-        clickOutsideToClose: false
-      });
-    }
+      if (item !== 'subscribed') {
+        $mdDialog.show({
+          scope: $scope,
+          preserveScope: true,
+          templateUrl: 'app/main/teammembers/dialogs/licence-dialog.html',
+          clickOutsideToClose: false
+        });
+      } else {
+        vm.title = 'Add User';
+        $mdDialog.show({
+          scope: $scope,
+          preserveScope: true,
+          templateUrl: 'app/main/teammembers/dialogs/adduser-dialog.html',
+          clickOutsideToClose: false
+        });
+      }
     };
 
     vm.checkRole = checkRole;
     vm.permission_to_add_subscription = [];
-    function checkRole(item){
-    vm.permission_to_add_subscription.push(item.includes("Controller"));
+    function checkRole(item) {
+      vm.permission_to_add_subscription.push(item.includes("Controller"));
     }
+
+    function cancelSubscription(id) {
+      vm.isLoader = true;
+      $http.post(BASEURL + 'role-permission.php', {
+        item_type: 'plan',
+        type: 'cancelsubscription',
+        id: id,
+      }).success(function (res) {
+        vm.isLoader = false;
+        if (res.type == 'success') {
+          $rootScope.message('Plan has been deleted successfully', 'success');
+          vm.items = res.plan;
+        } else {
+          $rootScope.message(res.message, 'warning');
+        }
+      })
+    };
+
+    function getSubscriptions() {
+      return  $http.post(BASEURL + 'role-permission.php', {
+          item_type: 'plan',
+          type: 'getsubscription'
+        }).success(function (res) {
+          vm.isLoader = false;
+          if (res.type == 'success') {
+          vm.getsubscriptions = res.plan;
+          } else {
+            $rootScope.message(res.message, 'warning');
+          }
+        })
+      };
+
+  getSubscriptions();
+
+   function openSubscriptionListDialog(items){
+    vm.isLoader = false;
+    vm.items = items;
+    vm.title = 'Subscription List';
+    $mdDialog.show({
+      scope: $scope,
+      preserveScope: true,
+      templateUrl: 'app/main/teammembers/dialogs/subscription-list-dialog.html',
+      clickOutsideToClose: false
+    });
+   }
 
 
 

@@ -250,3 +250,13 @@ body {
     padding: 0 8px 0 12px;
   }
 }
+
+
+.default-item button{
+  display: flex !important;
+  padding: 0 15px !important;
+  align-items: center !important;
+}
+.default-item button md-icon {
+  margin: 0;
+}

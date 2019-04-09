@@ -10,12 +10,13 @@
         .filter('extension', extensionFilter)
         .filter('tostring', tostringFilter)
         .filter('tonumber', tonumberFilter)
+        .filter('datetime', datetimeFilter)
         .filter('timeSince', timeSinceFilter)
         .filter('unique', uniqueFilter)
         .filter('humanizeDoc', humanizeDocFilter);
 
     /** @ngInject */
-
+    
 
     function uniqueFilter($sce){
 
@@ -44,6 +45,17 @@
     {
         return function(input) { 
             return input.toString();
+          };
+    }
+
+    function datetimeFilter()
+    {
+        return function(input) { 
+            if(input && input!=='undefined' || input!==undefined){
+              var datum = Date.parse(input);
+               return datum/1000;
+               }
+          
           };
     }
 

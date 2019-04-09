@@ -5,9 +5,10 @@
         <th>
           <span ng-if="!vm.folders.length && !vm.isLoader">You do not have any projects</span>
           <div layout="row" layout-align="start center" ng-if="vm.folders.length  && !vm.isLoader">
-            <md-select class="simplified" ng-model="vm.folderOrder" placeholder="Most Recent"
+            <md-select class="simplified" ng-model="vm.folderOrder" placeholder="Sort By"
               ng-change="vm.folderOrderDescending = vm.folderOrder === '' ? true : vm.folderOrderDescending">
-              <md-option value="name">Most Recent</md-option>
+              <md-option value="name">Sort by A-Z</md-option>
+              <md-option value="-name">Sort by Z-A</md-option>
             </md-select>
             <md-button class="md-icon-button" ng-click="vm.folderOrderDescending = !vm.folderOrderDescending"
               aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
@@ -59,13 +60,26 @@
         </a>
         <p class="pl-25" ng-show = "IsVisibledesc">{{folder.description}}</p> -->
 
-          <a ng-click="ShowHideDescription()" ng-show="folder.description !='Null' ">
+          <!-- <a ng-click="ShowHideDescription()" ng-show="folder.description !='Null' ">
             <md-icon class="md-accent-fg s18 pt-0" md-font-icon="icon-plus"></md-icon>
-          </a>
-          <a ng-href="/process/workflows/{{folder.id}}" class="{{folder.id_child=='no' ? 'folderchild': '' }}">
+          </a> -->
+
+          <a ng-click="myvalue = myvalue == true ? false : true;">
+              <md-icon class="md-accent-fg s18 pt-0" md-font-icon="icon-plus"></md-icon>
+            </a>
+          <a matTooltip="Info about the action" ng-href="/process/workflows/{{folder.id}}" class="{{folder.id_child=='no' ? 'folderchild': '' }}">
+            <md-tooltip ng-if="folder.description && folder.description!='NULL' && folder.description!='null'">{{folder.description}}</md-tooltip>
             {{folder.name}}
           </a>
-          <p class="pl-25" ng-show="IsVisibledesc">{{folder.description}}</p>
+
+          <!-- <p class="pl-25" ng-show="IsVisibledesc">{{folder.description}}</p> -->
+          <!-- <div class="pl-25" ng-show="myvalue">
+            {{folder.tree_structure[$index]}}
+
+            <div  ng-repeat="workflow in folder.tree_structure[$index]">
+
+            </div>
+          </div> -->
         </td>
 
 

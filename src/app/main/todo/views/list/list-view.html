@@ -3,8 +3,7 @@
 
   <div class="" md-ink-ripple layout="row" layout-align="start center"
          ng-click="vm.openTaskDialog($event, task)"
-         ng-repeat="task in vm.tasks  track by $index"
-         >
+         ng-repeat="task in vm.tasks  track by $index">
 
         <div class="handle" ng-click="vm.preventDefault($event)">
             <md-icon md-font-icon="icon-drag-vertical" class="icon"></md-icon>

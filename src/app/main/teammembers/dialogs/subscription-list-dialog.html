@@ -1,0 +1,49 @@
+<md-dialog class="dialog" aria-label="">
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">{{vm.title}}</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content ms-scroll>
+      <md-input-container class="md-block mb-0" >
+       <table class="simple row-border hover bordered-table">
+         <thead>
+           <tr>
+             <th>SI.No</th>
+             <th>Plan Name</th>
+             <th>Plan Type</th>
+             <th >Expried On</th>
+             <th>Action</th>
+           </tr>
+         </thead>
+         <tbody>
+          <tr ng-repeat="item in  vm.items">
+            <td>{{$index + 1}}</td>
+            <td><span class="capitalize">{{item.name}}</span></td>
+            <td><span class="capitalize">{{item.slug}}</span></td>
+            <td>{{item.ends_at ? item.ends_at : 'Not Available'}}</td>
+            <td>
+              <md-button ng-click="vm.cancelSubscription(item.id)" type="button" class="md-warn min-width-0"> 
+                 <md-icon md-font-icon="icon-trash"></md-icon>
+                </md-button>
+            </td>
+          </tr> 
+         </tbody>
+       </table>
+      </md-input-container>
+      <div class="bd-loader" ng-if="vm.isLoader">
+          <md-progress-circular md-diameter="40"></md-progress-circular>
+        </div>
+    </md-dialog-content>
+
+
+
+    <!-- <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="end center" flex >
+      </div>
+    </md-dialog-actions> -->
+    
+</md-dialog>

@@ -340,10 +340,10 @@
       vm.folder.order += vm.folders ? vm.folders.length : '';
 
       api.folders.add(vm.folder.name, vm.folder.description, vm.folder.link, vm.folder.attachment, vm.folder.order, '', '').error(function (res) {
-        return $rootScope.message("Error Creating Project", 'warning');
+        return $rootScope.message("Error Creating Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
-          return $rootScope.message("Error Creating Project", 'warning');
+          return $rootScope.message("Error Creating Workflow", 'warning');
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
@@ -356,7 +356,7 @@
           vm.folders.push(res.folder);
           $rootScope.organizeData();
           fetchGroups(res.folder.id);
-          $rootScope.message('Project Added');
+          $rootScope.message('New project created successfully');
 
           //Hide Buttons
           vm.wizard.newFolder = false;
@@ -377,10 +377,10 @@
       vm.group.id_parent = folderID;
 
       api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent).error(function (res) {
-        return $rootScope.message("Error Adding Project", 'warning');
+        return $rootScope.message("Error Adding Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
-          return $rootScope.message("Error Adding Project", 'warning');
+          return $rootScope.message("Error Adding Workflow", 'warning');
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
@@ -400,7 +400,7 @@
           vm.wizard.switch = false;
 
 
-          $rootScope.message('Project Added');
+          $rootScope.message('New workflow created successfully');
         }
       });
     };

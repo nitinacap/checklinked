@@ -10,9 +10,9 @@
                     <div ng-include="'app/main/teammembers/partials/permission.html'"></div>
                 </md-tab-body>
             </md-tab>
-            <md-tab class="pr-30" ng-show="vm.checkIsPermission.indexOf('assign-permissions') !== -1">
+            <md-tab class="pr-30" ng-if="vm.checkIsPermission.indexOf('assign-permissions') !== -1 && vm.checkIsPermission.indexOf('manage-subscription') !== -1">
                 <md-tab-label>
-                    <span>Subscription</span>
+                    <span>Subscription </span>
                 </md-tab-label>
                 <md-tab-body>
                     <div ng-include="'app/main/teammembers/partials/subscription.html'"></div>

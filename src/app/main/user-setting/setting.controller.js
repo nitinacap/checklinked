@@ -10,8 +10,10 @@
     var vm = this;
     vm.twoFactorLogin = twoFactorLogin;
     vm.isLoader = false;
-    vm.setting = { twoFactor:$rootScope.userData.two_step ? true : ''};
-    console.log('twoFactor=', vm.setting);
+    if($rootScope.userData){
+      vm.setting = { twoFactor:$rootScope.userData.two_step ? true : ''};
+    }
+
 
     function twoFactorLogin() {
       vm.isLoader = true;

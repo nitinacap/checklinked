@@ -111,7 +111,7 @@ var indexOf = [].indexOf || function (item) {
 
     //check permission
     var userpermission =  $cookies.get("userpermission");
-    vm.checkIsPermission = JSON.parse(userpermission);
+    vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
     // CONFLICTS
     vm.fetchConflictsHeadingBlock = fetchConflictsHeadingBlock;
     vm.fetchConflictsItemBlock = fetchConflictsItemBlock;
@@ -722,28 +722,28 @@ var indexOf = [].indexOf || function (item) {
           } else {
             $rootScope.message("Order has been modified");
             var itemIndex;
-            loadChecklist(vm.idCHK)
+           // loadChecklist(vm.idCHK)
          
-            // itemIndex = vm.items.indexOf(itemMoved);
-            // console.log('itemIndex', itemIndex);
-            // vm.items[itemIndex].order = vm.reorder.order;
+            itemIndex = vm.items.indexOf(itemMoved);
+            console.log('itemIndex', itemIndex);
+            vm.items[itemIndex].order = vm.reorder.order;
 
          
 
-            // console.log('post vm.items', vm.items);
+            console.log('post vm.items', vm.items);
 
-            // var packet;
-            // packet = {
-            //   catalog: 'items',
-            //   type: 'reorder',
-            //   user: {
-            //     idCON: $rootScope.user.idCON,
-            //     name: $rootScope.user.name
-            //   },
-            //   record: vm.items[itemIndex]
-            // };
-            // console.log('emitting data', packet);
-            // $rootScope.socketio.emit('data', packet);
+            var packet;
+            packet = {
+              catalog: 'items',
+              type: 'reorder',
+              user: {
+                idCON: $rootScope.user.idCON,
+                name: $rootScope.user.name
+              },
+              record: vm.items[itemIndex]
+            };
+            console.log('emitting data', packet);
+            $rootScope.socketio.emit('data', packet);
 
           }
         });
@@ -3979,6 +3979,15 @@ if(parentID=='allheader'){
             templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
             clickOutsideToClose: false
           });
+        }
+
+
+
+        vm.uncheckLabel = uncheckLabel;
+        function uncheckLabel(val){
+         alert(val);
+        vm.newItem.dataTypes = false;
+    
         }
 
   }

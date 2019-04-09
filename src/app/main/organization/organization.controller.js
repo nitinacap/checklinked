@@ -152,14 +152,14 @@
           'order': '',
           'deleted': false
         };
-        vm.title = vm.orgTmp.idACC ? 'Edit Org Info' : 'Add Org Info';
+        vm.title = (vm.orgTmp && vm.orgTmp.idACC.idACC) ? 'Edit Org Info' : 'Add Org Info';
         vm.newFolder = true;
       }
 
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
-        templateUrl: vm.orgTmp.idACC ? 'app/main/organization/partials/organization.html' : 'app/main/organization/partials/create-organization.html',
+        templateUrl: (vm.orgTmp && vm.orgTmp.idACC.idACC) ? 'app/main/organization/partials/organization.html' : 'app/main/organization/partials/create-organization.html',
         parent: angular.element($document.find('#checklist')),
         targetEvent: ev,
         clickOutsideToClose: false

@@ -390,17 +390,31 @@
         vm.chat = [];
         vm.isLoader = false;
         if (res.type == 'success') {
-          var datas = res.posts.data.conversions;
+          var object = res.posts.data.conversions;
+          vm.messages = res.posts.data.conversions;
           vm.contacts = res.posts.data.contacts;
+         // vm.messages = Object.keys(object).map(e=>object[e]);
+
+          // vm.mainconversations = [];
+          // vm.messages.forEach(function(data)
+          // {
+          //   vm.mainconversations.push(data);
+          // }
+          // )
+          // console.log(vm.mainconversations) ;
+
+
+         // console.log(result);
+        //  console.log('datas=', result);
          // vm.messages = res.posts.data;
-          var newArray = [];
-          for (var item = 0; item < datas.length; item++) {
-            if (datas[item].conversions && datas[item].conversions.length) {
-              newArray.push(datas[item]);
-            }
-          }   
+        //   var newArray = [];
+        //   for (var item = 0; item < datas.length; item++) {
+        //     if (datas[item].conversions && datas[item].conversions.length) {
+        //       newArray.push(datas[item]);
+        //     }
+        //   }   
       
-        vm.messages = newArray;
+        // vm.messages = newArray;
 
         console.log("conversions=",vm.messages);
 
@@ -411,7 +425,7 @@
     vm.notificationDate = notificationDate;
     vm.unixtimestamp = [];
     function notificationDate(item){
-      if(item!=='undefined' || item!==undefined){
+      if(item && item!=='undefined' || item!==undefined){
        vm.unixtimestamp.push((new Date(item.replace('-','/'))).getTime());
 
       }

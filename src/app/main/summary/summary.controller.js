@@ -17,7 +17,7 @@
     vm.openConversationDialog = openConversationDialog;
 
     var userpermission = $cookies.get("userpermission");
-    vm.checkIsPermission = JSON.parse(userpermission);
+    vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
     vm.closeDialog = closeDialog;
 
     function toggleSidenav(sidenavId) {

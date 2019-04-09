@@ -5,9 +5,10 @@
         <th>
           <span ng-if="!vm.groups.length  && !vm.isLoader">You do not have any workflow</span>
           <div layout="row" layout-align="start center" ng-if="vm.groups && !vm.isLoader">
-            <md-select class="simplified" ng-model="vm.groupOrder" placeholder="Most Recent"
+            <md-select class="simplified" ng-model="vm.groupOrder" placeholder="Sort By"
               ng-change="vm.groupOrderDescending = vm.groupOrder === 'true ? true : vm.folderOrderDescending">
-              <md-option value="name">Most Recent</md-option>
+              <md-option value="name">Sort by A-Z</md-option>
+              <md-option value="-name">Sort by Z-A</md-option>
             </md-select>
 
             <md-button class="md-icon-button" ng-click="vm.groupOrderDescending = !vm.groupOrderDescending"
