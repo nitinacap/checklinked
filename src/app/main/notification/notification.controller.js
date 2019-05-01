@@ -21,16 +21,20 @@
     ];
 
     function getUserNotification() {
+      vm.isLoader = true;
       return api.notifications.get($cookies.get('token')).success(function (resp) {
         if (resp) {
-          if(resp.code=='-1'){
-            $scope.subscriptionAlert(resp.message);  
-          }else{
+          vm.isLoader = false;
+
+          if (resp.code == '-1') {
+            $scope.subscriptionAlert(resp.message);
+          } else {
+           
             vm.notifications = resp.notifications;
             vm.closeList = false;
-    
+
           }
-      
+
 
         }
       }).error(function (resp) {
@@ -41,21 +45,26 @@
     vm.projectList = projectList;
     vm.notificationList = notificationList;
     vm.notificationDate = notificationDate;
+    vm.readNotification = readNotification;
     vm.closeList = true;
     vm.chk_changes = [];
     vm.unixtimestamp = []
 
     function totUsers(item) {
-      vm.chk_changes.push(Object.keys(item).length - 1);
+      if(item) {
+        vm.chk_changes.push(Object.keys(item).length - 1);
+
+      }
     }
 
-    function projectList(list, detail) {
+    function projectList(list, detail,key) {
+      var key = key ? key : '';
       vm.closeList = true;
       vm.projectlists = detail;
-
       vm.checklistDetail = Object.keys(list).map(function (it) {
+        list[it].key = key;
         return list[it]
-      })
+      });
 
     };
 
@@ -86,6 +95,36 @@
     function closeDialog() {
       $mdDialog.hide();
     }
+
+    function readNotification(id,key) {
+      
+      var key = key ? key : '';
+     
+      return api.notifications.read(id, 'notification-read').success(function (resp) {
+        if (resp) {
+          vm.isLoader = false;
+          if (resp.code == '-1') {
+            
+          } else {
+           
+            
+            if(key !='' && resp.type == 'success'){
+              vm.notifications[key].count_unread_total = resp.notifications[key].count_unread_total;
+              vm.notifications[key].user_changes = resp.notifications[key].user_changes;
+              vm.notifications[key].flag_complete = resp.notifications[key].flag_complete;
+            }
+
+           
+
+          }
+
+
+        }
+      })
+
+    }
+
+
 
 
   }

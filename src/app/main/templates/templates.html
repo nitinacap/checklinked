@@ -1,13 +1,38 @@
-<div id="template" class="page-layout simple" layout="column">
+<div id="template" class="page-layout simple tabbed pad-0 " layout="column">
 
 
 <page-toolbar datas="vm.submenu"> </page-toolbar>
-      <div ng-include="'app/main/templates/partials/public-templates.html'"></div>
+
+<div ng-cloak class="subtab pt-30">
+
+  <md-tabs md-dynamic-height md-border-bottom>
+    <md-tab>
+      <md-tab-label>
+        <span>Internal Templates</span>
+      </md-tab-label>
+      <md-tab-body>
+        <div ng-include="'app/main/templates/partials/public-templates.html'"></div>
+      </md-tab-body>
+    </md-tab>
+
+    <md-tab class="pr-30">
+      <md-tab-label>
+        <span>Public Templates</span>
+      </md-tab-label>
+      <md-tab-body>
+        <div ng-include="'app/main/templates/partials/internal-templates.html'"></div>
+      </md-tab-body>
+    </md-tab>
+
+  </md-tabs>
+</div>
+
+
 
 
 
   <!-- / CONTENT -->
-<div class="bd-loader" ng-if="vm.isLoader">
+<div class="bd-loader"  ng-if="vm.isLoader">
   <md-progress-circular md-diameter="40"></md-progress-circular>
 </div>
 

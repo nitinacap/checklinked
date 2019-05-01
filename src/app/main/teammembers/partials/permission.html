@@ -20,10 +20,10 @@
 
     </thead>
     <tbody>
-      <tr ng-repeat="member in vm.memberRoles.list | filter: globalSearch.searchTerm | orderBy: 'name.full'"
+      <tr ng-repeat="member in vm.memberRoles.list | filter: globalSearch.searchTerm"
         ng-class="[{success:(isUser = (member.idCON == user.idCON))},{warning:(isViewing = (viewAs.notMe && (member.idCON == viewAs.user.idCON)))}]">
 
-        <td>{{member.name.full}}&nbsp; <md-icon ng-show="isViewing" layout-align="start center" class="md-accent-fg s18"
+        <td>{{member.name.full}} {{ member.owner =='owner' ? '(Admin)' : member.role_type  }}&nbsp; <md-icon ng-show="isViewing" layout-align="start center" class="md-accent-fg s18"
             md-font-icon="icon-eye"></md-icon>
         </td>
 
@@ -35,8 +35,8 @@
               md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18"></md-icon>
           </button>
         </td>
-
-        <td ng-switch="(offboarding = (vm.members.offboard.inProgress.indexOf(member.idCON) > -1))" class="text-right">
+        <td></td>
+        <!-- <td ng-switch="(offboarding = (vm.members.offboard.inProgress.indexOf(member.idCON) > -1))" class="text-right">
           <div class="buttons" layout="row" layout-align="end center">
             <md-menu ng-init="vm.checkRole(member.roles.has)" ng-show="vm.permission_to_add_subscription[$index]">
               <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
@@ -54,7 +54,7 @@
               </md-menu-content>
             </md-menu>
           </div>
-        </td>
+        </td> -->
       </tr>
     </tbody>
   </table>

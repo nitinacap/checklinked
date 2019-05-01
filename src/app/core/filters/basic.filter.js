@@ -51,12 +51,17 @@
     function datetimeFilter()
     {
         return function(input) { 
-            if(input && input!=='undefined' || input!==undefined){
-              var datum = Date.parse(input);
-               return datum/1000;
-               }
+            // if(input && input!=='undefined' || input!==undefined){
+            //   var datum = Date.parse(input);
+            //    return datum/1000;
+            //    }
+            var value = input.split('-');
+            var splitDate  = value[2].split(' ');
+            var findHour  = splitDate[1].split(':');
+            var hour = findHour[0] > 12 ? 'PM' : 'AM';
+            return splitDate[0] + '/' +  value[1]  + '/' + value[0] +  " " + findHour[0] + ":" +  findHour[1]  +  " " + hour;
           
-          };
+          }
     }
 
     function tonumberFilter()

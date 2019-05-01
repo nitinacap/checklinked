@@ -66,12 +66,17 @@
             $cookies.put("useridCON", res.user.idCON);
             $cookies.put("token", res.user.token);
             $cookies.put('users', res.user);
+            //localStorage.setItem("org_name",res.user.organization.name);
             $rootScope.token = res.user.token;
             $rootScope.userData = res.user;
             getUserRoles(res.user.idCON);
 
             var empArray = [];
 
+
+            $cookies.put('logged_user_roles', res.user.roles);
+            $cookies.put('logged_user_id', res.user.idCON);
+         
             angular.forEach(res.user.roles_permissions.roles, function (item) {
               Object.assign(empArray, item);
 

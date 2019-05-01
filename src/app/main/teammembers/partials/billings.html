@@ -1,0 +1,27 @@
+<div class="simple-table-container form-container md-background-bg md-whiteframe-1dp">
+
+  <table class="simple row-border hover bordered-table" cellspacing="0" cellpadding="0" ms-responsive-table>
+    <thead>
+      <tr class="hide-xs">
+
+        <th class="secondary-text" width="20%">Date Purchased</th>
+        <th class="secondary-text"  width="20%">Date Expires</th>
+        <th class="secondary-text" width="20%">Plan</th>
+        <th class="secondary-text" width="20%">Managers</th>
+        <th class="secondary-text" width="20%">User</th>
+      </tr>
+
+     
+    </thead>
+    <tbody>
+      <tr ng-repeat="billing in vm.billings">
+       
+        <td class="hide-xs">{{ billing.purchased_at }} </td>
+        <td class="hide-xs">{{ billing.expires_at }} </td>
+        <td class="hide-xs">{{ billing.slug =='Yearly' ? 'Annual' :  billing.slug}} </td>
+        <td class="hide-xs">{{ billing.manager }} </td>
+        <td class="hide-xs">{{ billing.basic_user }} </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

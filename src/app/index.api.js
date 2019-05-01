@@ -176,7 +176,7 @@
       update: function (info) {
         return $http.post(BASEURL + "account-update-post.php", {
           info: info,
-         
+
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -187,8 +187,8 @@
           }).success(function (res) {
             return res;
           });
-      },    
-       setting: function (value, type) {
+      },
+      setting: function (value, type) {
         return $http.post(BASEURL + "account-setting.php", {
           value: value,
           type: type
@@ -203,7 +203,7 @@
             return res;
           });
       }
-      
+
     };
 
 
@@ -1189,14 +1189,15 @@
             cache: false
           });
       },
-      invite: function (email,role_type, phone, first_name, last_name) {
-        console.log('inviting', email);
-        return $http.post(BASEURL + 'subscription_invite_send-post.php', {
+      invite: function (email, role_type, phone, first_name, last_name) {
+          return $http.post(BASEURL + 'subscription_invite_send-post.php', {
           email: email,
           role_type: role_type,
           phone: phone,
           first_name: first_name,
-          last_name: last_name
+          last_name: last_name,
+          //organization: localStorage.getItem("org_name"),
+          created_by: $cookies.get("useridCON")
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -1373,7 +1374,7 @@
             idsCHK: [],
             requestedAt: '',
             id: id,
-            type:'delete'
+            type: 'delete'
           }, {
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -1440,12 +1441,29 @@
     ////////////////////// NOTIFICATIONS
     api.notifications = {
       get: function (token) {
-        // return $http.get(BASEURL + 'coe-get.php?t=folder&token=' + token);
-        //return $http.get(BASEURL + "notification.php?token=" + token);
         return $http.get(BASEURL + "coe-get.php?t=notification&token=" + token);
+      },
+
+      read: function (id, type) {
+        return $http.post(BASEURL + 'coe-post.php', {
+          type: type,
+          id: id
+
+        }, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
       }
 
     };
+
+    api.isUserRole = function (value) {
+      var user_Roles = $cookies.get('logged_user_roles');
+      return user_Roles.includes(value);
+
+    }
 
     $rootScope.createStats = function (type, title, id) {
       $http.post(BASEURL + 'user-stats.php', {
@@ -1454,9 +1472,9 @@
         id: id,
         user_id: $cookies.get('useridCON')
       }, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
           cache: false
         });
     };

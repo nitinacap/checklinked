@@ -87,6 +87,7 @@ var indexOf = [].indexOf || function (item) {
     vm.saveChecklist = saveChecklist;
     vm.openSectionDialog = openSectionDialog;
     vm.saveSection = saveSection;
+   
     vm.openHeadingDialog = openHeadingDialog;
     vm.saveHeading = saveHeading;
     vm.openItemDialog = openItemDialog;
@@ -102,6 +103,8 @@ var indexOf = [].indexOf || function (item) {
     vm.toggle = toggle;
     vm.downloadAttachment = downloadAttachment;
     vm.showAllHeaders = showAllHeaders;
+    vm.selectWorkflowById = selectWorkflowById
+    vm.checklistPasteDialog = checklistPasteDialog;
     vm.expanded = {
       sections: [],
       headings: [],
@@ -110,7 +113,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     //check permission
-    var userpermission =  $cookies.get("userpermission");
+    var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
     // CONFLICTS
     vm.fetchConflictsHeadingBlock = fetchConflictsHeadingBlock;
@@ -120,17 +123,17 @@ var indexOf = [].indexOf || function (item) {
 
     //console.log('$stateParams', $stateParams, $state);
     vm.idCHK = $stateParams.id;
+    vm.isBreadcrum = $stateParams.id ? true : false;
     vm.isLoader = true;
     vm.folders = [];
     var token = $cookies.get("token");
 
     api.folders.get(token).then(function (d) {
       vm.isLoader = false;
-      if(d.data.code=='-1'){
-        $scope.subscriptionAlert(d.data.message);  
-      }else{
+      if (d.data.code == '-1') {
+        $scope.subscriptionAlert(d.data.message);
+      } else {
         vm.folders = d.data.folders;
-
       }
     });
 
@@ -149,11 +152,7 @@ var indexOf = [].indexOf || function (item) {
     if (!vm.isExpandedCounter) {
       vm.isExpandedCounter = 0;
     }
-
     if ($stateParams.id !== undefined && $stateParams.id != null) {
-      //console.log('$stateParams.id not null/undefined', $stateParams);
-      //console.log('$state', $state);
-      //////debugger;
       console.log('myShowingUser', $rootScope.showingUsers)
       if ($stateParams.id == '') {
         console.log('$stateParams empty', $stateParams);
@@ -166,8 +165,6 @@ var indexOf = [].indexOf || function (item) {
         vm.passChecklist = [];
         api.checklists.getGroup($stateParams.id, token).then(function (d) {
           vm.passChecklist = d.data.checklists;
-
-
         });
         vm.setChecklistCtrlBlank();
         vm.loadChecklist($stateParams.id);
@@ -204,21 +201,15 @@ var indexOf = [].indexOf || function (item) {
             vm.toggle('heading', heading);
             vm.fetchConflictsItemBlock(heading, $stateParams.id);
           }
-
-
           vm.completeLoad();
         }
 
-
       } else if ($state.is('app.checklist.conflicts')) {
-        //console.log('stateParams', $stateParams);
-        //console.log('$state', $state);
         vm.passChecklist = [];
         api.checklists.getGroup($stateParams.id, token).then(function (d) {
           vm.passChecklist = d.data.checklists;
-          //vm.isLoader = false;
         });
-        //console.log('$stateParams.id here', $stateParams.id);
+
         vm.setChecklistCtrlBlank();
         vm.loadChecklist($stateParams.id);
 
@@ -269,7 +260,7 @@ var indexOf = [].indexOf || function (item) {
         api.checklists.getGroup($stateParams.idCHK, token).then(function (d) {
           vm.passChecklist = d.data.checklists;
           vm.isLoader = false;
-          
+
         });
 
         //console.log('$stateParams.id here', $stateParams.id);
@@ -322,13 +313,8 @@ var indexOf = [].indexOf || function (item) {
 
       }
       else {
-        ////debugger;
-        vm.checklists = [];
-        api.checklists.getGroup($stateParams.id, token).then(function (d) {
-          vm.checklists = d.data.checklists;
-          // vm.isLoader = false;
-          //console.log('vm.checklists', vm.checklists);
-        });
+        getChecklistGroup();
+
       }
 
     } else {
@@ -441,7 +427,7 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.sections', vm.sections);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, arrayKeyNext ? arrayKeyNext : '', itemNext ? itemNext.id : '', arrayKeyMoved ? arrayKeyMoved : 0, itemMoved ? itemMoved.id : 0, arrayKeyPrevious ? arrayKeyPrevious:0, itemPrevious ? itemPrevious.id:0).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, arrayKeyNext ? arrayKeyNext : '', itemNext ? itemNext.id : '', arrayKeyMoved ? arrayKeyMoved : 0, itemMoved ? itemMoved.id : 0, arrayKeyPrevious ? arrayKeyPrevious : 0, itemPrevious ? itemPrevious.id : 0).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           if (res.code) {
@@ -456,7 +442,7 @@ var indexOf = [].indexOf || function (item) {
 
             itemIndex = vm.sections.indexOf(itemMoved);
             console.log('itemIndex', itemIndex);
-            vm.sections[itemIndex].order = vm.reorder.order;
+            vm.sections[itemIndex] = vm.reorder.order;
 
             vm.organizeData();
 
@@ -576,7 +562,7 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.headings', vm.headings);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, arrayKeyNext ? arrayKeyNext : '', itemNext ? itemNext.id : '', arrayKeyMoved ? arrayKeyMoved : 0, itemMoved ? itemMoved.id : 0, arrayKeyPrevious ? arrayKeyPrevious:0, itemPrevious ? itemPrevious.id:0).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, arrayKeyNext ? arrayKeyNext : '', itemNext ? itemNext.id : '', arrayKeyMoved ? arrayKeyMoved : 0, itemMoved ? itemMoved.id : 0, arrayKeyPrevious ? arrayKeyPrevious : 0, itemPrevious ? itemPrevious.id : 0).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
           vm.isLoader = false;
@@ -590,7 +576,7 @@ var indexOf = [].indexOf || function (item) {
 
             itemIndex = vm.headings.indexOf(itemMoved);
             console.log('itemIndex', itemIndex);
-            vm.headings[itemIndex].order = vm.reorder.order;
+            vm.headings[itemIndex] = vm.reorder.order;
 
             vm.organizeData();
 
@@ -666,7 +652,7 @@ var indexOf = [].indexOf || function (item) {
         console.log('event', event);
 
         // Location where item was dragged to
-        event.dest.index =  event.dest.index==0 ?  event.dest.index + 1 :  event.dest.index;
+        event.dest.index = event.dest.index == 0 ? event.dest.index + 1 : event.dest.index;
 
         var arrayKeyNext = (event.dest.index + 1);
         var arrayKeyMoved = (event.dest.index);
@@ -713,22 +699,22 @@ var indexOf = [].indexOf || function (item) {
         console.log('pre API vm.items', vm.items);
 
 
-        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, arrayKeyNext ? arrayKeyNext : '', itemNext ? itemNext.id : '', arrayKeyMoved ? arrayKeyMoved : 0, itemMoved ? itemMoved.id : 0, arrayKeyPrevious ? arrayKeyPrevious:0, itemPrevious ? itemPrevious.id:0).error(function (res) {
+        api.items.reorder(vm.reorder.id, vm.reorder.order, vm.reorder.type, vm.reorder.id_parent, arrayKeyNext ? arrayKeyNext : '', itemNext ? itemNext.id : '', arrayKeyMoved ? arrayKeyMoved : 0, itemMoved ? itemMoved.id : 0, arrayKeyPrevious ? arrayKeyPrevious : 0, itemPrevious ? itemPrevious.id : 0).error(function (res) {
           $rootScope.message('Unknown error updating server with reorder info.', 'warning');
         }).success(function (res) {
-          var i, len, old, packet, ref1;
           if (res.code) {
             return $rootScope.message("Error updating reorder information. (" + res.code + ": " + res.message + ")");
           } else {
-            $rootScope.message("Order has been modified");
+            $rootScope.message("Item order has been modified");
             var itemIndex;
-           // loadChecklist(vm.idCHK)
-         
+            // loadChecklist(vm.idCHK)
+
             itemIndex = vm.items.indexOf(itemMoved);
             console.log('itemIndex', itemIndex);
-            vm.items[itemIndex].order = vm.reorder.order;
+            vm.items[itemIndex] = vm.reorder.order;
+            //vm.items[itemIndex].order = vm.reorder.order;
 
-         
+
 
             console.log('post vm.items', vm.items);
 
@@ -922,9 +908,9 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function toggle(what, which, parentID) {
-if(parentID=='allheader'){
-  return true;
-}
+      if (parentID == 'allheader') {
+        return true;
+      }
       if (parentID == null) {
         parentID = null;
       }
@@ -955,7 +941,7 @@ if(parentID=='allheader'){
 
         if (res && res.checklist && res.checklist.complete == 1) {
           $rootScope.message("Checklist completed", 'success');
-          
+
         } else if (res && res.checklist && res.checklist.complete == 0) {
           $rootScope.message("Checklist marked not completed", 'success');
         }
@@ -1083,7 +1069,7 @@ if(parentID=='allheader'){
     };
 
     function loadChecklist(idCHK) {
-      vm.isLoader = true;
+    
       //console.log('idCHK', idCHK);
       vm.setChecklistCtrlBlank();
       vm.checkIfLinked(idCHK);
@@ -1092,16 +1078,15 @@ if(parentID=='allheader'){
         if (!vm.loaded.checklist) {
           //console.log('not loaded');
           $scope.getChecklinked = function () {
-
+            vm.isLoader = true;
 
             api.checklists.get(idCHK, token).success(function (res) {
               var ref;
-                     // vm.isLoader = false;
-   
-
+              // vm.isLoader = false;
               if ((ref = res.checklists) != null ? ref.length : void 0) {
                 vm.checklists = res.checklists;
                 vm.isLinked = true;
+                vm.isLoader = false;
                 //vm.isLoader = false;
                 //console.log('vm.checklists', vm.checklists);
               } else {
@@ -1114,7 +1099,7 @@ if(parentID=='allheader'){
               vm.loaded.checklist = true;
               return $scope.$broadcast('event:checklistLoaded');
               console.log('broadcast event:checklistLoaded');
-           })["finally"](function () {
+            })["finally"](function () {
               vm.loading.checklist = false;
               vm.isLoader = false
               return vm.completeLoad();
@@ -1200,7 +1185,7 @@ if(parentID=='allheader'){
       }
     };
 
-    function getAttachments(){
+    function getAttachments() {
       api.attachments.checklist($stateParams.id).success(function (res) {
         var ref;
         console.log(res);
@@ -1208,7 +1193,7 @@ if(parentID=='allheader'){
         if ((ref = res.attachments) != null ? ref.length : void 0) {
           vm.attachments = vm.attachments.concat(res.attachments);
           $rootScope.attachments = res.attachments;
-          vm.attachments  = res.attachments;
+          vm.attachments = res.attachments;
           vm.SelectedAttachments = res.attachments;
           console.log("attachmentlength", res.attachments.length);
         }
@@ -1596,7 +1581,7 @@ if(parentID=='allheader'){
     };
 
     function displayUserCheckboxes(user) {
-      ////debugger;
+     debugger;
       var userID, userKey;
       userKey = vm.getUserKey(user);
       console.log('initial userKey check', userKey);
@@ -1623,15 +1608,19 @@ if(parentID=='allheader'){
     };
 
     function evaluateConflicts(item, operation) {
+      vm.countNonCompliant = vm.nonCompliant.reduce( function(total, amount){
+        return total + amount
+        });
+
       var addConflicts, leftNonCompliant, ref1, ref2, rightNonCompliant;
       item = api.summary.evaluateItem(item, item.checkbox, token);
-      addConflicts = operation * +item.conflicts;
+     // addConflicts = operation * +item.conflicts;
       vm.conflicts += addConflicts;
-      if (((ref1 = item.checkbox) != null ? ref1[0] : void 0) !== void 0 && item.checkbox[0] && item.checkbox[0].item_type!='yn') {
+      if (((ref1 = item.checkbox) != null ? ref1[0] : void 0) !== void 0 && item.checkbox[0] && item.checkbox[0].item_type != 'yn') {
         leftNonCompliant = operation * +item.checkbox[0].nonCompliant;
         vm.nonCompliant[0] += leftNonCompliant;
       }
-      if (((ref2 = item.checkbox) != null ? ref2[1] : void 0) !== void 0 && item.checkbox[0] && item.checkbox[0].item_type!='yn') {
+      if (((ref2 = item.checkbox) != null ? ref2[1] : void 0) !== void 0 && item.checkbox[0] && item.checkbox[0].item_type != 'yn') {
         rightNonCompliant = operation * +item.checkbox[1].nonCompliant;
         vm.nonCompliant[1] += rightNonCompliant;
       }
@@ -1641,7 +1630,7 @@ if(parentID=='allheader'){
     function appendCheckboxesToItems(user) {
       ////debugger;
       var userKey;
-      vm.nonCompliant = [0, 0];
+     vm.nonCompliant = [0, 0];
       vm.conflicts = 0;
       userKey = vm.getUserKey(user);
       if (userKey === -1) {
@@ -1719,14 +1708,13 @@ if(parentID=='allheader'){
     });
 
     function toggleCheckbox(item, which, type, userKey) {
-      debugger;
       vm.evaluateConflicts(item, -1);
       return api.checkbox.toggle(item.id, $rootScope.showingUsers[userKey].idCON, which, type).success(function (res) {
         if (item.checkbox === void 0) {
           item.checkbox = [];
         }
 
-       // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
+        // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
         //  item.checkbox[userKey] = res.checkboxes[0];
         item.checkbox[userKey] = res.checkboxes[0];
 
@@ -2588,8 +2576,8 @@ if(parentID=='allheader'){
       });
     };
 
-    function addNewChecklist(checklistName, checklistDescription, groupID, folderID, checklist_id,sub_type) {
-    
+    function addNewChecklist(checklistName, checklistDescription, groupID, folderID, checklist_id, sub_type) {
+
       //Set sending variable for buttons
       vm.checklist.sending = true;
 
@@ -2601,19 +2589,18 @@ if(parentID=='allheader'){
       api.checklists.add(checklistName, vm.checklist.order, groupID, token, checklistDescription, checklist_id ? checklist_id : '', sub_type ? sub_type : '').error(function (res) {
         return $rootScope.message("Error Adding Checklist", 'warning');
       }).success(function (res) {
-
         if (res.type != 'success' || res === '') {
           return $rootScope.message("Error Adding Checklist", 'warning');
         }
 
         else {
-           $rootScope.message("New checklist has been created successfully", 'success');
-           $scope.getChecklinked();
-         // $rootScope.createStats('checklist', 'created', res.checklist.id);
+          $rootScope.message("New checklist has been created successfully", 'success');
+          $scope.getChecklinked();
+          // $rootScope.createStats('checklist', 'created', res.checklist.id);
           api.sections.add('sections', 1, res.checklist.id ? res.checklist.id : checklist_id).error(function (res) {
             return $rootScope.message("Error Adding Section", 'warning');
           }).success(function (res) {
-         
+
             if (res === void 0 || res === null || res === '') {
               return $rootScope.message("Error Adding Section", 'warning');
 
@@ -2669,7 +2656,7 @@ if(parentID=='allheader'){
 
     };
 
-    function publishTemplate(ev, idCHK,checklist_name) {
+    function publishTemplate(ev, idCHK, checklist_name) {
       $mdDialog.show({
         controller: 'ChecklistPublishTemplateDialogController',
         controllerAs: 'vm',
@@ -2679,7 +2666,7 @@ if(parentID=='allheader'){
         clickOutsideToClose: true,
         locals: {
           idCHK: idCHK,
-          checklist_name:checklist_name
+          checklist_name: checklist_name
         }
       });
 
@@ -2777,8 +2764,8 @@ if(parentID=='allheader'){
 
 
     function fetchGroups(id) {
-      ftchFolder(id ? id :vm.verticalStepper.step1.folderID)
-      vm.groups = $rootScope.children('groups', id ? id :vm.verticalStepper.step1.folderID);
+      ftchFolder(id ? id : vm.verticalStepper.step1.folderID)
+      vm.groups = $rootScope.children('groups', id ? id : vm.verticalStepper.step1.folderID);
       $rootScope.organizeData();
 
       // if (!vm.groups.length > 0) {
@@ -2788,9 +2775,9 @@ if(parentID=='allheader'){
       // }
     };
     function ftchFolder(id) {
-      api.groups.get(id).then(function (d) {
+      api.groups.get(id ? id : '').then(function (d) {
         vm.groups = d.data.groups;
-        $rootScope.nextStep()
+        id ? $rootScope.nextStep() : '';
       });
     }
 
@@ -2971,58 +2958,56 @@ if(parentID=='allheader'){
       vm.title = type ? 'Create Duplicate' : 'Edit Checklist';
       vm.checklist = checklist;
       vm.type = type;
-      console.log('vm.checklist', vm.checklist);
 
-  
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
         templateUrl: 'app/main/checklist/dialogs/checklist/checklist-edit-checklist-dialog.html',
         parent: angular.element($document.find('#checklist')),
         targetEvent: ev,
-        clickOutsideToClose: true
+        clickOutsideToClose: false
       });
     }
 
     function saveChecklist(type) {
-     if(type){
-      addNewChecklist(vm.checklist.name, vm.checklist.description, vm.checklist.item_bread.project_id, vm.checklist.item_bread.folder_id, vm.checklist.id,'duplicate')
-    }else{
+      if (type) {
+        addNewChecklist(vm.checklist.name, vm.checklist.description, vm.checklist.item_bread.project_id, vm.workflow.id, vm.checklist.id, 'duplicate')
+      } else {
 
-      var editPack;
-      editPack = {
-        'id': vm.checklist.idCHK,
-        'rid': vm.checklist.rid,
-        'index': 0,
-        'type': 'checklist',
-        'text': vm.checklist.name,
-        'description': vm.checklist.description,
-        'token': token
-      };
+        var editPack;
+        editPack = {
+          'id': vm.checklist.idCHK,
+          'rid': vm.checklist.rid,
+          'index': 0,
+          'type': 'checklist',
+          'text': vm.checklist.name,
+          'description': vm.checklist.description,
+          'token': token
+        };
 
-      console.log('vm.vars.message', vm.checklist.name);
+        console.log('vm.vars.message', vm.checklist.name);
 
-      api.checklists.edit(editPack).error(function (res) {
-        $rootScope.message("Error Editing Checklist", 'warning');
-      }).success(function (res) {
-        if (res === void 0 || res === null || res === '') {
+        api.checklists.edit(editPack).error(function (res) {
           $rootScope.message("Error Editing Checklist", 'warning');
-        } else if (res.code) {
-          $rootScope.message(res.message, 'warning');
-        } else {
-         // $rootScope.createStats('checklist', 'updated', vm.checklist.idCHK)
-          //Toaster Notification
-          $rootScope.message('Checklist has been changed successfully', 'success');
+        }).success(function (res) {
+          if (res === void 0 || res === null || res === '') {
+            $rootScope.message("Error Editing Checklist", 'warning');
+          } else if (res.code) {
+            $rootScope.message(res.message, 'warning');
+          } else {
+            // $rootScope.createStats('checklist', 'updated', vm.checklist.idCHK)
+            //Toaster Notification
+            $rootScope.message('Checklist has been changed successfully', 'success');
 
-          vm.checklist.sending = false;
+            vm.checklist.sending = false;
 
-          //Close Dialog Window
-          vm.closeDialog();
-        }
+            //Close Dialog Window
+            vm.closeDialog();
+          }
 
-        
-      });
-    }
+
+        });
+      }
 
     }
 
@@ -3044,15 +3029,21 @@ if(parentID=='allheader'){
       });
     }
 
-    function saveSection(section) {
+
+      function saveSection(section,section_na,index) {
+        var section_na = section_na ? section_na : '';
+        var index = index ? index : 0;
+      var sectionIndex = index;
+     var token = $cookies.get("token");
       var editPack;
       editPack = {
         'id': vm.section ? vm.section.id : section.id,
         'rid': vm.section ? vm.section.rid : section.rid,
         'index': 0,
         'type': 'section',
+        'section_type': section_na, 
         'text': vm.section ? vm.section.name : section.name,
-        'section_na': section.section_na=='true' ? 'false' : 'true',
+        'section_na': section.section_na == 'true' ? 'false' : 'true',
         'token': token
       };
 
@@ -3065,13 +3056,68 @@ if(parentID=='allheader'){
           $rootScope.message(res.message, 'warning');
         } else {
           vm.closeDialog();
-          vm.section_na = section.section_na=='true' ? 'false' : 'true';
+        
           //chekSectionNA(vm.section_na)
-          loadChecklist(vm.idCHK);
-          $rootScope.message('Section has been changed successfully', 'success');
+          // loadChecklist(vm.idCHK);
+          if(section_na == 'section_na'){
+          if(res.updated.section_na == 'true'){
+            $rootScope.message('Section has been marked as Section N/A', 'success');
+          }
+          else{
+              $rootScope.message('Section has been unmarked from Section N/A', 'success');
+          }
+            vm.sections[sectionIndex].section_na = res.updated.section_na == 'true' ? 'true' : 'false';
+        }
+        else{
+            $rootScope.message('Section has been changed successfully', 'success');
+          }
+
+        
+
+          
         }
       });
     }
+
+    // function saveSectionNA(item_type,id,section_na,name) {
+    // var token = $cookies.get("token");;
+    //  debugger;
+    //   var editPack;
+    //   editPack = {
+    //     'id':id,
+    //     'rid': id,
+    //     'index': 0,
+    //     'type': 'section',
+    //     'section_type': item_type,        
+    //     'text': name,        
+    //     'section_na': section_na == 'true' ? 'false' : 'true',
+    //     'token': token, 
+    //   };
+
+
+
+    //   api.checklists.edit(editPack).error(function (res) {
+    //     $rootScope.message("Error Editing Section", 'warning');
+    //   }).success(function (res) {
+    //     debugger;
+    //     if (res === void 0 || res === null || res === '') {
+    //       $rootScope.message("Error Editing Section", 'warning');
+    //     } else if (res.code) {
+
+    //       $rootScope.message(res.message, 'warning');
+    //     } else {
+    //       vm.closeDialog();
+    //       vm.section_na = res.section_na == 'true' ? 'false' : 'true';
+    //       if(res.section_na == 'true'){
+    //         $rootScope.message('Section has been marked as Section N/A', 'success');
+    //       }
+    //       else{
+    //           $rootScope.message('Section has been unmarked from Section N/A', 'success');
+    //       }
+          
+    //     }
+    //   });
+    // }
 
     // vm.chekSectionNA = chekSectionNA;
 
@@ -3081,37 +3127,37 @@ if(parentID=='allheader'){
     // }
 
     //Worked for the section NA
-  // vm.saveSectionNA = saveSectionNA;
-  //   function saveSectionNA(section) {
-  //     debugger;
-  //     var editPack;
-  //     editPack = {
-  //       'id': section.id,
-  //       'rid': section.rid,
-  //       'index': 0,
-  //       'type': 'section',
-  //       'text': section.name,
-  //       'section_na': section.section_na ? 0 : 1,
-  //       'token': token
-  //     };
+    // vm.saveSectionNA = saveSectionNA;
+    //   function saveSectionNA(section) {
+    //     debugger;
+    //     var editPack;
+    //     editPack = {
+    //       'id': section.id,
+    //       'rid': section.rid,
+    //       'index': 0,
+    //       'type': 'section',
+    //       'text': section.name,
+    //       'section_na': section.section_na ? 0 : 1,
+    //       'token': token
+    //     };
 
-  //     api.checklists.edit(editPack).error(function (res) {
-  //       $rootScope.message("Error Editing Section", 'warning');
-  //     }).success(function (res) {
-  //       if (res === void 0 || res === null || res === '') {
-  //         $rootScope.message("Error Editing Section", 'warning');
-  //       } else if (res.code) {
-  //         $rootScope.message(res.message, 'warning');
-  //       } else {
-  //         vm.closeDialog();
-  //        // $rootScope.createStats('section', 'updated', vm.section.id);
-  //         $rootScope.message('Section has been changed successfully', 'success');
-  //         vm.section.sending = false;
+    //     api.checklists.edit(editPack).error(function (res) {
+    //       $rootScope.message("Error Editing Section", 'warning');
+    //     }).success(function (res) {
+    //       if (res === void 0 || res === null || res === '') {
+    //         $rootScope.message("Error Editing Section", 'warning');
+    //       } else if (res.code) {
+    //         $rootScope.message(res.message, 'warning');
+    //       } else {
+    //         vm.closeDialog();
+    //        // $rootScope.createStats('section', 'updated', vm.section.id);
+    //         $rootScope.message('Section has been changed successfully', 'success');
+    //         vm.section.sending = false;
 
-  //         //  vm.closeDialog();
-  //       }
-  //     });
-  //   }
+    //         //  vm.closeDialog();
+    //       }
+    //     });
+    //   }
 
     function openHeadingDialog(ev, heading) {
 
@@ -3228,7 +3274,7 @@ if(parentID=='allheader'){
         } else if (res.code) {
           $rootScope.message(res.message, 'warning');
         } else {
-         // $rootScope.createStats('item', 'created', vm.item.id);
+          // $rootScope.createStats('item', 'created', vm.item.id);
           $rootScope.message('Item has been changed successfully', 'success');
 
           vm.item.sending = false;
@@ -3316,7 +3362,6 @@ if(parentID=='allheader'){
         return vm[whats][which.index].editing = false;
       },
       submit: function (which) {
-        debugger;
 
         //console.log('which', which);
         var whats;
@@ -3441,7 +3486,7 @@ if(parentID=='allheader'){
               for (i = 0; i < res.headings.length; i++) {
 
                 console.log('looping', i);
-               // vm.headings.push(res.headings[i]);
+                // vm.headings.push(res.headings[i]);
               }
 
             } else {
@@ -3542,9 +3587,9 @@ if(parentID=='allheader'){
     }
 
     function fetchItemBlock(heading, idCHK) {
-     // vm.showallheaders =  false;
-     vm.isHeader  = false;
-      
+      // vm.showallheaders =  false;
+      vm.isHeader = false;
+
       var id_parent = heading.id;
       var i;
       var x;
@@ -3670,7 +3715,7 @@ if(parentID=='allheader'){
 
 
     function closeDialog() {
-      vm.isDelete =false;
+      vm.isDelete = false;
       vm.wizard.newFolder = false;
       vm.wizard.newGroup = false;
       vm.wizard.newChecklist = false;
@@ -3836,78 +3881,75 @@ if(parentID=='allheader'){
     vm.cutDialog = cutDialog;
     vm.pasteDialog = pasteDialog;
     vm.undoDialog = undoDialog;
-
-    // function cutDialog(idCHK, id, type, item) {
-    //   vm.isCuted = true;
-    //   // $scope.item[item] = true;
-    //   $rootScope.id_CHK = idCHK;
-
-    // };
+    vm.coypDialog = coypDialog;
 
     function cutDialog(type, id, parent_id) {
-      alert(type);
-      $scope.cutObj = { type: type, id: id, parent_destination_id: parent_id };
-      localStorage.setItem('cutObj',  JSON.stringify($scope.cutObj));
-     // alert(localStorage.getItem('cutObj'));
-      //   vm.isCuted = true;
-      // $scope.item[item] = true;
-      // $rootScope.id_CHK = idCHK;
+      $scope.cutObj = { type: type, id: id, parent_destination_id: parent_id, action_type:'cut' };
+      localStorage.setItem('cutObj', JSON.stringify($scope.cutObj));
+    };
 
+    function coypDialog(type, id, parent_id) {
+      $scope.cutObj = { type: type, id: id, parent_destination_id: parent_id, action_type:'copy' };
+      localStorage.setItem('cutObj', JSON.stringify($scope.cutObj));
     };
 
 
-    // disabled if trying to cut same checklist 
     if ($rootScope.id_CHK) {
       if ($stateParams.id && $stateParams.id == $rootScope.id_CHK) {
         vm.isCuted = true;
       }
     };
 
-    function pasteDialog(item_type, item_id, parent_origin_id) {
-     // alert(parent_origin_id);
-      $scope.cutObj = JSON.parse(localStorage.getItem('cutObj'));
-      switch(item_type){
-        case 'section':
-        break;
-        case 'heading':
-        break;
-        case 'item':
-        $scope.parent_destination_id =  $scope.cutObj.parent_destination_id
-        break;
 
+    function pasteDialog(item_type, item_id, parent_origin_id) {
+      $scope.cutObj = JSON.parse(localStorage.getItem('cutObj'));
+      switch (item_type) {
+        case 'section':
+          break;
+        case 'heading':
+          break;
+        case 'item':
+          $scope.parent_destination_id = $scope.cutObj.parent_destination_id
+          break;
       }
-    
+
       if (parent_origin_id == $scope.cutObj.parent_destination_id) {
         $rootScope.alertMessage('You can not paste ' + item_type + ' in the same location');
       }
-      else if($scope.cutObj.type!== item_type){
+      else if ($scope.cutObj.type !== item_type) {
         $rootScope.alertMessage('You paste item should be ' + item_type);
       }
       else {
-        //alert( $scope.cutObj.id);
-        pateItem($scope.cutObj.parent_destination_id, item_id, $scope.cutObj.type,'cut',$scope.cutObj.id);
+        pateItem($scope.cutObj.parent_destination_id, item_id, $scope.cutObj.type,  $scope.cutObj.action_type, $scope.cutObj.id);
       }
-
     };
 
-    function pateItem(origin, destination, type, action_type, move_item_id){
-
+    function pateItem(origin, destination, type, action_type, move_item_id) {
       api.item.paste(origin, destination, type, action_type, move_item_id).error(function (res) {
         return $rootScope.message("Error creating on paste item", 'warning');
       }).success(function (res) {
         $rootScope.alertMessage('Paste successfully');
-        vm.loadChecklist($stateParams.id);
-
+        if ($scope.cutObj.type == 'checklist') {
+          getChecklistGroup()
+        } else {
+          loadChecklist($stateParams.id);
+        }
       });
 
     };
 
-    function undoDialog(id){
+    function undoDialog(id, type) {
+      var type = '';
       api.item.undo(id).error(function (res) {
         return $rootScope.message("Error creating on undo item", 'warning');
       }).success(function (res) {
         $rootScope.alertMessage('Undo successfully');
-       loadChecklist($stateParams.id);
+        if (type == 'checklist') {
+          getChecklistGroup()
+        } else {
+          loadChecklist($stateParams.id);
+
+        }
 
       });
     };
@@ -3918,7 +3960,7 @@ if(parentID=='allheader'){
       var confirm = $mdDialog.confirm()
         .title(message)
         .ok('Ok')
-        $mdDialog.show(confirm);
+      $mdDialog.show(confirm);
     };
 
     //Alert Cancel an close
@@ -3951,44 +3993,70 @@ if(parentID=='allheader'){
       var originalFile = file.replace(DOMAIN_NAME, '');
       vm.downloadFile = originalFile;
     }
-   // vm.toggle('section',section); vm.fetchHeadingBlock(section, checklist.id)
+    // vm.toggle('section',section); vm.fetchHeadingBlock(section, checklist.id)
 
-   //vm.toggle('heading', heading); vm.fetchItemBlock(heading, checklist.id)
-   
-    function showAllHeaders(heading){
-      vm.toggle('section',heading);
-      heading.forEach(function(heading_item) {
-      vm.isHeader = vm.isExpanded('heading', heading_item);
-     // alert( vm.isHeader);
-      if(toggle('heading',heading_item)){
-        
-      }
-      
+    //vm.toggle('heading', heading); vm.fetchItemBlock(heading, checklist.id)
+
+    function showAllHeaders(heading) {
+      vm.toggle('section', heading);
+      heading.forEach(function (heading_item) {
+        vm.isHeader = vm.isExpanded('heading', heading_item);
+        // alert( vm.isHeader);
+        if (toggle('heading', heading_item)) {
+
+        }
+
       });
-     // vm.isExpanded('heading', headings);
+      // vm.isExpanded('heading', headings);
       //vm.showallheaders = true;
     }
 
-        //Subscription expired alert
-        $scope.subscriptionAlert = function (message) {
-          vm.title = 'Alert';
-          vm.message = message;
-          $mdDialog.show({
-            scope: $scope,
-            preserveScope: true,
-            templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
-            clickOutsideToClose: false
-          });
-        }
+    //Subscription expired alert
+    $scope.subscriptionAlert = function (message) {
+      vm.title = 'Alert';
+      vm.message = message;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+        clickOutsideToClose: false
+      });
+    }
 
 
 
-        vm.uncheckLabel = uncheckLabel;
-        function uncheckLabel(val){
-         alert(val);
-        vm.newItem.dataTypes = false;
-    
-        }
+    vm.uncheckLabel = uncheckLabel;
+    function uncheckLabel(val) {
+      alert(val);
+      vm.newItem.dataTypes = false;
+
+    }
+
+    function getChecklistGroup() {
+      vm.checklists = [];
+      api.checklists.getGroup($stateParams.id, token).then(function (d) {
+        vm.checklists = d.data.checklists;
+      });
+    };
+
+    function selectWorkflowById(id){
+      vm.folders = [];
+      ftchFolder(id);
+    }
+
+    function checklistPasteDialog(type, id,parent_id){
+
+      ftchFolder('');
+      vm.title = 'Paste Checklist in Workflow';
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/checklist/dialogs/checklist/checklist-paste-dialog.html',
+        parent: angular.element($document.find('#checklist')),
+        clickOutsideToClose: true
+      });
+    }
+
 
   }
 

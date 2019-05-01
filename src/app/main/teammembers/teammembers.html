@@ -18,6 +18,94 @@
                     <div ng-include="'app/main/teammembers/partials/subscription.html'"></div>
                 </md-tab-body>
             </md-tab>
+           <!--  Billing Screeen -->
+           <md-tab ng-if="vm.billings">
+                <md-tab-label>
+                    <span>Billing</span>
+                </md-tab-label>
+                <md-tab-body>
+                    <div ng-include="'app/main/teammembers/partials/billings.html'"></div>
+                </md-tab-body>
+            </md-tab>
+          <!--  Billing Screeen End -->
+
+          <!-- Permission setting  -->
+          <!-- <td ng-switch="(offboarding = (vm.members.offboard.inProgress.indexOf(member.idCON) > -1))" class="text-right"> -->
+            <md-tab class="fr" >
+                <md-tab-label>
+                    
+                    <div class="buttons" layout="row" layout-align="end center">
+                        <md-menu>
+                          <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
+                            translate translate-attr-aria-label="">
+                            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+                          </md-button>
+            
+            
+                          <md-menu-content width="3">
+
+                            <md-menu-item
+                                ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1">
+                                <md-button ng-click="vm.openSubscriptionDialog(member)">
+                                  <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                                  </md-icon>
+                                  <span  ng-if="vm.memberRoles.subscribed_status == 'un-subscribed'">Add Paid Account</span>
+                                  <span  ng-if="vm.memberRoles.subscribed_status == 'subscribed'">Add Subscription</span>
+                                </md-button>
+                              </md-menu-item>
+
+                              
+                            <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-assign-roles') !== -1">
+                                    <md-button ng-click="vm.openRoleTypeDialog(member)">
+                                      <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                                      </md-icon>
+                                      <span ng-show="vm.roleTypes.length == 0">Add Role</span>
+                                      <span ng-show="vm.roleTypes.length > 0">Add / Edit Role</span>
+                                    </md-button>
+                                  </md-menu-item>
+
+
+                            <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1"  ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                              <md-button ng-click="vm.addUser(vm.memberRoles.subscribed_status)">
+                                <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                                </md-icon>
+                                <span>Add User</span>
+                              </md-button>
+                            </md-menu-item>
+
+
+                            
+                            <!-- add edit manager permission role  -->
+                            <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1"  ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                                    <md-button ng-click="vm.addManagerTeam(vm.memberRoles.subscribed_status)">
+                                      <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                                      </md-icon>
+                                      <span>Add/Edit Manager’s Team</span>
+                                    </md-button>
+                                  </md-menu-item>
+
+                        <!-- add edit manager permission role  end -->
+
+                            <md-menu-item
+                            ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1" ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                            <md-button ng-click="vm.openSubscriptionDialog(member)">
+                              <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                              </md-icon>
+                              <span  ng-if="vm.memberRoles.subscribed_status == 'subscribed'">Edit Subscription</span>
+                            </md-button>
+                          </md-menu-item>
+                          </md-menu-content>
+                        </md-menu>
+                      </div>
+                </md-tab-label>
+                <md-tab-body>
+                   
+               
+            
+        </md-tab-body>
+    </md-tab>
+          <!-- </td> -->
+          <!-- End -->
         </md-tabs>
     </div>
     <div class="bd-loader" ng-if="vm.isLoader">

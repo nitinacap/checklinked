@@ -1,4 +1,6 @@
 <div class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+<!-- {{ vm.notifications }} -->
+
   <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0" ng-show="!vm.closeList">
     <thead class="tool-bg">
       <tr>
@@ -19,9 +21,9 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="notification in  vm.notifications">
-        <td class="max-10"><span class="link-color pointer"  ng-click="vm.projectList(notification.list, notification.project_name);">{{notification.project_name}}</span></td>
-        <td><span ng-init="vm.totUsers(notification[0])"></span> {{notification.list.length}}</td>
+      <tr ng-repeat="(key, notification) in  vm.notifications">
+        <td class="max-10"><span class="link-color pointer"  ng-click="vm.projectList(notification.list, notification.project_name,key);">{{notification.project_name}}</span></td>
+        <td><span ng-init="vm.totUsers(notification[0])"></span> {{notification.count_unread_total}}</td>
         <td>{{notification.user_changes ? notification.user_changes : 0 }}</td>
         <td>{{notification.flag_complete ? notification.flag_complete : 0 }}</td>
       </tr>
@@ -59,15 +61,15 @@
     <tbody  ng-repeat="projectlist in  vm.checklistDetail" ng-click="vm.projectDetail(projectlist)">
       <tr ng-class="myvalue ? 'rbb' : '' ">
         <td>
-          <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true" ng-show="!myvalue"></i>
+          <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true; vm.readNotification(projectlist.id,projectlist.key)" aria-hidden="true" ng-show="!myvalue"></i>
           <i class="fa fa-chevron-down" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true" ng-show="myvalue"></i>
           <span class="link-color">    {{ projectlist.checklist_name}}</span></td>
         <td><span class="link-color">{{projectlist.user}} </span></td>
         <td><span class="link-color">{{projectlist.organization}}</span></td>
         <td>{{projectlist.issue}}</td>
         <td>
-          <span ng-init="vm.notificationDate(projectlist.updated_at.date)"></span>
-          {{ vm.unixtimestamp[$index] | date: "MMM d, y h:mm a" }}
+          <!-- <span ng-init="vm.notificationDate(projectlist.updated_at.date)"></span> -->
+         <span ng-bind='projectlist.updated_at.date | datetime'></span> 
         </td>
       </tr>
       <tr ng-show="myvalue">

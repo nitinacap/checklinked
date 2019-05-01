@@ -1,114 +1,114 @@
-<div class="simple-table-container md-background-bg md-whiteframe-1dp" style="width:87%">
-  <table class="bordered-table" cellpadding="0" cellspacing="0" width="100%">
-
-    <tr>
-      <td>
-        <span>Internal</span>
-      </td>
-      <td class="text-right">
-        <a href="">
-          <span>Public Templates</span>
+<h3 ng-if="!vm.templates.list.public">No public templates yet.
+</h3>
+<table class="bordered-table" cellpadding="0" cellspacing="0" width="100%">
+  <tbody class="public-table" ng-if="vm.templates.list.public"
+    ng-repeat="publics in vm.templates.list.public | orderBy:vm.templateOrder:vm.reverse">
+    <tr ng-class="{'isdec':isDescp==true}">
+      <td width="25%" colspan="5"><a href="">
+          <md-icon style="padding-top:0px;" ng-click="isDescp = isDescp== true ? false :true;"
+            class="plus md-accent-fg s18 cplus ng-scope md-font icon-plus material-icons md-default-theme"
+            md-font-icon="icon-plus" aria-hidden="true">
+          </md-icon>
         </a>
+        <span>{{vm.publicOrganization[$index]}}</span>
+      </td>
+    </tr>
+    <tr ng-show="isDescp ">
+      <th class="text-center">
+        <div class="table-header">
+          <span class="column-title">Name</span>
+          <md-button class="md-icon-button" ng-click="vm.sortBy('name')" aria-label="Sort Direction"
+            translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.templateOrder!='name'" class="s18">
+            </md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reverse && vm.templateOrder=='name'"
+              class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='name'"
+              class="s18"></md-icon>
+          </md-button>
+        </div>
+      </th>
+      <th class="text-center">
+        <div class="table-header">
+          <span class="column-title">Author</span>
+          <md-button class="md-icon-button" ng-click="vm.sortBy('organization')" aria-label="Sort Direction"
+            translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.templateOrder!='organization'"
+              class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-ascending"
+              ng-if="vm.reverse && vm.templateOrder=='organization'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-descending"
+              ng-if="!vm.reverse && vm.templateOrder=='organization'" class="s18"></md-icon>
+          </md-button>
+        </div>
+      </th>
+      <th class="text-center">
+        <div class="table-header">
+          <span class="column-title">Type</span>
+          <md-button class="md-icon-button" ng-click="vm.sortBy('type')" aria-label="Sort Direction"
+            translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.templateOrder!='type'" class="s18">
+            </md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reverse && vm.templateOrder=='type'"
+              class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='type'"
+              class="s18"></md-icon>
+          </md-button>
+        </div>
+      </th>
+      <th class="text-center">
+        <div class="table-header text-center">
+          <span class="column-title">Posted Date</span>
+        </div>
+      </th>
+      <th></th>
+    </tr>
+    <tr ng-repeat="public in publics | orderBy:vm.templateOrder:vm.reverse" ng-show="isDescp">
+
+      <td width="15%"><span class="textcolor">{{public.name}}</span></td>
+      <td width="15%"><span class="textcolor">{{public.author}}</span></td>
+      <td width="15%" ng-if="public.type">{{public.type}}</td>
+      <td width="15%" ng-if="public.type">{{public.created * 1000 | date : "medium" }}</td>
+      <td class="text-right">
+
         <md-menu>
-          <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
-            translate translate-attr-aria-label="">
+          <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button"
+            aria-label="More" translate translate-attr-aria-label="">
             <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
           </md-button>
 
-          <md-menu-content width="2">
+          <md-menu-content width="3">
 
-            <md-menu-item>
-              <md-button ng-click="vm.download.begin($event,'public')" translate-attr-aria-label="">
+            <md-menu-item ng-if="template.type=='checklist'">
+              <md-button ng-click="vm.download.begin($event, template.id, 'checklist')"
+                translate-attr-aria-label="">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
-                <span translate="">Public Template</span>
+                <span translate="">Download Template</span>
               </md-button>
             </md-menu-item>
 
+            <md-menu-item ng-if="template.type=='group'">
+              <md-button ng-click="vm.download.begin($event, template.id, 'group')"
+                translate-attr-aria-label="">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
+                <span translate="">Download Template</span>
+              </md-button>
+            </md-menu-item>
 
+            <md-menu-item>
+              <md-button ng-click="vm.archieveDialog($event, template.id, 'public template')"
+                aria-label="Archive All">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
+                <span>Archive Template</span>
+              </md-button>
+            </md-menu-item>
 
           </md-menu-content>
         </md-menu>
+
       </td>
+
     </tr>
 
-  </table>
-
-  <table class="bordered-table" cellpadding="0" cellspacing="0" width="100%">
-    <thead>
-      <tr ng-if="vm.templates.list.length">
-        <th class="text-left">
-          <div class="table-header">
-            <span class="column-title">Name</span>
-          </div>
-        </th>
-        <th class="text-left">
-          <div class="table-header">
-            <span class="column-title">Author</span>
-          </div>
-        </th>
-        <th class="text-left">
-          <div class="table-header">
-            <span class="column-title">Type</span>
-          </div>
-        </th>
-        <th class="text-left">
-          <div class="table-header">
-            <span class="column-title">Posted Date</span>
-          </div>
-        </th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-if="template.internal==1"
-        ng-repeat="template in vm.templates.list | filter: globalSearch.searchTerm track by $index">
-        <td width="15%"><a href="">
-            <md-icon style="padding-top:0px;"
-              class="plus md-accent-fg s18 cplus ng-scope md-font icon-plus material-icons md-default-theme"
-              md-font-icon="icon-plus" aria-hidden="true">
-            </md-icon>
-          </a>
-          <span class="textcolor">{{template.name}}</span></td>
-        <td width="15%"><span class="textcolor">{{template.organization}}</span></td>
-        <td width="15%" ng-if="template.type">{{template.type}}</td>
-        <td width="15%" ng-if="template.type">{{template.created * 1000 | date :  "medium" }}</td>
-        <td class="text-right">
-
-          <md-menu>
-            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
-              translate translate-attr-aria-label="">
-              <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
-            </md-button>
-
-            <md-menu-content width="3">
-              <md-menu-item
-                ng-show="vm.checkIsPermission.indexOf('download-public-templates') !== -1 && template.type=='checklist'">
-                <md-button ng-click="vm.download.begin($event, template.id, 'checklist')" translate-attr-aria-label="">
-                  <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
-                  <span translate="">Download Template</span>
-                </md-button>
-              </md-menu-item>
-
-              <md-menu-item
-                ng-show="vm.checkIsPermission.indexOf('download-public-templates') !== -1 && template.type=='group'">
-                <md-button ng-click="vm.download.begin($event, template.id, 'group')" translate-attr-aria-label="">
-                  <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
-                  <span translate="">Download Template</span>
-                </md-button>
-              </md-menu-item>
-
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('delete-their-own-templates') !== -1 && template.idCON == user.idCON">
-                <md-button ng-click="template.remove()" translate-attr-aria-label="">
-                  <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
-                  <span translate="">Delete Template</span>
-                </md-button>
-              </md-menu-item>
-            </md-menu-content>
-          </md-menu>
-        </td>
-
-      </tr>
-    </tbody>
-  </table>
-
-</div>
+  </tbody>
+</table>

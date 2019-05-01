@@ -1,12 +1,18 @@
 <page-toolbar datas="vm.submenu"> </page-toolbar>
-
+<md-toolbar class="pt-20 breadcrumb" ng-show="vm.isBreadcrum">
+  <ul>
+    <li ng-show="vm.checklists && vm.checklists[0].item_bread"><a href="/process/projects" class="white"> {{vm.checklists[0].item_bread.project_name}}<span> - </span></a>
+        <a href="/process/workflows/{{vm.checklists[0].item_bread.project_id}}" class="white"><span> {{vm.checklists[0].item_bread.folder_name}}</span></a>
+    </li>
+  </ul>
+</md-toolbar>
 
 <div ng-show="vm.loaded.checklist && !vm.isLinked && !vm.isLoader">
-  <div class="alert alert-warning pt-40"><strong>NOT LINKED!</strong>
+  <div class="alert alert-warning {{vm.isBreadcrum ? '' : 'pt-40'}}"><strong>NOT LINKED!</strong>
     <p>You are not linked to this Checklist.</p>
   </div>
 </div><!-- CHECKLIST LIST ITEMS -->
-<div class="checklist-items pt-32" id="checklist-details">
+<div class="checklist-items {{vm.isBreadcrum ? '' : 'pt-32'}}" id="checklist-details">
 
   <!--Checklists Iteration-->
   <div
@@ -30,7 +36,7 @@
             ng-if="checklist.postCount>0">
           </md-icon>
           <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg indicator-icon  s18"
-            ng-click="vm.openConflictsDialog($event)" ng-if="showingUsers.length>1 || vm.nonCompliant.indexOf(1) !== -1">
+            ng-click="vm.openConflictsDialog($event)" ng-if="showingUsers.length>1 ||  vm.countNonCompliant">
             
           </md-icon>
         </div>
@@ -139,7 +145,7 @@
 
               <md-divider class="md-default-theme"></md-divider>
               <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
-                <md-button  ng-disabled="vm.isCuted || checklist.complete" ng-click="vm.cutDialog('checklist', checklist.id, checklist.idCHK)"
+                <md-button  ng-disabled="vm.isCuted || checklist.complete" ng-click="vm.cutDialog('checklist', checklist.id, checklist.id_parent)"
                   aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
                   <span translate="GROUP.CUT"></span>
@@ -147,7 +153,7 @@
               </md-menu-item>
 
               <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
-                <md-button ng-disabled="vm.isCuted || checklist.complete" ng-click="vm.coypDialog($event, group.id)" aria-label="Copy"
+                <md-button ng-disabled="vm.isCuted || checklist.complete" ng-click="vm.coypDialog('checklist', checklist.id, checklist.id_parent)" aria-label="Copy"
                   translate-attr-aria-label="GROUP.COPY">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
                   <span translate="GROUP.COPY"></span>
@@ -214,7 +220,7 @@
             <div class="checklist-items" data-as-sortable="vm.dragControlListenersItems" data-ng-model="heading.items">
               <div data-as-sortable-item md-ink-ripple
                 ng-show="!heading.notApplicable && vm.isExpanded('heading', heading) || vm.isHeader"
-                data-ng-repeat="item in heading.items | orderBy:'order' | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+                data-ng-repeat="item in heading.items | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
                 <div ng-include="'app/main/checklist/views/detail/detailsChecklistsItems.html'"></div>
               </div>
             </div>

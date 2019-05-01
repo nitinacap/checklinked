@@ -3,22 +3,31 @@
   <table class="simple bordered-table">
     <thead>
     <tr ng-if="vm.invites.sent.length">
-      <th class="secondary-text">
-        <div class="table-header">
-          <span class="column-title">Checklist</span>
-        </div>
-      </th>
-      <th class="secondary-text">
-        <div class="table-header">
-          <span class="column-title">Recipient</span>
-        </div>
-      </th>
-      <th class="secondary-text hide-xs">
-        <div class="table-header">
-          <span class="column-title">Oraganization</span>
-        </div>
-      </th>
-      <th colspan="2">Type</th>
+        <th class="secondary-text">
+            <div class="table-header">
+              <span class="column-title">From</span>
+            </div>
+          </th>
+          <th class="secondary-text">
+            <div class="table-header">
+              <span class="column-title">Organization</span>
+            </div>
+          </th>
+          <th class="secondary-text">
+            <div class="table-header">
+              <span class="column-title">Type</span>
+            </div>
+          </th>
+          <th class="secondary-text">
+            <div class="table-header">
+              <span class="column-title">Name</span>
+            </div>
+          </th>
+          <th class="secondary-text" colspan="2">
+            <div class="table-header">
+              <span class="column-title">Date Received</span>
+            </div>
+          </th>
     </tr>
     <tr ng-if="!vm.invites.sent.length">
       <th class="secondary-text">
@@ -31,20 +40,25 @@
     </thead>
     <tbody>
     <tr ng-repeat="invite in vm.invites.sent | filter: globalSearch.searchTerm | orderBy: 'created'">
-      <td>
-        {{invite.name}}
-      </td>
-      <td>
-        {{invite.users.recipient.name}}
-      </td>
-
-      <td>
-        {{invite.users.recipient.organization}}
-      </td>
-
-      <td>
-        <span class="capitalize">{{invite.type=='group' ? 'Workflow' : invite.type }}</span>
-      </td>
+        <td>
+            {{invite.users.inviter.name}}
+  
+          </td>
+          <td>
+            {{invite.users.inviter.organization}}
+  
+          </td>
+          <td>
+            {{invite.type}}
+          </td>
+          <!-- //{{vm.passed.id}}// -->
+          <td class="hide-xs">
+              {{invite.name}}
+          </td>
+  
+          <td class="hide-xs">
+              {{invite.created * 1000 | date : "dd-M-yy" }}
+            </td>
 
 
       <td class="text-right">

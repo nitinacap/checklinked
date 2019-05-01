@@ -2,7 +2,7 @@
   <form name="checklistForm" class="md-inline-form" novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-        <span class="title">Edit Section</span>
+        <span class="title">{{vm.title}} == {{checklist}}</span>
         <md-button class="md-icon-button" ng-click="vm.closeDialog()">
           <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
         </md-button>
@@ -10,28 +10,34 @@
     </md-toolbar>
 
     <md-dialog-content ms-scroll>
-      <md-input-container class="md-block">
-        <label translate="CHECKLIST.SECTION.NAME">{{vm.section.name}} Name</label>
-        <input name="name" ng-model="vm.section.name" required md-autofocus>
-        <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
-          <div ng-message="required">
-            <span translate="CHECKLIST.ERRORS.SECTION_NAME_REQUIRED">Section Name field is required</span>
-          </div>
-        </div>
-      </md-input-container>
+        <md-input-container class="md-block pt-30">
+            <label>Select Workflow</label>
+            <md-select name="workflow_id" required ng-model="vm.workflow.id" placeholder="Select a workflow">
+              <md-option ng-value="workflow.id" ng-repeat="workflow in vm.groups">{{workflow.name}}</md-option>
+            </md-select>
+            <div ng-messages="groupForm.workflow_id.$error" ng-show="groupForm.workflow_id.$touched" role="alert">
+              <div ng-message="required">
+                <span>Workflow field is required</span>
+              </div>
+            </div>
+          </md-input-container>
+
+     
     </md-dialog-content>
 
     <md-dialog-actions layout="row" layout-align="space-between center">
-      <div layout="row" layout-align="start center">
+      <div layout="row" layout-align="end center" flex>
         <md-button type="submit"
-                   ng-click="vm.saveSection(vm.section)"
+                   ng-if="!vm.newChecklist"
+                   ng-click="vm.pasteDialog('checklist', vm.workflow.id, vm.workflow.id);"
                    class="md-raised md-accent"
                    ng-disabled="checklistForm.$invalid || checklistForm.$pristine"
                    aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">
-          SAVE
+          Paste
         </md-button>
       </div>
 
+     
     </md-dialog-actions>
   </form>
 </md-dialog>

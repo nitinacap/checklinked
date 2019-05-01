@@ -390,9 +390,12 @@
         vm.chat = [];
         vm.isLoader = false;
         if (res.type == 'success') {
+
+          debugger;
           var object = res.posts.data.conversions;
-          vm.messages = res.posts.data.conversions;
-          vm.contacts = res.posts.data.contacts;
+          vm.messages = res.posts.data;
+        //  vm.messages = res.posts.data.conversions;
+          vm.directMesage = res.posts.data.contacts;
          // vm.messages = Object.keys(object).map(e=>object[e]);
 
           // vm.mainconversations = [];
@@ -432,7 +435,7 @@
     }
     getNewLatestPosts($cookies.get('useridCON'));
 
-  function submitMessage(message, index, filename){
+  function submitMessage(message, index, filename,type_of){
     vm.isLoader = false;
     vm.file_name  = [];
     var text = $("#text"+ message.fdi_feed_item_id +index).val();
@@ -443,7 +446,8 @@
 
     var fd = new FormData();
     fd.append('file', files);
-    var filedata = { id: message.checklist_id ? message.checklist_id : '', text: text, itemType: message.type, producerType: 'checklist', parent_id:message.parent_id };
+    var filedata = { id: message.checklist_id ? message.checklist_id : '', text: text, itemType: message.type, producerType: type_of, parent_id:message.parent_id,conversation_from : 'message' };
+    debugger;
     fd.append('data', JSON.stringify(filedata));
 
     $http.post(BASEURL + 'posts-post.php', fd, {

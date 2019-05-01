@@ -10,7 +10,7 @@
     var vm = this;
     vm.isLoader = true;
 
-    var userpermission =  $cookies.get("userpermission");
+    var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
 
     $scope.getAllFolders = function () {
@@ -18,6 +18,7 @@
         vm.projects = d.data.folders;
       });
     };
+    vm.isBreadcrum = $stateParams.id ? true : false;
 
     $scope.getAllFolders();
 
@@ -71,6 +72,7 @@
     vm.closeDialog = closeDialog;
     vm.publishTemplateDialog = publishTemplateDialog;
     vm.linkExistingDialog = linkExistingDialog;
+    vm.undoDialog = undoDialog;
 
     /* Dialog Methods */
 
@@ -212,7 +214,7 @@
       vm.group.sending = true;
       vm.group.order = 1;
       vm.group.order += vm.groups ? vm.groups.length : '';
-      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description, vm.group.link, duplicate ? duplicate.id: '').error(function (res) {
+      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description, vm.group.link, duplicate ? duplicate.id : '').error(function (res) {
         return $rootScope.message("Error Creating Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -487,27 +489,93 @@
 
     ];
 
+
+    var checklistCut  = localStorage.getItem('cutObj');
+    $scope.checklistCut = '';
+    if(checklistCut){
+      $scope.checklistCut  = JSON.parse(checklistCut);
+    }
+
+    console.log('checklistCut2=',  $scope.checklistCut.type);
+    vm.isChecklistCut = false;
+
+    if ( $scope.checklistCut.type == 'checklist') {
+       vm.isChecklistCut = true;
+       function pasteChecklistDialog(){
+         
+       }
+    }
+
+
     //cut functionality
     vm.cutDialog = cutDialog;
     vm.pasteDialog = pasteDialog;
+    vm.coypDialog = coypDialog;
     $scope.item = [];
-    function cutDialog(id_parent, group_id, type, item) {
-      $scope.item[item] = true;
+    function cutDialog(id_parent, workflow_id, type, item) {
+      $scope.cutWorkflow = { type: type, id: workflow_id, parent_origin_id: id_parent };
+      localStorage.setItem('cutWorkflow', JSON.stringify($scope.cutWorkflow));
       $rootScope.id_parent = id_parent;
-
-
     }
 
-    function pasteDialog(id_parent, group_id, type, item) {
+    function coypDialog(id_parent, workflow_id, type, item) {
+      $scope.cutWorkflow = { type: type, id: workflow_id, parent_origin_id: id_parent };
+      localStorage.setItem('cutWorkflow', JSON.stringify($scope.cutWorkflow));
+      $rootScope.id_parent = id_parent;
+    }
+
+    function pasteDialog() {
+      $scope.cutWorkflow = JSON.parse(localStorage.getItem('cutWorkflow'));
+
+
       if ($stateParams.id && $stateParams.id == $rootScope.id_parent) {
         $rootScope.alertMessage('You can not paste in the same workflow');
       }
       else {
-        $rootScope.alertMessage('Paste successfully');
+        debugger;
+        if ($rootScope.id_parent && $rootScope.id_parent != '') {
+          var parent_origin_id = $scope.cutWorkflow.parent_origin_id;
+          var parent_destination_id = $stateParams.id;
+          var move_item_id = $scope.cutWorkflow.id;
+          var action_type = 'workflow';
+          var item_move_type = $scope.cutWorkflow.type;;
+          api.item.paste(parent_origin_id, parent_destination_id, action_type, item_move_type, move_item_id).error(function (res) {
+            return $rootScope.message("Error creating on paste item", 'warning');
+          }).success(function (res) {
+            if (res.type = 'success') {
+              localStorage.removeItem('cutWorkflow');
+              $rootScope.id_parent = '';
+              $rootScope.alertMessage('Paste successfully');
+              $scope.getGroups();
+            }
+
+          });
+        } else {
+          $rootScope.alertMessage('Please cut the item first');
+
+        }
+
 
       }
 
-    }
+    };
+
+    function undoDialog(id) {
+      api.item.undo(id).error(function (res) {
+        return $rootScope.message("Error creating on undo workflow", 'warning');
+      }).success(function (res) {
+        if (res.code == '-1') {
+          $rootScope.message(res.message, 'warning');
+        } else {
+          $rootScope.alertMessage('Undo successfully');
+          $scope.getGroups();
+        }
+
+
+      });
+    };
+
+
     $rootScope.alertMessage = function (message) {
       var confirm = $mdDialog.confirm()
         .title(message)
@@ -536,7 +604,7 @@
       });
     };
 
-//Alert Cancel an close
+    //Alert Cancel an close
     $scope.hide = function () {
       $mdDialog.hide();
     };

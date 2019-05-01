@@ -1,6 +1,15 @@
 <div id="setting" class="page-layout simple tabbed" layout="column">
     <page-toolbar datas="vm.submenu"> </page-toolbar>
+    <md-toolbar class="pt-20 breadcrumb">
+        <ul>
+          <li>
+            <button type="button" class="white" ng-click="vm.openSchedulePopup()">Add Schedule</button>
+          </li>
+        </ul>
+      </md-toolbar>
       <div ng-include="'app/main/schedules/partials/schedule.html'"></div>
+
+  
       <div class="bd-loader" ng-if="vm.isLoader">
           <md-progress-circular md-diameter="40"></md-progress-circular>
         </div>

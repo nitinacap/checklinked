@@ -29,10 +29,10 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
     .module('checklinked')
     .run(runBlock);
   /** @ngInject */
-  function runBlock($rootScope, $timeout, $state, $cookies, $mdDialog, $location, $http, toastr, api, $filter) {
+  function runBlock($rootScope, $timeout, $state, $cookies, $mdDialog, $location, $http, toastr, api, $filter,  $stateParams) {
     // Activate loading indicator
     var silent;
-    if (!$cookies.get("token") || $cookies.get("token") == 'undefined' || $cookies.get("token") == '') {
+    if ((!$cookies.get("token") || $cookies.get("token") == 'undefined' || $cookies.get("token") == '') && ($stateParams.id))  {
       $state.go('app.login');
     }
     // Authinication
@@ -139,7 +139,6 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         case 'dashboard':
         case 'checkout':
         case 'schedule':
-        case 'invite':
         case 'to-do':
         case 'revoke':
           //case 'file-manager':

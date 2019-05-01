@@ -321,15 +321,16 @@
           this.inProgress = true;
           this.error = '';
           process = this.processTemplate;
-          console.log("templatetype=" + $scope.templatetype);
           return $http.get(BASEURL + "templates-get.php?org=1&noXML=1").success(function (res) {
             vm.isLoader = false;
             if (res === void 0 || res === null || res === '') {
               return vm.templates.load.error = 'Error loading Templates! (Server not responding properly.)';
             } else if (res.code) {
               return vm.templates.load.error = "Error loading Templates: (" + res.code + ") " + res.message;
-            } else if (res.templates !== void 0 && res.templates.length) {
-              vm.templates.list = res.templates.map(process);
+            } else if (res.templates) {
+              vm.templates.list = res.templates;
+              vm.publicOrganization = Object.keys(res.templates.public);
+             
             }
           }).error(function (err) {
             console.log('Error loading team members: ', err);

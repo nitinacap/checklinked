@@ -11,7 +11,7 @@
 
     </md-tab>
 
-    <md-tab class="pr-30" ng-disabled="!myvalue">
+    <md-tab class="pr-30" ng-disabled="!myvalue || !vm.user_Roles">
         <md-tab-label>
           <md-menu>
             <md-icon ng-show="myvalue" md-font-icon="icon-dots-vertical s18" id="lh-5" ng-click="$mdOpenMenu($event)"></md-icon>

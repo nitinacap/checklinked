@@ -1,9 +1,19 @@
 <div class="content">
   <page-toolbar datas="vm.submenu"> </page-toolbar>
 </div>
-<div id="checklist" class="page-layout simple tabbed pad-0 pt-35" layout="column">
+<md-toolbar class="pt-20 breadcrumb" ng-show="vm.isBreadcrum && vm.checklists.length > 0">
+  <ul>
+    <li ng-show="vm.checklists && vm.checklists[0].item_bread"><a href="/process/projects" class="white"> {{vm.checklists[0].item_bread.project_name}}<span> - </span></a>
+        <a href="/process/workflows/{{vm.checklists[0].item_bread.project_id}}" class="white"><span> {{vm.checklists[0].item_bread.folder_name}}</span></a>
+    </li>
+  </ul>
+</md-toolbar>
+
+<div id="checklist" class="page-layout simple tabbed pt-5 {{vm.isBreadcrum && vm.checklists.length > 0 ? '' : 'pt-35'}}" layout="column">
 
   <!-- CENTER -->
+
+
 
 
   <div class="toolbar-list tb-border" layout="row" layout-align="space-between center"

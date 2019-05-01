@@ -9,6 +9,8 @@
   function OrganizationController($rootScope, $cookieStore, $mdDialog, $cookies, $document, $stateParams, $state, $http, $scope, api, $mdSidenav) {
 
     var vm = this;
+    debugger;
+    vm.user_Roles =  api.isUserRole('Controller');
     if ($stateParams.type) {
       vm.type = $stateParams.type
 
@@ -139,9 +141,9 @@
 
 
     function openOrgInfoDialog(ev, info) {
+      debugger;
 
       vm.info = info;
-      vm.title = 'Edit Project Name Title';
       vm.newFolder = false;
 
       if (!vm.folder) {
@@ -152,14 +154,14 @@
           'order': '',
           'deleted': false
         };
-        vm.title = (vm.orgTmp && vm.orgTmp.idACC.idACC) ? 'Edit Org Info' : 'Add Org Info';
+        vm.title = (vm.orgTmp && vm.orgTmp.idACC) ? 'Edit Org Info' : 'Add Org Info';
         vm.newFolder = true;
       }
 
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
-        templateUrl: (vm.orgTmp && vm.orgTmp.idACC.idACC) ? 'app/main/organization/partials/organization.html' : 'app/main/organization/partials/create-organization.html',
+        templateUrl: (vm.orgTmp && vm.orgTmp.idACC) ? 'app/main/organization/partials/organization.html' : 'app/main/organization/partials/create-organization.html',
         parent: angular.element($document.find('#checklist')),
         targetEvent: ev,
         clickOutsideToClose: false

@@ -1,0 +1,77 @@
+<md-dialog class="dialog" aria-label="New Folder">
+  <form name="form" ng-disabled='vm.inviting' class="md-inline-form" ng-submit="vm.addTeam()"
+    novalidate>
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">{{vm.title}}</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content class="pt-15" flex>
+      <div layout="row">
+        <p>
+          Select the Role(s) or the Individual User(s) for this Manger’s Team.
+        </p>
+      </div>
+
+
+
+      <md-input-container class="pb-40" flex="100">
+        <md-select required flex="100" ng-model="vm.manager_id" placeholder="Manager">
+          <md-option name="manager_id" ng-value="0" selected="false">Select Manager</md-option>
+          <md-option name="manager_id" ng-value="manager.user_id" ng-repeat="manager in  vm.managers_teamusers.managers">{{ manager.user_name }}</md-option>
+          <!-- <md-option name="manager_id" ng-value="1" >1</md-option> -->
+        </md-select>
+        <div ng-messages="form.manager_id.$error" ng-show="form.manager_id.$touched" role="alert">
+          <div ng-message="required" style="opacity: 1; margin-top: 0px;">
+            <span>Select manager option</span>
+          </div>
+        </div>
+      </md-input-container>
+
+<table class="simple bordered-table" ms-responsive-table>
+  <thead>
+    <tr>
+        <th width="100">Include</th>
+        <th width="200">Role</th>
+        <th>Name  </th>
+      
+      </tr>
+  </thead>
+  <tbody>
+    <tr>
+        <td><input  type="checkbox"></td>
+        <td>Include All</td>
+        <td></td>
+      </tr>
+      <tr ng-repeat="teamuser in vm.managers_teamusers.team_users">
+          <td><input ng-checked="teamuser[0].manger_ids===vm.manager_id ? true : '' " type="checkbox" name="user_id" ng-change="getManagerTeamUser_id(teamuser[0].user_id )" ng-model="item.user_id" ng-true-value="'{{ teamuser[0].user_id }}'" ng-false-value="''" value="{{ teamuser[0].user_id }}"></td>
+          <td>{{teamuser[0].role_type_name}} </td>
+          <td><a href="#">{{teamuser[0].user_name}}</a></td>
+        </tr>
+  </tbody>
+</table>
+
+
+
+    </md-dialog-content>
+
+
+
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="end center" flex>
+        <md-button type="submit" class="md-raised md-accent" aria-label="Submit"
+          ng-disabled="form.$invalid || form.$pristine || vm.inviting">
+          <span ng-hide='vm.inviting'>Save </span>
+          <span ng-show='vm.inviting'>Sending...</span>
+        </md-button>
+
+      </div>
+
+
+    </md-dialog-actions>
+  </form>
+</md-dialog>

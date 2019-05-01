@@ -1,25 +1,12 @@
 <div id="groups" class="page-layout simple tabbed pad-0" layout="column">
-
-  <!-- HEADER -->
- <!-- <div class="header md-accent-bg" layout="row" layout-align="start center">
-    <div class="white-fg" layout="row" layout-align="start center" flex>
-      <div layout="column" layout-align="start start">
-        <div class="h2">
-          <span>Checklists</span>
-        </div>
-      </div>
-    </div>
-  </div>
--->
-  <!-- / HEADER -->
-
-  <!-- CONTENT -->
- 
+  <md-toolbar class="pt-20 breadcrumb" ng-show="vm.isBreadcrum && vm.groups.length > 0">
+    <ul>
+      <li><a href="/process/projects" class="white"><span> {{vm.groups[0] ? vm.groups[0].item_bread.project_name: ''}}</span></a></li>
+    </ul>
+  </md-toolbar>
   <page-toolbar datas="vm.submenu"> </page-toolbar>
-    <div ng-include="'app/main/groups/partials/groups.html'"></div>
-<div class="bd-loader" ng-if="vm.isLoader">
-  <md-progress-circular md-diameter="40"></md-progress-circular>
-</div>
-  <!-- / CONTENT -->
-
+  <div ng-include="'app/main/groups/partials/groups.html'"></div>
+  <div class="bd-loader" ng-if="vm.isLoader">
+    <md-progress-circular md-diameter="40"></md-progress-circular>
+  </div>
 </div>

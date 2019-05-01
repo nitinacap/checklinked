@@ -1,5 +1,5 @@
 <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0" ng-show="!vm.closeList">
-        <tbody ng-repeat="contacts in  vm.contacts" ng-if="contacts || vm.contacts">
+        <tbody ng-repeat="contacts in  vm.directMesage" ng-if="contacts.length > 0">
                 <tr>
                     <td>
                          <i class="fa fa-plus-circle s18" ng-click="myvalue2 = myvalue2 == true ? false : true;" aria-hidden="true"
@@ -12,12 +12,10 @@
                     </td>
                 </tr>
                 <tr ng-repeat="contact in contacts | orderBy:'-created_at'" class="removeborder" ng-show="myvalue2" ng-if="contact">
-    
                     <td>
                         <div layout="row">
                             <div class="column">
                                 <span class="headingcolor">{{contact.user_full_name}} {{contact.organization_name }}</span>
-    
                             </div>
                             <div class="column">
                                 <span ng-init="vm.notificationDate(contact.created_at)"></span>
@@ -26,7 +24,6 @@
                                         <i class="fa fa-paperclip s18 pl-10"></i>
                                     </a>
                             </div>
-    
                         </div>
     
                         <p class="message">

@@ -339,14 +339,14 @@ md-icon[md-font-icon].s18, i.s18 {
 .username {
     font-size: 13px !important;
     font-weight: 500 !important;
-    color: rgb(65,110,163);
+    //color: rgb(65,110,163);
     text-transform: capitalize;
 }
 
 .username + .fa {
     line-height: 22px;
     font-size: 16px !important;
-    color: rgb(65,110,163);
+   // color: rgb(65,110,163);
 }
 .user-menu {
     md-icon{
@@ -482,4 +482,24 @@ input[type=file] {
 .add-payment-method-form-view label.card-label input {
     font-size: 14px;
     margin-top: 10px;
+}
+
+.breadcrumb ul {
+    list-style: none;
+    padding-left: 15px;
+    margin-bottom: 8px;
+    background: #4e79aa;
+    padding: 10px;
+    margin: 0;
+    padding-top: 24px;
+}
+
+.breadcrumb ul li {
+    font-size: 14px;
+}
+.bold{
+    font-weight: bold;
+}
+.fr{
+    float:right;
 }

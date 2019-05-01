@@ -22,6 +22,9 @@
     vm.members = [];
     vm.cancelSubscription = cancelSubscription;
     vm.openSubscriptionListDialog = openSubscriptionListDialog;
+    vm.addManagerTeam = addManagerTeam;
+    vm.addTeam = addTeam;
+
     //$scope.members = [];
 
     vm.isLoader = true;
@@ -29,6 +32,10 @@
 
     var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
+
+
+
+
 
     //Toggle Left Side Nav
     function toggleSidenav(sidenavId) {
@@ -367,6 +374,7 @@
 
 
 
+
     function openSubscriptionDialog(item) {
       // alert(JSON.stringify(item));
       vm.item = item;
@@ -439,6 +447,8 @@
       })
         .success(function (res) {
           vm.roleTypes = res.roleType;
+
+          debugger;
         });
     };
     getRoleType();
@@ -522,6 +532,10 @@
           vm.rolevalues = Object.values(vm.memberRoles.roles);
           vm.rolekeys = Object.keys(vm.memberRoles.roles);
 
+
+          vm.logged_user_roles = $cookies.get('logged_user_roles');
+          vm.logged_user_id = $cookies.get('logged_user_id');
+          debugger;
         }
       })
     }
@@ -574,10 +588,33 @@
     };
     $scope.payment_method_nonce();
 
-    vm.changeRole = changeRole;
-    function changeRole(id, role_id, toggle) {
 
-      //alert(id + " " + role_id + " " + toggle);
+
+    vm.changeRole = changeRole;
+    function changeRole(id, role_id, toggle, roles) {
+      var user_roles = $cookies.get('logged_user_roles');
+      var $role_selected = '';
+      for (var k in roles) {
+        if (role_id == roles[k])
+          $role_selected = k;
+
+      }
+
+      //|| $role_selected == 'Controller'
+      if ($role_selected != '') {
+        if ($role_selected == 'Account Owner' || $role_selected == 'Controller') {
+          if ($role_selected == 'Controller') {
+            $role_selected = 'Account Owner';
+          }
+          if (user_roles.indexOf($role_selected) == -1) {
+            $rootScope.message('You have not permission', 'warning');
+            return;
+          }
+        }
+      }
+      debugger;
+
+
       vm.isLoader = true;
       $http.post(BASEURL + 'role-permission.php', {
         item_type: 'plan',
@@ -588,6 +625,37 @@
       }).success(function (res) {
         vm.isLoader = false;
         if (res.type == 'success') {
+          vm.logged_user_roles = $cookies.get('logged_user_roles');
+
+
+
+          var logged_user_id = $cookies.get("logged_user_id");
+
+          if (id == logged_user_id) {
+            if (toggle == '-1') {
+
+              if (vm.logged_user_roles.indexOf($role_selected) == -1) {
+                vm.logged_user_roles = vm.logged_user_roles + ',' + $role_selected;
+                $cookies.put('logged_user_roles', vm.logged_user_roles);
+              }
+              debugger;
+
+            }
+            else {
+              if (vm.logged_user_roles.indexOf($role_selected) != -1) {
+                vm.logged_user_roles = vm.logged_user_roles.replace($role_selected, "");
+                vm.logged_user_roles = vm.logged_user_roles.replace(/(.+),$/, '$1');
+                var role_array = vm.logged_user_roles.split(',');
+                var unique_role = role_array.filter(function (e) { return e });
+                vm.logged_user_roles = unique_role.toString();
+                $cookies.put('logged_user_roles', vm.logged_user_roles);
+                debugger;
+              }
+            }
+          }
+
+
+
           getUserRoles();
         } else {
           $rootScope.message(res.message, 'warning');
@@ -622,8 +690,8 @@
     function checkRole(item) {
       vm.permission_to_add_subscription.push(item.includes("Controller"));
     }
-
-    function cancelSubscription(id) {
+    $scope.IsVisible = [];
+    function cancelSubscription(id, index) {
       vm.isLoader = true;
       $http.post(BASEURL + 'role-permission.php', {
         item_type: 'plan',
@@ -632,8 +700,10 @@
       }).success(function (res) {
         vm.isLoader = false;
         if (res.type == 'success') {
+          $scope.IsVisible[index] = true;
+          $scope.delete_plain = true;
           $rootScope.message('Plan has been deleted successfully', 'success');
-          vm.items = res.plan;
+          //vm.items = res.plan;
         } else {
           $rootScope.message(res.message, 'warning');
         }
@@ -641,32 +711,61 @@
     };
 
     function getSubscriptions() {
-      return  $http.post(BASEURL + 'role-permission.php', {
-          item_type: 'plan',
-          type: 'getsubscription'
-        }).success(function (res) {
-          vm.isLoader = false;
-          if (res.type == 'success') {
+      return $http.post(BASEURL + 'role-permission.php', {
+        item_type: 'plan',
+        type: 'getsubscription'
+      }).success(function (res) {
+        vm.isLoader = false;
+        if (res.type == 'success') {
           vm.getsubscriptions = res.plan;
-          } else {
-            $rootScope.message(res.message, 'warning');
+        } else {
+          $rootScope.message(res.message, 'warning');
+        }
+      })
+    };
+
+    getSubscriptions();
+
+    /**/
+
+    ///get Plans
+
+    (
+      function getBillings() {
+
+        return $http.get(BASEURL + "coe-get.php?t=billing").success(function (res) {
+          if (res.type == 'success') {
+
+            //debugger;
+            console.log('billings');
+            // console.log(res);
+            console.log(res.billings);
+            vm.billings = res.billings;
+            console.log('billings');
+            // vm.billings = res.billings;
+
+            /*var arr = ["1", "2", "3"];
+  
+              vm.billings = "HELLO A";*/
           }
         })
-      };
+      }()
+    );
 
-  getSubscriptions();
 
-   function openSubscriptionListDialog(items){
-    vm.isLoader = false;
-    vm.items = items;
-    vm.title = 'Subscription List';
-    $mdDialog.show({
-      scope: $scope,
-      preserveScope: true,
-      templateUrl: 'app/main/teammembers/dialogs/subscription-list-dialog.html',
-      clickOutsideToClose: false
-    });
-   }
+    /* */
+
+    function openSubscriptionListDialog(items) {
+      vm.isLoader = false;
+      vm.items = items;
+      vm.title = 'Subscription List';
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-list-dialog.html',
+        clickOutsideToClose: false
+      });
+    }
 
 
 
@@ -676,6 +775,76 @@
       { link: 'organization', title: 'Organization' },
       { link: '', title: 'Account' }
     ];
+
+
+
+
+    function addManagerTeam(item) {
+      vm.title = 'Edit Manager Permissions';
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/addManagerUser.html',
+        clickOutsideToClose: false
+      });
+
+    };
+
+    function getSubUser() {
+      return $http.post(BASEURL + 'role-permission.php',
+        {
+          item_type: 'plan',
+          type: 'getmanagerlist'
+
+        },
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        }).success(function (res) {
+          if (res.type == 'success') {
+            vm.managers_teamusers = res.plan;
+           // vm.manager_user_list = Object.keys(vm.managers_teamusers.team_users).map(it => vm.managers_teamusers.team_users[it])
+          }
+
+        })
+    };
+    getSubUser();
+
+    $scope.selectedList = [];
+    $scope.getManagerTeamUser_id = function (user_id) {
+      var indexOfDay = $scope.selectedList.indexOf(user_id);
+      if (indexOfDay === -1) {
+        
+        $scope.selectedList.push(user_id)
+      } else {
+        $scope.selectedList.splice(indexOfDay, 1)
+      }
+    }
+
+    function addTeam() {
+
+      return $http.post(BASEURL + 'role-permission.php', {
+          item_type: 'plan',
+          type: 'savemanagerlist',
+          manager_id:vm.manager_id,
+          user_ids: $scope.selectedList
+
+        },
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        }).success(function (res) {
+          if (res.type == 'success') {
+            $rootScope.message('Data Submitted successfully', 'success');
+          }
+        })
+    };
+
+//     $scope.CheckUncheckAll = function () {
+//       for (var i = 0; i < vm.manager_user_list.length; i++) {
+//         vm.manager_user_list[i].user_id = $scope.IsAllChecked;
+//     }
+// };
+  
+
 
   }
 

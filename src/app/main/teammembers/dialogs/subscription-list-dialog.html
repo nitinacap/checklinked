@@ -20,13 +20,14 @@
            </tr>
          </thead>
          <tbody>
-          <tr ng-repeat="item in  vm.items">
+           {{IsVisible}}
+          <tr ng-repeat="item in  vm.items" ng-hide="IsVisible[$index]">
             <td>{{$index + 1}}</td>
             <td><span class="capitalize">{{item.name}}</span></td>
             <td><span class="capitalize">{{item.slug}}</span></td>
             <td>{{item.ends_at ? item.ends_at : 'Not Available'}}</td>
             <td>
-              <md-button ng-click="vm.cancelSubscription(item.id)" type="button" class="md-warn min-width-0"> 
+              <md-button ng-click="vm.cancelSubscription(item.id, $index)" type="button" class="md-warn min-width-0"> 
                  <md-icon md-font-icon="icon-trash"></md-icon>
                 </md-button>
             </td>

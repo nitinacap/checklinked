@@ -2,14 +2,34 @@
     <img ng-if="!vm.create.success" alt="Checklinked Logo" class="" src="/assets/images/logos/checklinked.png">
 
 
-  <div class="title" translate="REGISTER.TITLE">Accept Invitation {{vm.acceptInvite.reg.contact.name.last}}</div>
+  <!-- <div class="title" translate="REGISTER.TITLE">
+    Accept Invitation {{vm.acceptInvite.reg.contact.name.last}}
+  </div> -->
+  <div class="login" layout="row" layout-xs="column" layout-align="center center">
+      <span class="text" ng-click="vm.viewToggle('legacy', 'create')">
+      Already Have an Account?</span>
+      <a class="link" >Help</a>
 
+
+    </div>
+
+    <div layout="row" layout-xs="column">
+        <h2 class="text-left bold">{{ vm.invite.organization.name }} has paid
+            for your use of their account. </h2>
+      </div>
+
+      
+    <div layout="row" layout-xs="column">
+        <h5 class="text-left">Enter a password below to join their
+            organization. You will be sent a
+            confirmation email with login information.</h5>
+      </div>
 
 
     <form name="registerForm" novalidate ng-submit="vm.acceptInvite.signup()">
       <md-input-container class="md-block" md-no-float>
      <input type="hidden" name="role_type" ng-model="vm.acceptInvite.reg.contact.role_type">
-        <input name="first" ng-model="vm.acceptInvite.reg.contact.name.first" placeholder="First Name"
+        <input  type="hidden"  name="first" ng-model="vm.acceptInvite.reg.contact.name.first" placeholder="First Name"
                translate translate-attr-placeholder="REGISTER.FIRST"
                required>
         <div ng-messages="registerForm.first.$error" role="alert">
@@ -20,7 +40,7 @@
       </md-input-container>
 
       <md-input-container class="md-block" md-no-float>
-        <input name="last" ng-model="vm.acceptInvite.reg.contact.name.last" placeholder="Last Name"
+        <input  type="hidden"  name="last" ng-model="vm.acceptInvite.reg.contact.name.last" placeholder="Last Name"
                translate translate-attr-placeholder="REGISTER.LAST"
                required>
         <div ng-messages="registerForm.last.$error" role="alert">
@@ -31,7 +51,7 @@
       </md-input-container>
 
       <md-input-container class="md-block" md-no-float>
-        <input name="phone" ng-model="vm.acceptInvite.reg.contact.phone" placeholder="Phone Number"
+        <input  type="hidden"  name="phone" ng-model="vm.acceptInvite.reg.contact.phone" placeholder="Phone Number"
                translate translate-attr-placeholder="REGISTER.PHONE"
                required>
         <div ng-messages="registerForm.phone.$error" role="alert">
@@ -42,7 +62,7 @@
       </md-input-container>
 
       <md-input-container class="md-block" md-no-float>
-        <input type="email" name="email" ng-model="vm.acceptInvite.reg.contact.email" placeholder="Email"
+        <input  type="hidden"  type="email" name="email" ng-model="vm.acceptInvite.reg.contact.email" placeholder="Email"
                translate translate-attr-placeholder="REGISTER.EMAIL"
                ng-pattern="/^.+@.+\..+$/" required>
         <div ng-messages="registerForm.email.$error" role="alert" multiple>
@@ -105,10 +125,7 @@
         CREATE MY ACCOUNT
       </md-button>
       
-      <div class="login" layout="row" layout-xs="column" layout-align="center center">
-        <span class="text" translate="REGISTER.ALREADY_HAVE">Already have an account?</span>
-        <a class="link"  ng-click="vm.viewToggle('legacy', 'create')"  translate="REGISTER.LOGIN">Log in</a>
-      </div>
+ 
 
 
     </form>

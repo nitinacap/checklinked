@@ -1,38 +1,55 @@
+<style>
+  .breadcrumcolor.pointer.capitalize a {
+    font-size: 14px;
+    color: #28b5f5;
+}
+.breadcrumcolor {
+    margin-bottom: 5px;
+}
+p.message {
+    padding-left: 10px;
+}
+p.message i.fa:before {
+    color: gray;
+    font-size: 11px;
+    margin-right: 8px;
+}
+#message p {
+    margin-bottom: 10px;
+}
+p.child_message{
+  padding-left: 33px;
+}
+
+p.message i {
+    display: inline;
+}
+
+#message .upload-btn-wrapper .btn {
+    padding: 0px 7px !important;
+}
+
+span.message-heading {
+    font-weight: 500;
+}
+</style>
 <page-toolbar datas="vm.submenu"> </page-toolbar>
 <div class="simple-table-container md-background-bg md-whiteframe-1dp pt-30" id="message">
-
-    <div ng-cloak class="subtab" id="invitations">
-
+  <div ng-cloak class="subtab" id="invitations">
     <md-tabs md-dynamic-height md-border-bottom>
+      <md-tab>
+        <md-tab-label>
+          <span translate="">Messages</span>
+        </md-tab-label>
+        <md-tab-body>
+          <div ng-include="'app/main/chat/conversion.html'"></div>
+        </md-tab-body>
+      </md-tab>
+    
+    </md-tabs>
+  </div>
 
-            <md-tab>
-              <md-tab-label>
-                <span translate="">Checklist Messages</span>
-              </md-tab-label>
-        
-              <md-tab-body>
-                <div ng-include="'app/main/chat/conversion.html'"></div>
-              </md-tab-body>
-            </md-tab>
-        
-            <md-tab>
-              <md-tab-label>
-                <span translate="">Contect Messages</span>
-              </md-tab-label>
-        
-              <md-tab-body>
-                <div ng-include="'app/main/chat/contact.html'"></div>
-              </md-tab-body>
-            </md-tab>
-        
-          </md-tabs>
-        
-</div>
-
-
-
-    <div class="bd-loader" ng-if="vm.isLoader">
-        <md-progress-circular md-diameter="40"></md-progress-circular>
-    </div>
-
+  <div class="bd-loader" ng-if="vm.isLoader">
+    <md-progress-circular md-diameter="40"></md-progress-circular>
+  </div>
 </div>

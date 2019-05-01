@@ -34,6 +34,27 @@
                 <span translate="CHECKLIST.EDIT_CHECKLIST_NAME">Edit Checklist Name</span>
               </md-button>
             </md-menu-item>
+            <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+                <md-button  ng-disabled="checklist.complete" ng-click="vm.cutDialog('checklist', checklist.id, checklist.id_parent);vm.checklistPasteDialog('checklist', checklist.id_parent, checklist.id_parent)"
+                  aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
+                  <span translate="GROUP.CUT"></span>
+                </md-button>
+              </md-menu-item>
+            <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+              <md-button ng-disabled="checklist.complete" ng-click="vm.pasteDialog('checklist', checklist.id_parent, checklist.id_parent);" aria-label="Paste"
+                translate-attr-aria-label="GROUP.PASTE">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
+                <span translate="GROUP.PASTE"></span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="checklist.move_item_id" >
+              <md-button ng-disabled="checklist.complete" ng-click="vm.undoDialog(checklist.move_item_id,'checklist')" aria-label="Undo" translate-attr-aria-label="GROUP.UNDO">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>
+                <span translate="GROUP.UNDO"></span>
+              </md-button>
+            </md-menu-item>
             <md-menu-item ng-show="vm.checkIsPermission.indexOf('duplicate-projects-workflows-checklists') !== -1">
               <md-button ng-click="vm.openChecklistDialog('' , checklist, 'duplicate')" aria-label="Duplicate"
                 translate-attr-aria-label="FOLDER.FOLDER_DUPLICATE">

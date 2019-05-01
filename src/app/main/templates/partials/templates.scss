@@ -2,7 +2,6 @@ span.ms-form-wizard-step-text {
   color: black;
 }
 #template{
-  height:100%;
 
   .form-container {
     padding: 24px;
@@ -44,26 +43,7 @@ button.md-icon-button.md-button.ng-scope.md-ink-ripple.md-default-theme {
 }
 
 }
-
-
-// RESPONSIVE
-@media screen and (max-width: $layout-breakpoint-xs) {
-
-
-  #templates{
-
-    .form-container {
-      padding: 24px;
-      margin-bottom: 24px;
-    }
-
-    .table-md-icon-button {
-      padding: 0 8px !important;
-      height: auto !important;
-    }
-
-  }
-
-
-
+.public-table .table-header{
+  width:100px;
 }
+

@@ -9,6 +9,11 @@
   function scheduleController($rootScope, api, $scope) {
     var vm = this;
     vm.isLoader = false;
+    vm.openSchedulePopup = openSchedulePopup;
+
+    function openSchedulePopup(){
+      
+    }
     $scope.eventSources = {
       events: [
         {

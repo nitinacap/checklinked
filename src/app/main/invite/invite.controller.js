@@ -6,7 +6,7 @@
     .controller('InviteController', InviteController);
 
   /** @ngInject */
-  function InviteController($rootScope, $scope, $http, $state, api, $location, $stateParams) {
+  function InviteController($rootScope, $state, api, $stateParams) {
 
     var vm = this;
     var idSUI;

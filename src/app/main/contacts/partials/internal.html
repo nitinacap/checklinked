@@ -19,27 +19,28 @@
         </th>
         <th class="secondary-text hide-xs" colspan="2">
           <div class="table-header">
-            <span class="column-title">Organization Email</span>
+            <span class="column-title">Email</span>
           </div>
         </th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-if="contact.contacts.originator.organization==contact.contacts.accepter.organization"
-        ng-repeat="contact in vm.contacts | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
-        ng-switch="(which = vm.showWhichInviteContactData(contact))" ng-click="vm.openContactDialog($event, contact)"
-        ng-class="{'md-green-100-bg':vm.passID==contact.id}">
+    
+
+      <tr  ng-repeat="contact in vm.internal | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.idCON "
+        ng-switch="(which = vm.showWhichInviteContactData(contact))"
+        ng-class="{'md-green-100-bg':vm.passID==contact.idCON}">
         <td>
-          <span class="link-color">{{contact.contacts[which].name.full}}</span>
+          <span class="link-color">{{contact.name.full}}</span>
         </td>
         <td class="hide-xs">
-          Designer
+            {{contact.role_type ? contact.role_type : '--------'}}
         </td>
         <td class="hide-xs">
-          {{contact.contacts[which].phone}}
+            {{contact.phone ? contact.phone : '--------'}}
         </td>
         <td class="hide-xs">
-          {{contact.contacts[which].email}}
+              {{contact.email}}
         </td>
         <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
           class="text-right">
