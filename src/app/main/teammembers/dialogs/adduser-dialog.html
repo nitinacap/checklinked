@@ -62,7 +62,7 @@
         </md-input-container>
 
         <md-input-container class="mb-10" flex="40">
-          <input type="text" name="phone" ng-model="vm.memberInvites.invite.send.phone" placeholder="Phone
+          <input maxlength="12" type="text" name="phone" ng-model="vm.memberInvites.invite.send.phone" placeholder="Phone
                       " required>
           <div ng-messages="form.phone.$error" role="alert" ng-show="form.phone.$touched">
             <div ng-message="required" style="opacity: 1; margin-top: 0px;">

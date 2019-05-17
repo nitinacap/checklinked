@@ -87,14 +87,13 @@ var indexOf = [].indexOf || function (item) {
     vm.saveChecklist = saveChecklist;
     vm.openSectionDialog = openSectionDialog;
     vm.saveSection = saveSection;
-   
+
     vm.openHeadingDialog = openHeadingDialog;
     vm.saveHeading = saveHeading;
     vm.openItemDialog = openItemDialog;
     vm.openFormLineDialog = openFormLineDialog;
     vm.saveItem = saveItem;
     vm.openConversationDialog = openConversationDialog;
-    vm.children = children;
     vm.isExpandable = isExpandable;
     vm.toggleableChildren = toggleableChildren;
     vm.expand = expand;
@@ -1069,39 +1068,39 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function loadChecklist(idCHK) {
-    
+
       //console.log('idCHK', idCHK);
       vm.setChecklistCtrlBlank();
       vm.checkIfLinked(idCHK);
       if (vm.isLinked || !vm.isLinked) {
         //console.log('is linked');
         if (!vm.loaded.checklist) {
-          //console.log('not loaded');
+    
           $scope.getChecklinked = function () {
-            vm.isLoader = true;
-
+      
+            toggleCheckbox
             api.checklists.get(idCHK, token).success(function (res) {
               var ref;
-              // vm.isLoader = false;
+
               if ((ref = res.checklists) != null ? ref.length : void 0) {
                 vm.checklists = res.checklists;
                 vm.isLinked = true;
                 vm.isLoader = false;
-                //vm.isLoader = false;
-                //console.log('vm.checklists', vm.checklists);
+                vm.nonCompliance_count = res.checklists[0].nonCompliance_count;
+                vm.total_nonCompliance = res.checklists[0].nonCompliance_total;
+
               } else {
-                //console.log('problem');
+           
                 vm.checklists = [];
-                // vm.isLinked = false;
+            
               }
 
-              console.log('not sure');
-              vm.loaded.checklist = true;
+            
+              vm.loaded.checklist = false;
               return $scope.$broadcast('event:checklistLoaded');
-              console.log('broadcast event:checklistLoaded');
+             
             })["finally"](function () {
               vm.loading.checklist = false;
-              vm.isLoader = false
               return vm.completeLoad();
 
             });
@@ -1581,7 +1580,6 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function displayUserCheckboxes(user) {
-     debugger;
       var userID, userKey;
       userKey = vm.getUserKey(user);
       console.log('initial userKey check', userKey);
@@ -1608,13 +1606,11 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function evaluateConflicts(item, operation) {
-      vm.countNonCompliant = vm.nonCompliant.reduce( function(total, amount){
-        return total + amount
-        });
+
 
       var addConflicts, leftNonCompliant, ref1, ref2, rightNonCompliant;
       item = api.summary.evaluateItem(item, item.checkbox, token);
-     // addConflicts = operation * +item.conflicts;
+      // addConflicts = operation * +item.conflicts;
       vm.conflicts += addConflicts;
       if (((ref1 = item.checkbox) != null ? ref1[0] : void 0) !== void 0 && item.checkbox[0] && item.checkbox[0].item_type != 'yn') {
         leftNonCompliant = operation * +item.checkbox[0].nonCompliant;
@@ -1630,7 +1626,7 @@ var indexOf = [].indexOf || function (item) {
     function appendCheckboxesToItems(user) {
       ////debugger;
       var userKey;
-     vm.nonCompliant = [0, 0];
+      vm.nonCompliant = [0, 0];
       vm.conflicts = 0;
       userKey = vm.getUserKey(user);
       if (userKey === -1) {
@@ -1679,9 +1675,11 @@ var indexOf = [].indexOf || function (item) {
       return console.log('user checkboxes removed', user, $rootScope.showingUsers);
     };
 
+
+
     function showLinkedUsers(ev, item) {
 
-      console.log()
+
 
       vm.item = {
         'name': item.name
@@ -1709,11 +1707,13 @@ var indexOf = [].indexOf || function (item) {
 
     function toggleCheckbox(item, which, type, userKey) {
       vm.evaluateConflicts(item, -1);
+      vm.isLoader = true;
       return api.checkbox.toggle(item.id, $rootScope.showingUsers[userKey].idCON, which, type).success(function (res) {
         if (item.checkbox === void 0) {
           item.checkbox = [];
         }
-
+        $scope.getChecklinked();
+        vm.isLoader = false;
         // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
         //  item.checkbox[userKey] = res.checkboxes[0];
         item.checkbox[userKey] = res.checkboxes[0];
@@ -2298,7 +2298,6 @@ var indexOf = [].indexOf || function (item) {
 
 
     function openConflictsDialog(ev) {
-
       $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
           $scope.closeDialog = function () {
@@ -2314,10 +2313,6 @@ var indexOf = [].indexOf || function (item) {
       });
 
     };
-    // $scope.getAttachmentFileName = function () {
-    //   alert($scope.file);
-    //   console.lof("wow2");
-    // }
 
 
     function uploadAttachment(what, pID, index) {
@@ -2589,6 +2584,7 @@ var indexOf = [].indexOf || function (item) {
       api.checklists.add(checklistName, vm.checklist.order, groupID, token, checklistDescription, checklist_id ? checklist_id : '', sub_type ? sub_type : '').error(function (res) {
         return $rootScope.message("Error Adding Checklist", 'warning');
       }).success(function (res) {
+        vm.isLoader = false;
         if (res.type != 'success' || res === '') {
           return $rootScope.message("Error Adding Checklist", 'warning');
         }
@@ -2844,13 +2840,14 @@ var indexOf = [].indexOf || function (item) {
       vm.setBlank();
       vm.loadingLinked = true;
       return api.checklists.getLinkedUsers(vm.idCHK, token).then(function (res) {
-        vm.isLoader = false;
+        //  vm.isLoader = false;
         if (res === void 0 || res === null || res === '') {
           return vm.setError(-1, 'Server not responding properly.');
         } else if (res.code) {
           return vm.setError(res.code, res.message);
         } else {
           var newcheckLists = res.checklists ? res.checklists : res.checkLists;
+
           if (res && newcheckLists && newcheckLists.length > 0 && newcheckLists != undefined)
             newcheckLists.forEach(function (cfc) {
               var show, usr;
@@ -2985,7 +2982,6 @@ var indexOf = [].indexOf || function (item) {
           'token': token
         };
 
-        console.log('vm.vars.message', vm.checklist.name);
 
         api.checklists.edit(editPack).error(function (res) {
           $rootScope.message("Error Editing Checklist", 'warning');
@@ -3030,18 +3026,18 @@ var indexOf = [].indexOf || function (item) {
     }
 
 
-      function saveSection(section,section_na,index) {
-        var section_na = section_na ? section_na : '';
-        var index = index ? index : 0;
+    function saveSection(section, section_na, index) {
+      var section_na = section_na ? section_na : '';
+      var index = index ? index : 0;
       var sectionIndex = index;
-     var token = $cookies.get("token");
+      var token = $cookies.get("token");
       var editPack;
       editPack = {
         'id': vm.section ? vm.section.id : section.id,
         'rid': vm.section ? vm.section.rid : section.rid,
         'index': 0,
         'type': 'section',
-        'section_type': section_na, 
+        'section_type': section_na,
         'text': vm.section ? vm.section.name : section.name,
         'section_na': section.section_na == 'true' ? 'false' : 'true',
         'token': token
@@ -3056,25 +3052,25 @@ var indexOf = [].indexOf || function (item) {
           $rootScope.message(res.message, 'warning');
         } else {
           vm.closeDialog();
-        
+
           //chekSectionNA(vm.section_na)
           // loadChecklist(vm.idCHK);
-          if(section_na == 'section_na'){
-          if(res.updated.section_na == 'true'){
-            $rootScope.message('Section has been marked as Section N/A', 'success');
-          }
-          else{
+          if (section_na == 'section_na') {
+            if (res.updated.section_na == 'true') {
+              $rootScope.message('Section has been marked as Section N/A', 'success');
+            }
+            else {
               $rootScope.message('Section has been unmarked from Section N/A', 'success');
-          }
+            }
             vm.sections[sectionIndex].section_na = res.updated.section_na == 'true' ? 'true' : 'false';
-        }
-        else{
+          }
+          else {
             $rootScope.message('Section has been changed successfully', 'success');
           }
 
-        
 
-          
+
+
         }
       });
     }
@@ -3114,7 +3110,7 @@ var indexOf = [].indexOf || function (item) {
     //       else{
     //           $rootScope.message('Section has been unmarked from Section N/A', 'success');
     //       }
-          
+
     //     }
     //   });
     // }
@@ -3301,7 +3297,8 @@ var indexOf = [].indexOf || function (item) {
         locals: {
           convoId: id,
           convoName: name,
-          producerType: producerType
+          producerType: producerType,
+          userName:'',
         }
       });
     }
@@ -3884,12 +3881,12 @@ var indexOf = [].indexOf || function (item) {
     vm.coypDialog = coypDialog;
 
     function cutDialog(type, id, parent_id) {
-      $scope.cutObj = { type: type, id: id, parent_destination_id: parent_id, action_type:'cut' };
+      $scope.cutObj = { type: type, id: id, parent_destination_id: parent_id, action_type: 'cut' };
       localStorage.setItem('cutObj', JSON.stringify($scope.cutObj));
     };
 
     function coypDialog(type, id, parent_id) {
-      $scope.cutObj = { type: type, id: id, parent_destination_id: parent_id, action_type:'copy' };
+      $scope.cutObj = { type: type, id: id, parent_destination_id: parent_id, action_type: 'copy' };
       localStorage.setItem('cutObj', JSON.stringify($scope.cutObj));
     };
 
@@ -3920,7 +3917,7 @@ var indexOf = [].indexOf || function (item) {
         $rootScope.alertMessage('You paste item should be ' + item_type);
       }
       else {
-        pateItem($scope.cutObj.parent_destination_id, item_id, $scope.cutObj.type,  $scope.cutObj.action_type, $scope.cutObj.id);
+        pateItem($scope.cutObj.parent_destination_id, item_id, $scope.cutObj.type, $scope.cutObj.action_type, $scope.cutObj.id);
       }
     };
 
@@ -4039,12 +4036,12 @@ var indexOf = [].indexOf || function (item) {
       });
     };
 
-    function selectWorkflowById(id){
+    function selectWorkflowById(id) {
       vm.folders = [];
       ftchFolder(id);
     }
 
-    function checklistPasteDialog(type, id,parent_id){
+    function checklistPasteDialog(type, id, parent_id) {
 
       ftchFolder('');
       vm.title = 'Paste Checklist in Workflow';

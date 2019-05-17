@@ -31,7 +31,7 @@
         ng-switch="(which = vm.showWhichInviteContactData(contact))"
         ng-class="{'md-green-100-bg':vm.passID==contact.idCON}">
         <td>
-          <span class="link-color">{{contact.name.full}}</span>
+          <span class="link-color pointer" ng-click="vm.openDirectMessageDialog(contact, contact.name.full,'internal-message', $event)">{{contact.name.full}}</span>
         </td>
         <td class="hide-xs">
             {{contact.role_type ? contact.role_type : '--------'}}
@@ -51,31 +51,28 @@
             </md-button>
 
             <md-menu-content width="3">
-              <md-menu-item ng-if="contact.accepted" ng-show="vm.checkIsPermission.indexOf('message-directly') !== -1">
-                <md-button ng-click="vm.openDirectMessageDialog(contact, contact.name.full, $event)">
-                  <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
-                  <span translate="CONTACTS.DIRECT_MESSAGING">Direct Message</span>
-                </md-button>
-              </md-menu-item>
 
-              <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
-                <md-button ng-click="vm.acceptConnectionInvitation(contact.contacts.originator.id, $index)">
-                  <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
-                  <span translate="CONTACTS.ACCEPT_INVITE">Accept Invitation</span>
-                </md-button>
-              </md-menu-item>
-
-              <md-menu-item ng-if="contact.accepted=='' && which=='originator'">
-                <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.originator.id,'reject')">
-                  <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
-                  <span translate="CONTACTS.REJECT_INVITE">Reject Invitation</span>
-                </md-button>
-              </md-menu-item>
-
-              <md-menu-item ng-if="contact.accepted=='' && which=='accepter'">
-                <md-button ng-click="vm.removeConnectionInvitation(contact.contacts.accepter.id,'withdrawn')">
-                  <md-icon class="red-600-fg s18" md-font-icon="icon-minus-circle-outline"></md-icon>
-                  <span translate="CONTACTS.WITHDRAW_INVITE">Withdraw Invitation</span>
+                <md-menu-item>
+                <md-button ng-click="viewAs.select(member)" aria-label="View As"
+                  translate-attr-aria-label="TEAMMEMBERS.VIEW_AS">
+                <button type="button"
+                ng-click=""
+                class="button-icon-reset" aria-label="role">
+                <md-icon ng-show="member.roles.has.indexOf(vm.rolekeys[$index]) == -1"
+                  md-font-icon="icon-checkbox-blank-outline" class="md-accent-fg s18"></md-icon>
+                <md-icon ng-show="member.roles.has.indexOf(vm.rolekeys[$index])!==-1"
+                  md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18"></md-icon>
+              </button>
+              <span translate="">Include in Schedule</span>
+             
+            </md-menu-item>
+             
+                <md-menu-item
+                ng-show="(!isUser && !isViewing) || ((isUser) && viewAs.notMe)  && contact.idCON == user.idCON && contact.manager_id" ng-if="vm.logged_user_roles.indexOf('Manager')!==-1  && contact.manager_id == user.idCON">
+                <md-button ng-click="viewAs.select(contact)" aria-label="View As"
+                  translate-attr-aria-label="TEAMMEMBERS.VIEW_AS">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-eye"></md-icon>
+                  <span translate="TEAMMEMBERS.VIEW_AS">View As</span>
                 </md-button>
               </md-menu-item>
             </md-menu-content>

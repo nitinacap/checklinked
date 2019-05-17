@@ -20,6 +20,8 @@
     })
     .state('app.chat.message', {
       url: '/message',
+      params :  { checklist_id: null},
+   
       views: {
         'content@app': {
           templateUrl: 'app/main/chat/message.html',

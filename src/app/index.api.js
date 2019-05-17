@@ -136,13 +136,13 @@
           notification: reg.notifications,
           password: reg.password,
           c_password: reg.password2,
-          first_name: reg.name.first,
-          last_name: reg.name.last,
+          first_name: reg.type ? reg.first: reg.name.first,
+          last_name: reg.type ? reg.last: reg.name.last,
+          role_type: (reg.type)  ? reg.role_type: '',
+          organization_id: (reg.type && reg.organization_id) ? reg.organization_id: '',
+          invitee_user_id: (reg.type && reg.invitee_user_id) ? reg.invitee_user_id: '',
           base_url: reg.baseURL
         };
-
-
-
         return $http.post(BASEURL + 'account-create.php', rdata, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -1021,11 +1021,11 @@
           return res;
         });
       },
-      get: function (id, skip) {
+      get: function (id, skip, type) {
         if (skip == null) {
           skip = 0;
         }
-        return $http.get(BASEURL + "posts-get.php?id=" + id + "&s=" + skip, {
+        return $http.get(BASEURL + "posts-get.php?id=" + id + "&s=" + skip + "&type=" + type, {
           cache: false
         }).error(function (res) {
           return $rootScope.message('Error talking to server', 'warning');
@@ -1239,6 +1239,8 @@
             idSUI: idSUI,
             option: option,
             contact: details.contact,
+            existing_data: details.existing_data ? details.existing_data : '',
+            organization_id: details.organization_id ? details.organization_id : '',
             password: details.password
           };
         }

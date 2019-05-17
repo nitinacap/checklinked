@@ -391,9 +391,10 @@
         vm.isLoader = false;
         if (res.type == 'success') {
 
-          debugger;
+          
           var object = res.posts.data.conversions;
           vm.messages = res.posts.data;
+          debugger;
         //  vm.messages = res.posts.data.conversions;
           vm.directMesage = res.posts.data.contacts;
          // vm.messages = Object.keys(object).map(e=>object[e]);
@@ -434,20 +435,29 @@
       }
     }
     getNewLatestPosts($cookies.get('useridCON'));
-
-  function submitMessage(message, index, filename,type_of){
+    vm.msgChOpen = false;
+  function submitMessage(message, index, filename,type_of,type,user_id,parent_id){
+ // debugger;
+ // return;
+   
     vm.isLoader = false;
     vm.file_name  = [];
     var text = $("#text"+ message.fdi_feed_item_id +index).val();
 
+    var log_user_id = $cookies.get("useridCON");
+
+    user_id = (log_user_id == user_id) ? parent_id : user_id
+    debugger;
+  
+     var message_to_id = type == 'message' ? user_id :''
 
     var files = document.getElementById(filename).files[0];
     vm.file_name[index] =  files;
 
     var fd = new FormData();
     fd.append('file', files);
-    var filedata = { id: message.checklist_id ? message.checklist_id : '', text: text, itemType: message.type, producerType: type_of, parent_id:message.parent_id,conversation_from : 'message' };
-    debugger;
+    var filedata = { id: message.checklist_id ? message.checklist_id : '', text: text, itemType: message.type, producerType: type_of, parent_id:message.parent_id,conversation_from : type,message_to_id: message_to_id };
+    
     fd.append('data', JSON.stringify(filedata));
 
     $http.post(BASEURL + 'posts-post.php', fd, {
@@ -457,7 +467,14 @@
       return $rootScope.message('Could not send message. Unknown error.', 'warning');
     }).success(function (res) {
       if (res.type == 'success') {
-        getNewLatestPosts($cookies.get('useridCON'));
+
+        
+        debugger;
+        vm.msgChOpen = true;
+        vm.currentIndex = index;
+        vm.messages[index] =res.posts[0];
+        
+      //getNewLatestPosts($cookies.get('useridCON'));
 
         //$scope.messages.unshift(res.posts[0]); 
         $rootScope.message('Message send successfully', 'success');

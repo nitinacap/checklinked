@@ -62,6 +62,7 @@
         </div>
       </th>
       <th></th>
+     
     </tr>
     <tr ng-repeat="public in publics | orderBy:vm.templateOrder:vm.reverse" ng-show="isDescp">
 
@@ -79,29 +80,38 @@
 
           <md-menu-content width="3">
 
-            <md-menu-item ng-if="template.type=='checklist'">
-              <md-button ng-click="vm.download.begin($event, template.id, 'checklist')"
+            <md-menu-item ng-if="public.type=='checklist'">
+              <md-button ng-click="vm.download.begin($event, public.id, 'checklist')"
                 translate-attr-aria-label="">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
                 <span translate="">Download Template</span>
               </md-button>
             </md-menu-item>
 
-            <md-menu-item ng-if="template.type=='group'">
-              <md-button ng-click="vm.download.begin($event, template.id, 'group')"
+            <md-menu-item ng-if="public.type=='workflow'">
+              <md-button ng-click="vm.download.begin($event, public.id, 'group')"
                 translate-attr-aria-label="">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
                 <span translate="">Download Template</span>
               </md-button>
             </md-menu-item>
 
-            <md-menu-item>
-              <md-button ng-click="vm.archieveDialog($event, template.id, 'public template')"
+            <md-menu-item ng-show="public.idCON == user.idCON">
+              <md-button ng-click="vm.archieveDialog($event, public.id, 'public template')"
                 aria-label="Archive All">
                 <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
                 <span>Archive Template</span>
               </md-button>
             </md-menu-item>
+
+            <md-menu-item
+            ng-show="vm.checkIsPermission.indexOf('delete-their-own-templates') !== -1 && public.idCON == user.idCON">
+            <md-button ng-click="vm.deleteItemConfirm(public,  $event)" translate-attr-aria-label="">
+              <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+              <span translate="">Delete Template</span>
+            </md-button>
+          </md-menu-item>
+
 
           </md-menu-content>
         </md-menu>

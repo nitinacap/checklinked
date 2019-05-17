@@ -36,7 +36,7 @@
             ng-if="checklist.postCount>0">
           </md-icon>
           <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg indicator-icon  s18"
-            ng-click="vm.openConflictsDialog($event)" ng-if="showingUsers.length>1 ||  vm.countNonCompliant">
+            ng-click="vm.openConflictsDialog($event)" ng-if="showingUsers.length>1 || vm.total_nonCompliance > 0">
             
           </md-icon>
         </div>
@@ -209,18 +209,18 @@
     <div class="checklist-items" data-as-sortable="vm.dragControlListenersSections" data-ng-model="checklist.sections">
 
       <div data-as-sortable-item md-ink-ripple
-        data-ng-repeat="section in checklist.sections | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+        data-ng-repeat="section in checklist.sections | orderBy: 'created' | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
         <div ng-include="'app/main/checklist/views/detail/detailsChecklistsSections.html'"></div>
         <div class="checklist-items" data-as-sortable="vm.dragControlListenersHeadings"
           data-ng-model="section.headings">
 
           <div data-as-sortable-item md-ink-ripple ng-show="!section.notApplicable && vm.isExpanded('section',section)"
-            data-ng-repeat="heading in section.headings | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+            data-ng-repeat="heading in section.headings | orderBy: 'created' | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
             <div ng-include="'app/main/checklist/views/detail/detailsChecklistsHeadings.html'"></div>
             <div class="checklist-items" data-as-sortable="vm.dragControlListenersItems" data-ng-model="heading.items">
               <div data-as-sortable-item md-ink-ripple
                 ng-show="!heading.notApplicable && vm.isExpanded('heading', heading) || vm.isHeader"
-                data-ng-repeat="item in heading.items | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+                data-ng-repeat="item in heading.items | orderBy: 'created' | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
                 <div ng-include="'app/main/checklist/views/detail/detailsChecklistsItems.html'"></div>
               </div>
             </div>

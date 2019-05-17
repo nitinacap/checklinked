@@ -70,7 +70,7 @@
           {{ report.requested * 1000 | date:'medium'}}
         </td>
         <td class="text-center">
-          {{report.count_non_compliants}}
+          {{report.count_conflicts}}
 
         </td>
 
@@ -134,17 +134,17 @@
           ng-class="{'md-accent-fg': vm.reports.viewingSub.id !== $index}" class="headingcolor">{{ checklist.name }}
         </td>
         <td class="text-center" width="20%">
-          {{ checklist.lines[0].tot_count_non_compliants }}
+          {{ checklist.lines[0].tot_count_conflicts }}
         </td>
         <td class="text-center" width="20%">
 
         </td>
         <td class="text-center" width="20%">
-            {{ checklist.lines[0].counts.posts }}
+          {{ checklist[$index].totActiveUserByChk}}
         </td>
 
         <td class="text-center" width="20%">
-          {{ checklist.lines[0].counts.active_users }}
+          {{ checklist.postCount }}
         </td>
         <td width="46" style="padding: 0 23px !important;"></td>
 
@@ -158,14 +158,8 @@
 <div ng-show="vm.reports.viewingSub" class="md-background-bg md-whiteframe-1dp">
 
   <div layout="row" layout-align="start center" class="p-24">
-    <div flex="100" layput-align="start center">
-      <h3 class="headingcolor">
-          <a href="/process/"> {{vm.reports.viewingSub.lines[0].breadcrumbs.project_name}}</a> - 
-          <a href="/checklist/{{vm.reports.viewingSub.lines[0].breadcrumbs.folder_id}}"> {{vm.reports.viewingSub.lines[0].breadcrumbs.folder_name}}</a> -
-          <a href="/checklist/detail/{{vm.reports.viewingSub.lines[0].breadcrumbs.checklist_id}}"> {{vm.reports.viewingSub.lines[0].breadcrumbs.checklist_name}}</a>
-
-
-      </h3>
+    <div flex="50" layput-align="start center">
+      <h3 class="headingcolor">{{vm.reports.viewingSub.name}}</h3>
     </div>
 
   </div>
@@ -197,8 +191,8 @@
             </th>
 
             <th class="text-center">
-              <div class="text-center {{vm.reports.viewing.totMessage ? 'link-color' : ''}}">
-            <span ui-sref="app.chat.message({checklist_id: vm.reports.viewingSub.lines[0].idCHK })">New Messages</span> 
+              <div class="text-center">
+                New Messages
               </div>
             </th>
             <th class="text-center">
@@ -207,24 +201,14 @@
               </div>
           </tr>
         </thead>
-    
         <tbody ng-repeat="lines in vm.reports.viewingSub.lines">
-          <tr ng-repeat="line in lines.user_list_datas">
-            <td class="headingcolor">
-              <span ng-click="vm.openConversationDialog('checklist', vm.reports.viewingSub.lines[0].idCHK, vm.reports.viewingSub.name, line.user_name)">
-              {{line.user_name}}
-            </span>
-            </td>
-            <td hide show-gt-xs class="text-center headingcolor" ng-click="vm.openContactDialog(line.organization);">
-              <span class="pointer"  >
-                  {{line.org_name}} 
-              </span>
-             
-            </td>
-            <td class="text-center {{line.non_compliant ? 'link-color' : ''}}">{{line.non_compliant}}</td>
-            <td class="text-center">{{line.postCount}}</td>
+          <tr ng-repeat="line in lines.userByMessage">
+            <td class="headingcolor">{{line.user_full_name}}</td>
+            <td hide show-gt-xs class="text-center headingcolor">{{line.org_name}}</td>
+            <td class="text-center">{{line.user_issue}}</td>
+            <td class="text-center">{{line.userMessage}}</td>
             <td hide show-gt-xs class="text-center" colspan="2">
-              <span>{{ lines.chk_complete ? 'Y' : 'N'}}</span>
+              <span>{{ lines.cfcComplete!=='0' ? 'Y' : 'N'}}</span>
             </td>
 
           </tr>

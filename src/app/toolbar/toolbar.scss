@@ -4,6 +4,8 @@
   max-height: $toolbarHeight;
   z-index: 71 !important;
 
+
+
   .view-as {
     opacity: 0.8;
     background-color: rgb(2, 136, 209);
@@ -259,4 +261,9 @@ body {
 }
 .default-item button md-icon {
   margin: 0;
+}
+
+.user-menu span.ng-scope {
+  text-transform: capitalize;
+  font-weight: 400;
 }

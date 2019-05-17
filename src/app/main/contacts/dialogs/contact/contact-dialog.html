@@ -9,7 +9,7 @@
 
       <!-- TOOLBAR TOP -->
       <div class="md-toolbar-tools md-toolbar-tools-top" layout="row" layout-align="space-between center">
-        <span class="title">{{vm.contact.contacts[which].name.full}}</span>
+        <span class="title">{{vm.contact.name.full}}</span>
         <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog" translate
                    translate-attr-aria-label="CONTACTS.CLOSE_DIALOG">
           <md-icon md-font-icon="icon-close"></md-icon>
@@ -21,45 +21,65 @@
     <!-- / DIALOG TOOLBAR -->
 
     <!-- DIALOG CONTENT -->
-    <md-dialog-content ms-scroll>
+    <md-dialog-content ms-scroll style="margin-bottom: 20px;">
 
-      <md-input-container class="md-icon-float md-block">
-        <label >First Name</label>
-        <input ng-model="vm.contact.contacts[which].name.first" type="text" disabled>
-      </md-input-container>
+        <table class="bordered-table" cellpadding="0" cellspacing="0">
 
-      <md-input-container class="md-icon-float md-block">
-        <label translate="CONTACTS.LAST_NAME">Last name</label>
-
-        <input ng-model="vm.contact.contacts[which].name.last" type="text" disabled>
-      </md-input-container>
-
-      <md-input-container class="md-block">
-        <label translate="CONTACTS.COMPANY">Organization</label>
-
-        <input ng-model="vm.contact.contacts[which].organization" type="text" placeholder="Company" disabled>
-      </md-input-container>
-
-
-      <md-input-container class="md-block">
-        <label translate="CONTACTS.PHONE_NUMBER">Phone Number</label>
-
-        <input ng-model="vm.contact.contacts[which].phone" type="text" placeholder="Phone number" disabled>
-      </md-input-container>
-
-      <md-input-container class="md-block">
-        <label translate="CONTACTS.EMAIL">Email Address</label>
-
-        <input ng-model="vm.contact.contacts[which].email" type="email" placeholder="Email Address" disabled>
-      </md-input-container>
-
+            <tbody>
+              <tr>
+                <td width="400"><small>Organization Name</small><br>
+                  <span ng-bind="vm.contact.organization_detail.name"></span></td>
+                <td><small>Phone</small><br>
+                  <span>{{vm.contact.organization_detail.phone}}</span></td>
+        
+        
+              </tr>
+              <tr>
+                <td><small>Organization Email</small><br>
+                  <span><a href="mailto:{{vm.contact.organization_detail.email}}" class="link text-initial">{{vm.contact.organization_detail.email}}</a></span></td>
+        
+                <td><small>Website</small><br>
+                  <span><a href="{{vm.contact.organization_detail.website}}" target="_blank" class="link text-initial">{{vm.contact.organization_detail.website}}</a></span></td>
+        
+        
+              </tr>
+              <tr>
+                <td><small>Address 1</small><br>
+                  <span>{{ vm.contact.organization_detail.address.line1 }}</span></td>
+                <td><small>Address 2</small><br>
+                  <span>{{vm.contact.organization_detail.address.line2}}</span></td>
+              </tr>
+              <tr>
+                <td><small>City </small><br>
+                  <span>{{vm.contact.organization_detail.address.city}}</span></td>
+                <td><small>State </small><br>
+                  <span>{{vm.contact.organization_detail.address.state}}</span></td>
+              </tr>
+        
+              <tr>
+                <td><small>Zip </small><br>
+                  <span>{{vm.contact.organization_detail.address.zip}}</span></td>
+                <td><small>Country</small> <br>
+                  <span>{{vm.contact.organization_detail.address.country}}</span></td>
+              </tr>
+        
+              <tr>
+                <td colspan="2"><small>Organization Information</small><br>
+                  {{vm.contact.organization_detail.description}}<br>
+        
+              </tr>
+              <tr ng-if="vm.contact.organization_detail.link">
+                <td colspan="2"><small>Link</small><br>
+                 <a target="_blank" href="{{vm.contact.organization_detail.link}}">{{vm.contact.organization_detail.link}}</a> <br>
+        
+              </tr>
+              </tfoot>
+          </table>
 
     </md-dialog-content>
     <!-- / DIALOG CONTENT -->
 
-    <!-- DIALOG ACTIONS -->
-
-    <!-- / DIALOG ACTIONS -->
+  
 
   </form>
 

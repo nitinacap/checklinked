@@ -1,0 +1,145 @@
+<div id="register" class="flex-scrollable bg-white" layout="column" ms-scroll>
+    <div id="register-form-wrapper" layout="column" layout-align="center center">
+        <div id="register-form" class="border-blue" style="text-align: left !important;">
+            <img ng-if="!vm.create.success" alt="Checklinked Logo" class="" src="/assets/images/logos/checklinked.png">
+
+            <div class="title" ng-if="!vm.create.success">Create a Free Account
+                <a href="#" ui-sref="app.login" class="pull-right font-12">Login</a>
+            </div>
+
+            <div ng-if="!vm.create.success">
+                <p>Enter your information below. You will be sent a confirmation email and that email address will be
+                    your login ID.</p>
+            </div>
+
+            <div ng-if="!vm.create.success">
+
+                <form name="registerForm" novalidate ng-submit="vm.sendInfo()">
+                    <md-input-container class="md-block" md-no-float>
+                        <input name="first" ng-model="vm.create.reg.name.first" placeholder="First Name" translate
+                            translate-attr-placeholder="REGISTER.FIRST" required>
+                        <div ng-messages="registerForm.first.$error" role="alert">
+                            <div ng-message="required">
+                                <span translate="REGISTER.ERRORS.FIRSTNAME_REQUIRED">First Name field is required</span>
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block" md-no-float>
+                        <input name="last" ng-model="vm.create.reg.name.last" placeholder="Last Name" translate
+                            translate-attr-placeholder="REGISTER.LAST" required>
+                        <div ng-messages="registerForm.last.$error" role="alert">
+                            <div ng-message="required">
+                                <span translate="REGISTER.ERRORS.LASTNAME_REQUIRED">Last Name field is required</span>
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block" md-no-float>
+                        <input name="phone" ng-model="vm.create.reg.phone" placeholder="Phone Number" translate
+                            translate-attr-placeholder="REGISTER.PHONE" required>
+                        <div ng-messages="registerForm.phone.$error" role="alert">
+                            <div ng-message="required">
+                                <span translate="REGISTER.ERRORS.PHONE_REQUIRED">Phone Number field is required</span>
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block" md-no-float>
+                        <input required type="email" name="email" ng-model="vm.create.reg.email" placeholder="Email"
+                            translate translate-attr-placeholder="REGISTER.EMAIL" ng-pattern="/^.+@.+\..+$/" required>
+                        <div ng-messages="registerForm.email.$error" role="alert" multiple>
+                            <div ng-message="required">
+                                <span translate="REGISTER.ERRORS.EMAIL_REQUIRED">Email field is required</span>
+                            </div>
+                            <div ng-message="pattern">
+                                <span translate="REGISTER.ERRORS.EMAIL_MUST_VALID">Email must be a valid e-mail address</span>
+                            </div>
+                            <div ng-if="error_message">
+                                <span ng-bind="error_message" style="font-size: 12px;"></span>
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block" md-no-float>
+                        <input type="password" name="password" ng-model="vm.create.reg.password" minlength="6"
+                            placeholder="Password" translate translate-attr-placeholder="REGISTER.PASSWORD" required>
+                        <div ng-messages="registerForm.password.$error" role="alert">
+                            <div ng-message="required">
+                                <span translate="REGISTER.ERRORS.PASSWORD_REQUIRED">Password field is required</span>
+                            </div>
+                            <div ng-message="minlength">
+                                <span>Minimum password length should 6 digits</span>
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block" md-no-float>
+                        <input type="password" name="password2" ng-model="vm.create.reg.password2" placeholder="Password (Confirm)"
+                            translate translate-attr-placeholder="REGISTER.PASSWORD_CONFIRM" required>
+                        <div ng-messages="registerForm.password2.$error" role="alert">
+                            <div ng-message="required">
+                                <span translate="REGISTER.ERRORS.PASSWORD_CONFIRM_REQUIRED">Password (Confirm) field is
+                                    required</span>
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <div class="terms" layout="row" layout-align="center center">
+                        <md-checkbox name="terms" ng-model="data.cb1" aria-label="I read and accept" required></md-checkbox>
+                        <div flex="100">
+                            <div flex="100" translate="REGISTER.READ_ACCEPT">I have read and accepted the</div>
+                            <div flex="100">
+                                <a class="link" ui-sref="app.term.privacy" class="md-accent-color">
+                                    privacy policy</a> <span style="color:#929292;">and</span>
+                                <a class="link" ui-sref="app.term.term" class="md-accent-color"> terms of use
+                            </div>
+
+                        </div>
+                    </div>
+                    <div layout="column">
+                        <div layout="row">
+                            <md-button type="submit" class="md-raised md-accent submit-button" aria-label="CREATE MY ACCOUNT"
+                                ng-disabled="registerForm.$invalid || registerForm.$pristine" translate="REGISTER.CREATE_ACCOUNT"
+                                translate-attr-aria-label="REGISTER.CREATE_ACCOUNT">
+                                Create My Account
+
+                            </md-button>
+                            <div layout="row" style="padding-top:20px;">
+                                <md-progress-circular ng-disabled="!vm.create.sending" class="md-hue-2" md-diameter="20px"></md-progress-circular>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!--    <div class="login" layout="row" layout-xs="column" layout-align="center center">
+                <span class="text" translate="REGISTER.ALREADY_HAVE">Already have an account?</span>
+                <a class="link" ui-sref="app.login" translate="REGISTER.LOGIN">Log in</a>
+            </div>
+        -->
+            </div>
+
+
+            <!--  <div ng-if="vm.create.success">
+            <p>Your registration has been received, and is pending; we have sent a confirmation email to the email address you provided.</p>
+                <p>To complete your registration, please click the confirmation link in the email we sent.</p>
+        </div>
+    -->
+            <div class="row thank" layout-padding ng-if="vm.create.success">
+                <img alt="Checklinked Logo" src="/assets/images/logos/checklinked.png">
+                <h3 class="text-center"><strong>Thank You</strong></h3>
+                <p>You will receive an email shortly with a link for confirmation.</p>
+                <p>To see our introductory video and other help to get you started, <a href="">click HERE.</a></p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+</div>
+</div>
+</div>
+<div class="bd-loader" ng-if="vm.isLoader">
+    <md-progress-circular md-diameter="40"></md-progress-circular>
+</div>

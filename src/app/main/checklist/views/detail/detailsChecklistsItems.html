@@ -1,5 +1,5 @@
 
-<div class="checklist-item"  ng-class="{'conflict':item.nonCompliant && item.item_typeof!='yn' || item.conflicts, 'md-green-100-bg':vm.passedNotification.id==item.id}"
+<div class="checklist-item"  ng-class="{'conflict':(item.nonCompliant && item.item_typeof!='yn') || (item.item_typeof!='yn' && item.conflicts), 'md-green-100-bg':vm.passedNotification.id==item.id}"
   md-ink-ripple layout="row" layout-align="start center">
 
 
@@ -99,7 +99,6 @@
 
           </div>
         </div>
-
         <div layout="row" flex="10" layout-align="end center">
 
           <md-icon md-font-icon="icon-paperclip s20 pt-0" class="is-important indicator-icon s18 black" ng-click="vm.openUploadAttachmentDialog($event, 'item', item.id, $index, item.attachments)"

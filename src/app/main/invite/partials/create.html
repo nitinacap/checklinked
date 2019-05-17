@@ -1,134 +1,87 @@
-  <div id="invite-form" class="border-blue">
-    <img ng-if="!vm.create.success" alt="Checklinked Logo" class="" src="/assets/images/logos/checklinked.png">
+<div id="invite-form" class="border-blue margin-auto">
+  <img ng-if="!vm.create.success" alt="Checklinked Logo" class="" src="/assets/images/logos/checklinked.png">
 
 
   <!-- <div class="title" translate="REGISTER.TITLE">
     Accept Invitation {{vm.acceptInvite.reg.contact.name.last}}
   </div> -->
   <div class="login" layout="row" layout-xs="column" layout-align="center center">
-      <span class="text" ng-click="vm.viewToggle('legacy', 'create')">
+    <span class="text" ng-click="vm.viewToggle('legacy', 'create')">
       Already Have an Account?</span>
-      <a class="link" >Help</a>
+    <a class="link">Help</a>
 
 
+  </div>
+
+  <div layout="column" layout-xs="column">
+    <h2 class="text-left bold">{{ vm.invite.organization.name }} has paid
+      for your use of their account. </h2>
+      <h5 ng-show="error_message" class="text-left danger" ng-bind-html="error_message"></h5>
+  </div>
+
+
+  <div layout="row" layout-xs="column">
+    <h5 class="text-left">Enter a password below to join their
+      organization. You will be sent a
+      confirmation email with login information.</h5>
+  </div>
+
+
+  <form name="registerForm" novalidate ng-submit="vm.acceptInviteCreateAccount(vm.item)">
+      <input type="hidden"  ng-model="vm.item.first_name">
+      <input type="hidden"  ng-model="vm.item.last_name">
+      <input type="hidden"  ng-model="vm.item.email">
+      <input type="hidden"  ng-model="vm.item.phone">
+      <input type="hidden"  ng-model="vm.item.role_type">
+      <input type="hidden"  ng-model="vm.item.organization_id">
+      <input type="hidden"  ng-model="vm.item.type">
+      <input type="hidden"  ng-model="vm.item.invitee_user_id">
+
+    <md-input-container class="md-block" md-no-float>
+      <input  type="password" name="password" ng-model="vm.item.password" placeholder="Password" translate
+        translate-attr-placeholder="REGISTER.PASSWORD" required>
+      <div ng-messages="registerForm.password.$error" role="alert">
+        <div ng-message="required">
+          <span translate="REGISTER.ERRORS.PASSWORD_REQUIRED">Password field is required</span>
+        </div>
+      </div>
+    </md-input-container>
+
+    <md-input-container class="md-block" md-no-float>
+      <input type="password" name="password2" ng-model="vm.item.password2" placeholder="Password (Confirm)"
+        translate translate-attr-placeholder="REGISTER.PASSWORD_CONFIRM" required>
+      <div ng-messages="registerForm.password2.$error" role="alert">
+        <div ng-message="required">
+          <span translate="REGISTER.ERRORS.PASSWORD_CONFIRM_REQUIRED">Password (Confirm) field is required</span>
+        </div>
+        <div >
+            <span ng-show="vm.item.password2 && vm.item.password !== vm.item.password2">Confirm password incorrect</span>
+          </div>
+
+      </div>
+    </md-input-container>
+    <div layout="row" layout-align="center center">
+      <md-checkbox name="terms" ng-model="data.cb1" aria-label="I read and accept" required></md-checkbox>
+      <div flex="100">
+        <div flex="100">I have read and accepted the
+          <br>
+          <a href="#">privacy policy a</a> and <a href="#">terms of use</a>
+
+        </div>
+       
+      </div>
     </div>
 
-    <div layout="row" layout-xs="column">
-        <h2 class="text-left bold">{{ vm.invite.organization.name }} has paid
-            for your use of their account. </h2>
-      </div>
 
-      
-    <div layout="row" layout-xs="column">
-        <h5 class="text-left">Enter a password below to join their
-            organization. You will be sent a
-            confirmation email with login information.</h5>
-      </div>
+    <md-button type="submit" class="md-raised md-accent submit-button" aria-label="CREATE MY ACCOUNT"
+      ng-disabled="registerForm.$invalid || registerForm.$pristine" translate-attr-aria-label="REGISTER.CREATE_ACCOUNT">
+      OK
+    </md-button>
 
 
-    <form name="registerForm" novalidate ng-submit="vm.acceptInvite.signup()">
-      <md-input-container class="md-block" md-no-float>
-     <input type="hidden" name="role_type" ng-model="vm.acceptInvite.reg.contact.role_type">
-        <input  type="hidden"  name="first" ng-model="vm.acceptInvite.reg.contact.name.first" placeholder="First Name"
-               translate translate-attr-placeholder="REGISTER.FIRST"
-               required>
-        <div ng-messages="registerForm.first.$error" role="alert">
-          <div ng-message="required">
-            <span translate="REGISTER.ERRORS.FIRSTNAME_REQUIRED">First Name field is required</span>
-          </div>
-        </div>
-      </md-input-container>
-
-      <md-input-container class="md-block" md-no-float>
-        <input  type="hidden"  name="last" ng-model="vm.acceptInvite.reg.contact.name.last" placeholder="Last Name"
-               translate translate-attr-placeholder="REGISTER.LAST"
-               required>
-        <div ng-messages="registerForm.last.$error" role="alert">
-          <div ng-message="required">
-            <span translate="REGISTER.ERRORS.LASTNAME_REQUIRED">Last Name field is required</span>
-          </div>
-        </div>
-      </md-input-container>
-
-      <md-input-container class="md-block" md-no-float>
-        <input  type="hidden"  name="phone" ng-model="vm.acceptInvite.reg.contact.phone" placeholder="Phone Number"
-               translate translate-attr-placeholder="REGISTER.PHONE"
-               required>
-        <div ng-messages="registerForm.phone.$error" role="alert">
-          <div ng-message="required">
-            <span translate="REGISTER.ERRORS.PHONE_REQUIRED">Phone Number field is required</span>
-          </div>
-        </div>
-      </md-input-container>
-
-      <md-input-container class="md-block" md-no-float>
-        <input  type="hidden"  type="email" name="email" ng-model="vm.acceptInvite.reg.contact.email" placeholder="Email"
-               translate translate-attr-placeholder="REGISTER.EMAIL"
-               ng-pattern="/^.+@.+\..+$/" required>
-        <div ng-messages="registerForm.email.$error" role="alert" multiple>
-          <div ng-message="required">
-            <span translate="REGISTER.ERRORS.EMAIL_REQUIRED">Email field is required</span>
-          </div>
-          <div ng-message="pattern">
-            <span translate="REGISTER.ERRORS.EMAIL_MUST_VALID">Email must be a valid e-mail address</span>
-          </div>
-        </div>
-      </md-input-container>
-
-      <md-input-container class="md-block" md-no-float>
-        <input type="password" name="password" ng-model="vm.acceptInvite.reg.password" placeholder="Password"
-               translate translate-attr-placeholder="REGISTER.PASSWORD"
-               required>
-        <div ng-messages="registerForm.password.$error" role="alert">
-          <div ng-message="required">
-            <span translate="REGISTER.ERRORS.PASSWORD_REQUIRED">Password field is required</span>
-          </div>
-        </div>
-      </md-input-container>
-
-      <md-input-container class="md-block" md-no-float>
-        <input type="password" name="password2" ng-model="vm.acceptInvite.reg.password2"
-               placeholder="Password (Confirm)"
-               translate translate-attr-placeholder="REGISTER.PASSWORD_CONFIRM"
-               required>
-        <div ng-messages="registerForm.password2.$error" role="alert">
-          <div ng-message="required">
-            <span translate="REGISTER.ERRORS.PASSWORD_CONFIRM_REQUIRED">Password (Confirm) field is required</span>
-          </div>
-        </div>
-      </md-input-container>
-      <div layout="row" layout-align="center center">
-        <md-checkbox name="terms" ng-model="data.cb1" aria-label="I read and accept" required></md-checkbox>
-        <div flex="100">
-            <div flex="100" translate="REGISTER.READ_ACCEPT">I have read and accepted the</div>
-            <!-- <div flex="100">
-                <a class="link" ui-sref="app.term.privacy" class="md-accent-color">
-                    privacy policy</a> <span style="color:#929292;">and</span>
-                <a class="link" ui-sref="app.term.term" class="md-accent-color"> terms of use
-            </div> -->
-
-        </div>
-    </div>
-
-      <!-- <div class="terms" layout="row" layout-align="center center">
-        <md-checkbox name="terms" ng-model="data.cb1" aria-label="I read and accept" required></md-checkbox>
-        <div layout="row" layout-sm="column" layout-align="start center">
-          <span translate="REGISTER.READ_ACCEPT">I read and accept</span>
-          <a href="#" class="md-accent-color" translate="REGISTER.TERMS_COND">terms and conditions</a>
-        </div>
-      </div> -->
-
-      <md-button type="submit" class="md-raised md-accent submit-button" aria-label="CREATE MY ACCOUNT"
-                 ng-disabled="registerForm.$invalid || registerForm.$pristine"
-                 translate="REGISTER.CREATE_ACCOUNT"
-                 translate-attr-aria-label="REGISTER.CREATE_ACCOUNT">
-        CREATE MY ACCOUNT
-      </md-button>
-      
- 
 
 
-    </form>
+  </form>
 
 
 

@@ -17,14 +17,13 @@
       <md-tabs md-dynamic-height md-selected="msWizard.selectedIndex">
         <md-tab>
           <md-tab-label>
-                            <span class="ms-form-wizard-step-label">
-                                <span class="ms-form-wizard-step-number md-accent-bg"
-                                      ng-if="wizardStep1.$invalid">1</span>
-                                <span class="ms-form-wizard-step-number md-accent-bg" ng-if="wizardStep1.$valid">
-                                    <i class="icon-check s16"></i>
-                                </span>
-                                <span class="ms-form-wizard-step-text">Select Project</span>
-                            </span>
+            <span class="ms-form-wizard-step-label">
+              <span class="ms-form-wizard-step-number md-accent-bg" ng-if="wizardStep1.$invalid">1</span>
+              <span class="ms-form-wizard-step-number md-accent-bg" ng-if="wizardStep1.$valid">
+                <i class="icon-check s16"></i>
+              </span>
+              <span class="ms-form-wizard-step-text">Select Project</span>
+            </span>
           </md-tab-label>
 
           <md-tab-body>
@@ -44,25 +43,23 @@
       </md-tabs>
 
       <div class="navigation" flex layout="row" layout-align="center center"
-           ng-show="!vm.wizard.newFolder && !vm.wizard.newGroup">
-        <md-button class="" ng-click="msWizard.previousStep()"
-                   ng-disabled="msWizard.isFirstStep()">
+        ng-show="!vm.wizard.newFolder && !vm.wizard.newGroup">
+        <md-button class="" ng-click="msWizard.previousStep()" ng-disabled="msWizard.isFirstStep()">
           Previous
         </md-button>
         <div class="steps">
-                        <span ng-repeat="form in msWizard.forms"
-                              ng-class="{'selected md-accent-bg':msWizard.selectedIndex === $index}"></span>
+          <span ng-repeat="form in msWizard.forms"
+            ng-class="{'selected md-accent-bg':msWizard.selectedIndex === $index}"></span>
         </div>
-        <md-button class="" ng-click="msWizard.nextStep()"
-                   ng-hide="msWizard.isLastStep()"
-                   ng-disabled="msWizard.currentStepInvalid() || vm.wizard.newFolder">
+        <md-button class="" ng-click="msWizard.nextStep()" ng-hide="msWizard.isLastStep()"
+          ng-disabled="msWizard.currentStepInvalid() || vm.wizard.newFolder">
           Next
         </md-button>
         <md-button class="md-warn"
-                   ng-click="vm.download.create(vm.wizard.templateID, vm.verticalStepper.step1.folderID, vm.wizard.templateType)"
-                   ng-show="msWizard.isLastStep()"
-                   ng-disabled="msWizard.formsIncomplete() || vm.wizard.newFolder || vm.wizard.newGroup">
-          Download Template
+          ng-click="vm.download.create(vm.wizard.templateID, vm.verticalStepper.step1.folderID, vm.wizard.templateType)"
+          ng-show="msWizard.isLastStep()"
+          ng-disabled="msWizard.formsIncomplete() || vm.wizard.newFolder || vm.wizard.newGroup">
+          Download
         </md-button>
 
       </div>
@@ -74,19 +71,15 @@
 
   <md-dialog-actions layout="row" layout-align="space-between center" ng-show="vm.wizard.newFolder">
     <div layout="row" layout-align="start center">
-      <md-button type="submit"
-                 aria-label="Save"
-                 translate-attr-aria-label="CHECKLIST.SAVE"
-                 class="md-raised md-accent"
-                 ng-disabled="wizardStep1.$invalid || wizardStep1.$pristine"
-                 ng-click="vm.addNewFolder(vm.folder.name)">
+      <md-button type="submit" aria-label="Save" translate-attr-aria-label="CHECKLIST.SAVE" class="md-raised md-accent"
+        ng-disabled="wizardStep1.$invalid || wizardStep1.$pristine" ng-click="vm.addNewFolder(vm.folder.name)">
         SAVE
       </md-button>
     </div>
 
     <div layout="row">
       <md-button ng-click="vm.cancelFolderInput()" aria-label="Cancel" translate
-                 translate-attr-aria-label="CHECKLIST.DELETE">
+        translate-attr-aria-label="CHECKLIST.DELETE">
         <md-icon md-font-icon="icon-delete"></md-icon>
         <md-tooltip><span translate="CHECKLIST.CANCEL">CANCEL</span></md-tooltip>
       </md-button>
@@ -95,20 +88,17 @@
 
   <md-dialog-actions layout="row" layout-align="space-between center" ng-show="vm.wizard.newGroup">
     <div layout="row" layout-align="start center">
-      <md-button type="submit"
-                 ng-if="!vm.newChecklist"
-                 ng-click="vm.addNewGroup(vm.group.text, vm.verticalStepper.step1.folderID)"
-                 class="md-raised md-accent"
-                 ng-disabled="checklistForm.$invalid || checklistForm.$pristine"
-                 aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">
+      <md-button type="submit" ng-if="!vm.newChecklist"
+        ng-click="vm.addNewGroup(vm.group.text, vm.verticalStepper.step1.folderID)" class="md-raised md-accent"
+        ng-disabled="checklistForm.$invalid || checklistForm.$pristine" aria-label="Save" translate="CHECKLIST.SAVE"
+        translate-attr-aria-label="CHECKLIST.SAVE">
         SAVE
       </md-button>
     </div>
 
     <div layout="row">
-      <md-button ng-if="!vm.newChecklist" class="md-icon-button"
-                 ng-click="vm.cancelGroupInput()" aria-label="Delete" translate
-                 translate-attr-aria-label="CHECKLIST.DELETE">
+      <md-button ng-if="!vm.newChecklist" class="md-icon-button" ng-click="vm.cancelGroupInput()" aria-label="Delete"
+        translate translate-attr-aria-label="CHECKLIST.DELETE">
         <md-icon md-font-icon="icon-delete"></md-icon>
         <md-tooltip><span translate="CHECKLIST.CANCEL">CANCEL</span></md-tooltip>
       </md-button>

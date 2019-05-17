@@ -1,4 +1,4 @@
-<table class="bordered-table" cellpadding="0" cellspacing="0" width="100%">
+<table class="bordered-table public" cellpadding="0" cellspacing="0" width="100%">
   <thead>
     <tr ng-if="vm.templates.list.internal.length">
       <th class="text-left">
@@ -69,8 +69,7 @@
 
           <md-menu-content width="3">
 
-            <md-menu-item
-              ng-show="vm.checkIsPermission.indexOf('download-public-templates') !== -1 && template.type=='checklist'">
+            <md-menu-item>
               <md-button ng-click="vm.download.begin($event, template.id, 'checklist')"
                 translate-attr-aria-label="">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
@@ -79,7 +78,7 @@
             </md-menu-item>
 
             <md-menu-item
-              ng-show="vm.checkIsPermission.indexOf('download-public-templates') !== -1 && template.type=='group'">
+              ng-show="template.type=='group'">
               <md-button ng-click="vm.download.begin($event, template.id, 'group')"
                 translate-attr-aria-label="">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>

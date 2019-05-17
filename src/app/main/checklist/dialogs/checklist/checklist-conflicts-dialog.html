@@ -24,7 +24,10 @@
       <tbody>
       <tr ng-repeat="show in showingUsers track by $index">
         <td class="">{{(show.idCON == user.idCON)?user.name.full + ' (YOU)':show.name}}</td>
-        <td class="">{{vm.nonCompliant[$index]}}</td>
+        <td class="">
+          <!-- {{vm.nonCompliant[$index]}} -->
+          {{ (show.idCON == user.idCON) ? vm.nonCompliance_count[user.idCON] : vm.nonCompliance_count[show.idCON] }}
+          </td>
       </tr>
       </tbody>
     </table>

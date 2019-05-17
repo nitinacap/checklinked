@@ -1,142 +1,137 @@
 <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
+
     <tbody>
-            <tr ng-repeat="conversion in vm.messages">
-                
-                    <td>
-                        <div ng-if="conversion.breadcrumbs">
-                                <div
-                                class="breadcrumcolor pointer capitalize"><a ng-href="{{conversion.breadcrumbs.project_id ? '/process/workflows/'+conversion.breadcrumbs.project_id:'#'}}">{{conversion.breadcrumbs.project_name ? conversion.breadcrumbs.project_name : 'Project is missing'}} </a>–
-                                <a ng-href="{{conversion.breadcrumbs.folder_id ? '/checklist/'+conversion.breadcrumbs.folder_id:'#'}}">{{conversion.breadcrumbs.folder_name ? conversion.breadcrumbs.folder_name : 'Workflow is missing'}}</a> –
-                                <a ng-href="{{conversion.breadcrumbs.checklist_id ? '/checklist/detail/'+conversion.breadcrumbs.checklist_id:'#'}}">{{conversion.breadcrumbs.checklist_name ? conversion.breadcrumbs.checklist_name : 'checklist is missing'}} </a>
-                               <span class="md-default-theme" ng-if="conversion.breadcrumbs.section_name"> - {{conversion.breadcrumbs.section_name}}</span>
+        <tr ng-repeat="conversion in vm.messages">
 
-                               <span class="md-default-theme"  ng-if="conversion.breadcrumbs.heading_name"> - {{conversion.breadcrumbs.heading_name}}</span>
+            <td>
+                <div ng-if="conversion.breadcrumbs">
+                    <div class="breadcrumcolor pointer capitalize"><a
+                            ng-href="{{conversion.breadcrumbs.project_id ? '/process/workflows/'+conversion.breadcrumbs.project_id:'#'}}">{{conversion.breadcrumbs.project_name ? conversion.breadcrumbs.project_name : 'Project is missing'}}
+                        </a>–
+                        <a
+                            ng-href="{{conversion.breadcrumbs.folder_id ? '/checklist/'+conversion.breadcrumbs.folder_id:'#'}}">{{conversion.breadcrumbs.folder_name ? conversion.breadcrumbs.folder_name : 'Workflow is missing'}}</a>
+                        –
+                        <a
+                            ng-href="{{conversion.breadcrumbs.checklist_id ? '/checklist/detail/'+conversion.breadcrumbs.checklist_id:'#'}}">{{conversion.breadcrumbs.checklist_name ? conversion.breadcrumbs.checklist_name : 'checklist is missing'}}
+                        </a>
+                        <span class="md-default-theme" ng-if="conversion.breadcrumbs.section_name"> -
+                            {{conversion.breadcrumbs.section_name}}</span>
 
-                               <span class="md-default-theme"  ng-if="conversion.breadcrumbs.line_name"> - {{conversion.breadcrumbs.line_name}}</span>
-                              
-                              
-                                  </div>
-                            
-                                          
-                                        <div ng-repeat="child_post in  conversion.child_data"  ng-show="myvalue">
-                                                <div layout="row">
-                                                        <div class="column">
-                                                            <span class="headingcolor message-heading">{{child_post.user_full_name}}  {{child_post.organization_name }}</span>
-                                                        </div>
-                                                        <div class="column">
-                                                            <span ng-init="vm.notificationDate(conversion.created_at)"></span>
-                                                            <small class="pl-30"> {{ child_post.created_at | datetime }}</small>
-                                                            <a href="{{child_post.image}}" target="_blank" ng-show="child_post.image">
-                                                                <i class="fa fa-paperclip s18 pl-10"></i>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                       
-                                        <p class="message child_message">
-                                               
-                                                <span>
-                                                    {{child_post.post}}
-                                                </span>
-                                                                            
-                                            </p> 
-                                        </div>
-                                 
-                                  
-                                 
+                        <span class="md-default-theme" ng-if="conversion.breadcrumbs.heading_name"> -
+                            {{conversion.breadcrumbs.heading_name}}</span>
+
+                        <span class="md-default-theme" ng-if="conversion.breadcrumbs.line_name"> -
+                            {{conversion.breadcrumbs.line_name}}</span>
+                    </div>
+
+
+
+                </div>
+
+                <div ng-if="conversion.conversation_user">
+                    <div class="breadcrumcolor pointer capitalize">{{conversion.conversation_user}}
+                        {{conversion.conversation_org }}
+                    </div>
+                </div>
+
+
+                <div ng-repeat="child_post in  conversion.child_data" ng-show="myvalue">
+                    <div layout="row">
+                        <div class="column">
+                            <span class="headingcolor message-heading">{{child_post.user_full_name}}
+                                {{child_post.organization_name }}</span>
                         </div>
-                           
-
-
-                        <div layout="row">
-                            <div class="column">
-                                <span class="headingcolor">{{conversion.user_full_name}}  {{conversion.organization_name }}</span>
-                            </div>
-                            <div class="column">
-                                <span ng-init="vm.notificationDate(conversion.created_at)"></span>
-                                <small class="pl-30"> {{ conversion.created_at | datetime }}</small>
-                                <a href="{{conversion.image}}" target="_blank" ng-show="conversion.image">
-                                    <i class="fa fa-paperclip s18 pl-10"></i>
-                                </a>
-                            </div>
+                        <div class="column">
+                            <span ng-init="vm.notificationDate(conversion.created_at)"></span>
+                            <small class="pl-30"> {{ child_post.created_at | datetime }}</small>
+                            <a href="{{child_post.image}}" target="_blank" ng-show="child_post.image">
+                                <i class="fa fa-paperclip s18 pl-10"></i>
+                            </a>
                         </div>
-        
-                        <p class="message">
-                            <i class="fa fa-chevron-down" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true"
-                                ng-show="!myvalue"></i>
-                            <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true;"
-                                aria-hidden="true" ng-show="myvalue"></i>
-                            <span>
-                                {{conversion.post}}
-                            </span>
-                            <div ng-show="myvalue">
-                                <form name="mesageForm" class="md-inline-form" novalidate>
-                                    <div layout="row">
-                                        <div layout="column">
-                                            <div class="upload-btn-wrapper">
-                                                <button class="btn">
-                                                    <img src="/assets/images/logos/attach.png" style="vertical-align:bottom;">
-                                                </button>
-                                                <input onchange="angular.element(this).scope().setFile(this)"
-                                                    file-model="{{'myFile' + conversion.fdi_feed_item_id + $index}}"
-                                                    id="{{'myFile' + conversion.fdi_feed_item_id + $index}}" alt="Attach file"
-                                                    multiple ng-model="vm.file" type="file" name="myfile" />
-        
-        
-                                            </div>
-                                        </div>
-                                        <div layout="column" flex=75>
-                                            <textarea nput name="message_name" ng-model="message_name" required
-                                                id="text{{conversion.fdi_feed_item_id}}{{$index}}" type="text"
-                                                class="textmessage"></textarea>
-        
-                                            <div ng-messages="mesageForm.message_name.$error"
-                                                ng-show="mesageForm.message_name.$touched" role="alert">
-                                                <div ng-message="required">
-                                                    <span class="danger">Message field is required</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div layout="column" flex=10>
-                                            <md-button ng-disabled="mesageForm.$invalid || mesageForm.$pristine"
-                                                class="icon-button text-left"
-                                                ng-click="vm.submitMessage(conversion, $index, 'myFile' + conversion.fdi_feed_item_id + $index,conversion.type_of)">
-                                                <img alt="send" class="send" ng-if="!vm.spinner" src="/assets/icons/send.png">
-                                                <i class="fa fa-spinner fa-spin" ng-if="vm.spinner" style="font-size:24px"></i>
-        
-                                            </md-button>
+                    </div>
+
+                    <p class="message child_message">
+
+                        <span>
+                            {{child_post.post}}
+                        </span>
+
+                    </p>
+                </div>
+
+                <div layout="row">
+                    <div class="column">
+                        <span class="headingcolor">{{conversion.user_full_name}}
+                            {{conversion.organization_name }}</span>
+                    </div>
+                    <div class="column">
+                        <span ng-init="vm.notificationDate(conversion.created_at)"></span>
+                        <small class="pl-30"> {{ conversion.created_at | datetime }}</small>
+                        <a href="{{conversion.image}}" target="_blank" ng-show="conversion.image">
+                            <i class="fa fa-paperclip s18 pl-10"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <p class="message">
+                    <i class="fa fa-chevron-down" ng-click="myvalue = myvalue == true ? false : true;"
+                        aria-hidden="true"
+                        ng-init="myvalue= vm.currentIndex == $index && vm.msgChOpen == true ? true : false"
+                        ng-show="!myvalue"></i>
+                    <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true"
+                        ng-show="myvalue"></i>
+                    <span>
+                        {{conversion.post}}
+                    </span>
+                    <div ng-show="myvalue">
+                        <form name="mesageForm" class="md-inline-form" novalidate>
+                            <div layout="row">
+                                <div layout="column">
+                                    <div class="upload-btn-wrapper">
+                                        <button class="btn">
+                                            <img src="/assets/images/logos/attach.png" style="vertical-align:bottom;">
+                                        </button>
+                                        <input onchange="angular.element(this).scope().setFile(this)"
+                                            file-model="{{'myFile' + conversion.fdi_feed_item_id + $index}}"
+                                            id="{{'myFile' + conversion.fdi_feed_item_id + $index}}" alt="Attach file"
+                                            multiple ng-model="vm.file" type="file" name="myfile" />
+
+
+                                    </div>
+                                </div>
+                                <div layout="column" flex=75>
+                                    <textarea nput name="message_name" ng-model="message_name" required
+                                        id="text{{conversion.fdi_feed_item_id}}{{$index}}" type="text"
+                                        class="textmessage"></textarea>
+
+                                    <div ng-messages="mesageForm.message_name.$error"
+                                        ng-show="mesageForm.message_name.$touched" role="alert">
+                                        <div ng-message="required">
+                                            <span class="danger">Message field is required</span>
                                         </div>
                                     </div>
-        
-                                </form>
+                                </div>
+                                <div layout="column" flex=10>
+
+                                    <md-button ng-disabled="mesageForm.$invalid || mesageForm.$pristine"
+                                        class="icon-button text-left"
+                                        ng-click="vm.submitMessage(conversion, $index, 'myFile' + conversion.fdi_feed_item_id + $index,conversion.type_of,conversion.type,conversion.user_id,conversion.parent_id)">
+                                        <img alt="send" class="send" ng-if="!vm.spinner" src="/assets/icons/send.png">
+                                        <i class="fa fa-spinner fa-spin" ng-if="vm.spinner" style="font-size:24px"></i>
+
+                                    </md-button>
+                                </div>
                             </div>
-        
-                        </p>
-                    </td>
-            </tr>
-       
 
-       
-    </tbody>
-</table>
+                        </form>
+                    </div>
 
-<div layout="row" ng-if="!vm.messages">
-    <h2 class="pl-30 pt-20">No message created yet</h2>
-</div>                             <img alt="send" class="send" ng-if="!vm.spinner" src="/assets/icons/send.png">
-                                                <i class="fa fa-spinner fa-spin" ng-if="vm.spinner" style="font-size:24px"></i>
-        
-                                            </md-button>
-                                        </div>
-                                    </div>
-        
-                                </form>
-                            </div>
-        
-                        </p>
-                    </td>
-            </tr>
-       
+                </p>
+            </td>
+        </tr>
 
-       
+
+
     </tbody>
 </table>
 

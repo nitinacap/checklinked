@@ -6,11 +6,12 @@
     .controller('ChecklistConversationDialogController', ChecklistConversationDialogController);
 
   /** @ngInject */
-  function ChecklistConversationDialogController($mdDialog, api, convoId, convoName, producerType, $window , $mdSidenav, $http, $rootScope, $scope, $filter) {
+  function ChecklistConversationDialogController($mdDialog, api, convoId, userName, convoName, producerType, $window , $mdSidenav, $http, $rootScope, $scope, $filter) {
 
     var vm = this;
     vm.convoId = convoId;
     vm.convoName = convoName;
+    vm.userName = userName;
     vm.title = vm.convoName + ' Conversation';
     vm.producerType = producerType,
     vm.itemType = 'post';
@@ -21,7 +22,7 @@
     vm.pushPosts = pushPosts;
     vm.submitPost = submitPost;
     vm.form = {
-      'from': $rootScope.user.name.full,
+      'from': userName ? userName : $rootScope.user.name.full,
       'subject': 'Re: ' + vm.convoName,
       'message': ''
     };
@@ -79,7 +80,7 @@
 
     function getLatestPosts() {
 
-      return api.conversations.get(vm.conversation.id, vm.conversation.currentSkip).success(function (res) {
+      return api.conversations.get(vm.conversation.id, vm.conversation.currentSkip, producerType).success(function (res) {
         console.log(res);
         return vm.pushPosts(res.posts);
       })["finally"](function () {
@@ -184,7 +185,8 @@
 
     vm.removeFileHttp = removeFileHttp;
     function removeFileHttp(file) {
-      var originalFile = file.replace('https://checklinked.azurewebsites.net', '');
+     
+      var originalFile = file ? file.replace('https://checklinked.azurewebsites.net', '') : '';
       vm.downloadFile = originalFile;
     }
 

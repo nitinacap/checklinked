@@ -31,12 +31,13 @@
     <tbody>
       <tr ng-if="vm.secondary" ng-repeat="contact in vm.secondary  | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
         ng-switch="(which = vm.showWhichInviteContactData(contact))"
-        ng-class="{'md-green-100-bg':vm.passID==contact.id}">
+        ng-class="{'md-green-100-bg':vm.passID==contact.id}" ng-show="contact.contacts[which].name.full">
+       
         <td>
-          <span class="link-color"> {{contact.contacts[which].name.full}}</span>
+          <span class="link-color pointer" ng-click="vm.openDirectMessageDialog(contact, contact.contacts[which].name.full,'secondary-message', $event)"> {{contact.contacts[which].name.full}}</span>
         </td>
         <td class="hide-xs">
-        <span class="link-color"  ng-click="vm.openContactDialog($event, contact)">  {{contact.contacts[which].organization}}
+        <span class="link-color  pointer" ng-click="vm.openContactDialog($event, contact.contacts[which])">  {{contact.contacts[which].organization}}
           </span>
         </td>
 

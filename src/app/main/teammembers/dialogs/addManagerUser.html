@@ -1,6 +1,5 @@
 <md-dialog class="dialog" aria-label="New Folder">
-  <form name="form" ng-disabled='vm.inviting' class="md-inline-form" ng-submit="vm.addTeam()"
-    novalidate>
+  <form name="form" ng-disabled='vm.inviting' class="md-inline-form" ng-submit="vm.addTeam()" novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <span class="title">{{vm.title}}</span>
@@ -20,9 +19,9 @@
 
 
       <md-input-container class="pb-40" flex="100">
-        <md-select required flex="100" ng-model="vm.manager_id" placeholder="Manager">
-          <md-option name="manager_id" ng-value="0" selected="false">Select Manager</md-option>
-          <md-option name="manager_id" ng-value="manager.user_id" ng-repeat="manager in  vm.managers_teamusers.managers">{{ manager.user_name }}</md-option>
+        <md-select required flex="100" name="manager_id" ng-model="vm.manager_id" placeholder="Select one">
+          <md-option ng-value="manager.user_id" ng-repeat="manager in  vm.managers_teamusers.managers">
+            {{ manager.user_name }}</md-option>
           <!-- <md-option name="manager_id" ng-value="1" >1</md-option> -->
         </md-select>
         <div ng-messages="form.manager_id.$error" ng-show="form.manager_id.$touched" role="alert">
@@ -32,28 +31,50 @@
         </div>
       </md-input-container>
 
-<table class="simple bordered-table" ms-responsive-table>
-  <thead>
-    <tr>
-        <th width="100">Include</th>
-        <th width="200">Role</th>
-        <th>Name  </th>
-      
-      </tr>
-  </thead>
-  <tbody>
-    <tr>
-        <td><input  type="checkbox"></td>
-        <td>Include All</td>
-        <td></td>
-      </tr>
-      <tr ng-repeat="teamuser in vm.managers_teamusers.team_users">
-          <td><input ng-checked="teamuser[0].manger_ids===vm.manager_id ? true : '' " type="checkbox" name="user_id" ng-change="getManagerTeamUser_id(teamuser[0].user_id )" ng-model="item.user_id" ng-true-value="'{{ teamuser[0].user_id }}'" ng-false-value="''" value="{{ teamuser[0].user_id }}"></td>
-          <td>{{teamuser[0].role_type_name}} </td>
-          <td><a href="#">{{teamuser[0].user_name}}</a></td>
-        </tr>
-  </tbody>
-</table>
+      <table class="simple bordered-table" ms-responsive-table>
+        <thead>
+          <tr>
+            <th width="100">Include</th>
+            <th width="200">Role</th>
+            <th>Name </th>
+
+          </tr>
+        </thead>
+        <tbody ng-repeat="teamusers in vm.managers_teamusers.team_users">
+          <!-- <tr>
+            <td><input type="checkbox"></td>
+            <td>Include All</td>
+            <td></td>
+          </tr> -->
+          <tr>
+            <td>
+              <input ng-checked="teamusers[0].manger_ids==vm.manager_id ? true : '' " type="checkbox" name="user_id"
+                ng-change="getManagerTeamUser_id(teamusers[0].user_id )" ng-model="item.user_id"
+                ng-true-value="'{{ teamusers[0].user_id }}'" ng-false-value="''" value="{{ teamusers[0].user_id }}"></td>
+            <td colspan="2">{{teamusers[$index].role_type_name}}
+              <md-icon ng-show="!shoUser" ng-click="shoUser = shoUser == true ? false : true;"
+                class="fa fa-angle-down  s18 pointer" md-font-icon="icon-file-document"></md-icon>
+
+              <md-icon ng-show="shoUser" ng-show="!shoUser" ng-click="shoUser = shoUser == true ? false : true;"
+                class="s18 pointer" md-font-icon="fa fa-angle-up"></md-icon>
+
+            </td>
+       
+          </tr>
+
+          <tr ng-repeat="teamuser in teamusers" ng-show="shoUser">
+              <td>
+                  <input ng-checked="teamuser.manger_ids.indexOf(vm.manager_id)==0 ? true : false " type="checkbox" name="user_id"
+                    ng-change="getManagerTeamUser_id(teamuser.user_id )" ng-model="item.user_id"
+                    ng-true-value="'{{ teamuser.user_id }}'" ng-false-value="''" value="{{ teamuser.user_id }}"></td>
+                <td>{{teamuser[$index].role_type_name}}
+                  
+                </td>
+                <td><a href="#">{{teamuser.user_name}}
+                </a></td>
+          </tr>
+        </tbody>
+      </table>
 
 
 

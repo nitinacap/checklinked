@@ -1,0 +1,88 @@
+<!-- DIALOG -->
+<md-dialog class="dialog" aria-label="New Task">
+
+    <form name="contactForm" class="md-inline-form" novalidate
+          ng-switch="(which = vm.showWhichInviteContactData(vm.contact))">
+  
+      <!-- DIALOG TOOLBAR -->
+      <md-toolbar class="md-accent md-hue-2 md-tall" layout="column">
+  
+        <!-- TOOLBAR TOP -->
+        <div class="md-toolbar-tools md-toolbar-tools-top" layout="row" layout-align="space-between center">
+          <span class="title">{{vm.contact.name}}</span>
+          <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog" translate
+                     translate-attr-aria-label="CONTACTS.CLOSE_DIALOG">
+            <md-icon md-font-icon="icon-close"></md-icon>
+          </md-button>
+        </div>
+        <!-- / TOOLBAR TOP -->
+  
+      </md-toolbar>
+      <!-- / DIALOG TOOLBAR -->
+  
+      <!-- DIALOG CONTENT -->
+      <md-dialog-content ms-scroll style="margin-bottom: 20px;">
+  
+          <table class="bordered-table" cellpadding="0" cellspacing="0" width="100%">
+  
+              <tbody>
+                <tr>
+                  <td width="400"><small>Organization Name</small><br>
+                    <span ng-bind=" vm.contact.name"></span></td>
+                  <td><small>Phone</small><br>
+                    <span>{{ vm.contact.phone}}</span></td>
+          
+          
+                </tr>
+                <tr>
+                  <td><small>Organization Email</small><br>
+                    <span><a href="mailto:{{ vm.contact.email}}" class="link text-initial">{{ vm.contact.email}}</a></span></td>
+          
+                  <td><small>Website</small><br>
+                    <span><a href="{{ vm.contact.website}}" target="_blank" class="link text-initial">{{ vm.contact.website}}</a></span></td>
+          
+          
+                </tr>
+                <tr>
+                  <td><small>Address 1</small><br>
+                    <span>{{ vm.contact.address_line1 }}</span></td>
+                  <td><small>Address 2</small><br>
+                    <span>{{ vm.contact.address_line2}}</span></td>
+                </tr>
+                <tr>
+                  <td><small>City </small><br>
+                    <span>{{ vm.contact.city}}</span></td>
+                  <td><small>State </small><br>
+                    <span>{{ vm.contact.state}}</span></td>
+                </tr>
+          
+                <tr>
+                  <td><small>Zip </small><br>
+                    <span>{{ vm.contact.zip}}</span></td>
+                  <td><small>Country</small> <br>
+                    <span>{{ vm.contact.country}}</span></td>
+                </tr>
+          
+                <tr>
+                  <td colspan="2"><small>Organization Information</small><br>
+                    {{ vm.contact.description}}<br>
+          
+                </tr>
+                <tr ng-if=" vm.contact.link">
+                  <td colspan="2"><small>Link</small><br>
+                   <a target="_blank" href="{{ vm.contact.link}}">{{ vm.contact.link}}</a> <br>
+          
+                </tr>
+                </tfoot>
+            </table>
+  
+      </md-dialog-content>
+      <!-- / DIALOG CONTENT -->
+  
+    
+  
+    </form>
+  
+  </md-dialog>
+  <!-- / DIALOG -->
+  

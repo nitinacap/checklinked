@@ -99,10 +99,10 @@
                             <md-icon md-font-icon="icon-home" class="icon" style="padding-right: 40px;"></md-icon>
                             Account
                           </md-button>
-                          <md-menu-content width="2" ng-mouseleave="$mdMenu.close()">
-                            <md-menu-item ng-repeat="setting in ['Permissions', 'Subscription', 'Billing']">
+                          <md-menu-content ng-mouseleave="$mdMenu.close()">
+                            <md-menu-item ng-repeat="account in ['Permissions', 'Subscription', 'Billing']">
                               <md-button>
-                                {{setting}}
+                                {{account}}
                               </md-button>
                             </md-menu-item>
                           </md-menu-content>

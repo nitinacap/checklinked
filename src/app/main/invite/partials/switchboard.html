@@ -1,29 +1,8 @@
- <div id="invite-form" class="border-blue">
-  <img ng-if="!vm.create.success" alt="Checklinked Logo" class="" src="/assets/images/logos/checklinked.png">
+
+    <div id="invite" class="flex-scrollable" layout="column">
+      <div ng-if="vm.invites && vm.invites.idCON!=0" ng-include="'app/main/invite/partials/existing-account.html'"></div>
+      <div ng-if="!vm.invites || vm.invites.idCON ==0 " ng-include="'app/main/invite/partials/create.html'"></div>
+      </div>
 
 
-      <!-- <div class="title">title</div> -->
-<div layout="column" class="pt-20">
-  <div layout="row">
-    <md-button
-    ng-click="vm.viewToggle('legacy')"
-    aria-label="INVITE.LEGACY"
-    class="md-accent submit-button"
-    translate="INVITE.LEGACY">
-  </md-button>
-  </div>
 
-  <div layout="row" class="pt-20">
-
-    <md-button
-    ng-click="vm.viewToggle('create')"
-    class="md-accent submit-button"
-    aria-label="INVITE.CREATE"
-    translate="INVITE.CREATE">
-  </md-button>
-
-  </div>
-</div>
-
-
-    </div>

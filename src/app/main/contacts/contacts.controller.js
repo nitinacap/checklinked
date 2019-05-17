@@ -308,8 +308,11 @@
       }
       return 'accepter';
     };
-    debugger;
+    
     function openContactDialog(ev, contact) {
+      debugger;
+      if(contact.organization_detail.name == undefined || contact == undefined)
+      return;
       vm.contact = angular.copy(contact);
       $mdDialog.show({
         scope: $scope,
@@ -391,10 +394,17 @@
 
      */
 
-    function openDirectMessageDialog(contact, ev) {
+    function openDirectMessageDialog(contact, ev,direct_msg) {
+      debugger;
       vm.contact = contact;
       // getDirectMessage(contact.id);
       vm.titlea = "DATA HERE";
+
+      vm.int_msg = direct_msg == 'direct-message' || direct_msg == 'secondary-message' || direct_msg == 'internal-message'  ? direct_msg : ''
+
+
+      
+     
 
       console.log('Direct Message', contact);
       vm.which = vm.showWhichInviteContactData(contact);
@@ -407,7 +417,8 @@
         clickOutsideToClose: true,
         locals: {
           contact: vm.contact,
-          which: vm.which
+          which: vm.which,
+          int_msg: vm.int_msg
         }
       });
 

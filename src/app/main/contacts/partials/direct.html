@@ -31,13 +31,14 @@
     </thead>
     <tbody>
       <tr ng-if="contact.contacts.originator.organization!=contact.contacts.accepter.organization && contact.deleted_by!==vm.user_id" ng-repeat="contact in vm.contacts | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
-        ng-switch="(which = vm.showWhichInviteContactData(contact))" ng-click="vm.openContactDialog($event, contact)"
+        ng-switch="(which = vm.showWhichInviteContactData(contact))" 
         ng-class="{'md-green-100-bg':vm.passID==contact.id}">
         <td>
-          <span class="link-color">{{contact.contacts[which].name.full}}</span>
+          <span class="link-color pointer" ng-click="vm.openDirectMessageDialog(contact, contact.name.full,'direct-message', $event)">{{contact.contacts[which].name.full}}</span>
         </td>
         <td class="hide-xs">
-          <span class="link-color"> {{contact.contacts[which].organization}}
+     
+          <span class="link-color pointer" ng-click="vm.openContactDialog($event, contact.contacts[which])"> {{contact.contacts[which].organization}}
           </span>
         </td>
 
@@ -62,13 +63,6 @@
                 <md-button ng-click="vm.Confirmation($event, contact.contacts[which], contact.contacts[which].id, 'delete')">
                   <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                   <span translate="CONTACTS.DELETE_CONTACT">Delete Contact</span>
-                </md-button>
-              </md-menu-item>
-
-              <md-menu-item ng-if="contact.accepted">
-                <md-button ng-click="vm.openDirectMessageDialog(contact, contact.name.full, $event)">
-                  <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
-                  <span translate="CONTACTS.DIRECT_MESSAGING">Direct Message</span>
                 </md-button>
               </md-menu-item>
 

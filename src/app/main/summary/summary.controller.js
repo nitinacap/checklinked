@@ -15,10 +15,32 @@
     vm.showComparison = showComparison;
     vm.requestReportsProgress = requestReportsProgress;
     vm.openConversationDialog = openConversationDialog;
+    vm.openContactDialog = openContactDialog;
+
 
     var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
     vm.closeDialog = closeDialog;
+
+
+
+    
+    function openContactDialog(contact) {
+
+      vm.contact = angular.copy(contact);
+      console.log( vm.contact);
+
+     // vm.contact = contact;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/summary/dialogs/organization-dialog.html',
+        parent: angular.element($document.find('#contacts')),
+        clickOutsideToClose: true
+      });
+    }
+
+
 
     function toggleSidenav(sidenavId) {
       $mdSidenav(sidenavId).toggle();
@@ -251,7 +273,7 @@
       }, duration);
     }
 
-    function openConversationDialog(ev, type, id, name) {
+    function openConversationDialog(type, id, name, userName) {
 
       console.log('id', id);
       console.log('name', name);
@@ -263,11 +285,12 @@
         preserveScope: true,
         templateUrl: 'app/main/checklist/dialogs/checklist/checklist-conversation-dialog.html',
         parent: angular.element($document.find('#summary')),
-        targetEvent: ev,
+        //targetEvent: ev,
         clickOutsideToClose: true,
         locals: {
           convoId: id,
           convoName: name,
+          userName:userName,
           producerType: type
         }
       });
@@ -300,6 +323,10 @@
       { link: '#', title: 'Reports' },
       { link: 'dashboard', title: 'Dashboard' }
     ];
+
+
+
+
 
   }
 

@@ -1,0 +1,154 @@
+<div layout="column" layout-align="center center" flex="40" class="div-center">
+  <div flex>
+        <h2>Invite From: {{  vm.invites.organization.name}}</h2>
+        <p>To except, use your existing Log In information below.</p>
+   
+  </div>
+
+  <div layout="column" class="existing-invite-form">
+    <div class="heading">
+      <p>Log In</p>
+    </div>
+    <div id="invite-form">
+      <div class="title"><b>Choose this option to:</b></div>
+
+      <ul class="text-left choose-option">
+        <li><i class="fa fa-check" aria-hidden="true"></i> Keep your existing username/password</li>
+        <li><i class="fa fa-check" aria-hidden="true"></i> Leave your current Org</li>
+        <li><i class="fa fa-check" aria-hidden="true"></i> Lose access to current Org</li>
+        <li><i class="fa fa-check" aria-hidden="true"></i> Keep only Contacts & Direct Message</li>
+      </ul>
+
+      <form name="loginForm" novalidate ng-submit="vm.acceptInvite.login()">
+        <md-input-container class="md-block" md-no-float>
+          <input type="email" name="email" ng-model="vm.acceptInvite.signin.username" placeholder="Email"
+            ng-pattern="/^.+@.+\..+$/" required>
+          <div ng-messages="loginForm.email.$error" role="alert" multiple>
+            <div ng-message="required">
+              <span>Email field is required</span>
+            </div>
+            <div ng-message="pattern">
+              <span>Email must be a valid e-mail address</span>
+            </div>
+          </div>
+        </md-input-container>
+
+        <md-input-container class="md-block" md-no-float>
+          <input type="password" name="password" ng-model="vm.acceptInvite.signin.password" placeholder="Password"
+            required>
+          <div ng-messages="loginForm.password.$error" role="alert">
+            <div ng-message="required">
+              <span>Password field is required</span>
+            </div>
+          </div>
+        </md-input-container>
+
+        <div layout="row">
+          <md-button type="submit" class="md-raised md-accent" ng-disabled="loginForm.$invalid || loginForm.$pristine">
+            ENTER
+          </md-button>
+        </div>
+
+      </form>
+
+
+    </div>
+  </div>
+</div>
+
+<div layout=column>
+
+  <h1>Create New Account</h1>
+  <div flex>
+    <h2>Choose this option to:</h2>
+    <ul  class="choose-option">
+      <li><i class="fa fa-check" aria-hidden="true"></i>Retain your exixting Username/Password for this Org your currently belong to.</li>
+      <li><i class="fa fa-check" aria-hidden="true"></i>Set  up NEW, seprate Account with NEW username/password, and a DIFFERENT email,  for use under the Org this invite.</li>
+    </ul>
+    <p>To create your account, enter your first and last name, email(which acts as your LOgin ID),  and desired password. When you submit, you will be sent a confirmation.</p>
+  </div>
+  <form name="registerForm" novalidate ng-submit="vm.acceptInvite.signup()">
+
+    <div layout="row">
+
+      <div flex="50">
+         
+
+        <md-input-container class="md-block" md-no-float flex="90">
+          <input type="text" ame="first" ng-model="vm.acceptInvite.reg.contact.name.first" placeholder="First Name"
+            translate translate-attr-placeholder="REGISTER.FIRST" required>
+          <div ng-messages="registerForm.first.$error" role="alert">
+            <div ng-message="required">
+              <span translate="REGISTER.ERRORS.FIRSTNAME_REQUIRED">First Name field is required</span>
+            </div>
+          </div>
+        </md-input-container>
+      </div>
+      <div flex="50">
+        <md-input-container class="md-block" md-no-float flex="90">
+          <input type="text" name="last" ng-model="vm.acceptInvite.reg.contact.name.last" placeholder="Last Name"
+            translate translate-attr-placeholder="REGISTER.LAST" required>
+          <div ng-messages="registerForm.last.$error" role="alert">
+            <div ng-message="required">
+              <span translate="REGISTER.ERRORS.LASTNAME_REQUIRED">Last Name field is required</span>
+            </div>
+          </div>
+        </md-input-container>
+      </div>
+
+
+
+    </div>
+
+    <div layout="row" flex="100">
+      <md-input-container class="md-block" md-no-float flex="95">
+        <input type="email" type="email" name="email" ng-model="vm.acceptInvite.reg.contact.email" placeholder="Email"
+          translate translate-attr-placeholder="REGISTER.EMAIL" ng-pattern="/^.+@.+\..+$/" required>
+        <div ng-messages="registerForm.email.$error" role="alert" multiple>
+          <div ng-message="required">
+            <span translate="REGISTER.ERRORS.EMAIL_REQUIRED">Email field is required</span>
+          </div>
+          <div ng-message="pattern">
+            <span translate="REGISTER.ERRORS.EMAIL_MUST_VALID">Email must be a valid e-mail address</span>
+          </div>
+        </div>
+      </md-input-container>
+    </div>
+
+    <div layout="row" flex="100">
+      <md-input-container class="md-block" md-no-float flex="95">
+        <input type="password" name="password" ng-model="vm.acceptInvite.reg.password" placeholder="Password" translate
+          translate-attr-placeholder="REGISTER.PASSWORD" required>
+        <div ng-messages="registerForm.password.$error" role="alert">
+          <div ng-message="required">
+            <span translate="REGISTER.ERRORS.PASSWORD_REQUIRED">Password field is required</span>
+          </div>
+        </div>
+      </md-input-container>
+    </div>
+
+    <div layout="row" flex="100">
+      <md-input-container class="md-block" md-no-float flex="95">
+        <input type="password" name="password2" ng-model="vm.acceptInvite.reg.password2"
+          placeholder="Password (Confirm)" translate translate-attr-placeholder="REGISTER.PASSWORD_CONFIRM" required>
+        <div ng-messages="registerForm.password2.$error" role="alert">
+          <div ng-message="required">
+            <span translate="REGISTER.ERRORS.PASSWORD_CONFIRM_REQUIRED">Password (Confirm) field is required</span>
+          </div>
+        </div>
+      </md-input-container>
+    </div>
+
+    <div layout="row" flex="100">
+      <md-button type="submit" class="md-raised md-accent" aria-label="CREATE MY ACCOUNT"
+        ng-disabled="registerForm.$invalid || registerForm.$pristine">
+      Submit
+      </md-button>
+    </div>
+
+
+
+  </form>
+
+</div>
+</div>

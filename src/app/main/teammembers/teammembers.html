@@ -18,8 +18,7 @@
                     <div ng-include="'app/main/teammembers/partials/subscription.html'"></div>
                 </md-tab-body>
             </md-tab>
-           <!--  Billing Screeen -->
-           <md-tab ng-if="vm.billings">
+           <md-tab ng-show="vm.billings">
                 <md-tab-label>
                     <span>Billing</span>
                 </md-tab-label>
@@ -27,11 +26,7 @@
                     <div ng-include="'app/main/teammembers/partials/billings.html'"></div>
                 </md-tab-body>
             </md-tab>
-          <!--  Billing Screeen End -->
-
-          <!-- Permission setting  -->
-          <!-- <td ng-switch="(offboarding = (vm.members.offboard.inProgress.indexOf(member.idCON) > -1))" class="text-right"> -->
-            <md-tab class="fr" >
+               <md-tab class="lasttab" >
                 <md-tab-label>
                     
                     <div class="buttons" layout="row" layout-align="end center">
@@ -73,8 +68,6 @@
                               </md-button>
                             </md-menu-item>
 
-
-                            
                             <!-- add edit manager permission role  -->
                             <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1"  ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
                                     <md-button ng-click="vm.addManagerTeam(vm.memberRoles.subscribed_status)">
@@ -83,9 +76,7 @@
                                       <span>Add/Edit Manager’s Team</span>
                                     </md-button>
                                   </md-menu-item>
-
                         <!-- add edit manager permission role  end -->
-
                             <md-menu-item
                             ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1" ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
                             <md-button ng-click="vm.openSubscriptionDialog(member)">
@@ -99,8 +90,6 @@
                       </div>
                 </md-tab-label>
                 <md-tab-body>
-                   
-               
             
         </md-tab-body>
     </md-tab>

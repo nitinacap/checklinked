@@ -6,18 +6,44 @@
         padding: 0px !important;
         margin: 0px  !important;;
     }
+    .existing-invite-form{
+        border: 1px solid #5555;
+        width:100% !important;
+
+
+    }
+    .existing-invite-form #invite-form {
+        width: 100% !important;
+    }
+    .existing-invite-form .heading{
+        background: rgb(65,110,163);
+        color: #fff;
+        padding-left: 20px;
+    }
+ 
 
     #invite-form-wrapper {
         flex: 1 0 auto;
         padding: 32px;
-
+        border: 1px solid #5555;
+        width: 960px;
+        margin: 0 auto;
+.choose-option{
+    li{
+        list-style: none;
+    }
+    li i.fa.fa-check{
+        color: green;
+    }
+}
+ 
         #invite-form {
             width: 300px;
             max-width: 384px;
             padding: 15px;
             background: #FFFFFF;
             text-align: center;
-
+           
             .logo {
                 width: 128px;
                 height: 128px;
