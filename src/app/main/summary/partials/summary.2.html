@@ -125,10 +125,14 @@
 </div>
 
 <div ng-show="vm.reports.viewing" class="simple-table-container md-background-bg md-whiteframe-1dp">
+
+
   <table class="simple row-border hover  bordered-table" ms-responsive-table>
     <tbody>
       <tr ng-class="{'': vm.reports.viewingSub.id == $index}" ng-repeat="checklist in vm.reports.viewing.checklists"
         ng-show="checklist.lines.length">
+
+       
 
         <td width="20%" ng-click="vm.reports.viewSub(checklist, $index, checklist.lastActive)"
           ng-class="{'md-accent-fg': vm.reports.viewingSub.id !== $index}" class="headingcolor">{{ checklist.name }}

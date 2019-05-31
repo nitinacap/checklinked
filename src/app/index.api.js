@@ -1446,10 +1446,12 @@
         return $http.get(BASEURL + "coe-get.php?t=notification&token=" + token);
       },
 
-      read: function (id, type) {
+      read: function (id, type,read_array) {
+        debugger
         return $http.post(BASEURL + 'coe-post.php', {
           type: type,
-          id: id
+          id: id,
+          read_array:read_array
 
         }, {
             headers: {
@@ -1457,9 +1459,26 @@
             },
             cache: false
           });
+      },
+      count_notifi: function () {
+        var user_id = $cookies.get("useridCON");
+        return $http.post(BASEURL + 'coe-post.php', {type: 'notification-count',id: user_id
+        }, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          }).success(function (resp) {
+            if (resp.type=='success') {
+              
+                $rootScope.socketio.emit('real_time_notification',resp.item);
+            }
+
+          });
       }
 
     };
+    
 
     api.isUserRole = function (value) {
       var user_Roles = $cookies.get('logged_user_roles');

@@ -900,7 +900,7 @@ var indexOf = [].indexOf || function (item) {
 
       for (i = 0; i < vm.expanded[whats].length; i++) {
         if (vm.expanded[whats][i].id == which.id) {
-          console.log('found');
+         // console.log('found');
           return true;
         }
       }
@@ -1075,9 +1075,9 @@ var indexOf = [].indexOf || function (item) {
       if (vm.isLinked || !vm.isLinked) {
         //console.log('is linked');
         if (!vm.loaded.checklist) {
-    
+
           $scope.getChecklinked = function () {
-      
+
             toggleCheckbox
             api.checklists.get(idCHK, token).success(function (res) {
               var ref;
@@ -1090,15 +1090,15 @@ var indexOf = [].indexOf || function (item) {
                 vm.total_nonCompliance = res.checklists[0].nonCompliance_total;
 
               } else {
-           
+
                 vm.checklists = [];
-            
+
               }
 
-            
+
               vm.loaded.checklist = false;
               return $scope.$broadcast('event:checklistLoaded');
-             
+
             })["finally"](function () {
               vm.loading.checklist = false;
               return vm.completeLoad();
@@ -1273,10 +1273,16 @@ var indexOf = [].indexOf || function (item) {
     /*
      NESTED ACCORDION FUNCTIONS
      */
+    // function children(whats, parentID) {
+    //   return $filter('orderBy')($filter('filter')(vm[whats], {
+    //     id_parent: parentID
+    //   }, true), 'order');
+    // };
+
     function children(whats, parentID) {
       return $filter('orderBy')($filter('filter')(vm[whats], {
         id_parent: parentID
-      }, true), 'order');
+      }, true), '');
     };
 
     /*
@@ -1382,6 +1388,9 @@ var indexOf = [].indexOf || function (item) {
           vm.isLoader = false;
           vm[whats].push(res[what]);
           vm.organizeData();
+          if(what=="item"){
+            $scope.getChecklinked();
+          }
           packet = {
             catalog: whats,
             type: 'add',
@@ -2319,16 +2328,6 @@ var indexOf = [].indexOf || function (item) {
       var whats;
       whats = what + 's';
 
-      // console.log('what', what);
-      // console.log('whats', whats);
-      // console.log('PID', pID);
-      // console.log('index', index);
-
-      // console.log('AWS.config', AWS.config);
-
-      // AWS.config.update({ accessKeyId: vm.creds.access_key, secretAccessKey: vm.creds.secret_key });
-      // AWS.config.region = 'us-west-1';
-      // var bucket = new AWS.S3({ params: { Bucket: vm.creds.bucket } });
 
       vm.file_name = $scope.files[0].name;
       var fd = new FormData();
@@ -2337,22 +2336,7 @@ var indexOf = [].indexOf || function (item) {
       });
       vm.spinner = true;
       vm.sizeLimit = 10585760; // 10MB in Bytes
-      // if (vm.file) {
 
-      // console.log('files2', vm.label);
-      // var fileSize = Math.round(parseInt(vm.file.size));
-      // if (fileSize > vm.sizeLimit) {
-      //   $rootScope.message('Sorry, your attachment is too big. <br/> Maximum ' + vm.sizeLimit + ' file attachment allowed', 'warning');
-      //   return false;
-      // }
-      // Prepend Unique String To Prevent Overwrites
-      //   var uniqueFileName = vm.uniqueString() + '-' + vm.file.name;
-      //   vm.aws = 'https://s3-us-west-1.amazonaws.com/checklinked-attachments-temp/' + uniqueFileName;
-
-      // var params = { Key: uniqueFileName, ContentType: vm.file.type, Body: vm.file, ServerSideEncryption: 'AES256' };
-
-
-      //  function finalFileUload(){
       var filedata = { 'pID': vm.pID, 'pType': whats, 'aws': '', 'name': vm.file_name, 'size': vm.sizeLimit, 'label': vm.label };
       fd.append('data', JSON.stringify(filedata));
       $http.post(BASEURL + 'attachments-finish_upload-post.php', fd,
@@ -2361,9 +2345,11 @@ var indexOf = [].indexOf || function (item) {
         }).success(function (res) {
           vm.spinner = false;
           if (res && res.type == 'success') {
+            debugger;
             //  $mdDialog.hide();
             vm.upload = false;
             //vm.attachments.push(res.attachments[0]);
+            vm.SelectedAttachments.push(res.attachments[0]);
             vm[whats][index].attachments.push(res.attachments[0]);
             vm.label = null;
             vm.file = '';
@@ -2532,10 +2518,9 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function addNewGroup(groupName, folderID) {
-      // vm.isLoader = true;
-      //Set sending variable for buttons
+
+   
       vm.group.sending = true;
-      //Set order variable for sql insert
       vm.group.order = 1;
       vm.group.order += vm.groups ? vm.groups.length : 0;
       vm.group.text = groupName;
@@ -2545,7 +2530,6 @@ var indexOf = [].indexOf || function (item) {
       api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent, vm.group.description).error(function (res) {
         return $rootScope.message("Error Adding Folder", 'warning');
       }).success(function (res) {
-        // vm.isLoader = false;
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Adding Folder", 'warning');
         } else if (res.code) {
@@ -2564,8 +2548,6 @@ var indexOf = [].indexOf || function (item) {
 
           vm.wizard.newGroup = false;
           vm.wizard.switch = false;
-
-
           $rootScope.message('Folder Added');
         }
       });
@@ -2704,6 +2686,9 @@ var indexOf = [].indexOf || function (item) {
           return $rootScope.message(res.message, 'warning');
         } else {
           vm[whats].remove(item);
+          if (what == "item") {
+            $scope.getChecklinked();
+          }
           vm.organizeData();
           packet = {
             catalog: whats,
@@ -3298,7 +3283,7 @@ var indexOf = [].indexOf || function (item) {
           convoId: id,
           convoName: name,
           producerType: producerType,
-          userName:'',
+          userName: '',
         }
       });
     }
@@ -3772,13 +3757,14 @@ var indexOf = [].indexOf || function (item) {
         })
     };
 
-    $scope.editAttachment = function (attachment) {
+    $scope.editAttachment = function (attachment, index) {
       vm.isDelete = false;
       vm.editAttachment = true;
       vm.label = attachment.file.label;
       vm.filename = attachment.file.name;
       vm.upload = true;
-      vm.attachment = attachment
+      vm.attachment = attachment;
+      vm.attachment.index = index;
     };
 
     $scope.UpdateAttachment = function (attachment) {
@@ -3788,9 +3774,13 @@ var indexOf = [].indexOf || function (item) {
           if (res.type == 'success') {
             vm.loading.attachments;
             vm.editAttachment = false;
-            // vm.SelectedAttachments.unshift(res.attachments);
-            vm.loadChecklist($stateParams.id);
-            $mdDialog.hide();
+            vm.SelectedAttachments.indexOf(attachment.index);
+            vm.SelectedAttachments[attachment.index].file.label = res.item.data.file_label; 
+            vm.SelectedAttachments[attachment.index].storage.temporary = res.item.data.temporary_storage_url; 
+            vm.editAttachment = false;
+            vm.upload = false;
+         //   vm.loadChecklist($stateParams.id);
+           // $mdDialog.hide();
             return $rootScope.message(res.message, 'success');
 
           } else {
@@ -3984,11 +3974,11 @@ var indexOf = [].indexOf || function (item) {
     //   });
     // };
 
-
+    vm.downloadFile = [];
     vm.removeFileHttp = removeFileHttp;
-    function removeFileHttp(file) {
+    function removeFileHttp(file,index) {
       var originalFile = file.replace(DOMAIN_NAME, '');
-      vm.downloadFile = originalFile;
+      vm.downloadFile[index] = originalFile;
     }
     // vm.toggle('section',section); vm.fetchHeadingBlock(section, checklist.id)
 

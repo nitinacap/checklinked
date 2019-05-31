@@ -45,7 +45,7 @@
       // Watch the model changes to trigger the search
       $scope.$watch('MsSearchBar.query', function (current, old)
       {
-
+        $rootScope.$broadcast('eventName', current);
         $rootScope.globalSearch.searchTerm = current;
       });
     }
@@ -104,7 +104,7 @@
     function collapse()
     {
       // Empty the query
-      vm.query = '';
+     // vm.query = '';
 
       // Empty results to hide the results view
       vm.populateResults(null);

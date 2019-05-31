@@ -6,7 +6,7 @@
     .controller('ChatController', ChatController);
 
   /** @ngInject */
-  function ChatController($rootScope, $cookies, $stateParams, $scope, $filter,$http, $mdSidenav, $timeout, $document, $mdMedia, api,  $mdDialog) {
+  function ChatController($rootScope, $cookies, $stateParams, $scope, $filter, $http, $mdSidenav, $timeout, $document, $mdMedia, api, $mdDialog) {
 
     var vm = this;
 
@@ -39,15 +39,16 @@
     vm.openConversation = openConversation;
     vm.setSocketStuff = setSocketStuff;
     vm.submitPost = submitPost;
-    vm.submitMessage= submitMessage;
+    vm.submitMessage = submitMessage;
     vm.old = old;
     vm.closeConversation = closeConversation;
     vm.pushPosts = pushPosts;
     vm.postProcessPosts = postProcessPosts;
-    vm.getLatestPosts = getLatestPosts;
+    //vm.getLatestPosts = getLatestPosts;
 
     vm.passID = $stateParams.passID;
     vm.closeDialog = closeDialog;
+    vm.readMessage = readMessage;
 
     //Build Fetch contactsTest
     var i = '';
@@ -58,11 +59,59 @@
     function closeDialog() {
       $mdDialog.hide();
     };
+
+    function livechatchecking() {
+      $rootScope.socketio.on('livemessages', function (data) {
+        $scope.$apply(function () {
+          console.log('livemessages=', data);
+          vm.messages[data.index] = data;
+        })
+
+      })
+
+    }
+
+
+
+    function readMessage(item) {
+      var array = [item.id];
+      if(item.child_data){
+
+      item.child_data.reduce(function (map, data) {
+        if (data.is_read == 0) {
+          array.push(data.id);
+        }
+      });
+    }
+
+      if (array && array.length > 0) {
+        return api.notifications.read(id, 'notification-count', array).success(function (resp) {
+          if (resp) {
+            listMenu();
+          }
+        })
+      }
+
+    }
+
+    $scope.$on('event:socketConnected', function () {
+      console.log('haaaaaaa');
+      livechatchecking();
+    });
+
+    if ((ref = $rootScope.socketio) != null ? ref.connected : void 0) {
+      console.log('socket was already connected for testing');
+      livechatchecking();
+    }
+
+
+
+
     api.contacts.get().then(function (d) {
       contacts = d.data.friendships;
 
-      if(d.data.code=='-1'){
-        $scope.subscriptionAlert(d.data.message);  
+      if (d.data.code == '-1') {
+        $scope.subscriptionAlert(d.data.message);
       }
 
       for (i = 0; i < contacts.length; i++) {
@@ -283,17 +332,9 @@
         email: contact.email
       };
 
-      console.log('vm.viewingConversation', vm.viewingConversation);
-
-      console.log('opening conversation', vm.viewingConversation);
 
       vm.getLatestPosts(vm.viewingConversation.id, vm.viewingConversation.type);
 
-
-      setInterval(function () {
-        $rootScope.socketio.emit('join', "/conversation/" + vm.viewingConversation.id);
-
-      }, 5000)
 
       // Reset the reply textarea
       resetReplyTextarea();
@@ -322,7 +363,6 @@
       now = Math.round(new Date().getTime() / 1000);
       old = now - (12 * 3600);
       post = Math.round(ts.getTime() / 1000);
-      console.log('calculating age', ts, now, old, post, post < old);
       return post < old;
     };
 
@@ -333,12 +373,13 @@
       currentSkip: 0
     };
 
-    console.log('vm.conversation', vm.conversation);
+    // console.log('vm.conversation', vm.conversation);
 
     ///////SET UP THE SOCKET CONNECTION FOR REALTIME
 
+
+
     function setSocketStuff() {
-      console.log('setting socket stuff (convo)');
       //$rootScope.socketio.emit('join', "/conversation/" + vm.viewingConversation.id);
       return $rootScope.socketio.on('message', function (post) {
         var notifyItem;
@@ -347,7 +388,6 @@
           notifyItem = $.extend({}, post, {
             type: 'post'
           });
-          console.log('about to sent notify event', notifyItem);
           $rootScope.socketio.emit('notify', [notifyItem]);
         }
 
@@ -359,7 +399,6 @@
       vm.setSocketStuff();
     }
     $scope.$on('event:socketConnected', function () {
-      console.log('received ng event:socketConnected (convo)');
       return vm.setSocketStuff();
     });
 
@@ -373,163 +412,92 @@
           //	vm.chat.name = vm.chat[i].user
         }
       }
-      console.log('posts postprocessed', posts);
       return posts;
     }
 
     //new conversion
-    $scope.setFile = function(element) {
-    //  var files = document.getElementById(element.id).files[0];
-      $scope.$apply(function($scope) {
-          $scope.theFile = element.files[0];
+    $scope.setFile = function (element) {
+      //  var files = document.getElementById(element.id).files[0];
+      $scope.$apply(function ($scope) {
+        $scope.theFile = element.files[0];
       });
-  };
+    };
     function getNewLatestPosts(id) {
       vm.isLoader = true;
       api.conversations.getnew(id).success(function (res) {
         vm.chat = [];
         vm.isLoader = false;
         if (res.type == 'success') {
-
-          
           var object = res.posts.data.conversions;
           vm.messages = res.posts.data;
-          debugger;
-        //  vm.messages = res.posts.data.conversions;
           vm.directMesage = res.posts.data.contacts;
-         // vm.messages = Object.keys(object).map(e=>object[e]);
-
-          // vm.mainconversations = [];
-          // vm.messages.forEach(function(data)
-          // {
-          //   vm.mainconversations.push(data);
-          // }
-          // )
-          // console.log(vm.mainconversations) ;
-
-
-         // console.log(result);
-        //  console.log('datas=', result);
-         // vm.messages = res.posts.data;
-        //   var newArray = [];
-        //   for (var item = 0; item < datas.length; item++) {
-        //     if (datas[item].conversions && datas[item].conversions.length) {
-        //       newArray.push(datas[item]);
-        //     }
-        //   }   
-      
-        // vm.messages = newArray;
-
-        console.log("conversions=",vm.messages);
-
 
         }
       })
     };
     vm.notificationDate = notificationDate;
     vm.unixtimestamp = [];
-    function notificationDate(item){
-      if(item && item!=='undefined' || item!==undefined){
-       vm.unixtimestamp.push((new Date(item.replace('-','/'))).getTime());
+    function notificationDate(item) {
+      if (item && item !== 'undefined' || item !== undefined) {
+        vm.unixtimestamp.push((new Date(item.replace('-', '/'))).getTime());
 
       }
     }
     getNewLatestPosts($cookies.get('useridCON'));
     vm.msgChOpen = false;
-  function submitMessage(message, index, filename,type_of,type,user_id,parent_id){
- // debugger;
- // return;
-   
-    vm.isLoader = false;
-    vm.file_name  = [];
-    var text = $("#text"+ message.fdi_feed_item_id +index).val();
-
-    var log_user_id = $cookies.get("useridCON");
-
-    user_id = (log_user_id == user_id) ? parent_id : user_id
-    debugger;
-  
-     var message_to_id = type == 'message' ? user_id :''
-
-    var files = document.getElementById(filename).files[0];
-    vm.file_name[index] =  files;
-
-    var fd = new FormData();
-    fd.append('file', files);
-    var filedata = { id: message.checklist_id ? message.checklist_id : '', text: text, itemType: message.type, producerType: type_of, parent_id:message.parent_id,conversation_from : type,message_to_id: message_to_id };
-    
-    fd.append('data', JSON.stringify(filedata));
-
-    $http.post(BASEURL + 'posts-post.php', fd, {
-      headers: { 'Content-Type': undefined },
-      cache: false
-    }).error(function (res) {
-      return $rootScope.message('Could not send message. Unknown error.', 'warning');
-    }).success(function (res) {
-      if (res.type == 'success') {
-
-        
-        debugger;
-        vm.msgChOpen = true;
-        vm.currentIndex = index;
-        vm.messages[index] =res.posts[0];
-        
-      //getNewLatestPosts($cookies.get('useridCON'));
-
-        //$scope.messages.unshift(res.posts[0]); 
-        $rootScope.message('Message send successfully', 'success');
-        $("#text"+ message.checklist_id +index).val('');;
-        var fileElement = angular.element('#fileAttachment');
-        angular.element(fileElement).val(null);
-        $scope.theFile = [];
-        vm.file_name = '';
-        vm.newPost.submitting = false;
-        vm.checklistCionversion = true;
-       
-        //vm.conversation.posts.unshift(res.posts[0]);
-      } 
-    })
-  };
+    function submitMessage(message, index, filename, type_of, type, user_id, parent_id) {
 
 
 
+      vm.isLoader = false;
+      vm.file_name = [];
+      var text = $("#text" + message.fdi_feed_item_id + index).val();
 
-    function getLatestPosts(id) {
+      var log_user_id = $cookies.get("useridCON");
 
-      //console.log('$rootScope.feed.items.length', $rootScope.feed.items.length);
+      user_id = (log_user_id == user_id) ? parent_id : user_id
 
-      /*for(i = 0; i < $rootScope.feed.items.length; i++) {
 
-       if($rootScope.feed.items[i].user.id  == id)
-       {
-       vm.conversation.id = $rootScope.feed.items[i].item.id;
-       vm.contactname = $rootScope.feed.items[i].user.name;
-       break;
-       }
-       vm.conversation.id = 0;
-       }*/
-      api.conversations.get(vm.viewingConversation.id, vm.viewingConversation.currentSkip).success(function (res) {
+      var message_to_id = type == 'message' ? user_id : ''
 
-        vm.chat = [];
-        if (res !== undefined && res != null && res != '' && !res.code) {
-          vm.chat = vm.postProcessPosts(res.posts);
+      var files = document.getElementById(filename).files[0];
+      vm.file_name[index] = files;
+
+      var fd = new FormData();
+      fd.append('file', files);
+      var filedata = { id: message.checklist_id ? message.checklist_id : '', text: text, itemType: message.type, producerType: type_of, parent_id: message.parent_id, conversation_from: type, message_to_id: message_to_id };
+      fd.append('data', JSON.stringify(filedata));
+
+      $http.post(BASEURL + 'posts-post.php', fd, {
+        headers: { 'Content-Type': undefined },
+        cache: false
+      }).error(function (res) {
+        return $rootScope.message('Could not send message. Unknown error.', 'warning');
+      }).success(function (res) {
+        if (res.type == 'success') {
+
+          res.posts[0].index = index;
+          vm.msgChOpen = true;
+          vm.currentIndex = index;
+          $rootScope.message('Message send successfully', 'success');
+          $("#text" + message.fdi_feed_item_id + index).val('');;
+          var fileElement = angular.element('#fileAttachment');
+          angular.element(fileElement).val(null);
+          $scope.theFile = [];
+          vm.file_name = '';
+          vm.newPost.submitting = false;
+          vm.checklistCionversion = true;
+          $rootScope.socketio.emit('livemessages', res.posts[0]);
+          api.notifications.count_notifi();
+
+          //vm.conversation.posts.unshift(res.posts[0]);
         }
-
-
-        console.log('vm.chat', vm.chat);
-
-      })["finally"](function () {
-        return vm.loading.posts = false;
-
-      });
-      scrollToBottomOfChat();
+      })
     };
 
 
 
-
     function pushPosts(posts, filter) {
-      console.log('checking received message(s)', posts, filter);
       var i, len, post, ref1, results;
       if (filter == null) {
         filter = $filter;
@@ -587,27 +555,38 @@
       return $uibModalInstance.dismiss('cancel');
     };
 
-    // Content sub menu
-    vm.submenu = [
-      { link: 'alerts', title: 'Alerts' },
-      { link: 'invitations', title: 'Action Items' },
-      { link: '', title: 'Messages' },
-      { link: 'notification', title: 'Notifications' }
+    function listMenu() {
+      var user_id = $cookies.get("useridCON").toString();
+      api.notifications.count_notifi().success(function (notification) {
+        var data = notification.item;
+        var message_count = data.message_count;
+        var notification_count = data["user_notification" + user_id];
+        vm.submenu = [
+          { link: 'alerts', title: 'Alerts' },
+          { link: 'invitations', title: 'Action Items' },
+          { link: '', title: 'Messages', notification: message_count },
+          { link: 'notification', title: 'Notifications', notification: notification_count }
+        ];
+      });
+    }
 
-    ];
 
-    
-        //Subscription expired alert
-        $scope.subscriptionAlert = function (message) {
-          vm.title = 'Alert';
-          vm.message = message;
-          $mdDialog.show({
-            scope: $scope,
-            preserveScope: true,
-            templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
-            clickOutsideToClose: false
-          });
-        }
+    listMenu();
+
+
+
+    //Subscription expired alert
+    $scope.subscriptionAlert = function (message) {
+      vm.title = 'Alert';
+      vm.message = message;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+        clickOutsideToClose: false
+      });
+    }
+
 
 
   }

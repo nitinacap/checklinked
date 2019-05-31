@@ -19,7 +19,7 @@
      <!-- <i class="icon s16 {{node.icon}}" ng-if="node.icon"></i>-->
      <i class="fa s16 fa-{{node.icon}} "  ng-if="node.icon"></i>
       <span class="title" translate="{{node.translate}}" flex>{{node.title}}</span>
-      <span class="badge white-fg" ng-if="node.title=='Communicate'" ng-show="vm.badgeData.notifications" ng-style="{'background': node.badge.color}">{{vm.badgeData.notifications}}</span>
+      <span class="badge white-fg"  ng-if="total &&  total > 0 && node.title=='Communicate'" style="background-color:green !important; color:#fff !important;">{{total}}</span>
      
       <!-- <span class="badge white-fg" ng-style="{'background': node.badge.color}"
             ng-if="(vm.appState == 'app.invitations') && (vm.badgeData.checklists > 0)">{{vm.badgeData.checklists}}</span> -->

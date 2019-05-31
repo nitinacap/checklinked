@@ -9,9 +9,12 @@
   function GroupsController($scope, $rootScope, api, $stateParams, $cookies, $mdDialog, $mdSidenav, $document, $http) {
     var vm = this;
     vm.isLoader = true;
+    debugger;
 
     var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
+
+    console.log("userpermission=",userpermission);
 
     $scope.getAllFolders = function () {
       api.folders.get().then(function (d) {

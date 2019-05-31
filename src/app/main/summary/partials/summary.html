@@ -52,14 +52,17 @@
         </th>
 
       </tr>
-
-
+<!-- 
+{{ vm.reports.list}} -->
     </thead>
     <tbody>
       <tr
-        ng-repeat="report in vm.reports.list | orderBy: '-requested' | filter: globalSearch.searchTerm track by $index"
+        ng-repeat="report in vm.reports.list | filter: globalSearch.searchTerm track by $index"
         ng-hide="vm.reports.viewing && vm.reports.viewing.id != $index"
-        ng-class="{'headingcolor': vm.reports.success && $index==0}">
+        ng-class="{'headingcolor': vm.reports.success && $index==0}" ng-init="all_act_users = vm.total_active_users($index)">
+
+      
+        
         <td ng-class="{'md-accent-fg': !vm.reports.viewing}" class="text-left" width="20%">
 
           <md-icon ng-if="!vm.reports.viewing" ng-show="vm.checkIsPermission.indexOf('create-view-reports') !== -1" ng-click="vm.reports.view(report, $index)"
@@ -70,19 +73,21 @@
           {{ report.requested * 1000 | date:'medium'}}
         </td>
         <td class="text-center">
-          {{report.count_non_compliants}}
+          {{report.total_issue}}
+
+          
 
         </td>
 
         <td class="text-center">
-          {{report.idsCHK.length}}
+          {{report.lines.length}}
 
         </td>
         <td class="text-center">
           {{report.totMessage}}
         </td>
         <td class="text-center">
-          {{report.totActive}}
+          {{all_act_users}}
         </td>
 
 
@@ -123,28 +128,32 @@
   </table>
 
 </div>
+<!-- {{vm.reports.viewing.checklists}} -->
 
 <div ng-show="vm.reports.viewing" class="simple-table-container md-background-bg md-whiteframe-1dp">
   <table class="simple row-border hover  bordered-table" ms-responsive-table>
     <tbody>
       <tr ng-class="{'': vm.reports.viewingSub.id == $index}" ng-repeat="checklist in vm.reports.viewing.checklists"
-        ng-show="checklist.lines.length">
+        ng-show="checklist.lines.length" ng-init="tim = vm.total_issues_msg(checklist.lines)">
 
         <td width="20%" ng-click="vm.reports.viewSub(checklist, $index, checklist.lastActive)"
           ng-class="{'md-accent-fg': vm.reports.viewingSub.id !== $index}" class="headingcolor">{{ checklist.name }}
         </td>
+
+     
         <td class="text-center" width="20%">
-          {{ checklist.lines[0].tot_count_non_compliants }}
-        </td>
+            <!-- {{ (checklist.lines[0].tot_count_conflicts | tonumber) + (checklist.lines[0].tot_count_non_compliants | tonumber) }} -->
+
+            {{tim.tot_issue}}
         <td class="text-center" width="20%">
 
         </td>
         <td class="text-center" width="20%">
-            {{ checklist.lines[0].counts.posts }}
+            {{tim.tot_msg}}
         </td>
 
         <td class="text-center" width="20%">
-          {{ checklist.lines[0].counts.active_users }}
+          {{ tim.tot_active_users }}
         </td>
         <td width="46" style="padding: 0 23px !important;"></td>
 
@@ -160,9 +169,9 @@
   <div layout="row" layout-align="start center" class="p-24">
     <div flex="100" layput-align="start center">
       <h3 class="headingcolor">
-          <a href="/process/"> {{vm.reports.viewingSub.lines[0].breadcrumbs.project_name}}</a> - 
-          <a href="/checklist/{{vm.reports.viewingSub.lines[0].breadcrumbs.folder_id}}"> {{vm.reports.viewingSub.lines[0].breadcrumbs.folder_name}}</a> -
-          <a href="/checklist/detail/{{vm.reports.viewingSub.lines[0].breadcrumbs.checklist_id}}"> {{vm.reports.viewingSub.lines[0].breadcrumbs.checklist_name}}</a>
+          <a href="/process/" ng-show="vm.reports.viewingSub.lines[0].breadcrumbs.project_name"> {{vm.reports.viewingSub.lines[0].breadcrumbs.project_name}} -</a> 
+          <a href="/checklist/{{vm.reports.viewingSub.lines[0].breadcrumbs.folder_id}}" ng-show="vm.reports.viewingSub.lines[0].breadcrumbs.folder_name"> {{vm.reports.viewingSub.lines[0].breadcrumbs.folder_name}} -</a> 
+          <a href="/checklist/detail/{{vm.reports.viewingSub.lines[0].breadcrumbs.checklist_id ? vm.reports.viewingSub.lines[0].breadcrumbs.checklist_id : vm.reports.viewingSub.idCHK}}"> {{vm.reports.viewingSub.lines[0].breadcrumbs.checklist_name ? vm.reports.viewingSub.lines[0].breadcrumbs.checklist_name : vm.reports.viewingSub.name}}</a>
 
 
       </h3>
@@ -207,9 +216,50 @@
               </div>
           </tr>
         </thead>
+
     
-        <tbody ng-repeat="lines in vm.reports.viewingSub.lines">
-          <tr ng-repeat="line in lines.user_list_datas">
+        <tbody>
+          <tr ng-repeat="lines in vm.reports.viewingSub.lines">
+              <td class="headingcolor">
+                  <span ng-click="vm.openConversationDialog('checklist', vm.reports.viewingSub.lines[0].idCHK, vm.reports.viewingSub.name, line.user_name)">
+                  {{lines.contact.name.full}}
+                </span>
+                </td>
+
+                <td hide show-gt-xs class="text-center headingcolor" ng-click="vm.openContactDialog(lines.contact.org.organization);">
+                    <span class="pointer"  >
+                        {{lines.contact.org.name}} 
+                    </span>
+                   
+                  </td>
+
+                  <td class="text-center {{lines.tot_count_non_compliants ? 'link-color' : ''}}">
+                  
+
+                      <span ng-click="vm.showComparison(vm.reports.viewingSub, lines.contact, lines.conflicted)"
+                      translate-attr-aria-label="" class="pointer">
+            
+                         <span translate="">{{ (lines.tot_count_conflicts | tonumber)  + (lines.tot_count_non_compliants | tonumber ) }} </span>
+                       </span>
+
+
+                    
+
+                    
+                  </td>
+
+                  <td class="text-center">{{lines.counts.posts}}</td>
+
+                  <td hide show-gt-xs class="text-center" colspan="2">
+                      <span>{{ lines.cfcComplete == '1' ? 'Y' : 'N'}}</span>
+                    </td>
+
+                  
+
+                    
+
+          </tr>
+          <!-- <tr ng-repeat="line in lines.user_list_datas">
             <td class="headingcolor">
               <span ng-click="vm.openConversationDialog('checklist', vm.reports.viewingSub.lines[0].idCHK, vm.reports.viewingSub.name, line.user_name)">
               {{line.user_name}}
@@ -227,7 +277,7 @@
               <span>{{ lines.chk_complete ? 'Y' : 'N'}}</span>
             </td>
 
-          </tr>
+          </tr> -->
 
           <!-- <tr ng-repeat="line in vm.reports.viewingSub.lines">
           <td class="headingcolor">{{line.userByMessage.full}}</td>

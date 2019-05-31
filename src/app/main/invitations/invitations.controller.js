@@ -446,9 +446,8 @@
     vm.submenu = [
       { link: 'alerts', title: 'Alerts' },
       { link: '', title: 'Action Items' },
-      { link: 'chat.message', title: 'Messages' },
-      { link: 'notification', title: 'Notifications' }
-
+      { link: 'chat.message', title: 'Messages', notification: $rootScope.message_count },
+      { link: 'notification', title: 'Notifications', notification: $rootScope.notification_count }
     ];
 
 

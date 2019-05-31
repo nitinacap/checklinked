@@ -80,7 +80,7 @@
               report.idsCHK.forEach(function (idCHK) {
                 var checklist;
                 checklist = $filter('filter')($rootScope.checklists, {
-                  idCHK: idCHK
+                 idCHK: idCHK
                 });
                 if (checklist !== void 0 && checklist.length) {
                   checklist = JSON.parse(JSON.stringify(checklist[0]));
@@ -90,6 +90,9 @@
                   return checklists.push(checklist);
                 }
               });
+              console.log(' -----------');
+              console.log(' TEst it loaded reports', report.checklists);
+              console.log(' -----------');
               return report.checklists = checklists;
             });
             console.log('loaded reports', res.reports);
@@ -202,6 +205,51 @@
         //console.log('checklistsArray', checklistsArray);
       }
     };
+
+    vm.total_active_users = function ($index) {
+      var report = vm.reports.list[$index];
+        return report.lines.length;
+    }
+    
+    vm.total_issues_msg = function (lines) {
+      var tot_issue = 0;
+      var tot_msg = 0;
+      var tot_active_users = 0;
+      var arr = [];
+        if(lines.length > 0){
+            for(var i= 0;i<lines.length;i++){
+              
+            
+              tot_issue  += parseInt(lines[i].tot_count_conflicts) + parseInt(lines[i].tot_count_non_compliants);
+
+              tot_msg  += parseInt(lines[i].counts.posts);              
+                tot_active_users  = i+1; 
+               
+            }
+        }
+        arr['tot_issue'] = tot_issue;
+        arr['tot_msg'] = tot_msg;
+        arr['tot_active_users'] = tot_active_users;
+        return arr;
+
+    }
+
+    // vm.total_msg = function (lines) {
+    //   let tot_msg = 0;
+    //     if(lines.length > 0){
+    //         for(let i= 0;i<lines.length;i++){
+            
+    //           tot_msg  += parseInt(lines[i].counts.posts);
+               
+    //         }
+    //     }
+    //     return tot_msg;
+    //     debugger;
+
+    // }
+
+
+   
 
     function viewChecklistAsUser(checklist, user) {
       console.log('checklist', checklist);

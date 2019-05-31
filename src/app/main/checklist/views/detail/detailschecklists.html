@@ -209,7 +209,7 @@
     <div class="checklist-items" data-as-sortable="vm.dragControlListenersSections" data-ng-model="checklist.sections">
 
       <div data-as-sortable-item md-ink-ripple
-        data-ng-repeat="section in checklist.sections | orderBy: 'created' | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+        data-ng-repeat="section in checklist.sections | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
         <div ng-include="'app/main/checklist/views/detail/detailsChecklistsSections.html'"></div>
         <div class="checklist-items" data-as-sortable="vm.dragControlListenersHeadings"
           data-ng-model="section.headings">
@@ -220,7 +220,7 @@
             <div class="checklist-items" data-as-sortable="vm.dragControlListenersItems" data-ng-model="heading.items">
               <div data-as-sortable-item md-ink-ripple
                 ng-show="!heading.notApplicable && vm.isExpanded('heading', heading) || vm.isHeader"
-                data-ng-repeat="item in heading.items | orderBy: 'created' | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+                data-ng-repeat="item in heading.items">
                 <div ng-include="'app/main/checklist/views/detail/detailsChecklistsItems.html'"></div>
               </div>
             </div>

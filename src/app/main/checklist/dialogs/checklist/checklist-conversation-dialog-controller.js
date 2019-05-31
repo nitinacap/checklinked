@@ -142,6 +142,8 @@
       }).error(function (res) {
         return $rootScope.message('Could not send message. Unknown error.', 'warning');
       }).success(function (res) {
+        debugger
+
         if (res.type == 'success') {
           var fileElement = angular.element('#fileAttachment');
           angular.element(fileElement).val(null);
@@ -151,6 +153,10 @@
           vm.checklistCionversion = true;
           vm.newPost.text = '';
           vm.conversation.posts.unshift(res.posts[0]);
+         
+          console.log("haaaaaa=", api.notifications.count_notifi(user_id));
+         
+
           // vm.conversation.posts.unshift(res.posts[0]);
           // return $rootScope.socketio.emit('message', res.posts[0]);
         } else {

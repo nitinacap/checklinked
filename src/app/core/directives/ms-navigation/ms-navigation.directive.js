@@ -325,44 +325,39 @@
        * @param root
        * @returns Array
        */
-    
+
       function getNavigation(root) {
         if (root) {
           for (var i = 0; i < navigation.length; i++) {
             if (navigation[i]._id === root) {
               debugger;
               return [navigation[i]];
-   
+
             }
           }
           return null;
         }
-         var find=false;
-         for(var i=0;i<navigation.length;i++)
-         {
-          if(find==true)
-           {
-           break;
-           }
-           else
-           {
-             for(var j=0;j<navigation[i].children.length;j++)
-             {
-               if(navigation[i].children[j].title=="Invitations")
-               {
-                 navigation[i].children[j].title="Linking";
-                 find=true;
-                 break;
-               }
-            }     
-           }
-         return navigation;
-       }
+        var find = false;
+        for (var i = 0; i < navigation.length; i++) {
+          if (find == true) {
+            break;
+          }
+          else {
+            for (var j = 0; j < navigation[i].children.length; j++) {
+              if (navigation[i].children[j].title == "Invitations") {
+                navigation[i].children[j].title = "Linking";
+                find = true;
+                break;
+              }
+            }
+          }
+          return navigation;
+        }
 
-     
 
-      return navigation;
-    }
+
+        return navigation;
+      }
       /**
        * Return flat navigation array
        *
@@ -451,7 +446,7 @@
           debugger;
           // If there are child items in this navigation,
           // do some nested function magic
-          if (navigation[x].children.length > 0 ) {
+          if (navigation[x].children.length > 0) {
             flatNav = flatNav.concat(_flattenNavigation(navigation[x].children));
           }
         }
@@ -462,25 +457,54 @@
   }
 
   /** @ngInject */
-  function MsNavigationController($scope, msNavigationService, $rootScope) {
+  function MsNavigationController($scope,api, $cookies, msNavigationService, $rootScope) {
     var vm = this;
     vm.folded = false;
     vm.toggleMsNavigationFolded = toggleMsNavigationFolded;
+
+    // setInterval(function () {
+    //   api.notifications.count_notifi();
+    // }, 9000);
+
+
+    api.notifications.count_notifi();
+
+
+    var user_id = $cookies.get("useridCON").toString();
+    $scope.$on('event:socketConnected', function () {
+
+      $rootScope.socketio.on('real_time_notification', function (data) {
+        console.log('real_time_notification=',data);
+        if(data["total"+user_id]!=undefined && data["total"+user_id]!='undefined'){
+          $scope.$apply(function(){
+            $rootScope.message_count = data.message_count;
+            $rootScope.notification_count = data["user_notification" + user_id];
+            $scope.total = data["total"+user_id];
+          });
+        }
+
+
+      })
+
+    });
+
+
+
 
     function toggleMsNavigationFolded() {
       vm.folded = !vm.folded;
       $rootScope.folded = vm.folded;
       if (vm.folded) {
         $('.title, .menuheading').hide();
-       
-         $('.fulllogo').show();
+
+        $('.fulllogo').show();
         $('md-sidenav').addClass('vertical-navigation-hide');
         $('.admin-logo').attr('src', '/assets/images/logos/small-logo.jpg').addClass('pl-20 small');
       } else {
-         $('.fulllogo').hide();
+        $('.fulllogo').hide();
         $('.title, .menuheading').show();
         $('md-sidenav').removeClass('vertical-navigation-hide');
-       $('.admin-logo').attr('src', '/assets/images/logos/checklinked.png').removeClass('pl-20 small');
+        $('.admin-logo').attr('src', '/assets/images/logos/checklinked.png').removeClass('pl-20 small');
       }
     }
     // Data
@@ -491,7 +515,7 @@
     }
     else {
       vm.navigation = msNavigationService.getNavigation();
-     
+
     }
 
     // Methods
@@ -758,7 +782,7 @@
   }
 
   /** @ngInject */
-  function MsNavigationNodeController($scope, $element, $rootScope, $animate, $state, msNavigationService) {
+  function MsNavigationNodeController($scope, $element, api, $rootScope, $cookies, $animate, $state, msNavigationService) {
     var vm = this;
     var checkRace;
 
@@ -794,8 +818,17 @@
     vm.isHidden = isHidden;
     vm.queue = queue;
 
+
+    // setInterval(function(){
+
+    // },1000)
+
+
+
+
     vm.badgeData = $rootScope.inviteCounts;
-    vm.badgeData.notifications = $rootScope.user ?  parseInt($rootScope.user.notifications) : '';
+    console.log("$rootScope=", $rootScope);
+    vm.badgeData.notifications = $rootScope.user ? parseInt($rootScope.user.notifications) : '';
 
     vm.badgeDataFeed = $rootScope.feed;
 

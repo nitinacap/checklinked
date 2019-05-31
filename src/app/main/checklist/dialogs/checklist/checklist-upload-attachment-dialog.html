@@ -28,7 +28,7 @@
         <tbody>
           <tr ng-repeat="attachment in  vm.SelectedAttachments track by $index" ng-show="IsAttachment">
             <td class="text-center">
-              <button aria-label="Edit" ng-click="editAttachment(attachment)">
+              <button aria-label="Edit" ng-click="editAttachment(attachment,$index)">
                 <md-icon md-font-icon="icon-pencil"></md-icon>
               </button>
             </td>
@@ -45,7 +45,7 @@
            
             </td>
             <td class="text-center">
-                <a href="{{vm.downloadFile}}" ng-init="vm.removeFileHttp(attachment.storage.temporary)" download target="_blank">
+                <a href="{{vm.downloadFile[$index]}}" target="_blank" ng-init="vm.removeFileHttp(attachment.storage.temporary, $index)" download>
                     <md-icon md-font-icon="icon-cloud-download"></md-icon>
                 </a>
             </td>
@@ -55,7 +55,7 @@
       <div ng-show="vm.upload || !vm.SelectedAttachments.length">
         <form name="checklistForm" novalidate id="fileattachment">
           <md-input-container class="md-block">
-            <label translate="CHECKLIST.ATTACHMENT_LABEL">Attachment Label</label>
+            <label>Attachment Label</label>
             <input name="label" ng-model="vm.label" required>
             <!-- <div ng-messages="checklistForm.label.$error" ng-show="checklistForm.label.$touched" role="alert">
               <div ng-message="required">

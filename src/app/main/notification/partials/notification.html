@@ -14,15 +14,23 @@
           </md-button>
 
         </th>
-        <th width="10%">Checklist Changes
+        <th width="10%">Checklist Changes 
         </th>
         <th width="10%">User Changes</th>
         <th>Marked Complete</th>
       </tr>
     </thead>
-    <tbody>
-      <tr ng-repeat="(key, notification) in  vm.notifications">
-        <td class="max-10"><span class="link-color pointer"  ng-click="vm.projectList(notification.list, notification.project_name,key);">{{notification.project_name}}</span></td>
+  
+    <tbody ng-repeat="(key, notification) in  vm.notifications"> 
+      <tr ng-class="notification.count_unread_total ? 'unread':'' ">
+     
+      
+        <td class="max-10"><span class="link-color pointer"  ng-click="vm.projectList(notification.list, notification.project_name,key);">
+          {{notification.project_name}}
+       
+        </span></td>
+       
+      
         <td><span ng-init="vm.totUsers(notification[0])"></span> {{notification.count_unread_total}}</td>
         <td>{{notification.user_changes ? notification.user_changes : 0 }}</td>
         <td>{{notification.flag_complete ? notification.flag_complete : 0 }}</td>
@@ -58,9 +66,10 @@
         </tr>
     </thead>
 
-    <tbody  ng-repeat="projectlist in  vm.checklistDetail" ng-click="vm.projectDetail(projectlist)">
-      <tr ng-class="myvalue ? 'rbb' : '' ">
+    <tbody ng-repeat="projectlist in  vm.checklistDetail| filter: globalSearch.searchTerm" ng-click="vm.projectDetail(projectlist)">
+      <tr ng-class="myvalue ? 'rbb' : '' " class="{{!projectlist.read_by && !myvalue ? 'unread' : ''}}">
         <td>
+       
           <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true; vm.readNotification(projectlist.id,projectlist.key)" aria-hidden="true" ng-show="!myvalue"></i>
           <i class="fa fa-chevron-down" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true" ng-show="myvalue"></i>
           <span class="link-color">    {{ projectlist.checklist_name}}</span></td>
