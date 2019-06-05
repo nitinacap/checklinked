@@ -215,7 +215,7 @@
           data-ng-model="section.headings">
 
           <div data-as-sortable-item md-ink-ripple ng-show="!section.notApplicable && vm.isExpanded('section',section)"
-            data-ng-repeat="heading in section.headings | orderBy: 'created' | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+            data-ng-repeat="heading in section.headings | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
             <div ng-include="'app/main/checklist/views/detail/detailsChecklistsHeadings.html'"></div>
             <div class="checklist-items" data-as-sortable="vm.dragControlListenersItems" data-ng-model="heading.items">
               <div data-as-sortable-item md-ink-ripple

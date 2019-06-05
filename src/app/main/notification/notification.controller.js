@@ -46,11 +46,14 @@
       vm.isLoader = true;
       return api.notifications.get($cookies.get('token')).success(function (resp) {
         if (resp) {
-          debugger;
           vm.isLoader = false;
           listMenu();
           if (resp.code == '-1') {
-            $scope.subscriptionAlert(resp.message);
+            if(d.data.message=='unauthorized access'){
+              $state.go('app.logout');
+            }else{
+              $scope.subscriptionAlert(resp.message);
+            }
           } else {
 
             vm.notifications = resp.notifications;
@@ -169,7 +172,9 @@
     }
 
     listMenu();
-
+    $('.Communicate').addClass('communicate');
+    $('.Analyze').removeClass('analyze');
+    $('.Process').removeClass('opacity1');
 
   }
 

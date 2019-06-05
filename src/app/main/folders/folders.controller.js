@@ -8,6 +8,7 @@
 
   /** @ngInject */
   function FoldersController($rootScope, api, $stateParams, $location, $cookies, $mdDialog, $mdSidenav, $document, $http, $scope) {
+
     var vm = this;
     vm.isLoader = true
     var userpermission = $cookies.get("userpermission");
@@ -33,8 +34,13 @@
             vm.isLoader = false;
             if (d.data && d.data.code == '-1') {
               if(vm.firstAlert){
-                $scope.subscriptionAlert(d.data.message);
-                vm.firstAlert = false;
+                if(d.data.message=='unauthorized access'){
+                  $state.go('app.logout');
+                }else{
+                  $scope.subscriptionAlert(d.data.message);
+                  vm.firstAlert = false;
+                }
+        
               }
 
             } else {
@@ -510,6 +516,10 @@
         clickOutsideToClose: false
       });
     }
+
+    $('.Analyze').removeClass('analyze');
+    $('.Process').addClass('opacity1');
+    $('.Communicate').removeClass('communicate');
 
   }
 

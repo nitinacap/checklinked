@@ -56,11 +56,16 @@
 
 
     vm.submenu = [
-        { link: 'issue', title: 'Issues' },
-        { link: 'schedule', title: 'Schedule' },
+        { link: 'summary', title: 'Issues' },
+        { link: '', title: 'Schedule' },
         { link: '#', title: 'Reports' },
         { link: 'dashboard', title: 'Dashboard' }
       ];
+
+
+      setTimeout(function () {
+        $('.Analyze').addClass('analyze');
+      }, 800);
 
 
 

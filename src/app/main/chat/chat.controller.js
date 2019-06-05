@@ -8,6 +8,7 @@
   /** @ngInject */
   function ChatController($rootScope, $cookies, $stateParams, $scope, $filter, $http, $mdSidenav, $timeout, $document, $mdMedia, api, $mdDialog) {
 
+
     var vm = this;
 
     var id;
@@ -75,14 +76,14 @@
 
     function readMessage(item) {
       var array = [item.id];
-      if(item.child_data){
+      if (item.child_data) {
 
-      item.child_data.reduce(function (map, data) {
-        if (data.is_read == 0) {
-          array.push(data.id);
-        }
-      });
-    }
+        item.child_data.reduce(function (map, data) {
+          if (data.is_read == 0) {
+            array.push(data.id);
+          }
+        });
+      }
 
       if (array && array.length > 0) {
         return api.notifications.read(id, 'notification-count', array).success(function (resp) {
@@ -586,6 +587,10 @@
         clickOutsideToClose: false
       });
     }
+    setTimeout(function () {
+      $('.Communicate').addClass('communicate');
+    }, 800);
+
 
 
 

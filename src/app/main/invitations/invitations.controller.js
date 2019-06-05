@@ -450,6 +450,10 @@
       { link: 'notification', title: 'Notifications', notification: $rootScope.notification_count }
     ];
 
+    setTimeout(function () {
+      $('.Communicate').addClass('communicate');
+    }, 800);
+
 
   }
 

@@ -75,7 +75,7 @@
     </div>
   </div>
   <div class="tool-bg" md-ink-ripple layout="row" layout-align="start center"
-    ng-if="!vm.checklists.length  && !vm.isLoader"
+    ng-if="vm.checklists.length==0  && !vm.isLoader"
     ng-class="{'starred': checklist.starred, 'selected': checklist.selected, 'completed': checklist.completed}">
     <div layout="row" layout-align="start center" flex>
       <div flex>

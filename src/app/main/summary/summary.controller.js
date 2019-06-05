@@ -24,13 +24,13 @@
 
 
 
-    
+
     function openContactDialog(contact) {
 
       vm.contact = angular.copy(contact);
-      console.log( vm.contact);
+      console.log(vm.contact);
 
-     // vm.contact = contact;
+      // vm.contact = contact;
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
@@ -66,7 +66,11 @@
           vm.isLoader = false;
 
           if (res.code == '-1') {
-            $scope.subscriptionAlert(res.message);
+            if (d.data.message == 'unauthorized access') {
+              $state.go('app.logout');
+            } else {
+              $scope.subscriptionAlert(res.message);
+            }
           }
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Reports not loaded.', 'warning');
@@ -80,7 +84,7 @@
               report.idsCHK.forEach(function (idCHK) {
                 var checklist;
                 checklist = $filter('filter')($rootScope.checklists, {
-                 idCHK: idCHK
+                  idCHK: idCHK
                 });
                 if (checklist !== void 0 && checklist.length) {
                   checklist = JSON.parse(JSON.stringify(checklist[0]));
@@ -114,7 +118,7 @@
           } else if (res.code) {
             return $rootScope.message("Error requesting report: (" + res.code + ": " + res.message + ")");
           } else {
-         
+
             $rootScope.message("Report is being processed.  Refresh in a little while to see the result.");
           }
         }).error(function (err) {
@@ -128,10 +132,10 @@
         return api.summary.reports.delete(id).success(function (res) {
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Report not requested.', 'warning');
-          } else if (res.type=='success') {
-           vm.reports.refresh();
-           $rootScope.message("Report has been deleted successfully ", 'success');
-          // return  vm.reports.list = res.reports;
+          } else if (res.type == 'success') {
+            vm.reports.refresh();
+            $rootScope.message("Report has been deleted successfully ", 'success');
+            // return  vm.reports.list = res.reports;
           }
         }).error(function (err) {
           return $rootScope.message('Unable to request report.', 'warning');
@@ -208,29 +212,29 @@
 
     vm.total_active_users = function ($index) {
       var report = vm.reports.list[$index];
-        return report.lines.length;
+      return report.lines.length;
     }
-    
+
     vm.total_issues_msg = function (lines) {
       var tot_issue = 0;
       var tot_msg = 0;
       var tot_active_users = 0;
       var arr = [];
-        if(lines.length > 0){
-            for(var i= 0;i<lines.length;i++){
-              
-            
-              tot_issue  += parseInt(lines[i].tot_count_conflicts) + parseInt(lines[i].tot_count_non_compliants);
+      if (lines.length > 0) {
+        for (var i = 0; i < lines.length; i++) {
 
-              tot_msg  += parseInt(lines[i].counts.posts);              
-                tot_active_users  = i+1; 
-               
-            }
+
+          tot_issue += parseInt(lines[i].tot_count_conflicts) + parseInt(lines[i].tot_count_non_compliants);
+
+          tot_msg += parseInt(lines[i].counts.posts);
+          tot_active_users = i + 1;
+
         }
-        arr['tot_issue'] = tot_issue;
-        arr['tot_msg'] = tot_msg;
-        arr['tot_active_users'] = tot_active_users;
-        return arr;
+      }
+      arr['tot_issue'] = tot_issue;
+      arr['tot_msg'] = tot_msg;
+      arr['tot_active_users'] = tot_active_users;
+      return arr;
 
     }
 
@@ -238,9 +242,9 @@
     //   let tot_msg = 0;
     //     if(lines.length > 0){
     //         for(let i= 0;i<lines.length;i++){
-            
+
     //           tot_msg  += parseInt(lines[i].counts.posts);
-               
+
     //         }
     //     }
     //     return tot_msg;
@@ -249,7 +253,7 @@
     // }
 
 
-   
+
 
     function viewChecklistAsUser(checklist, user) {
       console.log('checklist', checklist);
@@ -338,7 +342,7 @@
         locals: {
           convoId: id,
           convoName: name,
-          userName:userName,
+          userName: userName,
           producerType: type
         }
       });
@@ -371,6 +375,10 @@
       { link: '#', title: 'Reports' },
       { link: 'dashboard', title: 'Dashboard' }
     ];
+
+    $('.Analyze').addClass('analyze');
+    $('.Process').removeClass('opacity1');
+    $('.Communicate').removeClass('communicate');
 
 
 

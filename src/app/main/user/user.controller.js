@@ -174,16 +174,16 @@
     userStats();
 
         //Subscription expired alert
-        $scope.subscriptionAlert = function (message) {
-          vm.title = 'Alert';
-          vm.message = message;
-          $mdDialog.show({
-            scope: $scope,
-            preserveScope: true,
-            templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
-            clickOutsideToClose: false
-          });
-        }
+        // $scope.subscriptionAlert = function (message) {
+        //   vm.title = 'Alert';
+        //   vm.message = message;
+        //   $mdDialog.show({
+        //     scope: $scope,
+        //     preserveScope: true,
+        //     templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+        //     clickOutsideToClose: false
+        //   });
+        // }
 
     vm.submenu = [
       { link: '', title: 'My Profile' },

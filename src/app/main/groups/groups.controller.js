@@ -31,7 +31,11 @@
       api.groups.get($stateParams.id).then(function (d) {
         vm.isLoader = false;
         if (d.data && d.data.code == '-1') {
-          $scope.subscriptionAlert(d.data.message);
+          if(d.data.message=='unauthorized access'){
+            $state.go('app.logout');
+          }else{
+            $scope.subscriptionAlert(d.data.message);
+          }
         } else {
           vm.groups = d.data.groups;
         }

@@ -111,6 +111,9 @@ var indexOf = [].indexOf || function (item) {
       referencess: []
     };
 
+
+
+
     //check permission
     var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
@@ -130,7 +133,11 @@ var indexOf = [].indexOf || function (item) {
     api.folders.get(token).then(function (d) {
       vm.isLoader = false;
       if (d.data.code == '-1') {
-        $scope.subscriptionAlert(d.data.message);
+        if(d.data.message=='unauthorized access'){
+          $state.go('app.logout');
+        }else{
+          $scope.subscriptionAlert(d.data.message);
+        }
       } else {
         vm.folders = d.data.folders;
       }
@@ -458,7 +465,7 @@ var indexOf = [].indexOf || function (item) {
               record: vm.sections[itemIndex]
             };
             console.log('emitting data', packet);
-            $rootScope.socketio.emit('data', packet);
+            //$rootScope.socketio.emit('data', packet);
 
           }
         });
@@ -708,27 +715,27 @@ var indexOf = [].indexOf || function (item) {
             var itemIndex;
             // loadChecklist(vm.idCHK)
 
-            itemIndex = vm.items.indexOf(itemMoved);
-            console.log('itemIndex', itemIndex);
-            vm.items[itemIndex] = vm.reorder.order;
+           // itemIndex = vm.items.indexOf(itemMoved);
+            //console.log('itemIndex', itemIndex);
+           // vm.items[itemIndex] = vm.reorder.order;
             //vm.items[itemIndex].order = vm.reorder.order;
 
 
 
-            console.log('post vm.items', vm.items);
+            // console.log('post vm.items', vm.items);
 
-            var packet;
-            packet = {
-              catalog: 'items',
-              type: 'reorder',
-              user: {
-                idCON: $rootScope.user.idCON,
-                name: $rootScope.user.name
-              },
-              record: vm.items[itemIndex]
-            };
-            console.log('emitting data', packet);
-            $rootScope.socketio.emit('data', packet);
+            // var packet;
+            // packet = {
+            //   catalog: 'items',
+            //   type: 'reorder',
+            //   user: {
+            //     idCON: $rootScope.user.idCON,
+            //     name: $rootScope.user.name
+            //   },
+            //   record: vm.items[itemIndex]
+            // };
+            // console.log('emitting data', packet);
+            // $rootScope.socketio.emit('data', packet);
 
           }
         });
@@ -1280,9 +1287,9 @@ var indexOf = [].indexOf || function (item) {
     // };
 
     function children(whats, parentID) {
-      return $filter('orderBy')($filter('filter')(vm[whats], {
+      return $filter('filter')(vm[whats], {
         id_parent: parentID
-      }, true), '');
+      }, true);
     };
 
     /*
@@ -4043,6 +4050,10 @@ var indexOf = [].indexOf || function (item) {
         clickOutsideToClose: true
       });
     }
+
+    setTimeout(function () {
+      $('.Process').addClass('opacity1');
+    }, 800);
 
 
   }

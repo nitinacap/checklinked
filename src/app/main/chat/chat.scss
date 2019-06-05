@@ -18,8 +18,38 @@
         width:100% !important;
         min-width: 100% !important;
     }
+    .messagescroll{
+        max-height: 200px;
+        height: 200px;
+        overflow-y: scroll;
+    }
+
 
 }
+    /* width */
+    .messagescroll::-webkit-scrollbar {
+        width: 5px;
+      }
+      
+      /* Track */
+      .messagescroll::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+      }
+       
+      /* Handle */
+      .messagescroll::-webkit-scrollbar-thumb {
+        background: #6BABDD; 
+      }
+      
+      /* Handle on hover */
+      .messagescroll::-webkit-scrollbar-thumb:hover {
+        background:#6BABDD; 
+      }
+      .message-border{
+        margin-top: 20px;
+        border-top: 1px solid #6BABDD;
+        padding-top: 10px;
+      }
 
 
 #chat-app {

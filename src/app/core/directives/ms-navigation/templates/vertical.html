@@ -12,20 +12,14 @@
   <div ms-navigation-item layout="row" ng-if="!vm.isHidden()">
 
 
-    <a class="ms-navigation-button {{node.uisref}}" ui-sref="{{node.uisref}}" ui-sref-active="active md-accent-bg"
+    <a class="ms-navigation-button {{node.title}}" ng-clsss="node.title" ui-sref="{{node.uisref}}" ui-sref-active="active md-accent-bg"
        ng-if="node.uisref && node.title"
        ng-hide="vm.appState == 'app.queue' && vm.showQueue == 'false'">
 
-     <!-- <i class="icon s16 {{node.icon}}" ng-if="node.icon"></i>-->
      <i class="fa s16 fa-{{node.icon}} "  ng-if="node.icon"></i>
-      <span class="title" translate="{{node.translate}}" flex>{{node.title}}</span>
+      <span class="title {{node.title}}" translate="{{node.translate}}" flex>{{node.title}}</span>
       <span class="badge white-fg"  ng-if="total &&  total > 0 && node.title=='Communicate'" style="background-color:green !important; color:#fff !important;">{{total}}</span>
      
-      <!-- <span class="badge white-fg" ng-style="{'background': node.badge.color}"
-            ng-if="(vm.appState == 'app.invitations') && (vm.badgeData.checklists > 0)">{{vm.badgeData.checklists}}</span> -->
-
-      <!-- <span class="badge white-fg" ng-style="{'background': node.badge.color}"
-            ng-if="(vm.appState == 'app.mail.threads') && (vm.badgeDataFeed.unread.length>0)">{{vm.badgeDataFeed.unread.length}}</span> -->
       <i class="icon-chevron-right s16 arrow" ng-if="vm.collapsable && vm.hasChildren"></i>
     </a>
 

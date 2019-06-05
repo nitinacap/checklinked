@@ -39,8 +39,9 @@
                 </div>
 
 
-                <div ng-repeat="child_post in  conversion.child_data | orderBy:'created_at'" ng-show="myvalue">
-                    <div layout="row">
+                <div class="messagescroll2" id="messageHeight{{$index}}"  ng-show="myvalue">
+                    <div ng-repeat="child_post in  conversion.child_data | orderBy:'created_at'">
+                    <div layout="row" >
                         <div class="column">
                             <span class="headingcolor message-heading">{{child_post.user_full_name}}
                                 {{child_post.organization_name }}</span>
@@ -62,6 +63,7 @@
 
                     </p>
                 </div>
+                </div>
 
                 <div layout="row">
                     <div class="column">
@@ -78,7 +80,7 @@
                 </div>
 
                 <p class="message">
-                    <i class="fa fa-chevron-down" ng-click="myvalue = myvalue == true ? false : true; vm.readMessage(conversion)"
+                    <i class="fa fa-chevron-down" msscroll ng-click="myvalue = myvalue == true ? false : true; vm.readMessage(conversion)"
                         aria-hidden="true"
                         ng-init="myvalue= vm.currentIndex == $index && vm.msgChOpen == true ? true : false"
                         ng-show="!myvalue"></i>
