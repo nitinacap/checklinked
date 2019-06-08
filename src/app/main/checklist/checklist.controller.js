@@ -104,6 +104,10 @@ var indexOf = [].indexOf || function (item) {
     vm.showAllHeaders = showAllHeaders;
     vm.selectWorkflowById = selectWorkflowById
     vm.checklistPasteDialog = checklistPasteDialog;
+    vm.saveScheduler = saveScheduler;
+    vm.addschedule = addschedule;
+
+
     vm.expanded = {
       sections: [],
       headings: [],
@@ -4054,6 +4058,42 @@ var indexOf = [].indexOf || function (item) {
     setTimeout(function () {
       $('.Process').addClass('opacity1');
     }, 800);
+
+
+    function saveScheduler() {
+      vm.newScheduler.checklist_id = vm.checklists[0].id;
+      //var title = {'checklist_name':vm.checklists[0].name, 'workflow_name':vm.checklists[0].item_bread.folder_name, 'project_name':vm.checklists[0].item_bread.project_name};
+
+      vm.newScheduler.checklist_name = vm.checklists[0].name;
+      vm.newScheduler.workflow_name = vm.checklists[0].item_bread.folder_name;
+      vm.newScheduler.project_name = vm.checklists[0].item_bread.project_name;
+      vm.newScheduler.type = 'save';
+
+      api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
+      if(d.data.type=='success'){
+        $rootScope.message("New checklist schedule created successfully", 'success');
+        $mdDialog.hide();
+      }
+        
+      });
+     
+    };
+
+    function addschedule(ev){
+      $mdDialog.show({
+        controller: function DialogController($scope, $mdDialog) {
+          $scope.closeDialog = function () {
+            $mdDialog.hide();
+          }
+        },
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/checklist/dialogs/checklist/checklist-add-dialog-scheduler.html',
+        parent: angular.element($document.find('#checklist')),
+        targetEvent: ev,
+        clickOutsideToClose: true
+      });
+    }
 
 
   }

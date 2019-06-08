@@ -78,7 +78,7 @@
         <td>{{projectlist.issue}}</td>
         <td>
           <!-- <span ng-init="vm.notificationDate(projectlist.updated_at.date)"></span> -->
-         <span ng-bind='projectlist.updated_at.date | datetime'></span> 
+         <span ng-bind='projectlist.create_date * 1000 | date: "EEE, MMM yy h:mm a"'></span> 
         </td>
       </tr>
       <tr ng-show="myvalue">

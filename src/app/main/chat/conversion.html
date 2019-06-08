@@ -39,7 +39,7 @@
                 </div>
 
 
-                <div class="messagescroll2" id="messageHeight{{$index}}"  ng-show="myvalue">
+                <div class="" id="messageHeight{{$index}}"  ng-show="myvalue">
                     <div ng-repeat="child_post in  conversion.child_data | orderBy:'created_at'">
                     <div layout="row" >
                         <div class="column">
@@ -48,7 +48,7 @@
                         </div>
                         <div class="column">
                             <span ng-init="vm.notificationDate(conversion.created_at)"></span>
-                            <small class="pl-30"> {{ child_post.created_at | datetime }}</small>
+                            <small class="pl-30"> {{ child_post.create_date * 1000 | date: "EEE, MMM yy h:mm a" }}</small>
                             <a href="{{child_post.image}}" target="_blank" ng-show="child_post.image">
                                 <i class="fa fa-paperclip s18 pl-10"></i>
                             </a>
@@ -72,7 +72,7 @@
                     </div>
                     <div class="column">
                         <span ng-init="vm.notificationDate(conversion.created_at)"></span>
-                        <small class="pl-30"> {{ conversion.created_at | datetime }}</small>
+                        <small class="pl-30"> {{ conversion.create_date * 1000 | date: "EEE, MMM yy h:mm a" }}</small>
                         <a href="{{conversion.image}}" target="_blank" ng-show="conversion.image">
                             <i class="fa fa-paperclip s18 pl-10"></i>
                         </a>

@@ -136,11 +136,11 @@
           notification: reg.notifications,
           password: reg.password,
           c_password: reg.password2,
-          first_name: reg.type ? reg.first: reg.name.first,
-          last_name: reg.type ? reg.last: reg.name.last,
-          role_type: (reg.type)  ? reg.role_type: '',
-          organization_id: (reg.type && reg.organization_id) ? reg.organization_id: '',
-          invitee_user_id: (reg.type && reg.invitee_user_id) ? reg.invitee_user_id: '',
+          first_name: reg.type ? reg.first : reg.name.first,
+          last_name: reg.type ? reg.last : reg.name.last,
+          role_type: (reg.type) ? reg.role_type : '',
+          organization_id: (reg.type && reg.organization_id) ? reg.organization_id : '',
+          invitee_user_id: (reg.type && reg.invitee_user_id) ? reg.invitee_user_id : '',
           base_url: reg.baseURL
         };
         return $http.post(BASEURL + 'account-create.php', rdata, {
@@ -571,7 +571,27 @@
               }
             });
         }
-      }
+      },
+      
+      NewScheduler: function (data) {
+
+        console.log('data', data);
+        return $http.post(BASEURL + "schedule.php", data, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          cache: false
+        }).success(function (res) {
+          if (res === void 0 || res === null || res === '') {
+
+          } else if (res.code) {
+
+          } else {
+            // $rootScope.sendInviteCountUpdatePing(invite.users.recipient.id, 'checklist');
+            return res;
+          }
+        });
+      },
     };
 
     ////////////////////// SECTIONS
@@ -1190,7 +1210,7 @@
           });
       },
       invite: function (email, role_type, phone, first_name, last_name) {
-          return $http.post(BASEURL + 'subscription_invite_send-post.php', {
+        return $http.post(BASEURL + 'subscription_invite_send-post.php', {
           email: email,
           role_type: role_type,
           phone: phone,
@@ -1446,12 +1466,12 @@
         return $http.get(BASEURL + "coe-get.php?t=notification&token=" + token);
       },
 
-      read: function (id, type,read_array) {
+      read: function (id, type, read_array) {
         debugger
         return $http.post(BASEURL + 'coe-post.php', {
           type: type,
           id: id,
-          read_array:read_array
+          read_array: read_array
 
         }, {
             headers: {
@@ -1462,23 +1482,24 @@
       },
       count_notifi: function () {
         var user_id = $cookies.get("useridCON");
-        return $http.post(BASEURL + 'coe-post.php', {type: 'notification-count',id: user_id
+        return $http.post(BASEURL + 'coe-post.php', {
+          type: 'notification-count', id: user_id
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
             },
             cache: false
           }).success(function (resp) {
-            if (resp.type=='success') {
-              
-                $rootScope.socketio.emit('real_time_notification',resp.item);
+            if (resp.type == 'success') {
+
+              $rootScope.socketio.emit('real_time_notification', resp.item);
             }
 
           });
       }
 
     };
-    
+
 
     api.isUserRole = function (value) {
       var user_Roles = $cookies.get('logged_user_roles');

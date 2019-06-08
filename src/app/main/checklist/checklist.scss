@@ -57,6 +57,8 @@
     }
   }
 
+
+
   .conflict {
     background-color:#e6ed43bf !important;
   }
@@ -111,4 +113,9 @@ md-dialog form#findLinkForm button.md-raised.md-accent.md-button.md-ink-ripple.m
     border-radius: 0;
     padding: 3px 15px;
     color: #fff;
+}
+
+.scheduler_time_input{
+  border: none;
+  border-bottom: 1px solid;
 }

@@ -66,7 +66,10 @@
         $scope.$apply(function () {
           console.log('livemessages=', data);
           vm.messages[data.index] = data;
-        })
+        });
+        $('#messageHeight' + data.index).addClass('messagescroll');
+        var scroll=$('#messageHeight' + data.index);
+        scroll.animate({scrollTop: scroll.prop("scrollHeight")});
 
       })
 
@@ -77,14 +80,12 @@
     function readMessage(item) {
       var array = [item.id];
       if (item.child_data) {
-
         item.child_data.reduce(function (map, data) {
           if (data.is_read == 0) {
             array.push(data.id);
           }
         });
       }
-
       if (array && array.length > 0) {
         return api.notifications.read(id, 'notification-count', array).success(function (resp) {
           if (resp) {
@@ -447,7 +448,7 @@
     getNewLatestPosts($cookies.get('useridCON'));
     vm.msgChOpen = false;
     function submitMessage(message, index, filename, type_of, type, user_id, parent_id) {
-
+     
 
 
       vm.isLoader = false;
@@ -476,7 +477,7 @@
         return $rootScope.message('Could not send message. Unknown error.', 'warning');
       }).success(function (res) {
         if (res.type == 'success') {
-
+       
           res.posts[0].index = index;
           vm.msgChOpen = true;
           vm.currentIndex = index;

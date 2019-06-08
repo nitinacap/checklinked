@@ -143,7 +143,6 @@
     /** End new code  */
 
     function logout() {
-      debugger;
       $rootScope.token = null;
       $rootScope.user = null;
       debugger;

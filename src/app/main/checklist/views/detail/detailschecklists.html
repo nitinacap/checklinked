@@ -69,7 +69,7 @@
               </md-menu-item>
 
               <md-menu-item  ng-show="vm.checkIsPermission.indexOf('create-view-their-own-schedule') !== -1">
-                <md-button ng-disabled="checklist.complete" ng-click="vm.add('schedule',checklist.idCHK, $event)" aria-label="Add New Schedule"
+                <md-button ng-disabled="checklist.complete" ng-click="vm.addschedule('Schedule',checklist.idCHK, $event)" aria-label="Add New Schedule"
                   translate-attr-aria-label="CHECKLIST.SCHEDULED">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-calendar"></md-icon>
                   <span translate="CHECKLIST.SCHEDULED">Schedule</span>

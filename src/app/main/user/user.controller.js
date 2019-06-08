@@ -163,7 +163,7 @@
         }).success(function (resp) {
           
           if (resp.type == 'success') {
-            vm.stats = resp.stats;
+            $scope.stats = resp.stats;
           } else {
            console.log('server error while getting stats');
 

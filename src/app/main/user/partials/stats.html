@@ -12,7 +12,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="stat in  vm.stats" class="text-center">
+      <tr ng-repeat="stat in  stats" class="text-center">
         <td style="text-align:left;">{{stat.type}}</td>
         <td>{{stat.hours_24}}</td>
         <td>{{stat.last_7_days}}</td>
@@ -21,8 +21,7 @@
         <td>{{stat.last12month}}</td>
         <td colspan="2">{{stat.all_time}}</td>
       </tr>
-      <tr>
-     </tfoot>
+     </tbody>
   </table>
 
 </div>
