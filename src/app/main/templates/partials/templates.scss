@@ -3,6 +3,15 @@ span.ms-form-wizard-step-text {
 }
 #template{
 
+  .messagescroll{
+    max-height: 200px;
+    height: 200px;
+    overflow-y: scroll;
+}
+.pl-0{
+  padding-left: 0px !important;
+}
+
   .form-container {
     padding: 24px;
     margin-bottom: 24px;
@@ -15,6 +24,9 @@ span.ms-form-wizard-step-text {
     padding: 0 8px !important;
     height: 18px !important;
   }
+  md-tab-item.md-tab.ng-scope.ng-isolate-scope.md-ink-ripple:nth-child(3) {
+    float: right !important;
+}
 
   .md-button.md-icon-button {
     margin: 0 0px;

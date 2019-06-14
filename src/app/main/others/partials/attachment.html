@@ -1,4 +1,4 @@
-<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
+<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp attachment">
 
   <table class="simple row-border hover bordered-table">
     <thead>
@@ -49,7 +49,7 @@
         </th>
       </tr>      
     </thead>
-    <tbody  class="attachment" ng-repeat="attachment in vm.attachments | orderBy:vm.attachmentOrder:vm.reverse">
+    <tbody  class="attachment" ng-repeat="attachment in vm.attachments | orderBy:vm.attachmentOrder:vm.reverse | filter: globalSearch.searchTerm track by $index">
           <tr >
             <td colspan="5" class="breadcrum" style="border-bottom:none !important">
               <!-- <span class="capitalize"  ng-if="attachment.parent.type=='checklists'"><a href="/projects">Project</a> - <a href="/workflows/{{attachment.parent.project_id}}">Workflow</a> - <a href="/checklist/detail/{{attachment.parent.checklist_id}}">checklist</a></span>

@@ -1,5 +1,5 @@
 <div class="checklist-item"
-  ng-class="{'conflict':(item.nonCompliant && item.item_typeof!='yn' && item.item_typeof!='textbox') || (item.item_typeof!='yn' && item.conflicts && item.item_typeof!='textbox'), 'md-green-100-bg':vm.passedNotification.id==item.id}"
+  ng-class="{'conflict':(item.nonCompliant  && item.item_typeof!='yn' && item.item_typeof!='textbox'), 'md-green-100-bg':vm.passedNotification.id==item.id}"
   md-ink-ripple layout="row" layout-align="start center">
 
 
@@ -25,11 +25,11 @@
           <ul class="checkbox-list">
             <li ng-repeat="show in showingUsers track by $index">
 
-              <button
+              <button 
                 ng-disabled="checklist.complete || section.section_na=='true' || viewAs.notMe || (show.idCON !== user.idCON) || (item.section_na=='true')"
                 type="button"
-                ng-click="vm.toggleCheckbox(item,'applies',(item.item_typeof && item.item_typeof=='yn') ? 'yn':'checkbox',$index)"
-                class="checkbox" ng-show="item.item_typeof !='textbox'">
+                ng-click="vm.toggleCheckbox(item,'applies',(item.item_typeof && item.item_typeof=='yn') ? 'yn':'checkbox',$index);"
+                class="checkbox item_typeof" ng-show="item.item_typeof !='textbox'">
                 <i ng-hide="item.checkbox[$index].applies" class="icon-checkbox-blank-outline"></i>
                 <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
                 <span class="checkboxLabel"
@@ -80,8 +80,8 @@
               <button
                 ng-disabled="checklist.complete || section.section_na=='true' || viewAs.notMe || (show.idCON !== user.idCON) || (item.section_na=='true')"
                 type="button"
-                ng-click="vm.toggleCheckbox(item,'complies',(item.item_typeof=='yn') ? 'yn':'checkbox',$index)"
-                class="checkbox" ng-show="item.item_typeof!='textbox'">
+                ng-click="vm.toggleCheckbox(item,'complies',(item.item_typeof=='yn') ? 'yn':'checkbox',$index);"
+                class="checkbox item_typeof" ng-show="item.item_typeof!='textbox'">
                 <i ng-hide="item.checkbox[$index].complies" class="icon-checkbox-blank-outline"></i>
                 <i ng-show="item.checkbox[$index].complies" class="icon-checkbox-marked-outline"></i>
 

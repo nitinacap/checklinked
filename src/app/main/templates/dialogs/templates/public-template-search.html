@@ -1,0 +1,95 @@
+<!-- DIALOG -->
+<md-dialog class="dialog" aria-label="New Task">
+
+    <form name="contactForm" class="md-inline-form" ng-disabled="vm.searching" ng-submit="vm.seacrhPublicTemplate(vm.search)">
+
+        <!-- DIALOG TOOLBAR -->
+        <md-toolbar class="md-accent md-hue-2 md-tall" layout="column">
+
+            <!-- TOOLBAR TOP -->
+            <div class="md-toolbar-tools md-toolbar-tools-top" layout="row" layout-align="space-between center">
+                <span class="title">Search for a Template
+                </span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog" translate
+                    translate-attr-aria-label="CONTACTS.CLOSE_DIALOG">
+                    <md-icon md-font-icon="icon-close"></md-icon>
+                </md-button>
+            </div>
+            <!-- / TOOLBAR TOP -->
+        </md-toolbar>
+        <!-- / DIALOG TOOLBAR -->
+
+        <!-- DIALOG CONTENT -->
+        <md-dialog-content ms-scroll>
+
+            <md-input-container class="md-icon-float md-block">
+                <label translate="">Search by Template Name
+                </label>
+                <input ng-model="vm.search.name" type="text" >
+            </md-input-container>
+            <md-input-container class="md-icon-float md-block">
+                <label>Search by Organization
+                </label>
+                <input ng-model="vm.search.organization" type="text">
+            </md-input-container>
+            <md-input-container class="md-icon-float md-block">
+                <label>Search by City
+                </label>
+                <input ng-model="vm.search.city" type="text">
+            </md-input-container>
+            <md-input-container class="md-icon-float md-block">
+                <label>Search by State
+                </label>
+                <input ng-model="vm.search.state" type="text">
+            </md-input-container>
+            <h6 ng-if="vm.search_templates_result.length==0">No record found try another search criteria</h6>
+        </md-dialog-content>
+        <!-- / DIALOG CONTENT -->
+        <md-dialog-content ms-scroll ng-show="vm.search_templates_result.length">
+            <table class="simple bordered-table" ms-responsive-table>
+                <thead>
+                    <tr>
+
+                        <th>Add</th>
+                        <th>Name</th>
+                        <th>Organization</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <!--<th>Email Address</th>-->
+                        <!-- <th class="text-right">&nbsp;</th> -->
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr ng-repeat="res in  vm.search_templates_result">
+
+                        <td class="salary"> 
+                            <md-icon ng-click="vm.download.begin($event, res.id, res.type)" class="md-accent-fg s18 headingcolor" md-font-icon="icon-plus-circle-outline"></md-icon>
+                        </td>
+                        <td class="salary">{{res.name}}</td>
+                        <td class="name"><a href="">{{res.organization.name}}</a></td>
+                        <td class="salary">{{res.organization.city}}</td>
+                        <td class="salary">{{res.organization.state}}</td>
+
+                </tbody>
+            </table>
+
+        </md-dialog-content>
+
+        <!-- DIALOG ACTIONS -->
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="start center">
+                <md-button type="submit" ng-if="!vm.spinner" class="md-accent md-button md-raised ng-scope md-ink-ripple md-default-theme submit-button"
+                    aria-label="SEARCH" ng-disabled="vm.searching">
+                    {{vm.searching ? 'Searching' : 'Search'}}
+                </md-button>
+            </div>
+
+
+        </md-dialog-actions>
+        <!-- / DIALOG ACTIONS -->
+
+    </form>
+</md-dialog>
+<!-- / DIALOG -->

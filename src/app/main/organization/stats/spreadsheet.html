@@ -1,0 +1,46 @@
+<div class="form-wrapper  md-whiteframe-1dp">
+  <div flex class="">
+
+
+    <form name="form" name="checklistForm" enctype="multipart/form-data" novalidate id="fileattachment" class="spreadsheet">
+
+      <div layout="column" padding class="pl-20">
+
+        <md-input-container>
+          <input type="text" name="name" ng-model="vm.name" placeholder="Enter Name" required>
+          <div ng-messages="form.name.$error" role="alert">
+            <div ng-message="required">
+              <span>Name is required.</span>
+            </div>
+          </div>
+        </md-input-container>
+
+        <md-input-container>
+          <input type="text" name="description" ng-model="vm.description" placeholder="Enter Description">
+        </md-input-container>
+
+        <md-input-container flex="20">
+          <input file-model="files" id="spreadshet" multiple ng-model="vm.file"  flex="90" name="file" type="file">
+          <div ng-messages="form.myFile.$error" role="alert">
+
+            <div ng-message="required">
+              <span>File is required</span>
+            </div>
+          </div>
+        </md-input-container>
+
+
+        <div flex="90" padding class="pt-20">
+          <md-button ng-click="vm.uploadSpreadsheet()" type="button" class="md-raised md-accent" aria-label="Submit"
+            ng-disabled="form.$invalid || form.$pristine">
+            Save
+
+          </md-button>
+        </div>
+
+
+      </div>
+    </form>
+  </div>
+
+</div>

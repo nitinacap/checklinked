@@ -1127,14 +1127,15 @@
               cache: false
             });
         },
-        add: function (type, name, explanation) {
+        add: function (type , name, explanation ,checkboxinfo) {
           console.log('type', type);
           console.log('name', name);
           console.log('explanation', explanation);
           return $http.post(BASEURL + 'dashboard_label-post.php', {
             type: type,
             name: name,
-            explanation: explanation
+            explanation: explanation,
+            checkboxinfo: checkboxinfo ? checkboxinfo : ''
           }, {
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -1520,6 +1521,44 @@
           cache: false
         });
     };
+
+    api.templates = {
+      search_templates: function (data) {
+        return $http.post(BASEURL + 'templates-search.php', data, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
+      }
+    }
+
+    
+    ////////////////////// Data Point
+    api.datapoint = {
+
+      get: function (data) {
+        return $http.post(BASEURL + 'datapoint.php', data, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
+      }
+    };
+
+    api.organization = {
+
+      get_all_spreadsheets: function () {
+        return $http.get(BASEURL + 'coe-get.php?t=spreadsheet', {
+        // return $http.get(BASEURL + 'orgSpreadSheetDatabase.php', {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
+      }
+    }
 
     return api;
   }

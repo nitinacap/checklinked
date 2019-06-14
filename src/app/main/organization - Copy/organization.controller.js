@@ -9,8 +9,8 @@
   function OrganizationController($rootScope, $cookieStore, $mdDialog, $cookies, $document, $stateParams, $state, $http, $scope, api, $mdSidenav) {
 
     var vm = this;
-    vm.uploadSpreadsheet = uploadSpreadsheet;
-    vm.user_Roles = api.isUserRole('Controller');
+    debugger;
+    vm.user_Roles =  api.isUserRole('Controller');
     if ($stateParams.type) {
       vm.type = $stateParams.type
 
@@ -19,12 +19,11 @@
 
     setTimeout(function () {
       $scope.$apply(function () {
-        vm.user = $rootScope.user;
+      vm.user =$rootScope.user;
       });
       vm.createOrg = createOrg;
       vm.createOrganization = false;
       vm.openOrgInfoDialog = openOrgInfoDialog;
-      vm.getAllSpreadsheets = getAllSpreadsheets;
       var blank, ref, ref1, ref2;
       blank = {
         name: '',
@@ -142,6 +141,7 @@
 
 
     function openOrgInfoDialog(ev, info) {
+      debugger;
 
       vm.info = info;
       vm.newFolder = false;
@@ -217,6 +217,22 @@
           $scope.status = 'You cancelled the dialog.';
         });
 
+      // var confirm = $mdDialog.confirm()
+      //   .title('Are you sure to update this organization')
+      //   //.htmlContent('This action cannot be undone.')
+      //   .ariaLabel('delete')
+      //   .targetEvent(ev)
+      //   .ok('OK')
+      //   .cancel('CANCEL');
+
+      // $mdDialog.show(confirm).then(function () {
+      //   vm.update();
+      //   $scope.changedInfoDialog($rootScope.user);
+
+      // }, function () {
+      //   openOrgInfoDialog(event, $rootScope.user);
+
+      // });
     }
 
     //organization detail after saved and edit
@@ -246,7 +262,7 @@
 
 
     function Stats() {
-      $http.post(BASEURL + 'organization-stats.php', { 'token': $cookies.get('token') },
+      $http.post(BASEURL + 'organization-stats.php', {'token':$cookies.get('token') },
         {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           cache: false
@@ -255,7 +271,7 @@
           if (resp.type == 'success') {
             vm.stats = resp.stats;
           } else {
-            console.log('server error while getting stats');
+           console.log('server error while getting stats');
 
           }
 
@@ -263,119 +279,7 @@
     };
     Stats();
 
-    function uploadSpreadsheet() {
-      var files = document.getElementById('spreadshet').files[0];
-      var fd = new FormData();
-      fd.append('file', files);
-      var filedata = { name: vm.name, description: vm.description };
-      fd.append('data', JSON.stringify(filedata));
-
-      $http.post(BASEURL + 'organization-spreadsheet.php', fd,
-        {
-          headers: { 'Content-Type': undefined },
-          cache: false
-        }).error(function () {
-        }).success(function (resp) {
-          if (resp.type == 'success') {
-            vm.stats = resp.stats;
-          } else {
-            console.log('server error while getting stats');
-          }
-
-        })
-
-
-    }
-
-
-    // all_spreadsheets code starts
-
-   
-
-    
-    vm.excels= {
-
-
-      all_spreadsheets: [],
-      loading : false,
-      viewing : false,
-      progress: true,
-
-      view : function(excel, index) {
-
-
-        vm.excels.viewing = excel;
-        vm.excels.viewing.id = index;
-        vm.excels.success = false;
-
-        vm.excels.viewing = false;
-
-        if(vm.origColspanLength == undefined || vm.origColspanLength < excel.data.heading.length){
-          vm.origColspanLength = excel.data.heading.length ;
-          if(vm.colspanLength < 4 )  vm.colspanLength = 2;
-          else vm.colspanLength = vm.origColspanLength - 1;
-        }
-
-
-        vm.excel_open_id = excel.id;
-        
-        vm.sub_excel_data = excel;
-        
-      },
-
-      clear : function(excel) {
-        vm.excels.viewing = false;
-
-        }
-
-    }
-
-    vm.excel_sub_heading='';
-    vm.reverse = true;
-    vm.sortBy = sortBy;
-
-    function getAllSpreadsheets() {
-      api.organization.get_all_spreadsheets().then(function (d) {
-        vm.isLoader = false;
-        if (d.data.code == '-1') {
-          if(d.data.message=='unauthorized access'){
-            $state.go('app.logout');
-          }else{
-          }
-        } else {
-          vm.all_spreadsheets = d.data.spreadsheets;
-
-          vm.excels.progress = false;
-        
-        }
-      });
-    };
-    getAllSpreadsheets();
-
-
-    vm.total_active_users = function ($index) {
-
-       vm.sub_excel = vm.all_spreadsheets[$index];
-      return vm.sub_excel.data.length;
-    }
-
-
-    function sortBy(excel_sub_heading) {
-      console.log(excel_sub_heading);
-      vm.reverse = (vm.excel_sub_heading === excel_sub_heading) ? !vm.reverse : false;
-      vm.excel_sub_heading = excel_sub_heading;
-    };
-
-
-
-
-
-    // all_spreadsheets code ends
-
   };
-
-
-  
 
 
 

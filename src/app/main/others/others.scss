@@ -1,4 +1,7 @@
 #others {
+  md-dialog.dialog{
+    max-width: 400px !important;
+  }
 
 .subtab md-tabs-wrapper md-pagination-wrapper md-tab-item:nth-child(2) {
   float: left !important;
@@ -15,8 +18,11 @@
 }
 
 
-th{
+.attachment th{
   width: 150px;
+}
+.datapoint th{
+  width:25% !important;
 }
 
 md-menu{

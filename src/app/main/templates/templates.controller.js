@@ -9,7 +9,7 @@
   function TemplatesController($rootScope, $http, api, $mdSidenav, $mdDialog, $scope, $document, $state, $cookies) {
 
     //console.log('$rootScope.user', $rootScope.user);
-   
+
     var vm = this;
     vm.isLoader = true;
     vm.openAddChecklistTemplateDialog = openAddChecklistTemplateDialog;
@@ -29,10 +29,12 @@
     vm.showAllTemplates = true;
     vm.templateOrder = '';
     vm.templateOrderDescending = false;
+    vm.findPublicTemplate = findPublicTemplate;
+    vm.seacrhPublicTemplate = seacrhPublicTemplate;
 
     //permission
 
-    var userpermission =  $cookies.get("userpermission");
+    var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
 
     //Toggle Left Side Nav
@@ -72,9 +74,9 @@
     vm.folders = [];
     api.folders.get($rootScope.token).then(function (d) {
 
-      if(d.data.code=='-1'){
-        $scope.subscriptionAlert(d.data.message);  
-      }else{
+      if (d.data.code == '-1') {
+        $scope.subscriptionAlert(d.data.message);
+      } else {
         vm.folders = d.data.folders;
 
       }
@@ -150,7 +152,7 @@
       vm.folder.order = 1;
       vm.folder.order += vm.folders.length;
 
-      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order,$rootScope.token).error(function (res) {
+      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order, $rootScope.token).error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -193,8 +195,8 @@
       vm.group.order += vm.groups ? vm.groups.length : 0;
       vm.group.text = groupName;
       vm.group.id_parent = folderID;
-       
-      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent,$rootScope.token).error(function (res) {
+
+      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent, $rootScope.token).error(function (res) {
         return $rootScope.message("Error Adding Folder", 'warning');
       }).success(function (res) {
         vm.isLoader = false;
@@ -231,7 +233,7 @@
       vm.checklist.order += vm.checklists.length;
 
       //name, order, to
-      api.checklists.add(checklistName, vm.checklist.order, groupID,$rootScope.token).error(function (res) {
+      api.checklists.add(checklistName, vm.checklist.order, groupID, $rootScope.token).error(function (res) {
         return $rootScope.message("Error Adding Checklist", 'warning');
       }).success(function (res) {
         vm.isLoader = false;
@@ -242,7 +244,7 @@
         } else {
           //console.log('res checklist', res);
           //console.log('res.checklist.id', res.checklist.id);
-          api.sections.add('sections', 1, res.checklist.id,$rootScope.token).error(function (res) {
+          api.sections.add('sections', 1, res.checklist.id, $rootScope.token).error(function (res) {
             return $rootScope.message("Error Adding Section", 'warning');
           }).success(function (res) {
             vm.isLoader = false;
@@ -330,7 +332,7 @@
             } else if (res.templates) {
               vm.templates.list = res.templates;
               vm.publicOrganization = Object.keys(res.templates.public);
-             
+
             }
           }).error(function (err) {
             console.log('Error loading team members: ', err);
@@ -348,7 +350,7 @@
             type: '*'
           };
 
-          return api.checklists.searchForTemplates(vm.criteria,$rootScope.token).error(function (res) {
+          return api.checklists.searchForTemplates(vm.criteria, $rootScope.token).error(function (res) {
             //return $rootScope.message('Unknown error finding Templates.', 'warning');
           }).success(function (res) {
             vm.isLoader = false;
@@ -357,7 +359,7 @@
               //$rootScope.message(res.display, 'warning');
             }
             vm.publicTemplates = res.templates;
-          //  console.log('vm.publicTemplates', vm.publicTemplates);
+            //  console.log('vm.publicTemplates', vm.publicTemplates);
           })["finally"](function () {
           });
         },
@@ -384,25 +386,25 @@
 
                 template: template
               }, {
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                cache: false
-              }).success(function (res) {
-                if (res === void 0 || res === null || res === '') {
-                  return $rootScope.message('Error deleting Template. Server not responding properly.', 'warning');
-                } else if (res.code) {
-                  return $rootScope.message("Error deleting Template: (" + res.code + "): " + res.message, 'warning');
-                } else {
-                  vm.templates.list.remove(template);
-                  console.log('template deleted', template, vm.templates.list);
-                  return $rootScope.message('Template Deleted');
-                }
-              }).error(function (err) {
-                return $rootScope.message('Error deleting Template. Server not responding.', 'warning');
-              })["finally"](function () {
-                return template.deleting = false;
-              });
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  cache: false
+                }).success(function (res) {
+                  if (res === void 0 || res === null || res === '') {
+                    return $rootScope.message('Error deleting Template. Server not responding properly.', 'warning');
+                  } else if (res.code) {
+                    return $rootScope.message("Error deleting Template: (" + res.code + "): " + res.message, 'warning');
+                  } else {
+                    vm.templates.list.remove(template);
+                    console.log('template deleted', template, vm.templates.list);
+                    return $rootScope.message('Template Deleted');
+                  }
+                }).error(function (err) {
+                  return $rootScope.message('Error deleting Template. Server not responding.', 'warning');
+                })["finally"](function () {
+                  return template.deleting = false;
+                });
             }
           });
           return processed;
@@ -414,10 +416,10 @@
       template: null,
       creating: false,
       begin: function (ev, templateID, templateType) {
-        if(templateType == 'checklist') {
+        if (templateType == 'checklist') {
           console.log('open openAddChecklistTemplateDialog');
           vm.openAddChecklistTemplateDialog(ev, templateID, templateType);
-        } else if(templateType == 'group'){
+        } else if (templateType == 'group') {
           console.log('open openAddFolderTemplateDialog');
           vm.openAddFolderTemplateDialog(ev, templateID, templateType);
         }
@@ -425,13 +427,13 @@
       },
       create: function (idCTMPL, parentID, templateType) {
 
-    debugger;
+        debugger;
         console.log('idCTMPL', idCTMPL);
         console.log('parentID', parentID);
         console.log('templateType', templateType);
 
         vm.download.creating = true;
-        return api.checklists.createFromTemplate(idCTMPL, parentID, templateType,$rootScope.token).error(function (res) {
+        return api.checklists.createFromTemplate(idCTMPL, parentID, templateType, $rootScope.token).error(function (res) {
           return $rootScope.message('Unknown error creating Checklist from selected Template.', 'warning');
         }).success(function (res) {
           vm.isLoader = false;
@@ -473,27 +475,27 @@
       });
     };
 
-    
+
     // Save Archive
 
-    function saveArchieve(id, type){
-      vm.spinner =true;
+    function saveArchieve(id, type) {
+      vm.spinner = true;
       $http.post(BASEURL + "create-archieve-post.php", { 'name': vm.archieve.name, 'type': type, 'id': id ? id : '' })
-      .success(function (res) {
-        vm.spinner =false;
-        if (res.type == 'success') {
-          vm.archieve.name = '';
-          vm.templates.load.start();
-          vm.closeDialog();
-          return $rootScope.message(res.message, 'success');
-         
-        } else {
-          return $rootScope.message(res.message, 'warning');
-        }
+        .success(function (res) {
+          vm.spinner = false;
+          if (res.type == 'success') {
+            vm.archieve.name = '';
+            vm.templates.load.start();
+            vm.closeDialog();
+            return $rootScope.message(res.message, 'success');
 
-      }).error(function (err) {
-        console.log('Error found to make archieve');
-      })
+          } else {
+            return $rootScope.message(res.message, 'warning');
+          }
+
+        }).error(function (err) {
+          console.log('Error found to make archieve');
+        })
 
     };
 
@@ -512,78 +514,96 @@
     vm.sortBy = sortBy;
     vm.propertyName = '';
     vm.reverse = true;
-     function sortBy(templateOrder) {
-       vm.reverse = (vm.templateOrder === templateOrder) ? !vm.reverse : false;
-       vm.templateOrder = templateOrder;
-     };
-vm.deleteItemConfirm = deleteItemConfirm;
+    function sortBy(templateOrder) {
+      vm.reverse = (vm.templateOrder === templateOrder) ? !vm.reverse : false;
+      vm.templateOrder = templateOrder;
+    };
+    vm.deleteItemConfirm = deleteItemConfirm;
 
-         /* Delete Folder */
+    /* Delete Folder */
     function deleteItemConfirm(template, event) {
       vm.title = 'Delete Template Information';
       vm.warning = 'Warning: This can’t be undone';
-      vm.description = "Please confirm you want to delete this <span class='link'>" + template.name +"</span><br>All of the contents will be deleted and can’t be recovered"
+      vm.description = "Please confirm you want to delete this <span class='link'>" + template.name + "</span><br>All of the contents will be deleted and can’t be recovered"
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
         templateUrl: 'app/main/organization/dialogs/organizations/alert.html',
-        clickOutsideToClose:false
+        clickOutsideToClose: false
       })
-      .then(function(answer) {
-        deleteItem(template);
-      }, function() {
-        $scope.status = 'You cancelled the dialog.';
-      });
+        .then(function (answer) {
+          deleteItem(template);
+        }, function () {
+          $scope.status = 'You cancelled the dialog.';
+        });
 
 
-   function deleteItem(template){
-     $http.post(BASEURL + "template_delete-post.php", { template: template}, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      cache: false
-    }).success(function (res) {
-      if (res.type=='success') {
-        vm.templates.load.start();
-        $rootScope.message('Template has been deleted successfully', 'success');
-       
-      } else if (res.type!='success') {
-        return $rootScope.message("Error deleting Template: (" + res.code + "): " + res.message, 'warning');
-      } else {
-        vm.templates.load.start();
-        return $rootScope.message('Template has been deleted');
+      function deleteItem(template) {
+        $http.post(BASEURL + "template_delete-post.php", { template: template }, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          cache: false
+        }).success(function (res) {
+          if (res.type == 'success') {
+            vm.templates.load.start();
+            $rootScope.message('Template has been deleted successfully', 'success');
+
+          } else if (res.type != 'success') {
+            return $rootScope.message("Error deleting Template: (" + res.code + "): " + res.message, 'warning');
+          } else {
+            vm.templates.load.start();
+            return $rootScope.message('Template has been deleted');
+          }
+        });
+
       }
-    });
-
-   }
 
 
     }
 
 
-    $scope.hide = function() {
+    $scope.hide = function () {
       $mdDialog.hide();
     };
 
-    $scope.cancel = function() {
+    $scope.cancel = function () {
       $mdDialog.cancel();
     };
 
-    $scope.answer = function(answer) {
+    $scope.answer = function (answer) {
       $mdDialog.hide(answer);
     };
 
-        //Subscription expired alert
-        $scope.subscriptionAlert = function (message) {
-          vm.title = 'Alert';
-          vm.message = message;
-          $mdDialog.show({
-            scope: $scope,
-            preserveScope: true,
-            templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
-            clickOutsideToClose: false
-          });
-        }
+    //Subscription expired alert
+    $scope.subscriptionAlert = function (message) {
+      vm.title = 'Alert';
+      vm.message = message;
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+        clickOutsideToClose: false
+      });
+    }
+
+    function findPublicTemplate() {
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/templates/dialogs/templates/public-template-search.html',
+        clickOutsideToClose: false
+      });
+
+    }
+
+    function seacrhPublicTemplate(data) {
+      vm.searching = true;
+      api.templates.search_templates(data).then(function (d) {
+        vm.searching = false;
+        vm.search_templates_result = d.data.data;
+      });
+    }
 
 
   }

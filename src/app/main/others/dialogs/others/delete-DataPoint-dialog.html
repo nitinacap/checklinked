@@ -1,0 +1,58 @@
+<!-- DIALOG -->
+<md-dialog class="dialog" aria-label="New Task" flex="50">
+    <md-toolbar class="md-accent md-hue-2 md-tall" layout="column">
+
+        <!-- TOOLBAR TOP -->
+        <div class="md-toolbar-tools md-toolbar-tools-top" layout="row" layout-align="space-between center">
+            <span class="title">Delete Data Point</span>
+            <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog" translate
+                translate-attr-aria-label="CONTACTS.CLOSE_DIALOG">
+                <md-icon md-font-icon="icon-close"></md-icon>
+            </md-button>
+        </div>
+        <!-- / TOOLBAR TOP -->
+    </md-toolbar>
+    <!-- / DIALOG TOOLBAR -->
+
+    <!-- DIALOG CONTENT -->
+    <md-dialog-content ms-scroll class="text-center mb-30">
+
+        <div class=warning_dialog> Warning </div>
+        <div> Please confirm you want to delete this Data Point.</div>
+
+        <div ng-if="myvalue">This Data Point can’t be deleted as it has already been used in a checklist.</div>
+        <div ng-if="myvalue">To delete it, please remove it from those checklists first.</div>
+
+
+    </md-dialog-content>
+
+    <!-- / DIALOG CONTENT -->
+
+
+    <!-- DIALOG ACTIONS -->
+    <md-dialog-actions layout="row" layout-align="space-between right">
+
+        <div layout="row" layout-align="center right">
+
+
+            <md-button ng-click="vm.closeDialog()" type="button" ng-if="!vm.spinner"
+                class="md-accent md-primary md-hue-1 ng-scope md-ink-ripple md-default-theme " aria-label="CANCEL">
+                CANCEL
+            </md-button>
+
+            <md-button ng-click="vm.confirmDeleteDatapoint()" type="button" ng-if="!vm.spinner"
+                class="md-accent md-button md-raised ng-scope md-ink-ripple md-default-theme submit-button"
+                aria-label="OK">
+                OK
+            </md-button>
+        </div>
+
+
+    </md-dialog-actions>
+
+
+    <!-- / DIALOG ACTIONS -->
+
+    </form>
+</md-dialog>
+<!-- / DIALOG -->

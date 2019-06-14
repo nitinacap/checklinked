@@ -9,7 +9,6 @@
   function GroupsController($scope, $rootScope, api, $stateParams, $cookies, $mdDialog, $mdSidenav, $document, $http) {
     var vm = this;
     vm.isLoader = true;
-    debugger;
 
     var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';

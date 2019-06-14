@@ -205,7 +205,6 @@
         </div>
       </div>
     </div>
-
     <div class="checklist-items" data-as-sortable="vm.dragControlListenersSections" data-ng-model="checklist.sections">
 
       <div data-as-sortable-item md-ink-ripple
@@ -214,12 +213,12 @@
         <div class="checklist-items" data-as-sortable="vm.dragControlListenersHeadings"
           data-ng-model="section.headings">
 
-          <div data-as-sortable-item md-ink-ripple ng-show="!section.notApplicable && vm.isExpanded('section',section)"
+          <div data-as-sortable-item md-ink-ripple ng-show="!section.notApplicable && vm.isExpanded('section',section) || globalSearch.searchTerm"
             data-ng-repeat="heading in section.headings | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
             <div ng-include="'app/main/checklist/views/detail/detailsChecklistsHeadings.html'"></div>
             <div class="checklist-items" data-as-sortable="vm.dragControlListenersItems" data-ng-model="heading.items">
               <div data-as-sortable-item md-ink-ripple
-                ng-show="!heading.notApplicable && vm.isExpanded('heading', heading) || vm.isHeader"
+                ng-show="!heading.notApplicable && vm.isExpanded('heading', heading) || vm.isHeader || globalSearch.searchTerm"
                 data-ng-repeat="item in heading.items">
                 <div ng-include="'app/main/checklist/views/detail/detailsChecklistsItems.html'"></div>
               </div>

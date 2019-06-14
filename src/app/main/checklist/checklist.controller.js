@@ -137,9 +137,9 @@ var indexOf = [].indexOf || function (item) {
     api.folders.get(token).then(function (d) {
       vm.isLoader = false;
       if (d.data.code == '-1') {
-        if(d.data.message=='unauthorized access'){
+        if (d.data.message == 'unauthorized access') {
           $state.go('app.logout');
-        }else{
+        } else {
           $scope.subscriptionAlert(d.data.message);
         }
       } else {
@@ -719,9 +719,9 @@ var indexOf = [].indexOf || function (item) {
             var itemIndex;
             // loadChecklist(vm.idCHK)
 
-           // itemIndex = vm.items.indexOf(itemMoved);
+            // itemIndex = vm.items.indexOf(itemMoved);
             //console.log('itemIndex', itemIndex);
-           // vm.items[itemIndex] = vm.reorder.order;
+            // vm.items[itemIndex] = vm.reorder.order;
             //vm.items[itemIndex].order = vm.reorder.order;
 
 
@@ -911,7 +911,7 @@ var indexOf = [].indexOf || function (item) {
 
       for (i = 0; i < vm.expanded[whats].length; i++) {
         if (vm.expanded[whats][i].id == which.id) {
-         // console.log('found');
+          // console.log('found');
           return true;
         }
       }
@@ -1399,7 +1399,7 @@ var indexOf = [].indexOf || function (item) {
           vm.isLoader = false;
           vm[whats].push(res[what]);
           vm.organizeData();
-          if(what=="item"){
+          if (what == "item") {
             $scope.getChecklinked();
           }
           packet = {
@@ -1737,6 +1737,7 @@ var indexOf = [].indexOf || function (item) {
         // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
         //  item.checkbox[userKey] = res.checkboxes[0];
         item.checkbox[userKey] = res.checkboxes[0];
+        vm.labels.create.save(res.checkboxes[0]);
 
         return vm.evaluateConflicts(item, +1);
       });
@@ -2124,16 +2125,31 @@ var indexOf = [].indexOf || function (item) {
           vm.labels.create.entering = true;
           return false;
         },
-        save: function () {
+        save: function (labels) {
+
+          // debugger;
+          if (labels) {
+            vm.type  = '2';
+            this.name = 'test';
+            this.explanation = '';
+          } else {
+            vm.type = vm.labels.item.type;
+            this.name = this.name;
+            this.explanation = this.explanation;
+
+          }
+
           vm.isLoader = true;
           vm.labels.create.saving = true;
+
+
           //console.log('adding new label', vm.labels.item, this.name, this.explanation);
-          return api.dashboard.labels.add(vm.labels.item.type, this.name, this.explanation).success(function (res) {
+          return api.dashboard.labels.add(vm.type, this.name, this.explanation, labels ? labels : '').success(function (res) {
             vm.isLoader = false;
             if (res === void 0 || res === null || res === '') {
               return $rootScope.message("Server not responding properly.", 'warning');
             } else if (res.code) {
-              return $rootScope.message(res.message, 'warning');
+              //return $rootScope.message(res.message, 'warning');
             } else {
               vm.labels.selectable.push(res.labels[0]);
               vm.labels.create.entering = false;
@@ -2530,7 +2546,7 @@ var indexOf = [].indexOf || function (item) {
 
     function addNewGroup(groupName, folderID) {
 
-   
+
       vm.group.sending = true;
       vm.group.order = 1;
       vm.group.order += vm.groups ? vm.groups.length : 0;
@@ -3786,12 +3802,12 @@ var indexOf = [].indexOf || function (item) {
             vm.loading.attachments;
             vm.editAttachment = false;
             vm.SelectedAttachments.indexOf(attachment.index);
-            vm.SelectedAttachments[attachment.index].file.label = res.item.data.file_label; 
-            vm.SelectedAttachments[attachment.index].storage.temporary = res.item.data.temporary_storage_url; 
+            vm.SelectedAttachments[attachment.index].file.label = res.item.data.file_label;
+            vm.SelectedAttachments[attachment.index].storage.temporary = res.item.data.temporary_storage_url;
             vm.editAttachment = false;
             vm.upload = false;
-         //   vm.loadChecklist($stateParams.id);
-           // $mdDialog.hide();
+            //   vm.loadChecklist($stateParams.id);
+            // $mdDialog.hide();
             return $rootScope.message(res.message, 'success');
 
           } else {
@@ -3987,7 +4003,7 @@ var indexOf = [].indexOf || function (item) {
 
     vm.downloadFile = [];
     vm.removeFileHttp = removeFileHttp;
-    function removeFileHttp(file,index) {
+    function removeFileHttp(file, index) {
       var originalFile = file.replace(DOMAIN_NAME, '');
       vm.downloadFile[index] = originalFile;
     }
@@ -4061,25 +4077,55 @@ var indexOf = [].indexOf || function (item) {
 
 
     function saveScheduler() {
-      vm.newScheduler.checklist_id = vm.checklists[0].id;
-      //var title = {'checklist_name':vm.checklists[0].name, 'workflow_name':vm.checklists[0].item_bread.folder_name, 'project_name':vm.checklists[0].item_bread.project_name};
-
+      vm.newScheduler.checklist_id = vm.idCHK;
       vm.newScheduler.checklist_name = vm.checklists[0].name;
       vm.newScheduler.workflow_name = vm.checklists[0].item_bread.folder_name;
       vm.newScheduler.project_name = vm.checklists[0].item_bread.project_name;
-      vm.newScheduler.type = 'save';
+      vm.newScheduler.id = vm.item ? vm.item.id : '';
+      vm.newScheduler.type = vm.item ? 'update' : 'save';
 
       api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
-      if(d.data.type=='success'){
-        $rootScope.message("New checklist schedule created successfully", 'success');
-        $mdDialog.hide();
-      }
-        
+        if (d.data.type == 'success') {
+          $rootScope.message(vm.item ? "Schedule updated successfully" : "New checklist schedule created successfully", 'success');
+          $mdDialog.hide();
+        }
+
       });
-     
+
     };
 
-    function addschedule(ev){
+    function getSchedulerByChek() {
+      vm.newScheduler = {};
+      vm.newScheduler.type = 'get';
+      vm.newScheduler.checklist_id = vm.idCHK;
+
+      api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
+        if (d.data.type == 'success') {
+          vm.item = d.data.data;
+          if (vm.item) {
+            vm.newScheduler.from_date = new Date(vm.item.from_date);
+            vm.newScheduler.to_date = new Date(vm.item.to_date);
+            vm.newScheduler.gantt_row = vm.item.gantt_chat;
+            vm.newScheduler.color = vm.item.color;
+            vm.newScheduler.all_day = vm.item.all_day == 1 ? true : false;
+            vm.newScheduler.repeat = vm.item.repeat;
+            vm.newScheduler.start_time = vm.item.start_time;
+            vm.newScheduler.end_time = vm.item.end_time;
+            vm.newScheduler.end = vm.item.end;
+          }
+
+        }
+      })
+    };
+
+
+
+
+
+    getSchedulerByChek();
+
+    function addschedule(ev) {
+
       $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
           $scope.closeDialog = function () {

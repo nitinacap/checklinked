@@ -1,7 +1,6 @@
 <md-dialog class="dialog" aria-label="">
     <!-- <form name="checklistForm" class="md-inline-form" ng-submit="vm.createSegment(vm.newItem.type,vm.newItem.name,vm.newItem.to,vm.newItem.dataTypes,vm.newItem.info,vm.type.type,vm.newItem.alert)" -->
-    <form name="checklistForm" class="md-inline-form" ng-submit="vm.saveScheduler()"
-        novalidate>
+    <form name="checklistForm" class="md-inline-form" ng-submit="vm.saveScheduler()" novalidate>
         <md-toolbar class="md-accent md-hue-2">
             <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
                 <span class="title">Add/Edit {{vm.type.title}}</span>
@@ -13,61 +12,57 @@
 
         <md-dialog-content ms-scroll>
 
-                <!-- <a class=md-default-theme >SF Tower – Fire Protection – Floor 1</a><br><br> -->
-                <a class=md-default-theme >{{vm.checklists[0].item_bread.project_name}} – {{vm.checklists[0].item_bread.folder_name}} - {{vm.checklists[0].name}}</a><br><br>
-
-                
-                <label>From:</label>
-                <md-datepicker md-open-on-focus ng-model = "vm.newScheduler.from_date"  md-placeholder = "Select date" ></md-datepicker>
-
-                &nbsp;&nbsp;
-                <label>To:</label>
-                <md-datepicker md-open-on-focus ng-model = "vm.newScheduler.to_date" md-placeholder = "Select date" ></md-datepicker>
-                <br><br>
-
-                <label>All Day:</label>
-                <md-checkbox  id="all_day_chk" ng-model="vm.newScheduler.all_day" ></md-checkbox>
-                
-
-                &nbsp;&nbsp;
-                <label>Starts:</label>
-                <input  class="scheduler_time_input" type=time ng-model = "vm.newScheduler.from_time"  placeholder = "Select Time" ng-disabled="vm.newScheduler.all_day" />
-
-                &nbsp;&nbsp;
-                <label>Ends:</label>
-                <input class="scheduler_time_input" type=time ng-model = "vm.newScheduler.to_time"  placeholder = "Select Time" ng-disabled="vm.newScheduler.all_day" />
-                <br><br>
-
-                <label>Repeat:</label>
-                <md-input-container style="margin-top:-5px;">
-                    
-                    <md-select ng-model="vm.newScheduler.repeat_value">
-                        <!-- <md-option ng-value="opt" ng-repeat="opt in vm.select_options">{{ opt }}</md-option> -->
-                        <!-- <md-option value="" disabled selected>Select</md-option> -->
-                        <md-option value="none" selected>None</md-option>
-                    </md-select>
-                </md-input-container>
-
-                &nbsp;&nbsp;
-                <label>End:</label>
-                <md-input-container style="margin-top:-5px;">
-                    
-                    <md-select ng-model="vm.newScheduler.end_value" >
-                        <!-- <md-option ng-value="opt" ng-repeat="opt in vm.select_options">{{ opt }}</md-option> -->
-                        <!-- <md-option value="" disabled selected>Select</md-option> -->
-                        <md-option value="none" selected>None</md-option>
-                    </md-select>
-                </md-input-container>
+            <!-- <a class=md-default-theme >SF Tower – Fire Protection – Floor 1</a><br><br> -->
+            <a class=md-default-theme>{{vm.checklists[0].item_bread.project_name}} –
+                {{vm.checklists[0].item_bread.folder_name}} - {{vm.checklists[0].name}}</a><br><br>
 
 
+            <label>From:</label>
+            <md-datepicker md-open-on-focus ng-model="vm.newScheduler.from_date" md-placeholder="Select date">
+            </md-datepicker>
+
+            &nbsp;&nbsp;
+            <label>To:</label>
+            <md-datepicker md-open-on-focus ng-model="vm.newScheduler.to_date" md-placeholder="Select date">
+            </md-datepicker>
+            <br><br>
+
+            <label>All Day:</label>
+            <md-checkbox id="all_day_chk" ng-model="vm.newScheduler.all_day"></md-checkbox>
 
 
+            &nbsp;&nbsp;
+            <label>Starts:</label>
+            <input class="scheduler_time_input" type=time ng-model="vm.newScheduler.start_time"
+                ng-disabled="vm.newScheduler.all_day" />
 
-<!-- md-no-ink aria-label="Checkbox No Ink" -->
-<!-- md-autofocus -->
+            &nbsp;&nbsp;
+            <label>Ends:</label>
+            <input class="scheduler_time_input" type=time ng-model="vm.newScheduler.end_time"
+                ng-disabled="vm.newScheduler.all_day" />
+            <br><br>
+
+            <label>Repeat:</label>
+            <md-input-container style="margin-top:-5px;">
+
+                <md-select ng-model="vm.newScheduler.repeat">
+                    <md-option value="none" selected>None</md-option>
+                </md-select>
+            </md-input-container>
+
+            &nbsp;&nbsp;
+            <label>End:</label>
+            <md-input-container style="margin-top:-5px;">
+
+                <md-select ng-model="vm.newScheduler.end">
+                    <md-option value="none" selected>None</md-option>
+                </md-select>
+            </md-input-container>
+
+
             <md-input-container class="md-block">
                 <label>Row in Gantt Chart</label>
-                <input name="name" ng-model="vm.newScheduler.gantt_row" required  maxlength="155">
+                <input name="name" ng-model="vm.newScheduler.gantt_row" required maxlength="155">
                 <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
                     <div ng-message="required">
                         <span ng-show="vm.newItem.dataType==1">{{vm.newItem.type}} Name field is required</span>
@@ -75,56 +70,18 @@
                     </div>
                 </div>
             </md-input-container>
+            <md-input-container flex="10" class="md-block">
 
-            
                 <label>Color:</label>
-                <input type=color ng-model = "vm.newScheduler.color_value"  placeholder = "Select Color"  />
-
-
-            <input name="item_type" value="{{vm.type.type}}" type="hidden" ng-model="vm.type.type">
-
-            <!-- <md-input-container class="md-block checklist-alerts" id="checklist-alerts" ng-if="vm.type.type">
-                <div layout="row" layout-wrap>
-                    <div flex="20"><span>Alert if Checked: </span></div>
-                    <div flex="80">
-                        <div layout="column">
-                            <md-radio-group ng-model="vm.newItem.dataTypes">
-                                <md-radio-button ng-disabled="vm.type.type != 'checkbox'" value="{{vm.type.type=='checkbox' ? 'applies' : ''}}" class="md-primary">Req</md-radio-button>
-                                <md-radio-button ng-disabled="vm.type.type != 'checkbox'" value="{{vm.type.type=='checkbox' ? 'complies' : ''}}"> Comply
-                                </md-radio-button>
-                            </md-radio-group>
-
-                            <md-radio-group ng-model="vm.newItem.dataTypes">
-                                
-                                <md-radio-button ng-disabled="vm.type.type != 'yn'" value="{{vm.type.type=='yn' ? 'applies' : ''}}" class="md-primary">Yes</md-radio-button>
-                                <md-radio-button ng-disabled="vm.type.type != 'yn'" value="{{vm.type.type=='yn' ? 'complies' : ''}}"> No </md-radio-button>
-                            </md-radio-group>
-
-                            <md-radio-group ng-model="vm.newItem.dataTypes">
-                                <md-radio-button ng-disabled="vm.type.type != 'textbox'" value="{{vm.type.type=='textbox' ? 'applies' : ''}}" class="md-primary">If
-                                    data added</md-radio-button>
-                            </md-radio-group>
-
-                        </div>
-                    </div>
-
-                </div>
-
-                <div layout="row" layout-wrap>
-                    <md-checkbox ng-model="vm.newItem.alert" aria-label="yes">
-                        Set Alert
-                    </md-checkbox>
-
-                </div>
-
-            </md-input-container> -->
+                <input type=color ng-model="vm.newScheduler.color" placeholder="Select Color" />
+            </md-input-container>
 
         </md-dialog-content>
-<!-- ng-disabled="checklistForm.$invalid || checklistForm.$pristine || vm.headingDialog" -->
+
         <md-dialog-actions layout="row" layout-align="space-between center">
             <div layout="row" layout-align="start center">
-                <md-button type="submit" md-no-ink class="md-raised md-accent" 
-                    aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE"  >
+                <md-button type="submit" md-no-ink class="md-raised md-accent" aria-label="Save">
+                    {{vm.item ? 'Update' : 'Save'}}
 
                 </md-button>
             </div>

@@ -6,7 +6,7 @@
 <div ng-cloak class="subtab pt-30">
 
   <md-tabs md-dynamic-height md-border-bottom>
-    <md-tab>
+    <md-tab ng-click="myvalue = false;">
       <md-tab-label>
         <span>Internal Templates</span>
       </md-tab-label>
@@ -15,14 +15,41 @@
       </md-tab-body>
     </md-tab>
 
-    <md-tab class="pr-30">
+    <md-tab class="pr-30" ng-click="myvalue = true;">
       <md-tab-label>
-        <span>Public Templates</span>
+        <span>Public Templates{{myvalue}}</span>
       </md-tab-label>
       <md-tab-body>
         <div ng-include="'app/main/templates/partials/internal-templates.html'"></div>
       </md-tab-body>
     </md-tab>
+
+    
+    <md-tab class="pr-30" ng-if="myvalue">
+      <md-tab-label>
+        <md-menu>
+          <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
+            translate translate-attr-aria-label="CONTACTS.SORT">
+            <md-icon  md-font-icon="icon-dots-vertical s18" id="lh-5" ng-click="$mdOpenMenu($event)"></md-icon>
+          </md-button>
+
+          <md-menu-content width="3">
+
+            <md-menu-item>
+              <md-button ng-click="vm.findPublicTemplate($event)">
+                <i class="fa fa-search s18" md-font-icon="icon-account-plus"></i>
+                <span translate="">Search Public Tempate</span>
+              </md-button>
+            </md-menu-item>
+           
+          </md-menu-content>
+
+        </md-menu>
+        </md-tab-label>
+        <md-tab-body>
+          <div ng-include="'app/main/templates/partials/internal-templates.html'"></div>
+        </md-tab-body>
+        </md-tab>
 
   </md-tabs>
 </div>

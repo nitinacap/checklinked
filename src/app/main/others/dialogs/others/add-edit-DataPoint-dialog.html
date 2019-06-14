@@ -1,0 +1,98 @@
+<!-- DIALOG -->
+<md-dialog class="dialog" aria-label="New Task">
+
+    <form name="contactForm" class="md-inline-form" ng-submit="vm.saveNewDataPoint()">
+
+        <!-- DIALOG TOOLBAR -->
+        <md-toolbar class="md-accent md-hue-2 md-tall" layout="column">
+
+            <!-- TOOLBAR TOP -->
+            <div class="md-toolbar-tools md-toolbar-tools-top" layout="row" layout-align="space-between center">
+                <span class="title">Add/Edit Data Point</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()" aria-label="Close dialog" translate
+                    translate-attr-aria-label="CONTACTS.CLOSE_DIALOG">
+                    <md-icon md-font-icon="icon-close"></md-icon>
+                </md-button>
+            </div>
+            <!-- / TOOLBAR TOP -->
+        </md-toolbar>
+        <!-- / DIALOG TOOLBAR -->
+
+        <!-- DIALOG CONTENT -->
+        <md-dialog-content ms-scroll>
+
+            <md-input-container class="md-icon-float md-block">
+                <label translate="">Name </label>
+                <input ng-model="vm.point.name" type="text" required>
+            </md-input-container>
+            <md-input-container class="md-icon-float md-block">
+                <label translate="">Description</label>
+                <input ng-model="vm.point.description" type="text">
+            </md-input-container>
+            Alert if checked : 
+            <!-- <md-radio-group >
+                    <md-radio-button  aria-label="req">
+                    Req
+                    </md-radio-button>
+                    <md-radio-button  aria-label="comp">
+                    Comp
+                    </md-radio-button><br>
+                    <md-radio-button  aria-label="yes">
+                    yes
+                    </md-radio-button>
+                    <md-radio-button  aria-label="no">
+                    No
+                    </md-radio-button><br>
+                    <md-radio-button  aria-label="if_text_added">
+                            if text added
+                    </md-radio-button>
+
+                  </md-radio-group> -->
+
+            <md-radio-group ng-model="vm.point.type">
+                <md-radio-button ng-repeat="item in vm.dialog_radio_buttons_alert" ng-value="item.value" aria-label="{{item.label}}">
+                    {{ item.label }}
+                </md-radio-button>
+            </md-radio-group><br>
+
+            <md-checkbox ng-model="vm.point.normal_alert" aria-label="Send Alert">
+                    Send Alert
+            </md-checkbox><br>
+
+            <md-checkbox ng-model="vm.point.sms_alert" aria-label=" Send Alert as SMS text">
+                    Send Alert as SMS text
+            </md-checkbox>
+
+            <md-input-container class="md-icon-float md-block">
+                <label translate="">Phone Number</label>
+                <input ng-model="vm.point.number" type="number">
+            </md-input-container>
+
+            Carrier:
+            <md-radio-group ng-model="vm.point.carrier">
+                <md-radio-button ng-repeat="item in vm.dialog_radio_buttons_carrier" ng-value="item.value" aria-label="{{item.label}}">
+                    {{ item.label }}
+                </md-radio-button>
+            </md-radio-group>
+           
+        </md-dialog-content>
+        
+        <!-- / DIALOG CONTENT -->
+       
+
+        <!-- DIALOG ACTIONS -->
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="start center">
+                <md-button type="submit" ng-if="!vm.spinner" class="md-accent md-button md-raised ng-scope md-ink-ripple md-default-theme submit-button"
+                    aria-label="SAVE">
+                    SAVE
+                </md-button>
+            </div>
+
+
+        </md-dialog-actions>
+        <!-- / DIALOG ACTIONS -->
+
+    </form>
+</md-dialog>
+<!-- / DIALOG -->

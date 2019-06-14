@@ -7,7 +7,7 @@
           </li>
         </ul>
       </md-toolbar>
-      <div ng-include="'app/main/schedules/partials/schedule.html'"></div>
+      <div ng-if="vm.item" ng-include="'app/main/schedules/partials/schedule.html'"></div>
 
   
       <div class="bd-loader" ng-if="vm.isLoader">
