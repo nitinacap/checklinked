@@ -1,3 +1,8 @@
+<div class="showLoadingImage" layout="row" layout-align="center center" flex  ng-if=" !vm.isLoader && vm.showLoadingImage">
+  <div class="loaderimg">
+    <img src="assets/images/logos/loading.gif" width="200">
+  </div>
+</div>
 <div id="" class="simple-table-container md-background-bg md-whiteframe-1dp {{vm.isBreadcrum ? 'pt-0' : 'pt-30'}}">
   <table class="simple row-border hover bordered-table">
     <thead class="tool-bg">
@@ -18,18 +23,19 @@
               </md-icon>
             </md-button>
           </div>
+         <div layout="row" layout-align="start center">
+          <p class="pl-20 danger" ng-if="!vm.groups.length  && !vm.isLoader  && !vm.showLoadingImage">You do not have any workflow</p>
+        </div>
         </th>
 
         <th class="text-right">
           <md-menu>
-            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
+            <button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
               translate translate-attr-aria-label="GROUPS.SORT">
               <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
-            </md-button>
+            </button>
 
-            <md-menu-content width="3">
-   
-
+            <md-menu-content>
               <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
                 <md-button ng-click="vm.openGroupDialog($event)">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
@@ -178,7 +184,4 @@
     </tbody>
   </table>
 
-  <div>
-      <h3 class="pl-20" ng-if="!vm.groups.length  && !vm.isLoader">You do not have any workflow</h3>
-  </div>
 </div>

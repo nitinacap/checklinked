@@ -1,6 +1,10 @@
 {
     "DASHBOARD": {
         "PLACEHOLDER": "Placeholder",
+        "ARRANGE": "Arrange",
+        "DOWNLOAD_PDF": "Download PDF",
+        "EDIT_NAME": "Edit Name",
+        "DELETE_TILE": "Delete Tile",
         "ERRORS": {
             "PLACEHOLDER": "Placeholder"
         }

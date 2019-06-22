@@ -21,7 +21,7 @@
     </thead>
     <tbody>
       <tr ng-repeat="member in vm.memberRoles.list | filter: globalSearch.searchTerm"
-        ng-class="[{success:(isUser = (member.idCON == user.idCON))},{warning:(isViewing = (viewAs.notMe && (member.idCON == viewAs.user.idCON)))}]">
+        ng-class="[{success2:(isUser = (member.idCON == user.idCON))},{warning:(isViewing = (viewAs.notMe && (member.idCON == viewAs.user.idCON)))}]">
 
         <td>{{member.name.full}}  {{ member.owner =='owner' ? '(Admin)' : member.role_type  }}&nbsp; <md-icon ng-show="isViewing" layout-align="start center" class="md-accent-fg s18"
             md-font-icon="icon-eye"></md-icon>

@@ -18,7 +18,7 @@
     vm.EditRoleType = EditRoleType;
     vm.closeDialog = closeDialog;
     vm.addLicence = addLicence;
-    vm.tabOption = 0;
+   // vm.tabOption = 0;
     vm.members = [];
     vm.cancelSubscription = cancelSubscription;
     vm.openSubscriptionListDialog = openSubscriptionListDialog;

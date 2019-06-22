@@ -2,7 +2,7 @@
 </h3>
 <table class="bordered-table" cellpadding="0" cellspacing="0" width="100%">
   <tbody class="public-table" ng-if="vm.templates.list.public"
-    ng-repeat="publics in vm.templates.list.public | orderBy:vm.templateOrder:vm.reverse">
+    ng-repeat="publics in vm.templates.list.public | filter: globalSearch.searchTerm |orderBy:vm.templateOrder:vm.reverse">
     <tr ng-class="{'isdec':isDescp==true}">
       <td width="25%" colspan="5"><a href="">
           <md-icon style="padding-top:0px;" ng-click="isDescp = isDescp== true ? false :true;"

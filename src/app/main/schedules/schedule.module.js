@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('app.schedule', ['ui.calendar'])
+    .module('app.schedule', ["ui.calendar", "gantt"])
     .config(config);
 
   /** @ngInject */
@@ -10,16 +10,16 @@
 
     // State
     $stateProvider
-    .state('app.schedule', {
-      url: '/schedule',
-      views: {
-        'content@app': {
-          templateUrl: 'app/main/schedules/schedule.html',
-          controller: 'scheduleController as vm'
-        }
-      },
-      bodyClass: 'forms'
-    })
+      .state('app.schedule', {
+        url: '/schedule',
+        views: {
+          'content@app': {
+            templateUrl: 'app/main/schedules/schedule.html',
+            controller: 'scheduleController as vm'
+          }
+        },
+        bodyClass: 'forms'
+      })
 
 
     // Translation

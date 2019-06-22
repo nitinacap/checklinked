@@ -15,6 +15,8 @@
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
     vm.firstAlert = true;
 
+    vm.showLoadingImage = true;
+
     setTimeout(function () {
       if ($stateParams.id !== undefined && $stateParams.id != null) {
         if ($stateParams.id == '') {
@@ -40,11 +42,14 @@
                   $scope.subscriptionAlert(d.data.message);
                   vm.firstAlert = false;
                 }
+
+                vm.showLoadingImage = false;
         
               }
 
             } else {
               vm.folders = d.data.folders;
+              vm.showLoadingImage = false;
             }
           });
         }
@@ -239,25 +244,36 @@
       vm.folder.order = 1;
       vm.folder.order += vm.folders ? vm.folders.length : 0;
 
+      //Close Dialog Window
+      vm.closeDialog();
+
+      vm.showLoadingImage = true;
+
       api.folders.add(vm.folder.name, vm.folder.description, vm.folder.link, vm.folder.attachment, vm.folder.order, item ? item.id : '').error(function (res) {
+        vm.showLoadingImage = false;
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
+          
+          vm.showLoadingImage = false;
           return $rootScope.message("Error Creating Project", 'warning');
         } else if (!res.type) {
-          vm.closeDialog();
+          vm.showLoadingImage = false;
+         
           return $rootScope.message(res.message, 'warning');
 
         } else {
 
           /* Reset Folder Object */
-          vm.closeDialog();
+         
           $rootScope.message('Project has been created successfully');
           vm.folder.id = res.folder.id;
           vm.folder.name = res.folder.name;
           vm.folder.description = res.folder.description;
           vm.folder.order = res.folder.order;
           vm.folder.id_parent = res.folder.id_parent;
+
+          $scope.getFolder();
 
           //Toaster Notification
 
@@ -269,8 +285,8 @@
 
           vm.folder.sending = false;
 
-          //Close Dialog Window
-          vm.closeDialog();
+          
+          vm.showLoadingImage = false;
         }
       });
       //Close Left Navigation
@@ -279,6 +295,11 @@
 
     /* Save Folder */
     function saveFolder() {
+
+      //Close Dialog Window
+      vm.closeDialog();
+
+      vm.showLoadingImage = true;
 
       var editPack;
 
@@ -295,6 +316,7 @@
       };
 
       api.folders.edit(editPack, $rootScope.user.token).error(function (res) {
+        vm.showLoadingImage = false;
         return $rootScope.message("Error Editing Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -305,13 +327,11 @@
 
           //Toaster Notification
           $rootScope.message('Project Name ' + vm.folder.name + ' Edited');
-
+          $scope.getFolder();
           vm.folder.sending = false;
-
-
-          //Close Dialog Window
-          vm.closeDialog();
+         
         }
+        vm.showLoadingImage = false;
       });
       //Close Left Navigation
       $mdSidenav('folder-sidenav').close();
@@ -366,12 +386,17 @@
     }
 
     function deleteFoderItem(folder) {
-      vm.isLoader = true;
+
+     // vm.isLoader = true;
+     vm.showLoadingImage = true;
+
       api.folders.destroy(folder.id, $rootScope.user.token).error(function (res) {
         return $rootScope.message("Error Deleteing Project", 'warning');
       }).success(function (res) {
 
-        vm.isLoader = false;
+        vm.showLoadingImage = false;
+        // vm.isLoader = false;
+
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Deleteing Project", 'warning');
         } else if (res.code) {

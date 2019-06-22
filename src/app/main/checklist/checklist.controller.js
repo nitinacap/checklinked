@@ -106,6 +106,7 @@ var indexOf = [].indexOf || function (item) {
     vm.checklistPasteDialog = checklistPasteDialog;
     vm.saveScheduler = saveScheduler;
     vm.addschedule = addschedule;
+    vm.showLoadingImage = true;
 
 
     vm.expanded = {
@@ -1103,11 +1104,12 @@ var indexOf = [].indexOf || function (item) {
               } else {
 
                 vm.checklists = [];
-
+                vm.showLoadingImage = false;
               }
 
 
               vm.loaded.checklist = false;
+              
               return $scope.$broadcast('event:checklistLoaded');
 
             })["finally"](function () {
@@ -1341,6 +1343,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function createSegment(what, name, to, type, info, item_type, alert) {
+      debugger;
       console.log("optiondata=" + vm.newItem.dataType);
       var count, order, ref1, svc, whats;
       if (to == null) {
@@ -1394,6 +1397,17 @@ var indexOf = [].indexOf || function (item) {
           vm.closeDialog();
           return $rootScope.message(res.message, 'warning');
         } else {
+
+          if(what=='item'){
+            vm.labels.create.save(res.item,'new');
+
+          }
+        
+          
+          if(alert){
+            checklistAlert(res.item);
+          }
+         
 
           vm.closeDialog();
           vm.isLoader = false;
@@ -1737,7 +1751,7 @@ var indexOf = [].indexOf || function (item) {
         // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
         //  item.checkbox[userKey] = res.checkboxes[0];
         item.checkbox[userKey] = res.checkboxes[0];
-        vm.labels.create.save(res.checkboxes[0]);
+        vm.labels.create.save(res.checkboxes[0],'checked');
 
         return vm.evaluateConflicts(item, +1);
       });
@@ -2018,8 +2032,9 @@ var indexOf = [].indexOf || function (item) {
           id: item.id,
           index: vm.items.indexOf(item),
           type: item.type,
-          displayType: typeof (base = item.type === 2) === "function" ? base({
-            'Text': typeof (base1 = item.type === 3) === "function" ? base1({
+          item_type: item.item_type,
+          displayType: typeof(base = item.type === 2) === "function" ? base({
+            'Text': typeof(base1 = item.type === 3) === "function" ? base1({
               'Number': 'Apply/Comply'
             }) : void 0
           }) : void 0
@@ -2125,26 +2140,44 @@ var indexOf = [].indexOf || function (item) {
           vm.labels.create.entering = true;
           return false;
         },
-        save: function (labels) {
+        save: function (labels,key) {
 
           // debugger;
-          if (labels) {
+
+          if (labels && key=='checked') {
             vm.type  = '2';
             this.name = 'test';
             this.explanation = '';
-          } else {
-            vm.type = vm.labels.item.type;
-            this.name = this.name;
-            this.explanation = this.explanation;
+            labels.key = key;
+          } 
+          else if(key=='new' && labels){
+            vm.type = labels ? labels.type : '';
+            this.name = labels ? labels.name :'';
+            this.explanation = labels ? labels.info : '';
+            labels.key = key;
+            delete labels.tree_structure;
+            delete labels.inviterDetails;
+            delete labels.labels;
+            delete labels.item_bread;
+            delete labels.ownerDetails;
+
+
+          }else {
+            debugger;
+            if(vm.labels.item){
+              vm.type = vm.labels.item.type;
+              this.name = this.name;
+              vm.labels.item.key = 'new';
+              this.explanation = this.explanation;
+            }
 
           }
-
           vm.isLoader = true;
           vm.labels.create.saving = true;
 
 
           //console.log('adding new label', vm.labels.item, this.name, this.explanation);
-          return api.dashboard.labels.add(vm.type, this.name, this.explanation, labels ? labels : '').success(function (res) {
+          return api.dashboard.labels.add(vm.type, this.name, this.explanation, labels ? labels : vm.labels.item).success(function (res) {
             vm.isLoader = false;
             if (res === void 0 || res === null || res === '') {
               return $rootScope.message("Server not responding properly.", 'warning');
@@ -2678,7 +2711,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function deleteConfirm(what, item, ev) {
-      vm.title = 'Delete Checklist Information';
+      vm.title = 'Delete Data Point';
       vm.warning = 'Warning: This can’t be undone';
       vm.description = "Please confirm you want to delete this <span class='link'>" + item.name + "</span><br>All of the contents will be deleted and can’t be recovered"
       $mdDialog.show({
@@ -4050,6 +4083,8 @@ var indexOf = [].indexOf || function (item) {
       vm.checklists = [];
       api.checklists.getGroup($stateParams.id, token).then(function (d) {
         vm.checklists = d.data.checklists;
+        
+        vm.showLoadingImage = false;
       });
     };
 
@@ -4139,7 +4174,70 @@ var indexOf = [].indexOf || function (item) {
         targetEvent: ev,
         clickOutsideToClose: true
       });
+    };
+
+
+    
+  // all_spreadsheets code starts
+
+  //vm.getAllSpreadsheets = getAllSpreadsheets;
+  vm.view_data_upload = view_data_upload;
+   
+  function view_data_upload(ev){
+
+    $mdDialog.show({
+      scope: $scope,
+      preserveScope: true,
+      templateUrl: 'app/main/checklist/dialogs/checklist/checklist-view-upload-data-dialog.html',
+      parent: angular.element($document.find('#checklist')),
+      targetEvent: ev,
+      clickOutsideToClose: false
+    });
+
+
+  }
+  
+  vm.excels= {
+  view : function(excel) {
+
+    if(vm.origColspanLength == undefined || vm.origColspanLength < excel.data.heading.length){
+      vm.origColspanLength = excel.data.heading.length ;
+      if(vm.colspanLength < 4 )  vm.colspanLength = 2;
+      else vm.colspanLength = vm.origColspanLength - 1;
     }
+    vm.excel_open_id = excel.id;
+    
+  }
+}
+    
+  
+
+  function getAllSpreadsheets() {
+    api.organization.get_all_spreadsheets().then(function (d) {
+      vm.isLoader = false;
+      if (d.data.code == '-1') {
+        if(d.data.message=='unauthorized access'){
+          $state.go('app.logout');
+        }else{
+        }
+      } else {
+        vm.all_spreadsheets = d.data.spreadsheets;
+      
+      }
+    });
+  };
+  getAllSpreadsheets();
+
+  function checklistAlert(item){
+    api.alert.save(item).then(function (d) {
+      if(d.data.code != '-1'){
+        console.log('new alert created');
+      }
+    
+
+    });
+    
+  }
 
 
   }

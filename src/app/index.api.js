@@ -98,7 +98,6 @@
           },
           cache: false
         }).error(function (resp) {
-          console.log('doAuth resp', resp);
           return $rootScope.message("Unknown error communicating with server. " + resp, 'warning');
         }).success(function (resp) {
 
@@ -111,13 +110,10 @@
             $rootScope.viewAs.set(resp.viewAs);
             $rootScope.orderThanksData = '';
             //path = CacheLocal.get('navTo');
-            console.log('path', path);
             loginTime = new Date();
             if (path) {
-              console.log('path 1');
               return $location.path(path);
             } else {
-              console.log('path 2');
               return $location.path('/user');
             }
           }
@@ -158,7 +154,6 @@
     api.confirm = {
 
       validate: function (validateId) {
-        console.log('validateId', validateId);
         return $http.post(BASEURL + 'account-create-confirm.php', {
           key: validateId
         }, {
@@ -368,7 +363,6 @@
           });
       },
       destroy: function (id) {
-        console.log('item', id);
         return $http.post(BASEURL + 'coe-destroy.php', {
           type: 'checklist',
           id: id
@@ -380,14 +374,11 @@
           });
       },
       publish: function (id, name, description, type, pvt) {
-        console.log('id', id);
-        console.log('name', name);
-        console.log('type', type);
+
 
         if (pvt == null) {
           pvt = false;
         }
-        console.log('pvt', pvt);
         return $http.post(BASEURL + 'checklist-publish.php', {
           id: id,
           name: name,
@@ -402,7 +393,6 @@
           });
       },
       searchForTemplates: function (criteria) {
-        console.log('criteria', criteria);
         return $http.get(BASEURL + "templates-get.php?n=" + criteria.name + "&o=" + criteria.organization + "&a=" + criteria.author + "&v=" + criteria.version + "&t=" + criteria.type, {
           cache: false
         });
@@ -423,7 +413,6 @@
         if (complete == null) {
           complete = 'toggle';
         }
-        console.log('toggling checklist complete', idCFC, complete);
         return $http.post(BASEURL + 'checklist-toggle_complete-post.php', {
           idCFC: idCFC,
           complete: complete
@@ -575,7 +564,6 @@
       
       NewScheduler: function (data) {
 
-        console.log('data', data);
         return $http.post(BASEURL + "schedule.php", data, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -691,7 +679,6 @@
           $rootScope.message('Error talking to server', 'warning');
         }).success(function (res) {
           var i, item, items, key, len, ref, results;
-          //console.log('res', res);
           items = [];
           ref = res.items;
           results = [];
@@ -922,7 +909,6 @@
               if (res.code) {
                 return $rootScope.message(res.message, 'warning');
               } else {
-                console.log('api.invite.accept = $rootScope.user.idCON', $rootScope.user.idCON);
                 $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, 'friendship');
                 $rootScope.message('Contact Invitation Accepted');
                 return res;
@@ -984,7 +970,6 @@
               if (res.code) {
                 return $rootScope.message(res.message, 'warning');
               } else {
-                console.log('later gator');
                 $rootScope.sendInviteCountUpdatePing($rootScope.user.idCON, 'friendship');
                 return $rootScope.message('Invitation Rejected');
                 return res;
@@ -1081,7 +1066,6 @@
           });
       },
       reply: function (idVIEW, text, producerType, itemType) {
-        console.log('adding convo entry', text, producerType, itemType, idVIEW);
         return $http.post(BASEURL + 'posts-post.php', {
           id: idVIEW,
           text: text,
@@ -1128,9 +1112,7 @@
             });
         },
         add: function (type , name, explanation ,checkboxinfo) {
-          console.log('type', type);
-          console.log('name', name);
-          console.log('explanation', explanation);
+
           return $http.post(BASEURL + 'dashboard_label-post.php', {
             type: type,
             name: name,
@@ -1144,7 +1126,6 @@
             });
         },
         update: function (idITEM, selected) {
-          console.log('updating item labels', idITEM, selected);
           return $http.post(BASEURL + 'dashboard_updateItemLabels-post.php', {
             idITEM: idITEM,
             selected: selected
@@ -1308,12 +1289,10 @@
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
         }).success(function (res) {
-          console.log('res.attachments', res.attachments);
           return res.attachments;
         });
       },
       attachment: function (idATT) {
-        console.log('idATT', idATT);
         return $http.get(BASEURL + 'attachments-get.php?idATT=' + idATT, {
           cache: false
         }).error(function (res) {
@@ -1330,8 +1309,6 @@
 
       evaluateItem: function (item, checkboxes) {
 
-        //console.log('item', item);
-        //console.log('checkboxes', checkboxes);
 
         var left, right;
         item.conflicts = false;
@@ -1537,7 +1514,7 @@
     ////////////////////// Data Point
     api.datapoint = {
 
-      get: function (data) {
+      datapoint: function (data) {
         return $http.post(BASEURL + 'datapoint.php', data, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -1558,7 +1535,39 @@
             cache: false
           });
       }
-    }
+    };
+
+        ////////////////////// Data Point
+        api.alert = {
+
+          save: function (data) {
+            return $http.post(BASEURL + 'alerts.php', 
+            {
+              name: data.name,
+              info: data.info,
+              checklist_id: data.idCHK,
+              item_id: data.id,
+              item_type: data.item_type,
+              user_id: $cookies.get("useridCON"),
+              type: 'save'
+
+          }, {
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                cache: false
+              });
+          },
+          get: function() {
+            return $http.post(BASEURL + 'alerts.php', {
+              user_id: $cookies.get("useridCON"),
+              type: 'get'
+
+          }, { cache: false
+              });
+          }
+
+        };
 
     return api;
   }

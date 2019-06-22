@@ -136,6 +136,8 @@ md-tabs-canvas{
 }
 .breadcrumcolor{
     color:#28b5f5;
+    text-transform: capitalize;
+    font-size: 12px;
 }
 .headingcolor{
     color:#0770c4;
@@ -522,4 +524,33 @@ a.ms-navigation-button.Communicate.md-default-theme.communicate {
 
 a.ms-navigation-button.Analyze.md-default-theme.analyze {
     opacity: 1 !important;
+}
+
+.loaderimg img{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+
+}
+.wh-inherit{
+    height: inherit !important;
+    width: inherit !important;
+    min-width: inherit !important;
+    min-height: inherit !important;
+    font-size: 18px !important;
+}
+
+@media (max-width: 767px){
+    .d-none-mobile {
+        display: none;
+    }
+    .support-top-button {
+        position: initial !important;
+        right: 0;
+        top: 0px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        padding-left:0px !important;
+    }
+    
 }

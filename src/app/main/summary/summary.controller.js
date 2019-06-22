@@ -24,13 +24,13 @@
 
 
 
-
+    
     function openContactDialog(contact) {
 
       vm.contact = angular.copy(contact);
-      console.log(vm.contact);
+      console.log( vm.contact);
 
-      // vm.contact = contact;
+     // vm.contact = contact;
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
@@ -66,11 +66,7 @@
           vm.isLoader = false;
 
           if (res.code == '-1') {
-            if (d.data.message == 'unauthorized access') {
-              $state.go('app.logout');
-            } else {
-              $scope.subscriptionAlert(res.message);
-            }
+            $scope.subscriptionAlert(res.message);
           }
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Reports not loaded.', 'warning');
@@ -84,7 +80,7 @@
               report.idsCHK.forEach(function (idCHK) {
                 var checklist;
                 checklist = $filter('filter')($rootScope.checklists, {
-                  idCHK: idCHK
+                 idCHK: idCHK
                 });
                 if (checklist !== void 0 && checklist.length) {
                   checklist = JSON.parse(JSON.stringify(checklist[0]));
@@ -118,7 +114,7 @@
           } else if (res.code) {
             return $rootScope.message("Error requesting report: (" + res.code + ": " + res.message + ")");
           } else {
-
+         
             $rootScope.message("Report is being processed.  Refresh in a little while to see the result.");
           }
         }).error(function (err) {
@@ -132,10 +128,10 @@
         return api.summary.reports.delete(id).success(function (res) {
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Report not requested.', 'warning');
-          } else if (res.type == 'success') {
-            vm.reports.refresh();
-            $rootScope.message("Report has been deleted successfully ", 'success');
-            // return  vm.reports.list = res.reports;
+          } else if (res.type=='success') {
+           vm.reports.refresh();
+           $rootScope.message("Report has been deleted successfully ", 'success');
+          // return  vm.reports.list = res.reports;
           }
         }).error(function (err) {
           return $rootScope.message('Unable to request report.', 'warning');
@@ -211,40 +207,89 @@
     };
 
     vm.total_active_users = function ($index) {
+      debugger;
+      var tot_active_users_all = 0;
+      var arr = [];
+      var idChk_arr = [];
+      //var report_len = vm.reports.list.length;
       var report = vm.reports.list[$index];
-      return report.lines.length;
-    }
+     // debugger;
+        if(report.lines.length > 0){
+            for(var i= 0;i<report.lines.length;i++){
+              var cur_idChk = report.lines[i].idCHK;
+              if(idChk_arr.indexOf(cur_idChk) === -1){
+                tot_active_users_all  += parseInt(report.lines[i].counts.active_users);
+                idChk_arr.push(report.lines[i].idCHK);
+              }
+             
+            }
+        }        
+       // debugger;
+        return tot_active_users_all;
 
+    }
+    
     vm.total_issues_msg = function (lines) {
       var tot_issue = 0;
       var tot_msg = 0;
       var tot_active_users = 0;
+      var req_user_msg = 0;
       var arr = [];
-      if (lines.length > 0) {
-        for (var i = 0; i < lines.length; i++) {
+      var idChk_arr = [];
+        if(lines.length > 0){
+            for(var i= 0;i<lines.length;i++){
+              // if(i== 0){
+              //   tot_msg  += parseInt(lines[i].requested_users_post);  
+              // }
+            
+              tot_issue  += parseInt(lines[i].tot_count_conflicts) + parseInt(lines[i].tot_count_non_compliants);
 
+              tot_msg  += parseInt(lines[i].counts.posts);              
+                // tot_active_users  = i+1; 
+                var cur_idChk = lines[i].idCHK;
+                if(idChk_arr.indexOf(cur_idChk) === -1){
+                  tot_msg  += parseInt(lines[i].count_posts_users);   
+                  tot_active_users  += parseInt(lines[i].counts.active_users);
+                  idChk_arr.push(lines[i].idCHK);
+                }
 
-          tot_issue += parseInt(lines[i].tot_count_conflicts) + parseInt(lines[i].tot_count_non_compliants);
-
-          tot_msg += parseInt(lines[i].counts.posts);
-          tot_active_users = i + 1;
-
+               
+            }
         }
-      }
-      arr['tot_issue'] = tot_issue;
-      arr['tot_msg'] = tot_msg;
-      arr['tot_active_users'] = tot_active_users;
-      return arr;
+        arr['tot_issue'] = tot_issue;
+        arr['tot_msg'] = tot_msg;
+        arr['tot_active_users'] = tot_active_users;
+        return arr;
+        debugger;
+
+    }
+
+    $scope.initChecklist = function (lines) {
+      var idChk_arr = [];
+      var chk_count = 0;
+      if(lines.length > 0){
+          for(var i= 0;i<lines.length;i++){
+            var cur_idChk = lines[i].idCHK;
+              if(idChk_arr.indexOf(cur_idChk) === -1){
+                chk_count++;
+                idChk_arr.push(cur_idChk);
+              }
+
+             
+          }
+         
+        }
+        return chk_count;
 
     }
 
     // vm.total_msg = function (lines) {
-    //   let tot_msg = 0;
+    //   var tot_msg = 0;
     //     if(lines.length > 0){
-    //         for(let i= 0;i<lines.length;i++){
-
+    //         for(var i= 0;i<lines.length;i++){
+            
     //           tot_msg  += parseInt(lines[i].counts.posts);
-
+               
     //         }
     //     }
     //     return tot_msg;
@@ -253,7 +298,7 @@
     // }
 
 
-
+   
 
     function viewChecklistAsUser(checklist, user) {
       console.log('checklist', checklist);
@@ -342,7 +387,7 @@
         locals: {
           convoId: id,
           convoName: name,
-          userName: userName,
+          userName:userName,
           producerType: type
         }
       });
@@ -376,11 +421,9 @@
       { link: 'dashboard', title: 'Dashboard' }
     ];
 
-    $('.Analyze').addClass('analyze');
-    $('.Process').removeClass('opacity1');
     $('.Communicate').removeClass('communicate');
-
-
+    $('.Analyze').removeClass('analyze');
+    $('.Process').removeClass('opacity1');
 
 
 

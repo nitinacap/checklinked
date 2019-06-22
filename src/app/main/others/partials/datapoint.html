@@ -58,7 +58,7 @@
             <md-menu-content width="3">
                 
               <md-menu-item>
-                  <md-button ng-click="vm.DataPointDialog('save')" translate-attr-aria-label="">
+                  <md-button ng-click="vm.DataPointDialog( 'save')" translate-attr-aria-label="">
                     <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
                     <span translate=""> New Data Point</span>
                   </md-button>
@@ -75,7 +75,7 @@
           <tr ng-repeat="dataPoint in vm.dataPoints">
               <td><span class="link-color capitalize" ng-bind="dataPoint.name"></span></td>
               <td><span class="link-color">{{dataPoint.user.name}}</span></td>
-              <td><span class="link-color">{{dataPoint.type}}</span></td>
+              <td><span class="link-color">{{dataPoint.item_type}}</span></td>
               <td>{{ dataPoint.explanation }}</span></td>
               <td class="text-right">
                 <md-menu >
@@ -87,7 +87,7 @@
                   <md-menu-content width="3">
                     
                     <md-menu-item>
-                      <md-button ng-click="vm.DataPointDialog('update')" translate-attr-aria-label="">
+                      <md-button ng-click="vm.DataPointDialog('update', dataPoint, $index)" translate-attr-aria-label="">
                         <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
                         <span translate="">Edit Data Point</span>
                       </md-button>

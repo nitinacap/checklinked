@@ -79,17 +79,18 @@
   <div class="tool-bg" md-ink-ripple layout="row" layout-align="start center"
     ng-class="{'starred': checklist.starred, 'selected': checklist.selected, 'completed': checklist.completed}">
 
-    <div flex ng-if="vm.checklists.length==0  && !vm.isLoader">
-      <div class="loaderimg">
-        <img src="assets/images/logos/loading.gif" width="200">
+    <div flex ng-if=" !vm.isLoader && vm.showLoadingImage">
+        <div class="loaderimg">
+          <img src="assets/images/logos/loading.gif" width="200">
+        </div>  
       </div>
-    </div>
-    <div layout="row" layout-align="start center" flex flex ng-if="(!vm.checklists && !vm.checklists[0])  && !vm.isLoader">
-      <div >
-        <div class="title pl-20 warning">
-          You do not have any checklists in this workflow
+  
+      <div layout="row" layout-align="start center" flex ng-if="(!vm.checklists || !vm.checklists.length)  && !vm.isLoader && !vm.showLoadingImage" >
+        <div flex="100">
+          <div class="title pl-20 danger">
+            You do not have any checklists in this workflow
+          </div>
         </div>
-      </div>
 
       <div class="buttons" layout="row" layout-align="start center">
         <md-menu>

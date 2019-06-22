@@ -14,19 +14,7 @@
     vm.contacts = [];
     vm.LinkList = [];
     vm.isLoader = true;
-    // api.contacts.get().then(function (d) {
-    //   debugger;
-    //   vm.contacts = d.data.friendships;
-    //   var me = $rootScope.user.idCON;
-    //   vm.LinkList = $filter('filter')(vm.contacts, function (invite) {
-    //     return (invite.contacts.originator.id !== me && invite.accepted == '');
-    //   });
-    //   console.log("MUser", $rootScope.user);
-    //   if ($stateParams.passID) {
-    //     vm.filterChange('invitations');
-    //   }
-    //   console.log('vm.contacts', vm.contacts);
-    // });
+
 
     vm.user = $rootScope.user;
     vm.contacts.shift = showWhichInviteContactData(vm.contacts);
@@ -63,7 +51,6 @@
 
 
     vm.currentItem = parseInt($rootScope.curreManuItem);
-    //console.log('vm.passID', vm.passID);
 
     function filterChange(type) {
       debugger;
@@ -73,7 +60,6 @@
 
       if (type === 'all') {
         vm.filterIds = null;
-        console.log('vm.listType.name', vm.listType.name);
       }
       else if (type === 'invitations') {
         var out = [];
@@ -94,7 +80,6 @@
         out.forEach(function (invite) {
           vm.filterIds.push(invite.id);
         });
-        console.log('filterIds (requests)', vm.filterIds);
       }
       else if (angular.isObject(type)) {
         vm.filterIds = type.contactIds;
@@ -141,7 +126,6 @@
       return vm.setBlank();
     });
     $scope.$on('event:userLoaded', function () {
-      console.log('event:userLoaded was triigered');
       if (!vm.loading.friends && !vm.loaded.friends) {
         return vm.updateFriends();
       }
@@ -237,7 +221,6 @@
         for (var i = 0; i < vm.LinkList.length; i++) {
           if (vm.LinkList[i].contacts.originator.id == idCON) {
             vm.LinkList.splice(i, 1);
-            console.log(vm.LinkList);
             break;
           }
         }
@@ -251,7 +234,6 @@
 
           vm.contacts.remove(friendship);
           $state.go($state.current, {}, { reload: true });
-          //console.log('res.friendships[0]', res.friendships[0]);
 
           return vm.contacts.unshift(res.friendships[0]);
         }
@@ -288,15 +270,12 @@
             }
           }
         }, true));
-        console.log('invites from filter', invites);
         results = [];
         for (i = 0, len = invites.length; i < len; i++) {
           invite = invites[i];
           results.push(vm.contacts.splice(vm.contacts.indexOf($filter('filter')(vm.contacts, { id: invite.id }, true)[0]), 1));
-          console.log('removed invites[i]', invites, vm.contacts);
         } 
        // $state.go($state.current, {}, { reload: true });
-        console.log('vm.contact removed', vm.contacts, results);
         return results;
       });
     };
@@ -353,46 +332,11 @@
           $scope.status = 'You cancelled the dialog.';
         });
 
-      // console.log(contact);
-      // var confirm = $mdDialog.confirm()
-      //   .title('Are you sure want to delete the contact?')
-      //   .htmlContent('<b>' + contact.name.full + '</b>' + ' will be deleted.')
-      //   .ariaLabel('delete contact')
-      //   .targetEvent(ev)
-      //   .ok('OK')
-      //   .cancel('CANCEL');
-
-      // $mdDialog.show(confirm).then(function () {
-      //   vm.removeConnectionInvitation(idCON,type);
-      //  });
 
     }
 
 
-    /*
-     function openDirectMessageDialog(contact, ev)	{
-
-     var which;
-
-     which = vm.showWhichInviteContactData(contact)
-
-     console.log('contact.contacts[which].name.full', contact.contacts[which].name.full);
-
-     $mdDialog.show({
-     scope			   : $scope,
-     preserveScope	   : true,
-     templateUrl        : 'app/main/contacts/dialogs/contact/direct-message-dialog.html',
-     parent             : angular.element($document.find('#content-container')),
-     targetEvent        : ev,
-     clickOutsideToClose: true,
-     locals             : {
-     contactId : contact.id,
-     contactName : contact.contacts[which].name.full
-     }
-     });
-     }
-
-     */
+    
 
     function openDirectMessageDialog(contact, ev,direct_msg) {
       debugger;
@@ -406,7 +350,6 @@
       
      
 
-      console.log('Direct Message', contact);
       vm.which = vm.showWhichInviteContactData(contact);
       $mdDialog.show({
         controller: 'DirectMessageDialogController',
@@ -504,20 +447,7 @@
       $mdDialog.hide(answer);
     };
 
-    //contact direct message list
-    // function getDirectMessage(id){
 
-    //   vm.items = {'user_id':$rootScope.user.idCON , 'item_id':id};
-    //   return api.contacts.getdirectmessage(vm.items).success(function (res) {
-    //     if (res.type=='success') {
-    //       vm.conversation = res;
-    //     console.log('msg=',vm.conversation.posts);
-    //     } else {
-    //       vm.contacts = res.messages;
-    //       return vm.loaded.friends = true;
-    //     }
-    //   });
-    // }
 
 
 

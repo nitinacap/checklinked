@@ -9,11 +9,12 @@
   function GroupsController($scope, $rootScope, api, $stateParams, $cookies, $mdDialog, $mdSidenav, $document, $http) {
     var vm = this;
     vm.isLoader = true;
+    vm.showLoadingImage = true;
 
     var userpermission = $cookies.get("userpermission");
-    vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
+    vm.checkIsPermission = userpermission ? userpermission : '';
 
-    console.log("userpermission=",userpermission);
+    console.log("userpermission=",vm.checkIsPermission);
 
     $scope.getAllFolders = function () {
       api.folders.get().then(function (d) {
@@ -25,7 +26,7 @@
     $scope.getAllFolders();
 
     $scope.getGroups = function () {
-      vm.groups = [];
+     
       vm.folder_id = $stateParams.id;
       api.groups.get($stateParams.id).then(function (d) {
         vm.isLoader = false;
@@ -35,8 +36,12 @@
           }else{
             $scope.subscriptionAlert(d.data.message);
           }
+          vm.showLoadingImage = false;
         } else {
+
+          vm.groups = [];
           vm.groups = d.data.groups;
+          vm.showLoadingImage = false;
         }
       });
     }
@@ -216,16 +221,24 @@
     vm.projectParamId = $stateParams.id ? $stateParams.id : '';
 
     function addNewGroup(duplicate) {
+
+      //Close Dialog Window
+      vm.closeDialog();
+      vm.showLoadingImage = true;
+
       vm.group.parentId = $stateParams.id ? $stateParams.id : vm.group.Id;
       vm.group.sending = true;
       vm.group.order = 1;
       vm.group.order += vm.groups ? vm.groups.length : '';
       api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description, vm.group.link, duplicate ? duplicate.id : '').error(function (res) {
+        vm.showLoadingImage = false;
         return $rootScope.message("Error Creating Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
+          vm.showLoadingImage = false;
           return $rootScope.message("Error Creating Workflow", 'warning');
         } else if (res.code) {
+          vm.showLoadingImage = false;
           return $rootScope.message(res.message, 'warning');
         } else {
 
@@ -240,8 +253,9 @@
 
           //Toaster Notification
           $rootScope.message('Workflow Created');
+
           $scope.getGroups();
-          vm.closeDialog();
+          
 
           //Add New Group to Groups object
           if (res.group.length > 0) {
@@ -250,6 +264,8 @@
           }
 
           vm.group.sending = false;
+
+          vm.showLoadingImage = false;
 
           //Close Dialog Window
         }
@@ -261,6 +277,11 @@
 
     /* Save Group */
     function saveGroup() {
+
+      //Close Dialog Window
+      vm.closeDialog();
+
+      vm.showLoadingImage = true;
 
       var editPack;
 
@@ -275,11 +296,14 @@
       };
 
       api.groups.edit(editPack).error(function (res) {
+        vm.showLoadingImage = false;
         return $rootScope.message("Error Editing Workflow", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
+          vm.showLoadingImage = false;
           return $rootScope.message("Error Editing Workflow", 'warning');
         } else if (res.code) {
+          vm.showLoadingImage = false;
           return $rootScope.message(res.message, 'warning');
         } else {
 
@@ -288,9 +312,8 @@
 
           vm.group.sending = false;
 
-          //Close Dialog Window
-          vm.closeDialog();
-
+          
+          vm.showLoadingImage = false;
         }
       });
 
@@ -300,6 +323,9 @@
 
     /* Delete Group */
     function deleteGroup(group, event) {
+
+     
+
       vm.title = 'Delete Workflow Information';
       vm.warning = 'Warning: This can’t be undone';
       vm.description = "Please confirm you want to delete this <span class='link'>" + group.name + "</span><br>All of the contents will be deleted and can’t be recovered"
@@ -319,11 +345,14 @@
     };
 
     function deleteGroupItem(group) {
-      vm.isLoader = true;
+       // vm.isLoader = true;
+       vm.showLoadingImage = true;
+
       api.groups.destroy(group.id, $rootScope.user.token).error(function (res) {
         return $rootScope.message("Error Deleteing Workflow", 'warning');
       }).success(function (res) {
-        vm.isLoader = false;
+        // vm.isLoader = false;
+        vm.showLoadingImage = false;
         if (res === void 0 || res === null || res === '') {
           $rootScope.message("Error Deleteing Workflow", 'warning');
         } else if (res.code) {

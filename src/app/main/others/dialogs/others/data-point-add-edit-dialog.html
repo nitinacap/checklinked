@@ -1,0 +1,91 @@
+<md-dialog class="dialog" aria-label="">
+    <form name="checklistForm" class="md-inline-form" ng-submit="vm.saveDataPoint()"
+        novalidate>
+        <md-toolbar class="md-accent md-hue-2">
+            <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+                <span class="title">Add/Edit Data Point</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+                    <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content ms-scroll>
+            <md-input-container class="md-block">
+                <label>{{vm.datapoint_item.label}}</label>
+                <input name="name" ng-model="vm.datapoint_item.name" required md-autofocus maxlength="155">
+                <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
+                    <div ng-message="required">
+                        <span ng-show="vm.datapoint_item.dataType==1">{{vm.datapoint_item.dataType}} Name field is required</span>
+                        <!-- <span ng-show="vm.datapoint_item.dataType!=1">Text Box Label is required</span> -->
+                    </div>
+                </div>
+            </md-input-container>
+
+            <div>
+               
+                <md-input-container class="md-block">
+                    <label ng-switch="vm.datapoint_item.dataType==1">
+                     
+                      <span>{{vm.datapoint_item.dataType=='textbox' ? 'Description': 'Reference'}}</span>  
+                    </label>
+                    <input maxlength="255" name="description" type="text" ng-model="vm.datapoint_item.info">
+
+                </md-input-container>
+            </div>
+            
+            <input name="item_type" value="{{vm.datapoint_item.dataType}}" type="hidden" ng-model="vm.datapoint_item.dataType">
+
+            <md-input-container class="md-block checklist-alerts" id="checklist-alerts" ng-if="vm.datapoint_item.dataType">
+                <div layout="row" layout-wrap>
+                    <div flex="20"><span>Alert if Checked: </span></div>
+                    <div flex="80">
+                        <div layout="column">
+
+                            <md-radio-group ng-model="vm.datapoint_item.item_type">
+                                <md-radio-button ng-disabled="vm.datapoint_item.dataType != '1' && vm.datapoint_item.dataType != '4'" value="Req" class="md-primary" >Req</md-radio-button>
+                                <md-radio-button ng-disabled="vm.datapoint_item.dataType != '1' && vm.datapoint_item.dataType != '4'" value="Comp" > Comply
+                                </md-radio-button>
+                            </md-radio-group>
+
+                            <md-radio-group ng-model="vm.datapoint_item.item_type">
+                                <md-radio-button ng-disabled="vm.datapoint_item.dataType != '3' && vm.datapoint_item.dataType != '4'" value="Yes" class="md-primary" >Yes</md-radio-button>
+                                <md-radio-button ng-disabled="vm.datapoint_item.dataType != '3' && vm.datapoint_item.dataType != '4'" value="No" > No
+                                </md-radio-button>
+                            </md-radio-group>
+
+                            <!-- <md-radio-group ng-model="vm.datapoint_item.item_type">
+                                <md-radio-button ng-disabled="vm.datapoint_item.dataType != 'textbox'"  value="{{vm.datapoint_item.dataType=='textbox' ? 'applies' : ''}}" class="md-primary">If
+                                    data added</md-radio-button>
+                            </md-radio-group> -->
+
+                            <md-radio-group ng-model="vm.datapoint_item.item_type">
+                                <md-radio-button ng-disabled="vm.datapoint_item.dataType != '2' && vm.datapoint_item.dataType != '4'"  value="Textbox" class="md-primary">If data added</md-radio-button>
+                            </md-radio-group>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div layout="row" layout-wrap>
+                    <md-checkbox ng-model="vm.datapoint_item.item_alert" aria-label="yes">
+                        Set Alert
+                    </md-checkbox>
+
+                </div>
+
+            </md-input-container>
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="start center">
+                <md-button type="submit" md-no-ink class="md-raised md-accent" 
+                    aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">
+
+                </md-button>
+            </div>
+
+        </md-dialog-actions>
+    </form>
+</md-dialog>

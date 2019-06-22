@@ -6,6 +6,7 @@
     .module('checklinked', [
 
       // Common 3rd Party Dependencies
+
       'textAngular',
       
       // Toastr

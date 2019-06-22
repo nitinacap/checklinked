@@ -2,62 +2,76 @@
   <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
     <thead class="tool-bg">
 
-    <tr>
-      <th>
+      <tr>
+        <th>
 
-        Archive to<br>
-        Notifications
-      </th>
-      <th>
-        Date
-      </th>
-      <th>
-        Data Point
-      </th>
-      <th>
-        User
-      </th>
-      <th>
-        Checklist
-      </th>
+          Archive to<br>
+          Notifications
+        </th>
+        <th width="15%">
+          Date
+        </th>
+        <th width="20%">
+          Data Point
+        </th>
+        <th width="15%">
+          User
+        </th>
+        <th width="20%">
+          Checklist
+        </th>
 
 
-      <th class="text-right">
-        <md-menu>
-          <md-button ng-click="$mdOpenMenu($event)"
-                     class="md-icon-button table-md-icon-button" aria-label="Sort" translate
-                     translate-attr-aria-label="CONTACTS.SORT">
-            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
-          </md-button>
-          <md-menu-content width="3">
-            <md-menu-item>
-              <md-button ng-click="vm.openFolderDialog($event)" aria-label="Archive All">
-                <md-icon class="md-accent-fg s18"
-                         md-font-icon="fa fa-download"></md-icon>
-                <span>Archive All</span>
-              </md-button>
-            </md-menu-item>
-          </md-menu-content>
-        </md-menu>
-      </th>
-    </tr>
+        <th class="text-right">
+          <md-menu>
+            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
+              translate translate-attr-aria-label="CONTACTS.SORT">
+              <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+            </md-button>
+            <md-menu-content width="3">
+              <md-menu-item>
+                <md-button ng-click="vm.archieveDialog($event)" aria-label="Archive All">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
+                  <span>Archive All</span>
+                </md-button>
+              </md-menu-item>
+            </md-menu-content>
+          </md-menu>
+        </th>
+      </tr>
     </thead>
     <tbody>
-    <tr
-      ng-repeat="alert in [1,2,3,4,5]">
-      <td width="100">
-       <a href=""> <i class="fa fa-arrow-right s18" aria-hidden="true"></i></a>
-      </td>
-      <td> Wed, June 18 4:25pm</td>
-      <td> Invoice Date</td>
-      <td> Dave Zulaica </td>
-      <td colspan="2"> SF Tower – SF Design</td>
+      <tr ng-repeat="alert in vm.records | filter: globalSearch.searchTerm ">
+        <td width="100">
+         
+             <i class="fa fa-arrow-right s18 headingcolor" aria-hidden="true" ng-click="vm.archieveDialog($event, alert.id)"></i>
+        </td>
+        <td>{{alert.create_date * 1000 | date : "EEE, MMM yy h:mma"}}</td>
+        <td> {{alert.name}}</td>
+        <td>  <span class="breadcrumcolor" ng-click="vm.openConversationDialog('checklist', alert.checklist_id, alert.checklist.name, lert.user.name)">
+          {{alert.user.name}} </span></td>
+        <td>
 
+          <a href="process/" ng-if="alert.breadcrum.project_name"><span
+              class="breadcrumcolor">{{alert.breadcrum.project_name}} -</span> </a>
+          <a href="checklist/{{alert.breadcrum.folder_id}}" ng-if="alert.breadcrum.folder_name"><span
+              class="breadcrumcolor">{{alert.breadcrum.folder_name}}</span></a><br>
+          <span class="headingcolor"><i class="fa fa-plus" ng-click="mydesc = mydesc == true ? false : true;"></i></span>
 
-     
+          <a href="checklist/detail/{{alert.breadcrum.checklist_id}}" ng-if="alert.breadcrum.checklist_name">
+            <span class="breadcrumcolor">{{alert.breadcrum.checklist_name}}</span></a>
+            <p ng-show="mydesc">{{alert.checklist.description}}</p>
 
-    </tr>
+        </td>
+        <td> </td>
+      </tr>
+    
     </tbody>
   </table>
 
+    <div class="loaderimg text-center" ng-if="!vm.records">
+        <i class="fa fa-circle-o-notch fa-spin fa-3x wh-inherit"></i>
+        <span class="sr-only">Loading...</span>
+
+  </div>
 </div>

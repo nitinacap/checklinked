@@ -5,11 +5,12 @@
     </md-progress-circular>
   </div>
 
+ 
   <table class="bordered-table" cellpadding="0" cellspacing="0" ms-responsive-table width="100%">
     <thead>
       <tr>
         <th width="20%" class="text-left" ng-if="vm.reports.list.length">
-          Date/Title
+          Date/Title 
         </th>
         <th width="20%" class="text-center" ng-if="vm.reports.list.length">
           Issues
@@ -54,6 +55,8 @@
       </tr>
 <!-- 
 {{ vm.reports.list}} -->
+
+
     </thead>
     <tbody>
       <tr
@@ -79,8 +82,8 @@
 
         </td>
 
-        <td class="text-center">
-          {{report.lines.length}}
+        <td class="text-center" data-ng-init="chk_count = initChecklist(report.lines)">
+          {{chk_count}}
 
         </td>
         <td class="text-center">
@@ -133,7 +136,7 @@
 <div ng-show="vm.reports.viewing" class="simple-table-container md-background-bg md-whiteframe-1dp">
   <table class="simple row-border hover  bordered-table" ms-responsive-table>
     <tbody>
-      <tr ng-class="{'': vm.reports.viewingSub.id == $index}" ng-repeat="checklist in vm.reports.viewing.checklists  | filter: globalSearch.searchTerm track by $index"
+      <tr ng-class="{'': vm.reports.viewingSub.id == $index}" ng-repeat="checklist in vm.reports.viewing.checklists"
         ng-show="checklist.lines.length" ng-init="tim = vm.total_issues_msg(checklist.lines)">
 
         <td width="20%" ng-click="vm.reports.viewSub(checklist, $index, checklist.lastActive)"
@@ -204,6 +207,7 @@
                 Issue
               </div>
             </th>
+
             <th class="text-center">
               <div class="text-center {{vm.reports.viewing.totMessage ? 'link-color' : ''}}">
             <span ui-sref="app.chat.message({checklist_id: vm.reports.viewingSub.lines[0].idCHK })">New Messages</span> 
@@ -215,6 +219,8 @@
               </div>
           </tr>
         </thead>
+
+    
         <tbody>
           <tr ng-repeat="lines in vm.reports.viewingSub.lines">
               <td class="headingcolor">
@@ -231,14 +237,22 @@
                   </td>
 
                   <td class="text-center {{lines.tot_count_non_compliants ? 'link-color' : ''}}">
+                  
+
                       <span ng-click="vm.showComparison(vm.reports.viewingSub, lines.contact, lines.conflicted)"
                       translate-attr-aria-label="" class="pointer">
+            
                          <span translate="">{{ (lines.tot_count_conflicts | tonumber)  + (lines.tot_count_non_compliants | tonumber ) }} </span>
                        </span>
+
+
+                    
+
                     
                   </td>
 
                   <td class="text-center">{{lines.counts.posts}}</td>
+
                   <td hide show-gt-xs class="text-center" colspan="2">
                       <span>{{ lines.cfcComplete == '1' ? 'Y' : 'N'}}</span>
                     </td>

@@ -474,7 +474,6 @@
     $scope.$on('event:socketConnected', function () {
 
       $rootScope.socketio.on('real_time_notification', function (data) {
-        console.log('real_time_notification=',data);
         if(data["total"+user_id]!=undefined && data["total"+user_id]!='undefined'){
           $scope.$apply(function(){
             $rootScope.message_count = data.message_count;
@@ -511,7 +510,6 @@
     if ($scope.root) {
       debugger;
       vm.navigation = msNavigationService.getNavigation($scope.root);
-      console.log(vm.navigation);
     }
     else {
       vm.navigation = msNavigationService.getNavigation();
@@ -789,7 +787,6 @@
 
     $scope.$on('event:startDoomsDayDevice', function (data) {
 
-      console.log('data', data);
 
     });
 
@@ -827,7 +824,6 @@
 
 
     vm.badgeData = $rootScope.inviteCounts;
-    console.log("$rootScope=", $rootScope);
     vm.badgeData.notifications = $rootScope.user ? parseInt($rootScope.user.notifications) : '';
 
     vm.badgeDataFeed = $rootScope.feed;
@@ -835,39 +831,17 @@
     vm.unread = vm.badgeDataFeed.unread;
 
     vm.unreadCount = vm.unread.length;
-    console.log('Notification=', vm.badgeData);
-
-
-    console.log('vm.unread', vm.unread);
-
-    console.log('vm.unreadCount', vm.unreadCount);
-
-
-    console.log('$rootScope', $rootScope);
-
-    console.log('badge data', vm.badgeData);
-
-    console.log('badge data checklists', vm.badgeData.checklists);
-
-    console.log('badge data friendships', vm.badgeData.friendships);
-
-    console.log('badgeDataFeed', vm.badgeDataFeed);
-
-    console.log('badgeDataFeed unread', vm.badgeDataFeed.unread);
+    
 
 
     if (vm.appState == 'app.queue') {
       //console.log('$rootScope app.queue', $rootScope);
-      console.log('vm.showQueue Before', vm.showQueue);
       vm.queue();
-      console.log('vm.showQueue After', vm.showQueue);
     }
 
     if (vm.appState == 'app.queue' && !checkRace) {
       //console.log('$rootScope app.queue', $rootScope);
-      console.log('vm.showQueue Before', vm.showQueue);
       vm.queue();
-      console.log('vm.showQueue After', vm.showQueue);
     }
 
 
@@ -875,7 +849,6 @@
     function queue() {
       if ($rootScope.user) {
         checkRace = true;
-        console.log('roles', $rootScope.user.roles);
 
         for (i = 0; i < $rootScope.user.roles.length; i++) {
           if ($rootScope.user.roles[i] == 'queue') {
