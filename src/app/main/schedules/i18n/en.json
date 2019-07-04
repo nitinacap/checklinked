@@ -1,8 +1,24 @@
 {
     "ORGANIZATION": {
         "PLACEHOLDER": "placeholder",
+        "ADD_TO_SCHEDULE": "Add to Schedule",
+        "ADD_ROW": "Add Row",
+        "VIEW_TEAM": "View team",
+        "HOUR": "Hour",
+        "DAY": "Day",
+        "WEEK": "Week",
+        "MONTH": "Month",
+        "ZOOM_OUT": "Zoom Out",
+        "ZOOM_IN": "Zoom In",
+        "VIEW_CALENDAR": "View Calendar",
+        "DOWNLOAD_PDF": "Download PDF",
+        "ROW_NAME": "Row Name",
+        "ROW_PARENT": "Row Parent",
+        "COLOR": "Color",
 	"ERRORS": {
-            "PLACEHOLDER": "placeholder"
+            "PLACEHOLDER": "placeholder",
+            "ROW_NAME" : "Row Name field is required",
+            "COLOR" : "Color field is required"
         }
 
     }

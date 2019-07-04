@@ -8,7 +8,7 @@
     <thead class="tool-bg">
       <tr>
         <th>
-          <div layout="row" layout-align="start center" ng-if="vm.groups && !vm.isLoader">
+          <div layout="row" layout-align="start center" ng-if="vm.groups.length && !vm.isLoader">
             <md-select class="simplified" ng-model="vm.groupOrder" placeholder="Sort By"
               ng-change="vm.groupOrderDescending = vm.groupOrder === 'true ? true : vm.folderOrderDescending">
               <md-option value="name">Sort by A-Z</md-option>
@@ -23,16 +23,16 @@
               </md-icon>
             </md-button>
           </div>
-         <div layout="row" layout-align="start center">
-          <p class="pl-20 danger" ng-if="!vm.groups.length  && !vm.isLoader  && !vm.showLoadingImage">You do not have any workflow</p>
+         <div layout="row" layout-align="start center" >
+          <p class="pl-20 pt-20 danger" ng-if="!vm.groups.length  && !vm.isLoader  && !vm.showLoadingImage">You do not have any workflow</p>
         </div>
         </th>
 
         <th class="text-right">
-          <md-menu>
+          <md-menu >
             <button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
               translate translate-attr-aria-label="GROUPS.SORT">
-              <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
+              <md-icon ng-class="!vm.groups.length  && !vm.isLoader  && !vm.showLoadingImage ? pt-15 : ''" md-font-icon="icon-dots-horizontal s18"></md-icon>
             </button>
 
             <md-menu-content>
@@ -92,6 +92,13 @@
                   translate-attr-aria-label="GROUP.SHOW_LINKED_USERS">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-account-switch"></md-icon>
                   <span translate="GROUP.SHOW_LINKED_USERS">Show Linked Users</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.addschedule($event, group)" aria-label="Scheduler" translate-attr-aria-label="GROUP.SCHEDULER">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-calendar"></md-icon>
+                  <span translate="GROUP.SCHEDULER">Scheduler</span>
                 </md-button>
               </md-menu-item>
 

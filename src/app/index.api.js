@@ -363,6 +363,7 @@
           });
       },
       destroy: function (id) {
+        console.log('destroy checklist')
         return $http.post(BASEURL + 'coe-destroy.php', {
           type: 'checklist',
           id: id
@@ -578,6 +579,22 @@
             // $rootScope.sendInviteCountUpdatePing(invite.users.recipient.id, 'checklist');
             return res;
           }
+        });
+      },
+      // ?type=structure
+      getAddRowStructure: function (data) {
+
+        return $http.get(BASEURL + "schedule.php?type=structure").then(function (d) {
+          var res;
+          if (d === void 0 || d === null || d === '') {
+            res = {
+              code: -1,
+              message: "Server not responding properly."
+            };
+          } else {
+            res = d.data;
+          }
+          return res;
         });
       },
     };
@@ -1445,7 +1462,6 @@
       },
 
       read: function (id, type, read_array) {
-        debugger
         return $http.post(BASEURL + 'coe-post.php', {
           type: type,
           id: id,
@@ -1524,18 +1540,18 @@
       }
     };
 
-    api.organization = {
+    // api.organization = {
 
-      get_all_spreadsheets: function () {
-        return $http.get(BASEURL + 'coe-get.php?t=spreadsheet', {
-        // return $http.get(BASEURL + 'orgSpreadSheetDatabase.php', {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            cache: false
-          });
-      }
-    };
+    //   get_all_spreadsheets: function () {
+    //     return $http.get(BASEURL + 'coe-get.php?t=spreadsheet', {
+    //     // return $http.get(BASEURL + 'orgSpreadSheetDatabase.php', {
+    //         headers: {
+    //           'Content-Type': 'application/x-www-form-urlencoded'
+    //         },
+    //         cache: false
+    //       });
+    //   }
+    // };
 
         ////////////////////// Data Point
         api.alert = {
@@ -1568,6 +1584,216 @@
           }
 
         };
+
+    /**Data Table Function Start Here ** */
+    api.dataTable = {
+
+     
+      add: function (name,row_num,column_num,section_id,data_table_structure,table_id) {
+    
+        return $http.post(BASEURL + 'data-table.php', {
+          section_id: section_id,
+          table_structure: data_table_structure,
+          type: 'table_structure',
+          name: name,
+          row: row_num,
+          column: column_num,
+          table_id : table_id
+        }, {
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Could not create data table. Unknown error.', 'warning');
+          }).success(function (res) {
+
+            if(res.code == -1){
+              $rootScope.message(res.message, 'warning');
+             }
+             else{
+              if(table_id != ''){
+                $rootScope.message('Table  Updated successfully.', 'success');
+               }
+               else{
+                $rootScope.message('Table  Created successfully.', 'success');
+               }
+             }
+           
+            
+            return res;
+          });
+      },
+      getDataTableTemplate: function () {
+      
+        return $http.post(BASEURL + 'data-table.php', {
+          type: 'datatable-template',
+         }, {
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Could not get data table template. Unknown error.', 'warning');
+          }).success(function (res) {
+
+            if(res.code == -1){
+                $rootScope.message(res.message, 'warning');
+             }
+             else{
+                  
+             }
+           
+            
+            return res;
+          });
+      },
+      saveTableAsTemplate: function (table_id,name,description) {
+        
+        return $http.post(BASEURL + 'data-table.php', {
+          type: 'datatable-template-create',
+          table_id: table_id,
+          name: name,
+          description: description
+         }, {
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Could not create data table template. Unknown error.', 'warning');
+          }).success(function (res) {
+
+            if(res.code == -1){
+                $rootScope.message(res.message, 'warning');
+             }
+             else{
+                    $rootScope.message(res.message, 'success');
+             }
+           
+            
+            return res;
+          });
+      },
+      downloadTable: function (section_id,template_id) {
+    
+        return $http.post(BASEURL + 'data-table.php', {
+          type: 'datatable-template-download',
+          section_id: section_id,
+          template_id: template_id
+         }, {
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Could not downlaod data table template. Unknown error.', 'warning');
+          }).success(function (res) {
+
+            if(res.code == -1){
+                $rootScope.message(res.message, 'warning');
+             }
+             else{
+                    $rootScope.message(res.message, 'success');
+             }
+           
+            
+            return res;
+          });
+      },
+      changeTableRow: function (index,column,table_str,table_id,request_type,rowIndex,headArr,data_table_data) {
+        //debugger;
+        var res_type;
+        // var res_type = request_type == 'update' ? 'Duplicate' : 'Delete';
+        if(request_type == 'update'){
+          res_type =  'Duplicate';
+        }
+        else if(request_type == 'delete'){
+          res_type =  'Delete';
+        }
+        else{
+           res_type =  'Header';
+        }
+        //debugger;
+        return $http.post(BASEURL + 'data-table.php', {
+          table_structure: table_str,
+          type: 'update-row',
+          index: index,
+          column: column,
+          table_id : table_id,
+          request_type : request_type,
+          rowIndex : rowIndex,
+          headArr : headArr,
+          data_table_values: data_table_data
+        }, {
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+           
+            return $rootScope.message('Could not '+ res_type+' data table row. Unknown error.', 'warning');
+          }).success(function (res) {
+            //debugger;
+             if(res.code == -1){
+              $rootScope.message(res.message, 'warning');
+             }
+             else{
+                  $rootScope.message(res_type+' Row  successfully.', 'success');
+             }
+              
+            
+            
+            return res;
+          });
+      },
+      saveTable: function (heading_id,table_id,data_table_data) {
+        
+        return $http.post(BASEURL +'data-table.php', {
+          heading_id: heading_id,
+          data_table_values: data_table_data,
+          type: 'data_table_save',
+          table_id : table_id
+        }, {
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Could not save data table. Unknown error.', 'warning');
+          }).success(function (res) {
+
+            if(res.code == -1){
+                $rootScope.message(res.message, 'warning');
+             }
+             else{
+                if(table_id != ''){
+                  $rootScope.message('Table  Saved successfully.', 'success');
+                }
+             }
+             
+            
+            return res;
+          });
+      },
+    }
+
+    /****** Organization Spreadsheet ******/
+    api.organization = {
+
+      get_all_spreadsheets: function () {
+        return $http.get(BASEURL + 'coe-get.php?t=spreadsheet', {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
+      }
+    }
+
+    /** End Here  Data Table functions */
+
+
 
     return api;
   }

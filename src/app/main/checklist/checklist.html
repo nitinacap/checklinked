@@ -1,7 +1,7 @@
 <div class="content">
   <page-toolbar datas="vm.submenu"> </page-toolbar>
 </div>
-<md-toolbar class="pt-20 breadcrumb" ng-show="vm.isBreadcrum && vm.checklists.length > 0">
+<md-toolbar class="pt-20 custom-breadcrumb" ng-show="vm.isBreadcrum && vm.checklists.length > 0">
   <ul>
     <li ng-show="vm.checklists && vm.checklists[0].item_bread"><a href="/process/projects" class="white"> {{vm.checklists[0].item_bread.project_name}}<span> - </span></a>
         <a href="/process/workflows/{{vm.checklists[0].item_bread.project_id}}" class="white"><span> {{vm.checklists[0].item_bread.folder_name}}</span></a>

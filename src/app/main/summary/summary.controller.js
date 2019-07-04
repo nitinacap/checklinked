@@ -207,7 +207,7 @@
     };
 
     vm.total_active_users = function ($index) {
-      debugger;
+      // debugger;
       var tot_active_users_all = 0;
       var arr = [];
       var idChk_arr = [];
@@ -260,7 +260,7 @@
         arr['tot_msg'] = tot_msg;
         arr['tot_active_users'] = tot_active_users;
         return arr;
-        debugger;
+        // debugger;
 
     }
 
@@ -313,7 +313,7 @@
     };
 
     function showComparison(checklist, user, conflicts) {
-      debugger;
+      // debugger;
       //console.log('checklist', checklist);
       console.log('conflicts', conflicts);
       //console.log('user', user);
@@ -350,7 +350,7 @@
       ];
       */
 
-      debugger;
+      // debugger;
       //console.log('conflicts2', conflicts2);
       $rootScope.showingUsers = [showMe, showThem];
 
@@ -417,7 +417,7 @@
     vm.submenu = [
       { link: '', title: 'Issues' },
       { link: 'schedule', title: 'Schedules' },
-      { link: '#', title: 'Reports' },
+      { link: 'reports', title: 'Reports' },
       { link: 'dashboard', title: 'Dashboard' }
     ];
 

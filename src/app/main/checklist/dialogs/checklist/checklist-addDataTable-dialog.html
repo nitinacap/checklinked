@@ -1,0 +1,63 @@
+<md-dialog class="dialog" aria-label="">
+
+    <form name="checklistForm" class="md-inline-form" ng-submit="vm.createDataTableSegment(vm.newItem.type,vm.newItem.name,vm.newItem.to,vm.newItem.dataTypes,vm.newItem.info,vm.type.type,vm.newItem.alert,vm.newItem.column,vm.newItem.row, $event)"
+        novalidate>
+        <md-toolbar class="md-accent md-hue-2">
+            <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+                <span class="title">{{vm.type.title}}</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+                    <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content ms-scroll>
+            <md-input-container class="md-block">
+                <label>{{vm.type.label}}</label>
+                <input name="name" ng-model="vm.newItem.name" required md-autofocus maxlength="155">
+                <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
+                    <div ng-message="required">
+                        <span ng-show="vm.newItem.dataType==1">name field is required</span>
+                        <span ng-show="vm.newItem.dataType!=1">Text Box Label is required</span>
+                    </div>
+                </div>
+            </md-input-container>
+
+            <md-input-container class="md-block">
+                    <label>{{vm.type.columns}}</label>
+                    <input  type="number" name="columns" ng-model="vm.newItem.column" min="1" ng-maxlength="2" ng-pattern="/^(\d)+$/" required >
+                    <div ng-messages="checklistForm.columns.$error" ng-show="checklistForm.columns.$touched" role="alert">
+                        <div ng-message="required">
+                            <span ng-show="vm.newItem.dataType==1">column field is required</span>
+                            <span ng-show="vm.newItem.dataType!=1">Text Box Label is required</span>
+                        </div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                        <label>{{vm.type.rows}}</label>
+                        <input type="number" name="rows" ng-model="vm.newItem.row" min="1" ng-maxlength="3" ng-pattern="/^(\d)+$/" required>
+                        <div ng-messages="checklistForm.rows.$error" ng-show="checklistForm.rows.$touched" role="alert">
+                            <div ng-message="required">
+                                <span ng-show="vm.newItem.dataType==1"> row field is required</span>
+                                <span ng-show="vm.newItem.dataType!=1">Text Box Label is required</span>
+                            </div>
+                        </div>
+                    </md-input-container>
+
+
+           
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="start center">
+                <md-button type="submit" md-no-ink class="md-raised md-accent" ng-disabled="checklistForm.$invalid || checklistForm.$pristine || vm.headingDialog"
+                    aria-label="Save" translate="CHECKLIST.OK" translate-attr-aria-label="CHECKLIST.OK">
+
+                </md-button>
+            </div>
+
+        </md-dialog-actions>
+    </form>
+</md-dialog>

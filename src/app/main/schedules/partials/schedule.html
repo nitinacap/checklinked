@@ -1,3 +1,19 @@
-<div class="form-wrapper  md-whiteframe-1dp flex pt-10">
-  <div ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
+<!-- calendar starts -->
+<div ng-if="vm.selectedView=='Calendar'" class="form-wrapper  md-whiteframe-1dp flex pt-10">
+  <div calendar="myCalendar" ui-calendar="uiConfig.calendar" ng-model="eventSources"></div>
 </div>
+<!-- calendar ends -->
+
+<!-- Gantt starts -->
+<div ng-if="vm.selectedView=='Gantt'" layout="column" class="p-20">
+  <div gantt api="gantt_options.api" column-width="gantt_options.columnWidth" max-height="1000" data="data"
+    from-date="gantt_options.fromDate" to-date="gantt_options.toDate" view-scale="gantt_options.scale">
+    <gantt-tree></gantt-tree>
+
+    <gantt-table columns=gantt_options.columns headers=gantt_options.columnsHeaders
+      formatters=gantt_options.columnsFormatters></gantt-table>
+    <gantt-tooltips delay=200></gantt-tooltips>
+
+  </div>
+</div>
+<!-- Gantt ends -->

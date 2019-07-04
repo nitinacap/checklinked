@@ -486,17 +486,17 @@ input[type=file] {
     margin-top: 10px;
 }
 
-.breadcrumb ul {
+.custom-breadcrumb ul {
     list-style: none;
     padding-left: 15px;
     margin-bottom: 8px;
-    background: #4e79aa;
+    background: #4e79aa !important;
     padding: 10px;
     margin: 0;
     padding-top: 24px;
 }
 
-.breadcrumb ul li {
+.custom-breadcrumb ul li {
     font-size: 14px;
 }
 .bold{
@@ -553,4 +553,14 @@ a.ms-navigation-button.Analyze.md-default-theme.analyze {
         padding-left:0px !important;
     }
     
+}
+
+md-toolbar{
+    background-color: transparent !important;
+}
+
+.showLoadingImage{
+    width: 100vh;
+    height: 100vh;
+    margin: auto;
 }

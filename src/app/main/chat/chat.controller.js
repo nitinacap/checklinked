@@ -563,9 +563,11 @@
         var data = notification.item;
         var message_count = data.message_count;
         var notification_count = data["user_notification" + user_id];
+        var alert_count = data["user_alert" + user_id];
+
         vm.submenu = [
           { link: 'alerts', title: 'Alerts' },
-          { link: 'invitations', title: 'Action Items' },
+          { link: 'invitations', title: 'Action Items', notification: alert_count },
           { link: '', title: 'Messages', notification: message_count },
           { link: 'notification', title: 'Notifications', notification: notification_count }
         ];

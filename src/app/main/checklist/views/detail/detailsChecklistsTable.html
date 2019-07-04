@@ -1,0 +1,180 @@
+<style>
+  .data-table-show td input{
+    padding: 10px;
+    width: 100%;
+  }
+
+  .data-table-show{
+    background: #fff;
+    width: 100%;
+  }
+
+  div.checklist-data-table{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .data-table-show tr{
+    border-bottom: 2px solid gray !important;
+    display: block;
+  }
+
+  .data-table-show td {
+    /* border-bottom: 1px solid gray; */
+    min-height: 25px;
+    height: 25px;
+}
+.data-table-show td div{
+    height:  100%;
+  }
+
+.data-table-show td.right,.data-table-show td.right div input.right {
+  text-align:right;
+}
+.data-table-show td.left,.data-table-show td.n-def,.data-table-show td.left div input.left {
+  text-align:left;
+}
+.data-table-show td.center,.data-table-show td.center div input.center {
+  text-align:center;
+}
+
+.data-table-show td.top {
+  vertical-align:top;
+}
+.data-table-show td.middle {
+  vertical-align:middle;
+}
+.data-table-show td.bottom {
+  vertical-align:bottom;
+}
+
+.data-table-show td.cell-border {
+    border: 2px solid #000 !important;
+}
+.table-cell-date input{
+   padding:5px !important;
+   border: 0px !important;
+}
+
+</style>
+
+<div class="checklist-item checklist-heading-bg checklist-data-table" ng-class="{'green':vm.passedNotification.id==heading.id}"
+  md-ink-ripple layout="row" layout-align="start center">
+  <!-- {{heading.datatable}} -->
+
+
+  <!-- Start from Here  -->
+
+
+    
+  <div ng-repeat="head in heading.datatable" style="width:100%;">
+         
+
+
+  <table class="table table-bordered chk_data_table data-table-show" cellspacing="5" cellpadding="0">
+      <tbody>
+          <tr ng-repeat="x in [].constructor(head.row) track by $index" ng-init="current = $parent.start; $parent.start=$parent.start+head.column;initRow($index);myvar">
+                <td ng-repeat="y in [].constructor(head.column) track by $index" width="{{100/head.column}}%" ng-class="[['Date','Formula','Currency','Text','Number'].indexOf(head.table_str[current + $index].type) > -1 ? 'cell-border' : '',head.table_str[current + $index].text_align,head.table_str[current + $index].text_position]" data-ng-init="init(current + $index,head.table_str[current + $index],heading)">
+                    
+                      <!-- {"id":17,"index":"0","cell_no":"A1","row_no":"A","col_no":"1","type":"Label","value":"Date","text_align":"none","text_position":"bottom","created_at":1556891378} 
+                       -->
+                      <div ng-if="head.table_str[current + $index].type == 'Label'" class="t-bold">
+                          <b class="label_bold"> {{head.table_str[current + $index].value}}</b>
+                      </div>
+
+                      <div ng-if="head.table_str[current + $index].type == 'Currency'" class="t-bold" ng-blur="autoCalculate(current + $index,head.table_str,heading)">
+                          <span class="" style="width: auto;text-align: right;padding: 10px;padding-right: 0;"> {{head.table_str[current + $index].value}}</span><input type="text" autocomplete="off" ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]" name="row+current + $index" class="md-input" ng-change="autoCalculate(current + $index,head.table_str,heading)" ng-blur="autoCalculate(current + $index,head.table_str,heading)" ng-class="[head.table_str[current + $index].text_align,head.table_str[current + $index].text_position]" ng-keypress="isNumberKey($event,current + $index,head.table_str[current + $index].value,heading,head.table_str[current + $index].type)" style="width: auto;text-align: left;padding-left: 3px;">
+                      </div>
+
+
+                 <div ng-if="head.table_str[current + $index].type == 'Date'" style="border: 0px solid #fff !important;display: inline-grid;" class="table-cell-date">
+                            <!-- <md-datepicker ng-init="vm.convertDate(vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index],heading,row+current + $index)"  ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index]" class="md-input"></md-datepicker> -->
+
+                            <input type="date" ng-init="vm.convertDate(vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index],heading,row+current + $index)"  ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index]" class="md-input" />
+                           
+                      </div>
+                      <div ng-if="head.table_str[current + $index].type == 'Number'" >
+                          <input type="text" autocomplete="off" ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]" name="row+current + $index" class="md-input" ng-change="autoCalculate(current + $index,head.table_str,heading)"  ng-blur="autoCalculate(current + $index,head.table_str,heading)" ng-class="[head.table_str[current + $index].text_align,head.table_str[current + $index].text_position]" ng-keypress="isNumberKey($event,current + $index,head.table_str[current + $index].value,heading)">
+
+
+                          
+                      </div>
+                      <div ng-if="head.table_str[current + $index].type == 'Text'">
+                          <input type="text" autocomplete="off" ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]" name="row+current + $index" class="md-input"  ng-keypress="autoTrimWord(current + $index,head.table_str)">
+                      </div>
+                      <div ng-if="head.table_str[current + $index].type == 'Formula'" class="t-bold">
+                          <input ng-disabled="true" type="text"  name="row+current + $index" class="md-input" ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]" >
+                      </div>
+
+                      <div ng-if="head.table_str[current + $index].type == undefined" class="t-bold">
+                          {{head.table_str[current + $index].value}}
+                      </div>
+                      <!-- {{myvar = row_arrIndex}} -->
+                      
+
+                </td>
+                <td style="width: 1%;" ng-init="row_arrIndex = vm.finished(head.column,current+head.column,head.table_str,heading)">
+                 
+                 <!-- {{row_arrIndex.row_arr}}
+                 {{row_arrIndex.head_arr}} -->
+                    <div class="buttons" layout="row" layout-align="start center" style="float: right;">
+                        <!-- heading.item_type=='table'" -->
+                
+                      <md-menu>
+                        <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
+                          translate-attr-aria-label="CHECKLIST.MORE">
+                          <md-icon md-font-icon="icon-dots-vertical" class="s18"></md-icon>
+                        </md-button>
+                
+                        <md-menu-content width="3" class="menu-height">  
+                          
+
+                          <md-menu-item  ng-show="heading.item_type =='table'">
+                              <md-button ng-disabled="checklist.complete " ng-click="vm.changeRow($event, head.table_str,$index+1,head.column,head.id,'header',row_arrIndex.row_arr,row_arrIndex.head_arr,heading)" aria-label="Set Header"
+                                translate-attr-aria-label="Set Header">
+                                <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                                <span translate="Set Header">Set Header</span>
+                              </md-button>
+                            </md-menu-item>
+
+                                            
+                              <md-menu-item  ng-show="heading.item_type =='table'" >
+                                  <md-button ng-disabled="checklist.complete" ng-click="vm.changeRow($event, head.table_str,$index+1,head.column,head.id,'update',row_arrIndex.row_arr,head.header,heading)" aria-label="Duplicate Row"
+                                    translate-attr-aria-label="Duplicate Row">
+                                    <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                                    <span translate="Duplicate Row"> Duplicate Row</span>
+                                  </md-button>
+                                </md-menu-item>
+                                
+                    
+                          <md-menu-item>
+                            <md-button ng-disabled="checklist.complete || !head.header"  ng-click="vm.add_from_database_table($event, checklist,heading,row_arrIndex.row_arr,head.header)" aria-label="Add from Database"
+                              translate-attr-aria-label="Add from Database">
+                              <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                              <span translate="Add from Database"></span>
+                            </md-button>
+                          </md-menu-item>
+                
+                          <md-menu-item>                          
+                            <md-button ng-disabled="checklist.complete" ng-click="vm.changeRow($event, head.table_str,$index+1,head.column,head.id,'delete',row_arrIndex.row_arr,head.header,heading)" aria-label="Delete Row"
+                              translate-attr-aria-label="Delete Row">
+                              <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                              <span translate="Delete Row">Delete Row</span>                
+                
+                            </md-button>
+                          </md-menu-item>
+                
+                        </md-menu-content>
+                      </md-menu>
+                    </div>
+                </td>
+          </tr>
+    
+      </tbody>
+    </table>
+  </div>
+
+  <!-- End Here -->
+
+  
+</div>

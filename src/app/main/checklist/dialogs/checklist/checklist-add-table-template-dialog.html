@@ -1,0 +1,45 @@
+<md-dialog class="dialog" aria-label="New Data Table Template">
+    <form name="checklistForm" class="md-inline-form" novalidate>
+        <md-toolbar class="md-accent md-hue-2">
+            <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+                <span class="title">{{vm.title}}</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+                    <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content ms-scroll>
+            <md-input-container class="md-block">
+                <label translate="Template Name">Template Name</label>
+                <input name="name" ng-model="vm.table_template_name" required md-autofocus>
+                <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
+                    <div ng-message="required">
+                        <span translate="Template Name field is required">Template Name field is required</span>
+                    </div>
+                </div>
+            </md-input-container>
+
+                <md-input-container class="md-block">
+                <label translate="Description">Description</label>
+                <input name="description" ng-model="vm.table_template_description">
+            </md-input-container>
+
+        </md-dialog-content>
+
+
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="end center" flex>
+                <md-button type="submit"  ng-click="vm.saveTableAsTemplate()"
+                           class="send-button md-accent md-raised"
+                           ng-disabled="checklistForm.$invalid || checklistForm.$pristine"
+                           aria-label="Save Template" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">
+                    SAVE Template
+                </md-button>
+
+
+             </div>
+
+        </md-dialog-actions>
+    </form>
+</md-dialog>

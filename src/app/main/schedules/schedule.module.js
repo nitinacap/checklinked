@@ -2,7 +2,13 @@
   'use strict';
 
   angular
-    .module('app.schedule', ["ui.calendar", "gantt"])
+    .module('app.schedule', [
+      "ui.calendar",
+      'gantt', 
+      'gantt.tooltips',
+      'gantt.table',
+      'gantt.tree'
+      ])
     .config(config);
 
   /** @ngInject */

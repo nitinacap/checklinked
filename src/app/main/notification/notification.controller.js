@@ -154,14 +154,16 @@
 
     // Content sub menu
     function listMenu() {
+      debugger;
       var user_id = $cookies.get("useridCON").toString();
       api.notifications.count_notifi().success(function(notification) {  
         var data = notification.item;           
         var message_count = data.message_count;
         var notification_count = data["user_notification" + user_id];
+        var alert_count = data["user_alert" + user_id];
 
       vm.submenu = [
-        { link: 'alerts', title: 'Alerts' },
+        { link: 'alerts', title: 'Alerts', notification: alert_count },
         { link: 'invitations', title: 'Action Items' },
         { link: 'chat.message', title: 'Messages', notification: message_count },
         { link: '', title: 'Notifications', notification: notification_count }

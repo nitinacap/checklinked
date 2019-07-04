@@ -138,7 +138,8 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         case 'alerts':
         case 'dashboard':
         case 'checkout':
-        case 'schedule':
+        case 'schedule': 
+        case 'reports': 
         case 'to-do':
         case 'revoke':
           //case 'file-manager':

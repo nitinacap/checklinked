@@ -15,6 +15,7 @@
     </div>
 
     <div layout="row" flex="15" layout-align="end center">
+
       <md-icon md-font-icon="icon-paperclip" class="is-important indicator-icon s18" ng-click="vm.openUploadAttachmentDialog($event, 'heading', heading.id, $index, heading.attachments)"
         ng-if="heading.attachments.length>0">
       </md-icon>
@@ -26,6 +27,7 @@
     </div>
 
     <div class="buttons" layout="row" layout-align="start center">
+        <!-- heading.item_type=='table'" -->
 
       <md-menu>
         <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
@@ -35,51 +37,61 @@
 
         <md-menu-content width="3" class="menu-height">
 
-          <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'"  ng-click="vm.add('item',heading.id, $event)" aria-label="Add Checkboxes"
+          <md-menu-item ng-show="heading.item_type !='table'">
+            <md-button ng-disabled="checklist.complete"  ng-click="vm.add('item',heading.id, $event)" aria-label="Add Checkboxes"
               translate-attr-aria-label="CHECKLIST.ADD_CHECKBOXES">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
               <span translate="CHECKLIST.ADD_CHECKBOXES">Add New Checkboxes</span>
             </md-button>
           </md-menu-item>
 
-          <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'"  ng-click="vm.add('item',heading.id, $event, 'yn')" aria-label="Add yn Checkboxes"
+          <md-menu-item ng-show="heading.item_type !='table'">
+            <md-button ng-disabled="checklist.complete"  ng-click="vm.add('item',heading.id, $event, 'yn')" aria-label="Add yn Checkboxes"
               translate-attr-aria-label="CHECKLIST.ADD_CHECKBOXES_YN">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
               <span translate="CHECKLIST.ADD_CHECKBOXES_YN">Add Y/N Checkboxes</span>
             </md-button>
           </md-menu-item>
 
-          <md-menu-item>
-            <md-button  ng-disabled="checklist.complete || section.section_na=='true'"  ng-click="vm.add('item',heading.id, $event, '2')" aria-label="Add Text Box"
+          <md-menu-item ng-show="heading.item_type !='table'">
+            <md-button  ng-disabled="checklist.complete"  ng-click="vm.add('item',heading.id, $event, '2')" aria-label="Add Text Box"
               translate-attr-aria-label="CHECKLIST.ADD_TEXT_BOX">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
               <span translate="CHECKLIST.ADD_TEXT_BOX">Add Text Box</span>
             </md-button>
           </md-menu-item>
 
-          <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'" ng-click="vm.toggle('references',heading)" aria-label="Show References"
+          <md-menu-item ng-show="heading.item_type !='table'">
+            <md-button ng-disabled="checklist.complete" ng-click="vm.toggle('references',heading)" aria-label="Show References"
               translate-attr-aria-label="CHECKLIST.SHOW_REFERENCES">
               <md-icon ng-show="heading.showReferences" class="md-accent-fg s18" md-font-icon="icon-checkbox-marked-outline"></md-icon>
               <md-icon ng-hide="heading.showReferences" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline"></md-icon>
               <span translate="CHECKLIST.SHOW_REFERENCES">Show References</span>
             </md-button>
           </md-menu-item>
-          <!-- <md-divider class="md-default-theme"></md-divider> -->
+
+
+          
+
+          <md-menu-item  ng-show="heading.item_type =='table'">
+              <md-button ng-disabled="checklist.complete" ng-click="vm.openHeadingDialog($event, heading, heading.item_type,'edit')" aria-label="Edit Table"
+                translate-attr-aria-label="Edit Table">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                <span translate="Edit Table">Edit Table</span>
+              </md-button>
+            </md-menu-item>
 
           <md-menu-item>
 
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'"  ng-click="vm.openConversationDialog('heading', heading.id, heading.name)" aria-label="Conversations"
+            <md-button ng-disabled="checklist.complete"  ng-click="vm.openConversationDialog('heading', heading.id, heading.name)" aria-label="Conversations"
               translate-attr-aria-label="CHECKLIST.CONVOS">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
               <span translate="CHECKLIST.CONVOS">Conversations</span>
             </md-button>
           </md-menu-item>
 
-          <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'" ng-click="vm.openUploadAttachmentDialog($event, 'heading', heading.id, $index,heading.attachments)"
+          <md-menu-item ng-show="heading.item_type !='table'">
+            <md-button ng-disabled="checklist.complete" ng-click="vm.openUploadAttachmentDialog($event, 'heading', heading.id, $index,heading.attachments)"
               aria-label="Attachments" translate-attr-aria-label="CHECKLIST.ATTACHMENTS">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-attachment"></md-icon>
               <span translate="CHECKLIST.ATTACHMENTS">Attachments</span>
@@ -88,7 +100,24 @@
 
 
           <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'" ng-click="vm.openHeadingDialog($event, heading)" aria-label="Edit Heading Name"
+            <md-button ng-disabled="checklist.complete" ng-click="vm.saveTableData($event, heading.id,heading.datatable[0].id,heading)" aria-label="Save Table"
+              translate-attr-aria-label="Save Table">
+              <md-icon class="md-accent-fg s18 ng-scope md-font icon-plus-circle-outline material-icons md-default-theme" md-font-icon="icon-plus-circle-outline" aria-hidden="true"></md-icon>
+              <span translate="Save Table">Save Table</span>
+            </md-button>
+          </md-menu-item>
+
+          <md-menu-item>
+            <md-button ng-disabled="checklist.complete" ng-click="vm.openTableFromTemplateDialog(heading.datatable[0].id)" aria-label="Create Table Template"
+              translate-attr-aria-label="Create Table Template">
+              <md-icon class="md-accent-fg s18 ng-scope md-font icon-plus-circle-outline material-icons md-default-theme" md-font-icon="icon-plus-circle-outline" aria-hidden="true"></md-icon>
+              <span translate="Create Table Template">Create Table Template</span>
+            </md-button>
+          </md-menu-item>
+
+
+          <md-menu-item>
+            <md-button ng-disabled="checklist.complete" ng-click="vm.openHeadingDialog($event, heading,heading.item_type)" aria-label="Edit Heading Name"
               translate-attr-aria-label="CHECKLIST.EDIT_HEADING_NAME">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
               <span translate="CHECKLIST.EDIT_HEADING_NAME"></span>
@@ -96,15 +125,19 @@
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'" ng-click="vm.deleteConfirm('heading',heading)" aria-label="Delete Heading"
+          
+            <md-button ng-disabled="checklist.complete" ng-click="vm.deleteConfirm('heading',heading,heading.item_type)" aria-label="Delete Heading"
               translate-attr-aria-label="CHECKLIST.DELETE_HEADING">
               <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
-              <span translate="CHECKLIST.DELETE_HEADING">Delete Heading</span>
+              <span  ng-show="heading.item_type !='table'" translate="CHECKLIST.DELETE_HEADING">Delete Heading</span>
+              <span  ng-show="heading.item_type =='table'" translate="Delete Table">Delete Table</span>
+
+
             </md-button>
           </md-menu-item>
           <md-divider class="md-default-theme"></md-divider>
           <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'" ng-click="vm.cutDialog('heading', heading.id, heading.id_parent)"  aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
+            <md-button ng-disabled="checklist.complete" ng-click="vm.cutDialog('heading', heading.id, heading.id_parent)"  aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
            
               <span translate="GROUP.CUT"></span>
@@ -112,21 +145,21 @@
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'" ng-click="vm.coypDialog($event, group.id)" aria-label="Copy" translate-attr-aria-label="GROUP.COPY">
+            <md-button ng-disabled="checklist.complete" ng-click="vm.coypDialog($event, group.id)" aria-label="Copy" translate-attr-aria-label="GROUP.COPY">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
               <span>Copy</span>
             </md-button>
           </md-menu-item>
 
           <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'" ng-click="vm.pasteDialog('item', heading.id, heading.id)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
+            <md-button ng-disabled="checklist.complete" ng-click="vm.pasteDialog('item', heading.id, heading.id)" aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
               <span translate="GROUP.PASTE"></span>
             </md-button>
           </md-menu-item>
 
           <md-menu-item ng-if="heading.move_item_id">
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'" ng-click="vm.undoDialog(heading.move_item_id)" aria-label="Undo" translate-attr-aria-label="GROUP.UNDO">
+            <md-button ng-disabled="checklist.complete" ng-click="vm.undoDialog(heading.move_item_id)" aria-label="Undo" translate-attr-aria-label="GROUP.UNDO">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>
               <span translate="GROUP.UNDO"></span>
             </md-button>

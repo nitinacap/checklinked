@@ -1,5 +1,5 @@
 <page-toolbar datas="vm.submenu"> </page-toolbar>
-<md-toolbar class="pt-20 breadcrumb" ng-show="vm.isBreadcrum">
+<md-toolbar class="pt-20 custom-breadcrumb" ng-show="vm.isBreadcrum">
   <ul>
     <li ng-show="vm.checklists && vm.checklists[0].item_bread"><a href="/process/projects" class="white"> {{vm.checklists[0].item_bread.project_name}}<span> - </span></a>
         <a href="/process/workflows/{{vm.checklists[0].item_bread.project_id}}" class="white"><span> {{vm.checklists[0].item_bread.folder_name}}</span></a>
@@ -69,10 +69,10 @@
               </md-menu-item>
 
               <md-menu-item  ng-show="vm.checkIsPermission.indexOf('create-view-their-own-schedule') !== -1">
-                <md-button ng-disabled="checklist.complete" ng-click="vm.addschedule('Schedule',checklist.idCHK, $event)" aria-label="Add New Schedule"
-                  translate-attr-aria-label="CHECKLIST.SCHEDULED">
+                <md-button ng-disabled="checklist.complete" ng-click="vm.addschedule('Schedule',checklist.idCHK, $event)" aria-label="Scheduler"
+                  translate-attr-aria-label="CHECKLIST.SCHEDULER">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-calendar"></md-icon>
-                  <span translate="CHECKLIST.SCHEDULED">Schedule</span>
+                  <span translate="CHECKLIST.SCHEDULER">Scheduler</span>
                 </md-button>
               </md-menu-item>
 
@@ -216,6 +216,10 @@
           <div data-as-sortable-item md-ink-ripple ng-show="!section.notApplicable && vm.isExpanded('section',section) || globalSearch.searchTerm"
             data-ng-repeat="heading in section.headings | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
             <div ng-include="'app/main/checklist/views/detail/detailsChecklistsHeadings.html'"></div>
+            <div ng-show="heading.item_type=='table'">
+              <div ng-include="'app/main/checklist/views/detail/detailsChecklistsTable.html'"></div>
+           </div>
+
             <div class="checklist-items" data-as-sortable="vm.dragControlListenersItems" data-ng-model="heading.items">
               <div data-as-sortable-item md-ink-ripple
                 ng-show="!heading.notApplicable && vm.isExpanded('heading', heading) || vm.isHeader || globalSearch.searchTerm"

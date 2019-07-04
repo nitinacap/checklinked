@@ -14,7 +14,7 @@
                     </p>
           <md-input-container class="md-block">
                 <label>{{ vm.type ? '' : 'Project' }} Name</label>
-                <input name="name" ng-model="vm.folder.name" required md-autofocus>
+                <input name="name" capitalize ng-model="vm.folder.name" required md-autofocus>
                 <div ng-messages="folderForm.name.$error" ng-show="folderForm.name.$touched" role="alert">
                     <div ng-message="required">
                         <span translate="FOLDER.ERRORS.FOLDER_NAME_REQUIRED">Workflow Name field is required</span>

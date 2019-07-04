@@ -11,16 +11,17 @@
         <span>Internal Templates</span>
       </md-tab-label>
       <md-tab-body>
-        <div ng-include="'app/main/templates/partials/public-templates.html'"></div>
+        <div ng-include="'app/main/templates/partials/internal-templates.html'"></div>
       </md-tab-body>
     </md-tab>
 
     <md-tab class="pr-30" ng-click="myvalue = true;">
       <md-tab-label>
-        <span>Public Templates{{myvalue}}</span>
+        <span>Public Templates</span>
       </md-tab-label>
       <md-tab-body>
-        <div ng-include="'app/main/templates/partials/internal-templates.html'"></div>
+        <div ng-include="'app/main/templates/partials/public-templates.html'"></div>
+
       </md-tab-body>
     </md-tab>
 
@@ -47,7 +48,7 @@
         </md-menu>
         </md-tab-label>
         <md-tab-body>
-          <div ng-include="'app/main/templates/partials/internal-templates.html'"></div>
+          <div ng-include="'app/main/templates/partials/public-templates.html'"></div>
         </md-tab-body>
         </md-tab>
 

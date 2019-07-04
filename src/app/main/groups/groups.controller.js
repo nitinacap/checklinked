@@ -70,7 +70,6 @@
     vm.groupOrderDescending = false;
     vm.openGroupDialog = openGroupDialog;
     vm.addGroupDialog = addGroupDialog;
-    vm.deleteGroup = deleteGroup;
     vm.toggleSidenav = toggleSidenav;
     vm.toggleFilter = toggleFilter;
     vm.resetFilters = resetFilters;
@@ -84,6 +83,7 @@
     vm.publishTemplateDialog = publishTemplateDialog;
     vm.linkExistingDialog = linkExistingDialog;
     vm.undoDialog = undoDialog;
+
 
     /* Dialog Methods */
 
@@ -265,7 +265,7 @@
 
           vm.group.sending = false;
 
-          vm.showLoadingImage = false;
+          // vm.showLoadingImage = false;
 
           //Close Dialog Window
         }
@@ -322,7 +322,9 @@
     }
 
     /* Delete Group */
-    function deleteGroup(group, event) {
+    function deleteGroup(group, event, what) {
+
+      if( what == "schedule") group.name = vm.scheduler_type.group_name + " Scheduler"; 
 
      
 
@@ -338,6 +340,13 @@
         clickOutsideToClose: false
       })
         .then(function (type) {
+
+          if( what == "schedule") {
+            vm.deleteScheduler(group.id);
+            return 1;
+          }
+
+          console.log('not allowed')
           deleteGroupItem(group);
         }, function () {
           $scope.status = 'You cancelled the dialog.';
@@ -349,12 +358,12 @@
        vm.showLoadingImage = true;
 
       api.groups.destroy(group.id, $rootScope.user.token).error(function (res) {
-        return $rootScope.message("Error Deleteing Workflow", 'warning');
+        return $rootScope.message("Error Deleting Workflow", 'warning');
       }).success(function (res) {
         // vm.isLoader = false;
         vm.showLoadingImage = false;
         if (res === void 0 || res === null || res === '') {
-          $rootScope.message("Error Deleteing Workflow", 'warning');
+          $rootScope.message("Error Deleting Workflow", 'warning');
         } else if (res.code) {
           $rootScope.message(res.message, 'warning');
         } else {
@@ -662,6 +671,118 @@
         clickOutsideToClose: false
       });
     }
+
+    // Schedule starts
+
+    vm.addschedule = addschedule;
+    vm.saveScheduler = saveScheduler;
+    vm.deleteScheduler = deleteScheduler;
+
+    function getSchedulerByChek() {
+
+
+      vm.newScheduler = {};
+      vm.newScheduler.type = 'get';
+      vm.newScheduler.item_type_id = vm.scheduler_type.group_id;
+      vm.newScheduler.item_type = 'workflow';
+
+      api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
+        if (d.data.type == 'success') {
+          console.log('dddd', d)
+          
+          vm.item = d.data.data.item;
+          if (vm.item) {
+            vm.newScheduler.from_date = new Date(vm.item.from_date);
+            vm.newScheduler.to_date = new Date(vm.item.to_date);
+            vm.newScheduler.gantt_row = vm.item.gantt_chat;
+            vm.newScheduler.color = vm.item.color;
+            vm.newScheduler.all_day = vm.item.all_day == 1 ? true : false;
+            vm.newScheduler.repeat = vm.item.repeat;
+            vm.newScheduler.start_time = new Date(vm.item.start_time);
+            vm.newScheduler.end_time = new Date(vm.item.end_time);
+            vm.newScheduler.end = vm.item.end;
+            vm.newScheduler.id = vm.item.id;
+          }
+
+        }
+      })
+    };
+
+    
+
+    function addschedule(ev, group) {
+
+      // vm.type.title = "Scheduler";
+      vm.scheduler_type = {};
+
+      vm.scheduler_type.project_name = group.item_bread.project_name;
+      vm.scheduler_type.group_name = group.name;
+      vm.scheduler_type.group_id = group.id;
+
+      getSchedulerByChek();
+
+      console.log('group', group);
+      console.log('vm.scheduler_type.group_id', vm.scheduler_type);
+
+      $mdDialog.show({
+        controller: function DialogController($scope, $mdDialog) {
+          $scope.closeDialog = function () {
+            $mdDialog.hide();
+          }
+        },
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/groups/dialogs/group/group-add-dialog-scheduler.html',
+        parent: angular.element($document.find('#checklist')),
+        targetEvent: ev,
+        clickOutsideToClose: true
+      });
+    };
+
+    function saveScheduler() {
+
+      // = group.item_bread.project_name;
+      //  = group.name;
+
+      vm.newScheduler.item_type_id = vm.scheduler_type.group_id;
+      vm.newScheduler.item_type = 'workflow';
+      // vm.newScheduler.checklist_id = vm.idCHK;
+      // vm.newScheduler.checklist_name = vm.checklists[0].name;
+      vm.newScheduler.workflow_name = vm.scheduler_type.group_name;
+      vm.newScheduler.project_name =  vm.scheduler_type.project_name;
+      vm.newScheduler.id = vm.item ? vm.item.id : '';
+
+      console.log('vm.item savesc', vm.item)
+      vm.newScheduler.type = vm.item ? 'update' : 'save';
+
+      console.log('vm.newScheduler' , vm.newScheduler)
+
+      api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
+        if (d.data.type == 'success') {
+          $rootScope.message(vm.item ? "Schedule updated successfully" : "New Worrkflow schedule created successfully", 'success');
+          $mdDialog.hide();
+        }
+
+      });
+
+    };
+
+    function deleteScheduler(id) {
+      vm.newScheduler = {};
+      vm.newScheduler.type = 'delete';
+      vm.newScheduler.item_id = id;
+      vm.closeDialog();
+      api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
+        if (d.data.type == 'success') {
+          $rootScope.message("Schedule deleted successfully", 'success');
+
+        }
+
+      });
+      console.log('deleteScheduler',id)
+    }
+
+      // Schedule ends
 
   }
 

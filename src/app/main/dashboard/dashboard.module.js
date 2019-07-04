@@ -2,14 +2,9 @@
   'use strict';
 
   angular
-    .module('app.dashboard', ['chart.js',
-    'gantt', // angular-gantt.
-    'gantt.sortable',
-    'gantt.progress',
-    'gantt.table',
-    'gantt.tree',
-    'gantt.groups',
-    'gantt.resizeSensor'])
+    .module('app.dashboard', [
+      'chart.js'
+    ])
     .config(config);
 
   /** @ngInject */

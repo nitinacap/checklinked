@@ -111,8 +111,11 @@
       // Others
       'app.other',
 
-       // Schedules
-       'app.schedule'
+      // Schedules
+      'app.schedule',
+
+      // Reports
+      'app.reports'
 
     ]);
 })();

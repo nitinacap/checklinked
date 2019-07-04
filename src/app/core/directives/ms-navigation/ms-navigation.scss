@@ -4,6 +4,11 @@
 
 .ms-navigation {
 
+  .ms-navigation-node .ms-navigation-item > .ms-navigation-button.active .Communicate.badge{
+        background-color:green;
+
+    }
+
     display: block;
     position: relative;
     color: rgba(255, 255, 255, 0.70);
@@ -115,11 +120,13 @@
                         color: #FFFFFF;
                     }
 
-                    .badge {
-                        background: #FFFFFF !important;
-                        color: rgba(0, 0, 0, 0.87) !important;
-                    }
+           
                 }
+                .success-badge {
+                    background: green !important;
+                    color: #fff !important;
+                }
+    
             }
         }
 

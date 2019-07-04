@@ -1,0 +1,84 @@
+<md-dialog class="dialog" aria-label="">
+  <form name="checklistForm" class="md-inline-form" ng-submit="vm.SaveNewRow()" novalidate>
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">Add to Schedule</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content ms-scroll>
+
+      <div class="simple-table-container md-background-bg md-whiteframe-1dp mb-40 pb-40 ">
+
+        <div layout="row" layout-align="start center" class="pl-25">
+          <md-progress-circular ng-disabled="!vm.excels.progress" md-mode="indeterminate" md-diameter="20">
+          </md-progress-circular>
+        </div>
+
+        <table class="bordered-table" cellpadding="0" cellspacing="0" ms-responsive-table>
+          <thead>
+            <tr>
+              <th width="3%" class="text-left">
+                Add
+              </th>
+              <th class="text-left">
+                Project
+              </th>
+              <th class="text-left"> Group</th>
+              <th class="text-left"> Checklist</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left">
+                <md-icon class="md-accent-fg " ng-click="vm.oepnAddEditSchedulerDialog(22)" md-font-icon="icon-plus-circle"></md-icon>
+              </td>
+
+              <td class="text-left" colspan=3> <input class="form-control md-accent-fg"
+                  ng-model="vm.non_Checklist_input" placeholder="Add Non-Checklist Event" /> </td>
+
+
+            </tr>
+          </tbody>
+          
+          <tbody ng-repeat="project in vm.addToSch ">
+
+            <tr class="text-left">
+              <td ></td>
+              <td> 
+                <md-icon class="md-accent-fg " ng-click="vm.displayMoreDataAddToScheduler('open', $index)" ng-if="vm.displayDataAddToScheduler && project.display" md-font-icon="fa fa-angle-down"></md-icon> 
+                <md-icon class="md-accent-fg " ng-click="vm.displayMoreDataAddToScheduler('close', $index)" ng-if="!vm.displayDataAddToScheduler || !project.display" md-font-icon="fa fa-angle-up"></md-icon> 
+                {{project.proj_name}} </td>
+              <td> </td>
+              <td> </td>
+            </tr>
+
+            <tr ng-if="vm.displayDataAddToScheduler  && project.display"  class="text-left" ng-repeat-start="workflow in project.workflows ">
+              <td><md-icon class="md-accent-fg " ng-click="vm.oepnAddEditSchedulerDialog( workflow.id, 'workflow', project.proj_name,workflow.wf_name)" md-font-icon="icon-plus-circle"></md-icon></td>
+              <td></td>
+              <td>{{workflow.wf_name}}</td>
+              <td></td>
+            </tr>
+
+
+            <tr ng-if="vm.displayDataAddToScheduler  && project.display"  class="text-left" ng-repeat-end ng-repeat='checklist in workflow.checklists '>
+              <td><md-icon class="md-accent-fg " ng-click="vm.oepnAddEditSchedulerDialog( checklist.id, 'checklist', project.proj_name, workflow.wf_name, checklist.name)" md-font-icon="icon-plus-circle"></md-icon></td>
+              <td></td>
+              <td></td>
+              <td>{{checklist.name}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+      </div>
+
+    </md-dialog-content>
+
+
+  </form>
+</md-dialog>

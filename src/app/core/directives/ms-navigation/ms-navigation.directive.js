@@ -478,6 +478,8 @@
           $scope.$apply(function(){
             $rootScope.message_count = data.message_count;
             $rootScope.notification_count = data["user_notification" + user_id];
+            $rootScope.alert_count = data["user_alert" + user_id];
+            $scope.user_alert = data["user_alert" + user_id];
             $scope.total = data["total"+user_id];
           });
         }

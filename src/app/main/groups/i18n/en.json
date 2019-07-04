@@ -58,6 +58,7 @@
     "INSERT_PICTURE": "Insert picture",
     "DELETE": "Delete",
     "DELETE_GROUP": "Delete Workflow",
+    "SCHEDULER": "Scheduler",
     "NAME": "Workflow Name",
     "EDIT_GROUP": "Edit Name",
     "DUPLICATE": "Duplicate",

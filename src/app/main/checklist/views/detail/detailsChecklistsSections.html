@@ -73,8 +73,9 @@
             </md-button>
           </md-menu-item>
 
+        
           <md-menu-item>
-            <md-button ng-disabled="checklist.complete || section.section_na=='true'"  ng-click="vm.addTable('heading',section.id, $event)" aria-label="Add New Heading"
+            <md-button ng-disabled="checklist.complete || section.section_na=='true'"  ng-click="vm.add('datatable',section.id, $event)" aria-label="Add Table"
               translate-attr-aria-label="CHECKLIST.ADD_TABLE">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
               <span translate="CHECKLIST.ADD_TABLE">Add Table</span>
@@ -121,6 +122,16 @@
               <span translate="CHECKLIST.DELETE_SECTION">Delete Section</span>
             </md-button>
           </md-menu-item>
+     
+          <md-menu-item>
+            <md-button ng-disabled="checklist.complete || section.section_na=='true'"  ng-click="vm.createTableFromTemplate(section.id)" aria-label="Create Table from Template"
+              translate-attr-aria-label="">
+              <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+              <span translate="">Create Table from Template</span>
+            </md-button>
+          </md-menu-item>
+
+
           <md-divider class="md-default-theme"></md-divider>
           <md-menu-item>
             <md-button ng-disabled="checklist.complete || section.section_na=='true'"  ng-click="vm.cutDialog('section', section.id, section.idCHK)" aria-label="Cut" translate-attr-aria-label="GROUP.CUT">

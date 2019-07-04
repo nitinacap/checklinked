@@ -216,3 +216,29 @@ md-dialog {
 
   }
 }
+.formating-holder {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  > label {
+    padding-right: 10px;
+  }
+  > md-input-container {margin: 0;}
+}
+
+.numbers-holder 
+{> md-input-container {
+  display: flex;
+  margin-top: 0;
+  label.fs-16 {
+    position: static;
+  }
+  > div {
+    display: flex;
+    align-items: center;
+  }
+  md-select {
+    margin: 10px;
+  }
+}
+}

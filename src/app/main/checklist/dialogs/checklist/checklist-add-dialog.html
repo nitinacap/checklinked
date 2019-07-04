@@ -1,5 +1,5 @@
 <md-dialog class="dialog" aria-label="">
-    <form name="checklistForm" class="md-inline-form" ng-submit="vm.createSegment(vm.newItem.type,vm.newItem.name,vm.newItem.to,vm.newItem.dataTypes,vm.newItem.info,vm.type.type,vm.newItem.alert)"
+    <form name="checklistForm" class="md-inline-form" ng-submit="vm.createSegment(vm.newItem.type,vm.newItem.name,vm.newItem.to,vm.newItem.dataTypes,vm.newItem.info,vm.type.type,vm.newItem.alert, vm.newItem.alert_sms, vm.newItem.mobile)"
         novalidate>
         <md-toolbar class="md-accent md-hue-2">
             <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
@@ -87,6 +87,27 @@
                     </md-checkbox>
 
                 </div>
+
+                <div ng-if="vm.newItem.alert" layout="row" layout-wrap>
+                    <md-checkbox ng-model="vm.newItem.alert_sms" aria-label="yes" class="md-block">
+                        Send Alert as SMS Text
+                    </md-checkbox>
+                </div>
+
+                <div ng-if="vm.newItem.alert && vm.newItem.alert_sms" layout="row" layout-wrap >
+                    <md-input-container  class="md-block">
+                        <label>Mobile Number</label>
+                        <input name="name" style="color: #000;" type="number" ng-model="vm.newItem.mobile" ng-required="vm.newItem.alert_sms" >
+                    </md-input-container>
+                </div>
+                
+                    <!-- <md-radio-group ng-model="vm.newItem.dataTypes">
+                        <md-radio-button  value="AT&T" class="md-primary">AT&T</md-radio-button>
+                        <md-radio-button  value="" class="md-primary">Req</md-radio-button>
+                        </md-radio-button>
+                    </md-radio-group> -->
+
+                
 
             </md-input-container>
 

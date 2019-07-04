@@ -7,8 +7,9 @@
     .controller('alertsController', alertsController);
 
   /** @ngInject */
-  function alertsController($scope, api, $http, $rootScope, $mdDialog, $document) {
+  function alertsController($scope, api, $http, $rootScope, $cookies, $mdDialog, $document) {
     var vm = this;
+    vm.isLoader = true;
     vm.openConversationDialog = openConversationDialog;
     vm.saveArchieve = saveArchieve;
     vm.archieveDialog = archieveDialog;
@@ -16,8 +17,11 @@
     
   function getAlerts(){
     api.alert.get().then(function (d) {
+      listMenu();
       if(d.data.code != '-1'){
        vm.records = d.data.data;
+       vm.isLoader = false;
+
       }
   });
     
@@ -86,12 +90,29 @@
   getAlerts();
 
         // Content sub menu
-          vm.submenu = [
-          { link: '', title: 'Alerts' },
-          { link: 'invitations', title: 'Action Items' },
-          { link: 'chat.message', title: 'Messages', notification: $rootScope.message_count },
-          { link: 'notification', title: 'Notifications', notification: $rootScope.notification_count }
-        ];
+
+        function listMenu() {
+          var user_id = $cookies.get("useridCON").toString();
+          api.notifications.count_notifi().success(function (notification) {
+            var data = notification.item;
+            var message_count = data.message_count;
+            var notification_count = data["user_notification" + user_id];
+            var alert_count = data["user_alert" + user_id];
+    
+  
+              vm.submenu = [
+                { link: '', title: 'Alerts', notification: alert_count },
+                { link: 'invitations', title: 'Action Items' },
+                { link: 'chat.message', title: 'Messages', notification: message_count },
+                { link: 'notification', title: 'Notifications', notification: notification_count }
+              ];
+         
+          });
+        }
+    
+    
+        listMenu();
+
 
         setTimeout(function () {
           $('.Communicate').addClass('communicate');

@@ -16,9 +16,10 @@
        ng-if="node.uisref && node.title"
        ng-hide="vm.appState == 'app.queue' && vm.showQueue == 'false'">
 
-     <i class="fa s16 fa-{{node.icon}} "  ng-if="node.icon"></i>
-      <span class="title {{node.title}}" translate="{{node.translate}}" flex>{{node.title}}</span>
-      <span class="badge white-fg"  ng-if="total &&  total > 0 && node.title=='Communicate'" style="background-color:green !important; color:#fff !important;">{{total}}</span>
+       <i ng-if="node.title=='Communicate'" class="fa s16 fa-{{node.icon}} {{ (user_alert == 0 && total && node.title=='Communicate') ? total ? 'headingcolor' : '' : total ? 'danger' : ''}}"  ng-if="node.icon" ></i>
+       <i class="fa s16 fa-{{node.icon}}" ng-if="node.title!='Communicate'" ></i>
+       <span class="title {{node.title}}" translate="{{node.translate}}" flex>{{node.title}}</span>
+      <span class="badge white-fg success-badge"  ng-if="total &&  total > 0 && node.title=='Communicate'" >{{total}}</span>
      
       <i class="icon-chevron-right s16 arrow" ng-if="vm.collapsable && vm.hasChildren"></i>
     </a>

@@ -1,0 +1,75 @@
+
+  <md-dialog class="dialog" aria-label="">
+    <form name="checklistForm" class="md-inline-form" ng-submit="vm.createSegment(vm.newItem.type,vm.newItem.name,vm.newItem.to,vm.newItem.dataTypes,vm.newItem.info,vm.type.type,vm.newItem.alert)"
+        novalidate>
+        <md-toolbar class="md-accent md-hue-2">
+            <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+                <span class="title">List of Templates</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+                    <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content ms-scroll>
+              
+            <div class="simple-table-container md-background-bg md-whiteframe-1dp mb-40 pb-40 ">
+
+                <div layout="row" layout-align="start center" class="pl-25">
+                  <md-progress-circular ng-disabled="!vm.excels.progress" md-mode="indeterminate" md-diameter="20">
+                  </md-progress-circular>
+                </div>
+              
+                <table class="bordered-table" cellpadding="0" cellspacing="0" ms-responsive-table>
+                  <thead>
+                    <tr>
+                      <th width="10%" class="text-left" >
+                        Name
+                      </th>
+                      <th width="5%" class="text-left">
+                        Description
+                      </th>
+                      <th width="20%" class="text-left" > Action</th>
+                    </tr>
+              
+                  </thead>
+                  <tbody ng-repeat="template in vm.datatable_templates ">
+                    <tr >
+                      <td  class="text-left">
+                     
+                 
+                    
+                        {{template.name}}
+                       
+              
+                      </td>
+              
+                      <td class="text-left">
+                        {{template.description !='' && template.description != "NULL" ? template.description :'-----------'}}
+                      </td>
+                      
+                      `<td>
+                            <md-button ng-click="vm.downloadTable(template.id)" aria-label=">Download Table"
+                            translate-attr-aria-label="">
+                            <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                            <span translate="">Download Table</span>
+                          </md-button>
+
+                    </td>
+                    </tr>
+              
+                  </tbody>
+                </table>
+              
+              
+              </div>
+
+        </md-dialog-content>
+
+       
+    </form>
+</md-dialog>
+
+
+
+  

@@ -86,6 +86,63 @@
                 </md-button>
             </div>
 
+            <div layout="row" layout-align="center end">
+
+                <md-icon ng-click="vm.deleteConfirm('schedule', vm.newScheduler, $event)" class="red-600-fg " md-font-icon="icon-trash"></md-icon>
+
+            </div>
+
+
+        </md-dialog-actions>
+    </form>
+</md-dialog>     <input name="item_type" value="{{vm.type.type}}" type="hidden" ng-model="vm.type.type">
+
+            <!-- <md-input-container class="md-block checklist-alerts" id="checklist-alerts" ng-if="vm.type.type">
+                <div layout="row" layout-wrap>
+                    <div flex="20"><span>Alert if Checked: </span></div>
+                    <div flex="80">
+                        <div layout="column">
+                            <md-radio-group ng-model="vm.newItem.dataTypes">
+                                <md-radio-button ng-disabled="vm.type.type != 'checkbox'" value="{{vm.type.type=='checkbox' ? 'applies' : ''}}" class="md-primary">Req</md-radio-button>
+                                <md-radio-button ng-disabled="vm.type.type != 'checkbox'" value="{{vm.type.type=='checkbox' ? 'complies' : ''}}"> Comply
+                                </md-radio-button>
+                            </md-radio-group>
+
+                            <md-radio-group ng-model="vm.newItem.dataTypes">
+                                
+                                <md-radio-button ng-disabled="vm.type.type != 'yn'" value="{{vm.type.type=='yn' ? 'applies' : ''}}" class="md-primary">Yes</md-radio-button>
+                                <md-radio-button ng-disabled="vm.type.type != 'yn'" value="{{vm.type.type=='yn' ? 'complies' : ''}}"> No </md-radio-button>
+                            </md-radio-group>
+
+                            <md-radio-group ng-model="vm.newItem.dataTypes">
+                                <md-radio-button ng-disabled="vm.type.type != 'textbox'" value="{{vm.type.type=='textbox' ? 'applies' : ''}}" class="md-primary">If
+                                    data added</md-radio-button>
+                            </md-radio-group>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div layout="row" layout-wrap>
+                    <md-checkbox ng-model="vm.newItem.alert" aria-label="yes">
+                        Set Alert
+                    </md-checkbox>
+
+                </div>
+
+            </md-input-container> -->
+
+        </md-dialog-content>
+<!-- ng-disabled="checklistForm.$invalid || checklistForm.$pristine || vm.headingDialog" -->
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="start center">
+                <md-button type="submit" md-no-ink class="md-raised md-accent" 
+                    aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE"  >
+
+                </md-button>
+            </div>
+
         </md-dialog-actions>
     </form>
 </md-dialog>

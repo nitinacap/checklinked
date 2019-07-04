@@ -1,0 +1,66 @@
+<div class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+
+
+  <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0" ng-show="!vm.closeList">
+    <thead class="tool-bg">
+      <tr>
+        <th >Invoice Date
+          <md-button class="md-icon-button" ng-click="vm.reportDateDescending = !vm.reportDateDescending"
+          aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportDateDescending!='file.label'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportDateDescending === true" class="s18">
+            </md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.reportDateDescending === false" class="s18">
+            </md-icon>
+          </md-button>
+
+        </th>
+        <th >Checklist Changes
+          <md-button class="md-icon-button" ng-click="vm.reportChecklistDescending = !vm.reportChecklistDescending"
+          aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+          <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportChecklistDescending!='file.label'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportChecklistDescending === true" class="s18">
+            </md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.reportChecklistDescending === false" class="s18">
+            </md-icon>
+          </md-button>
+
+        </th>
+        <th >User Changes
+          <md-button class="md-icon-button" ng-click="vm.reportUserDescending = !vm.reportUserDescending"
+          aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+          <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportUserDescending!='file.label'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportUserDescending === true" class="s18">
+            </md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.reportUserDescending === false" class="s18">
+            </md-icon>
+          </md-button>
+
+        </th>
+        <th >Marked Complete
+          <md-button class="md-icon-button" ng-click="vm.reportMarkedDescending = !vm.reportMarkedDescending"
+          aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
+          <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportMarkedDescending!='file.label'" class="s18"></md-icon>
+            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportMarkedDescending === true" class="s18">
+            </md-icon>
+            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.reportMarkedDescending === false" class="s18">
+            </md-icon>
+          </md-button>
+
+        </th>
+      </tr>
+    </thead>
+  <!-- ng-repeat="(key, notification) in  vm.notifications" -->
+    <tbody > 
+      <tr >
+     
+      
+        <td>ghfg</td>
+        <td>fgdg</td>
+        <td>dfgg</td>
+        <td>dfgg</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

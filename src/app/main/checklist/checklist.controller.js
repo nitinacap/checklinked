@@ -107,6 +107,16 @@ var indexOf = [].indexOf || function (item) {
     vm.saveScheduler = saveScheduler;
     vm.addschedule = addschedule;
     vm.showLoadingImage = true;
+    vm.deleteScheduler = deleteScheduler;
+
+    vm.changeUppercase = changeUppercase;
+
+    /**Data Table Function Code Start Here ** */
+    vm.createDataTableSegment = createDataTableSegment;
+
+    vm.head_row = 0;
+    vm.field = [];
+    /**Data Table Function  Code Start Here ** */
 
 
     vm.expanded = {
@@ -116,7 +126,7 @@ var indexOf = [].indexOf || function (item) {
       referencess: []
     };
 
-
+    vm.checklistFromGroup = false;
 
 
     //check permission
@@ -1089,6 +1099,7 @@ var indexOf = [].indexOf || function (item) {
         if (!vm.loaded.checklist) {
 
           $scope.getChecklinked = function () {
+            console.log('$scope.getChecklinked');
 
             toggleCheckbox
             api.checklists.get(idCHK, token).success(function (res) {
@@ -1101,6 +1112,7 @@ var indexOf = [].indexOf || function (item) {
                 vm.nonCompliance_count = res.checklists[0].nonCompliance_count;
                 vm.total_nonCompliance = res.checklists[0].nonCompliance_total;
 
+                vm.showLoadingImage = false;
               } else {
 
                 vm.checklists = [];
@@ -1109,7 +1121,7 @@ var indexOf = [].indexOf || function (item) {
 
 
               vm.loaded.checklist = false;
-              
+
               return $scope.$broadcast('event:checklistLoaded');
 
             })["finally"](function () {
@@ -1342,7 +1354,11 @@ var indexOf = [].indexOf || function (item) {
       }
     };
 
-    function createSegment(what, name, to, type, info, item_type, alert) {
+
+
+
+
+    function createSegment(what, name, to, type, info, item_type, alert, alert_sms, mobile) {
       debugger;
       console.log("optiondata=" + vm.newItem.dataType);
       var count, order, ref1, svc, whats;
@@ -1389,6 +1405,14 @@ var indexOf = [].indexOf || function (item) {
         order += count.length;
       }
       vm.headingDialog = true;
+
+      if(alert_sms && alert){
+        console.log('alert_sms, mobile', alert_sms, alert);
+        console.log('Please send sms to ',mobile);
+
+      }
+
+      
       return svc.add(name, order, to, type, info, item_type, alert, vm.option).success(function (res) {
         vm.headingDialog = false;
         var notifyItem, packet;
@@ -1398,16 +1422,16 @@ var indexOf = [].indexOf || function (item) {
           return $rootScope.message(res.message, 'warning');
         } else {
 
-          if(what=='item'){
-            vm.labels.create.save(res.item,'new');
+          if (what == 'item') {
+            vm.labels.create.save(res.item, 'new');
 
           }
-        
-          
-          if(alert){
+
+
+          if (alert) {
             checklistAlert(res.item);
           }
-         
+
 
           vm.closeDialog();
           vm.isLoader = false;
@@ -1457,6 +1481,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function destroy(what, item) {
+      console.log('destroy destroy')
 
       var svc, whats;
       svc = vm.svc(what);
@@ -1544,6 +1569,13 @@ var indexOf = [].indexOf || function (item) {
           vm.type.label = 'Heading Label';
           vm.type.type = '';
           break;
+        case 'datatable':
+          vm.type.title = 'Create/Edit Table';
+          vm.type.label = 'Add Name and Number of Columns and Rows';
+          vm.type.rows = 'Rows';
+          vm.type.columns = 'Columns';
+          vm.type.type = '';
+          break;
         default:
           vm.type.title = what;
           vm.type.label = what + 'label';
@@ -1561,6 +1593,12 @@ var indexOf = [].indexOf || function (item) {
         dataType: option
       };
 
+      var templ_url = 'app/main/checklist/dialogs/checklist/checklist-add-dialog.html'
+      if (what === 'datatable') {
+
+        templ_url = 'app/main/checklist/dialogs/checklist/checklist-addDataTable-dialog.html'
+      }
+
       $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
           $scope.closeDialog = function () {
@@ -1569,7 +1607,7 @@ var indexOf = [].indexOf || function (item) {
         },
         scope: $scope,
         preserveScope: true,
-        templateUrl: 'app/main/checklist/dialogs/checklist/checklist-add-dialog.html',
+        templateUrl: templ_url,
         parent: angular.element($document.find('#checklist')),
         targetEvent: ev,
         clickOutsideToClose: true
@@ -1751,7 +1789,7 @@ var indexOf = [].indexOf || function (item) {
         // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
         //  item.checkbox[userKey] = res.checkboxes[0];
         item.checkbox[userKey] = res.checkboxes[0];
-        vm.labels.create.save(res.checkboxes[0],'checked');
+        vm.labels.create.save(res.checkboxes[0], 'checked');
 
         return vm.evaluateConflicts(item, +1);
       });
@@ -1978,9 +2016,13 @@ var indexOf = [].indexOf || function (item) {
      LABELS
      */
     $scope.$on('event:labelsUpdated', function () {
+      if($rootScope.user.dashboard){
+
       return vm.labels.selectable = $filter('filter')($rootScope.user.dashboard.labels, {
         type: vm.labels.item.type
       });
+    }
+
     });
     $scope.$on('event:labelSelectionUpdated', function (e, data) {
       var idx, item, itemLocal, showModal, user;
@@ -2033,8 +2075,8 @@ var indexOf = [].indexOf || function (item) {
           index: vm.items.indexOf(item),
           type: item.type,
           item_type: item.item_type,
-          displayType: typeof(base = item.type === 2) === "function" ? base({
-            'Text': typeof(base1 = item.type === 3) === "function" ? base1({
+          displayType: typeof (base = item.type === 2) === "function" ? base({
+            'Text': typeof (base1 = item.type === 3) === "function" ? base1({
               'Number': 'Apply/Comply'
             }) : void 0
           }) : void 0
@@ -2140,19 +2182,19 @@ var indexOf = [].indexOf || function (item) {
           vm.labels.create.entering = true;
           return false;
         },
-        save: function (labels,key) {
+        save: function (labels, key) {
 
           // debugger;
 
-          if (labels && key=='checked') {
-            vm.type  = '2';
+          if (labels && key == 'checked') {
+            vm.type = '2';
             this.name = 'test';
             this.explanation = '';
             labels.key = key;
-          } 
-          else if(key=='new' && labels){
+          }
+          else if (key == 'new' && labels) {
             vm.type = labels ? labels.type : '';
-            this.name = labels ? labels.name :'';
+            this.name = labels ? labels.name : '';
             this.explanation = labels ? labels.info : '';
             labels.key = key;
             delete labels.tree_structure;
@@ -2162,9 +2204,9 @@ var indexOf = [].indexOf || function (item) {
             delete labels.ownerDetails;
 
 
-          }else {
+          } else {
             debugger;
-            if(vm.labels.item){
+            if (vm.labels.item) {
               vm.type = vm.labels.item.type;
               this.name = this.name;
               vm.labels.item.key = 'new';
@@ -2300,6 +2342,13 @@ var indexOf = [].indexOf || function (item) {
         step2: {},
         step3: {}
       };
+
+      // console.log('fffffffffff',vm.checklists)
+
+      // var grp_id = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+      // console.log('grp_id',grp_id)
+      // fetchGroups(grp_id)
+      // console.log('vm.groups', vm.groups);
 
       $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
@@ -2633,7 +2682,13 @@ var indexOf = [].indexOf || function (item) {
 
         else {
           $rootScope.message("New checklist has been created successfully", 'success');
-          $scope.getChecklinked();
+          vm.showLoadingImage = true;
+          console.log(' $scope', $scope);
+
+          if(vm.checklistFromGroup)  getChecklistGroup();
+          else  $scope.getChecklinked();
+          // loadChecklist($stateParams.id);
+
           // $rootScope.createStats('checklist', 'created', res.checklist.id);
           api.sections.add('sections', 1, res.checklist.id ? res.checklist.id : checklist_id).error(function (res) {
             return $rootScope.message("Error Adding Section", 'warning');
@@ -2643,6 +2698,7 @@ var indexOf = [].indexOf || function (item) {
               return $rootScope.message("Error Adding Section", 'warning');
 
             } else {
+              console.log('sections',vm.sections);
               vm.sections.push(res.section);
 
             }
@@ -2711,9 +2767,13 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function deleteConfirm(what, item, ev) {
-      vm.title = 'Delete Data Point';
+
+      vm.title = 'Delete ' + what;
       vm.warning = 'Warning: This can’t be undone';
       vm.description = "Please confirm you want to delete this <span class='link'>" + item.name + "</span><br>All of the contents will be deleted and can’t be recovered"
+
+     
+
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
@@ -2733,15 +2793,29 @@ var indexOf = [].indexOf || function (item) {
 
 
     function deleteItem(what, item, ev) {
+
+      if( what == "schedule") {
+      
+        deleteScheduler(item.id)
+
+        return 1;
+
+      } 
+
+     
       vm.isLoader = true;
       var svc, whats;
       whats = what + 's';
 
       svc = vm.svc(what);
+      console.log('svc',svc);
+      console.log('what',what);
+      console.log('item.id',item.id);
 
       return svc.destroy(item.id).success(function (res) {
         vm.isLoader = false;
         var notifyItem, packet;
+        console.log('res', res)
         if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
@@ -3200,22 +3274,75 @@ var indexOf = [].indexOf || function (item) {
     //     });
     //   }
 
-    function openHeadingDialog(ev, heading) {
+    // function openHeadingDialog(ev, heading) {
 
+    //   vm.heading = heading;
+    //   vm.title = 'Edit Heading';
+
+    //   console.log('vm.heading', vm.heading);
+
+    //   $mdDialog.show({
+    //     scope: $scope,
+    //     preserveScope: true,
+    //     templateUrl: 'app/main/checklist/dialogs/checklist/checklist-edit-heading-dialog.html',
+    //     parent: angular.element($document.find('#checklist')),
+    //     targetEvent: ev,
+    //     clickOutsideToClose: true
+    //   });
+    // }
+
+
+    /**Data Table Function Updated Code Start Here ** */
+
+    function openHeadingDialog(ev, heading, heading_type, heading_type_action) {
+      debugger;
+      vm.heading_type = heading_type != '' ? heading_type : '';
+      var heading_type_action = heading_type_action != '' ? heading_type_action : '';
       vm.heading = heading;
-      vm.title = 'Edit Heading';
+      //// debugger;
 
-      console.log('vm.heading', vm.heading);
+      if (vm.heading_type == 'table' && heading_type_action != '' && heading_type_action == 'edit') {
+        vm.title = 'Table';
+        /**********************/
+        var what = 'heading';
 
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/checklist/dialogs/checklist/checklist-edit-heading-dialog.html',
-        parent: angular.element($document.find('#checklist')),
-        targetEvent: ev,
-        clickOutsideToClose: true
-      });
+        var name = heading.name;
+        var to = heading.id_parent;
+        var type = heading_type;
+        var info = '';
+        var item_type = '';
+        var alert = '';
+        var columns = heading.datatable[0].column;
+        var rows = heading.datatable[0].row;
+        var table_id = heading.datatable[0].id;
+        var table_str = heading.datatable[0].table_str;
+
+        createDataTableSegment(what, name, to, type, info, item_type, alert, columns, rows, ev, table_id, table_str, heading);
+
+        /******************* */
+      }
+      else {
+        vm.title = 'Heading';
+
+        if (vm.heading_type == 'table') {
+          vm.title = "Table";
+        }
+
+
+        $mdDialog.show({
+          scope: $scope,
+          preserveScope: true,
+          templateUrl: 'app/main/checklist/dialogs/checklist/checklist-edit-heading-dialog.html',
+          parent: angular.element($document.find('#checklist')),
+          targetEvent: ev,
+          clickOutsideToClose: true
+        });
+
+      }
     }
+
+
+
 
     function saveHeading() {
 
@@ -4020,6 +4147,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     $scope.answer = function (answer) {
+      
       $mdDialog.hide(answer);
     };
     // create stats
@@ -4080,10 +4208,11 @@ var indexOf = [].indexOf || function (item) {
     }
 
     function getChecklistGroup() {
+      vm.checklistFromGroup = true;
       vm.checklists = [];
       api.checklists.getGroup($stateParams.id, token).then(function (d) {
         vm.checklists = d.data.checklists;
-        
+
         vm.showLoadingImage = false;
       });
     };
@@ -4112,12 +4241,17 @@ var indexOf = [].indexOf || function (item) {
 
 
     function saveScheduler() {
-      vm.newScheduler.checklist_id = vm.idCHK;
+
+      vm.newScheduler.item_type = 'checklist';
+      vm.newScheduler.item_type_id = vm.idCHK;
       vm.newScheduler.checklist_name = vm.checklists[0].name;
       vm.newScheduler.workflow_name = vm.checklists[0].item_bread.folder_name;
       vm.newScheduler.project_name = vm.checklists[0].item_bread.project_name;
       vm.newScheduler.id = vm.item ? vm.item.id : '';
+     
       vm.newScheduler.type = vm.item ? 'update' : 'save';
+
+      console.log('vm.newScheduler save', vm.newScheduler)
 
       api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
         if (d.data.type == 'success') {
@@ -4132,11 +4266,17 @@ var indexOf = [].indexOf || function (item) {
     function getSchedulerByChek() {
       vm.newScheduler = {};
       vm.newScheduler.type = 'get';
-      vm.newScheduler.checklist_id = vm.idCHK;
+      vm.newScheduler.item_type_id = vm.idCHK;
+      vm.newScheduler.item_type = 'checklist';
+
+      console.log('vm.newScheduler get single', vm.newScheduler)
 
       api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
         if (d.data.type == 'success') {
-          vm.item = d.data.data;
+          console.log('dddd', d)
+          
+          vm.item = d.data.data.item;
+          console.log('vm.item getSchedulerByChek', vm.item)
           if (vm.item) {
             vm.newScheduler.from_date = new Date(vm.item.from_date);
             vm.newScheduler.to_date = new Date(vm.item.to_date);
@@ -4144,22 +4284,21 @@ var indexOf = [].indexOf || function (item) {
             vm.newScheduler.color = vm.item.color;
             vm.newScheduler.all_day = vm.item.all_day == 1 ? true : false;
             vm.newScheduler.repeat = vm.item.repeat;
-            vm.newScheduler.start_time = vm.item.start_time;
-            vm.newScheduler.end_time = vm.item.end_time;
+            vm.newScheduler.start_time = new Date(vm.item.start_time);
+            vm.newScheduler.end_time = new Date(vm.item.end_time);
             vm.newScheduler.end = vm.item.end;
+            vm.newScheduler.id = vm.item.id;
           }
 
         }
       })
     };
 
-
-
-
-
     getSchedulerByChek();
 
     function addschedule(ev) {
+
+      vm.type.title = "Scheduler";
 
       $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
@@ -4176,69 +4315,1573 @@ var indexOf = [].indexOf || function (item) {
       });
     };
 
+    function deleteScheduler(id) {
+      vm.newScheduler = {};
+      vm.newScheduler.type = 'delete';
+      vm.newScheduler.item_id = id;
+      vm.closeDialog();
+      api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
+        if (d.data.type == 'success') {
+          $rootScope.message("Schedule deleted successfully", 'success');
 
-    
-  // all_spreadsheets code starts
-
-  //vm.getAllSpreadsheets = getAllSpreadsheets;
-  vm.view_data_upload = view_data_upload;
-   
-  function view_data_upload(ev){
-
-    $mdDialog.show({
-      scope: $scope,
-      preserveScope: true,
-      templateUrl: 'app/main/checklist/dialogs/checklist/checklist-view-upload-data-dialog.html',
-      parent: angular.element($document.find('#checklist')),
-      targetEvent: ev,
-      clickOutsideToClose: false
-    });
-
-
-  }
-  
-  vm.excels= {
-  view : function(excel) {
-
-    if(vm.origColspanLength == undefined || vm.origColspanLength < excel.data.heading.length){
-      vm.origColspanLength = excel.data.heading.length ;
-      if(vm.colspanLength < 4 )  vm.colspanLength = 2;
-      else vm.colspanLength = vm.origColspanLength - 1;
-    }
-    vm.excel_open_id = excel.id;
-    
-  }
-}
-    
-  
-
-  function getAllSpreadsheets() {
-    api.organization.get_all_spreadsheets().then(function (d) {
-      vm.isLoader = false;
-      if (d.data.code == '-1') {
-        if(d.data.message=='unauthorized access'){
-          $state.go('app.logout');
-        }else{
         }
-      } else {
-        vm.all_spreadsheets = d.data.spreadsheets;
+
+      });
+
+      console.log('newScheduler delete',vm.newScheduler)
+    }
+
+
+
+    // all_spreadsheets code starts
+
+    //vm.getAllSpreadsheets = getAllSpreadsheets;
+    vm.view_data_upload = view_data_upload;
+
+    function view_data_upload(ev) {
+
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/checklist/dialogs/checklist/checklist-view-upload-data-dialog.html',
+        parent: angular.element($document.find('#checklist')),
+        targetEvent: ev,
+        clickOutsideToClose: false
+      });
+
+
+    }
+
+    vm.excels = {
+      view: function (excel) {
+
+        if (vm.origColspanLength == undefined || vm.origColspanLength < excel.data.heading.length) {
+          vm.origColspanLength = excel.data.heading.length;
+          if (vm.colspanLength < 4) vm.colspanLength = 2;
+          else vm.colspanLength = vm.origColspanLength - 1;
+        }
+        vm.excel_open_id = excel.id;
+
+      }
+    }
+
+
+
+    function getAllSpreadsheets() {
+      api.organization.get_all_spreadsheets().then(function (d) {
+        vm.isLoader = false;
+        if (d.data.code == '-1') {
+          if (d.data.message == 'unauthorized access') {
+            $state.go('app.logout');
+          } else {
+          }
+        } else {
+          vm.all_spreadsheets = d.data.spreadsheets;
+
+        }
+      });
+    };
+    getAllSpreadsheets();
+
+    function checklistAlert(item) {
+      api.alert.save(item).then(function (d) {
+        if (d.data.code != '-1') {
+          console.log('new alert created');
+        }
+
+
+      });
+
+    }
+
+    /*********** */
+
+    /**Data Table Function  Code Start Here ** */
+
+    vm.col_data_update_str = [];
+    vm.field = [];
+
+    /*****Array check */
+    $scope.checkEquality = function (param1, param2) {
+      if (param2.length == 0) {
+        return false;
+      }
+      // debugger;
+      return angular.equals(param1, param2)
+    }
+
+    /**End Here */
+
+    /*****Value Intialize********/
+
+    vm.convertDate = function (value, heading, current_index) {
+      // debugger;
+      if (value != '' && value != null) {
+        var newDate = new Date(value)
+        vm.field['datatable_' + heading.id_parent + '_' + heading.id][current_index] = newDate;
+      }
+
+
+    };
+
+
+    vm.finished = function (column, index, tbl_str, heading) {
+      //// debugger;
+      var $index = index;
+      var $row_detail = [];
+      var $row_arr = [];
+      var $head_arr = [];
+      var $head_arr_header = [];
+      var $start = $index - column;
+      var $start_index = $start;
+      for (var i = 0; i < column; i++) {
+        $row_arr.push($start);
+        if (tbl_str[$start].type == 'Label' && tbl_str[$start].value != null) {
+
+          var key = $start;
+          var obj = {};
+          obj[key] = tbl_str[$start].value;
+
+          $head_arr.push(obj);
+          $head_arr_header.push(tbl_str[$start].value);
+          // debugger;
+        }
+
+        $start++;
+
+      }
+
+      $row_detail['row_arr'] = $row_arr;
+      $row_detail['head_arr'] = $head_arr;
+      $row_detail['head_arr_header'] = $head_arr_header;
+
+
+
+      //// debugger;
+      return $row_detail;
+
+
+    };
+
+
+
+
+
+
+
+    $scope.init = function (index, table_str, heading) {
+      var section_id = heading.id_parent;
+      var heading_id = heading.id;
+
+      var new_field = "datatable_" + section_id + "_" + heading_id;
+      var col_data_update = {};
+
+
+      if (!vm.field[new_field]) {
+        vm.field[new_field] = [];
+      }
+      if (!vm.col_data_update_str[new_field]) {
+        vm.col_data_update_str[new_field] = [];
+      }
+      // SadaNand
+
+      if (table_str.cell_value != undefined) {
+        vm.field[new_field][index] = table_str.cell_value;
+
+      }
+      else {
+        // vm.field.push('');
+        vm.field[new_field].push('');
+      }
+
+
+      vm.col_data_update_str[new_field][table_str.cell_no] = table_str; // may need to fixed this as well
+      //debugger;
+
+    };
+
+
+
+    $scope.autoTrimWord = function (index, table_str) {
+      var length = table_str[index].value;
+      //var text_len = vm.field[index].length;
+      //debugger;
+    };
+
+    $scope.autoFixedPoint = function (index, table_str) {
+
+    };
+
+
+
+
+    $scope.isNumberKey = function (evt, index, precision, heading, cell_type) {
+      //debugger;
+
+      var cell_type = cell_type != undefined ? cell_type : '';
+      if (cell_type != '') {
+        precision = 2;
+      }
+
+
+      var section_id = heading.id_parent;
+      var heading_id = heading.id;
+
+      var new_field = "datatable_" + section_id + "_" + heading_id;
+
+
+      var precision = precision != '' ? parseInt(precision) : 0;
+
+      var charCode = (evt.which) ? evt.which : evt.keyCode
+      var value = vm.field[new_field][index];
+
+      console.log('type of', typeof (value));
+
+      if (typeof (value) == 'number') value = value.toString();
+
+       debugger;
+      var dotcontains = value.indexOf(".") != -1;
+      if (precision > 0) {
+        if (dotcontains)
+          if (charCode == 46) evt.preventDefault();
+        if (charCode == 46) return true;
+      }
+      else {
+        if (charCode == 46) evt.preventDefault();;
+      }
+
+      if (dotcontains) {
+        var index_pos = value.indexOf('.');
+
+        var precision_chk = value.length - index_pos;
+        if (precision_chk > precision) {
+          evt.preventDefault();
+        }
+
+      }
+
+      if (charCode > 31 && (charCode < 48 || charCode > 57))
+        evt.preventDefault();
+      return true;
+    };
+
+
+
+    $scope.autoCalculate = function (index,table_str,heading) {
+    
+      var section_id = heading.id_parent;
+      var heading_id = heading.id;
+  
+      var new_field = "datatable_"+section_id+"_"+heading_id;
+  
+      vm.field
+      vm.col_data_update_str
+  
+      
+  
+      if(table_str[index].type == 'Number' && table_str[index].is_percentage == 1 ){
+        var index_value = vm.field[new_field][index];
       
       }
-    });
-  };
-  getAllSpreadsheets();
-
-  function checklistAlert(item){
-    api.alert.save(item).then(function (d) {
-      if(d.data.code != '-1'){
-        console.log('new alert created');
+  
+  
+      vm.result =  $filter('filter')(table_str, {'type':'Formula'});
+  
+  
+      var chkCell = table_str[index].cell_no;
+      var reLen = vm.result.length;
+  
+      for(var i=0;i<reLen; i++){
+        vm.value_status = true;
+         vm.myString = '';
+          var value  =vm.result[i].value;
+          var index  =vm.result[i].index; // vm.field 11
+      
+            var split_val = value.split('=');
+            if(split_val[1] == undefined){
+              return;
+            }
+           
+            var yourstring = split_val[1];
+           
+            vm.myString = yourstring;
+            vm.myString=  vm.myString.toUpperCase();
+  
+            var pattrnList = ['SUM','AVG'];
+            var patValChk ='';
+            
+            if(vm.myString !='' && vm.myString !=undefined){
+  
+              for(var l=0;l<pattrnList.length;l++){
+                  var patVal = pattrnList[l];
+                  if(vm.myString.indexOf(patVal) != -1){
+                    patValChk = patVal;
+                    break;
+                  }
+  
+              }
+  
+            
+              if(patValChk != ''){
+                  
+                   vm.myString=   vm.myString.replace(patValChk,'');
+  
+                    var total_element;
+                    
+                    if(vm.myString.indexOf(',') != -1){
+                      vm.myString=  vm.myString.replace(',','+');
+                      total_element = vm.myString.split(',').length;
+                   
+                    }
+                    else if(vm.myString.indexOf(':') != -1){
+                      var arr_cell_range = [];
+  
+                      var arr_cell_exist= [];
+                      var arr_cell_remove= [];
+                      var row =  heading.datatable[0].row;
+  
+                      
+                      var table_column = heading.datatable[0].column;
+                      var spl = vm.myString.replace('(','');
+                      spl = spl.replace(')','');
+                      spl = spl.trim();
+                      var spl = spl.split(':');
+                    
+  
+                      var max_charName = String.fromCharCode(65 + table_column-1); // D
+                      var firstval = spl[0];
+                      var lastval = spl[1];
+             
+  
+                      var startIndex =  parseInt(firstval.replace(/[^0-9\.]/g, ''), 10);
+                      var lastIndex =  parseInt(lastval.replace(/[^0-9\.]/g, ''), 10);
+  
+  
+                        /***Auto Checked Start Here */
+                  
+  
+                        arr_cell_exist.push(firstval.replace(startIndex,''));
+                        arr_cell_exist.push(lastval.replace(lastIndex,''));
+                        
+  
+                        var arr_cell_exist =  Array.from(new Set(arr_cell_exist));
+    
+                          for(var x=0;x<table_column;x++){
+                                var cellName = 	String.fromCharCode(65 + x);
+    
+                                if(arr_cell_exist.indexOf(cellName) == -1 && (cellName <  arr_cell_exist[0] || cellName >  arr_cell_exist[1])){
+                                      arr_cell_remove.push(cellName)
+                                }
+    
+                          }
+  
+                          for(var p=0;p<row;p++){
+  
+                      
+                            for(var k=1;k<=table_column;k++){
+                                  var a= 	String.fromCharCode(65 + k-1);
+  
+                                  if(arr_cell_remove.indexOf(a) != -1){
+                                    continue;
+                                  }
+  
+                              console.log(a+(p+1));
+                              arr_cell_range.push(a+(p+1))
+  
+                            }
+  
+                          }
+  
+                        
+                          
+                          var startPos = arr_cell_range.indexOf(firstval);
+                          var endPos = arr_cell_range.indexOf(lastval);
+  
+                         var arr_cell_range = arr_cell_range.slice(startPos,endPos+1);
+                      
+    
+                        /******* */
+  
+  
+                      var replaceStrPtrn = firstval+":"+lastval
+                      var newMyString  = '';
+                      var k= 1;
+                      for(var p=0;p<arr_cell_range.length;p++){
+                        if(k == 1){
+                          newMyString  = arr_cell_range[p];
+                        }
+                        else{
+                          newMyString  += "+"+arr_cell_range[p];
+                        }
+                          
+                
+                          total_element = k;
+                          k++;
+                         
+  
+                      }
+  
+                        vm.myString =  vm.myString.replace(replaceStrPtrn,newMyString);
+  
+                    }
+  
+                
+              }
+            }
+            else{
+              return;
+            }
+        
+  
+            /***///
+               vm.myString = vm.myString.trim();
+               vm.spl_arr =  vm.myString.split(/[*,/,+,-]+/);
+  
+               var replace_chr = ['(',')'];
+               var chr_len = replace_chr.length;
+               for(var k=0;k<chr_len; k++){
+  
+                  vm.spl_arr =vm.spl_arr.map(function(item,index){
+                    return item.replace(replace_chr[k].trim(),'')                
+                  })
+  
+               }
+  
+              
+               var spl_arr_len = vm.spl_arr.length;
+             
+  
+               for(var j=0;j<spl_arr_len; j++){
+               
+                if(!vm.col_data_update_str[new_field].hasOwnProperty(vm.spl_arr[j].trim())){
+                    continue;
+                }
+                  var cell_index = vm.col_data_update_str[new_field][vm.spl_arr[j].trim()].index;
+  
+  
+                 
+                  var cell_current_value =  parseFloat(vm.field[new_field][cell_index]); 
+                  if(cell_current_value == '' || typeof cell_current_value === 'string'){
+                      vm.value_status = false;
+                  }
+                  if(table_str[cell_index].type == 'Number' && table_str[cell_index].is_percentage == 1 ){
+                 
+                     if(cell_current_value == 0 || cell_current_value == '' || cell_current_value == undefined || isNaN(cell_current_value)){
+                       cell_current_value = 0;
+                     }
+                     else{
+                        
+                          cell_current_value = cell_current_value/100;
+                       
+                      
+                     }
+                    
+                      
+                     
+                  }
+                  vm.myString = vm.myString.replace(vm.spl_arr[j].trim(),cell_current_value);
+                  vm.value_status = true;
+               }
+  
+             
+             /**** */
+             if(vm.value_status){
+              vm.myString;
+              
+              
+              if(patValChk == 'AVG'){
+                 if(total_element != undefined){
+                    vm.myString = vm.myString+"/"+total_element;
+                   
+                 }
+               
+                }
+  
+              var formula_value = eval(vm.myString).toFixed(2);
+              if(!isNaN(formula_value)){
+                 vm.field[new_field][index] =  eval(vm.myString).toFixed(2);
+              }
+              else{
+                vm.field[new_field][index] =  '';
+              }
+             
+               
+             }
+             vm.myString;
+            
+  
       }
+      
+  
+      
+    };
+
+
+
+    function createDataTableSegment(what, name, to, type, info, item_type, alert, columns, rows, ev, table_id, table_str_data, heading) {
+      // debugger;
+
+      /******************* */
+      vm.table_id = table_id != undefined ? table_id : '';
+      vm.editDataTable = [];
+      vm.editHeadingTable = [];
+      var heading_data = heading != undefined ? heading : '';
+      if (heading_data != '' || heading_data != undefined) {
+        vm.editHeadingTable = heading_data;
+        var etSectionId = heading_data.parent_id;
+        var etHeadingId = heading_data.id;
+        var new_field = 'edit_' + etSectionId + '_' + etHeadingId;
+        vm.new_field = 'edit_' + etSectionId + '_' + etHeadingId;
+        vm.editDataTable[new_field] = [];
+
+        vm.editDataTable[new_field]['table_str_data'] = table_str_data != undefined ? table_str_data : '';
+
+      }
+
+
+      /******** */
+      vm.newDataTableItem = {
+        type: what,
+        to: to,
+        name: name,
+        column: columns,
+        row: rows,
+        submitting: false
+      };
+
+      /***************** */
+
+
+
+      vm.section_id = to;
+      vm.dataTableName = name;
+      vm.data_table_structure = [];
+
+      $scope.cell_format = [
+
+        { "name": "None" }, { "name": "Date" }, { "name": "Label" }, { "name": "Text" }, { "name": "Number" }, { "name": "Currency" }, { "name": "Formula" }
+
+      ]
+
+
+      vm.model = $scope.cell_format[0].name;
+      //debugger;
+
+
+      $scope.decimal = [
+        { "value": 0 }, { "value": 1 }, { "value": 2 }
+
+      ]
+
+      vm.number_type = $scope.decimal[0].value;
+
+      $scope.currency = [
+        { "name": "$", "sign ": "Dollars" }, { "name": "€", "sign ": "Euros" }, { "name": "£", "sign ": "Pounds" }, { "name": "￥", "sign ": "Yen/Yuan" }
+      ]
+
+
+      vm.currency_type = $scope.currency[0].name;
+
+
+      $scope.alignTextVal = [
+        { "name": "center" }, { "name": "left" }, { "name": "right" }
+      ]
+
+      vm.alignTextStatus = $scope.alignTextVal[0].name;
+
+      $scope.TextPostition = [
+        { "name": "bottom", "pos": "fa-long-arrow-down" }, { "name": "middle", "pos": "fa-arrows-v" }, { "name": "top", "pos": "fa-long-arrow-up" }
+      ]
+
+      vm.TextPostitionStatus = $scope.TextPostition[0].name;
+
+
+
+
+      $scope.decimal = [
+        { "value": 0 }, { "value": 1 }, { "value": 2 }
+
+      ]
+
+      vm.number_type = $scope.decimal[0].value;
+
+      vm.formats = $scope.cell_format
+      
+      var data_table_row = rows;
+      var data_table_col = columns;
+
+      vm.toExcelHeader(data_table_col)
+
+      vm.header_names = vm.toExcelHeaderArray(data_table_col + 1)
+      vm.header_names.shift()
+
+
+      $scope.rows = [];
+      $scope.columns = [];
+      for (var i = 0; i < data_table_row; i++) {
+        $scope.rows.push(String.fromCharCode(65 + i));
+      }
+
+
+      var col_data = {};
+
+      for (var j = 0; j < data_table_col; j++) {
+        $scope.columns.push(j + 1)
+      }
+
+      vm.rows = $scope.rows.length;
+      vm.columns = $scope.columns.length;
+
+
+
+      vm.rowIndex = [];
+      vm.myrecords = [];
+      var col_data_update = {};
+
+      /**  Based on table id and table structure update vm.table_id,vm.table_str_data  data table variable    */
+
+      $scope.init = function (row, key, column, index, current_index, heading) {
+        col_data_update = {};
+        vm.table_id;
+        // var etSectionId = heading_data.parent_id;
+        //     var etHeadingId = heading_data.id;
+        //     var new_field = 'edit_'+etSectionId+'_'+etHeadingId;
+
+        if (vm.editDataTable[vm.new_field]['table_str_data'] != '') {
+          var tbd = vm.editDataTable[new_field]['table_str_data'][current_index];
+          if (tbd == undefined) {
+            return;
+            // debugger;
+          }
+
+          var new_val = tbd.value;
+
+          col_data_update[row + column] = '';
+          vm.myrecords.push(col_data_update);
+          //// debugger;
+
+
+          vm.cell_stucture = { 'index': parseInt(tbd.index), 'cell_no': tbd.row_no + parseInt(tbd.col_no), 'type': tbd.type, 'row': tbd.row_no, 'column': parseInt(tbd.col_no), 'value': tbd.value, 'text_align': tbd.text_align, 'text_position': tbd.text_position }
+          if (tbd.type == 'Number') {
+            if (tbd.is_percentage == 1) {
+              vm.cell_stucture['percentage'] = true;
+            }
+            else {
+              vm.cell_stucture['percentage'] = false;
+            }
+          }
+          var tbd_value = tbd.value;
+
+          if (tbd.value != 'n-def') {
+            if (tbd.type != 'Label') {
+
+              tbd_value = '';
+              // debugger;
+            }
+
+            vm.myrecords[current_index][row + column] = tbd_value;
+
+
+          }
+
+          //// debugger;
+          //vm.myrecords.push(col_data_update);
+          vm.data_table_structure[current_index] = vm.cell_stucture;
+
+        }
+        else {
+          col_data_update[row + column] = '';
+          vm.myrecords.push(col_data_update)
+
+          vm.data_table_structure.push({})
+        }
+
+
+
+      };
+
+      $scope.initRow = function (key_row) {
+        vm.rowIndex.push(key_row + 1)
+
+      };
+
+
+      vm.lable_show = false;
+      vm.formula_show = false;
+      vm.currency_show = false;
+
+
+      vm.text_show = false;
+      vm.number_show = false;
+
+      vm.percentage = false;
+
+      vm.textShow = false;
+
+
+
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/checklist/dialogs/checklist/data-table-dialog.html',
+        parent: angular.element($document.find('#checklist')),
+        targetEvent: ev,
+        clickOutsideToClose: true,
+
+      });
+
+
+    };
+
+    /*** Start Data Table Function */
+
+
+    vm.toExcelHeaderArray = function (rows) {
+      var excelHeaderArr = [];
+      for (var index = 1; index <= rows; index++) {
+        excelHeaderArr.push(vm.toExcelHeader(index));
+      }
+
+      return excelHeaderArr;
+    }
+
+    vm.toExcelHeader = function (index) {
+      if (index <= 0) {
+        alert("row must be 1 or greater");
+      }
+      index--;
+      var charCodeOfA = ("a").charCodeAt(0); // you could hard code to 97
+      var charCodeOfZ = ("z").charCodeAt(0); // you could hard code to 122
+      var excelStr = "";
+      var base24Str = (index).toString(charCodeOfZ - charCodeOfA + 1);
+      for (var base24StrIndex = 0; base24StrIndex < base24Str.length; base24StrIndex++) {
+        var base24Char = base24Str[base24StrIndex];
+        var alphabetIndex = (base24Char * 1 == base24Char) ? base24Char : (base24Char.charCodeAt(0) - charCodeOfA + 10);
+        // bizarre thing, A==1 in first digit, A==0 in other digits
+        if (base24StrIndex == 0) {
+          alphabetIndex -= 1;
+        }
+        excelStr += String.fromCharCode(charCodeOfA * 1 + alphabetIndex * 1);
+      }
+      return excelStr.toUpperCase();
+    }
+
+
+    vm.select = function (row, column, index, header_name, header_index) {
+
+
+      // // debugger;
+      vm.cellSelected = false;
+      vm.label_name = ''
+      vm.lable_show = false;
+      vm.formula_show = false;
+      vm.currency_show = false;
+      vm.text_show = false;
+      vm.number_show = false;
+
+
+      vm.percentage = false;
+      vm.textShow = false;
+
+      vm.model = $scope.cell_format[0].name;
+
+      if (vm.selectedRow === row && vm.selectedColumn === column) {
+        vm.selectedRow = undefined;
+        vm.selectedColumn = undefined;
+        vm.selectedIndex = undefined;
+
+
+        vm.selectedHeaderName = undefined;
+        vm.selectedHeaderIndex = undefined;
+
+
+      } else {
+        vm.selectedRow = row;
+        vm.selectedColumn = column;
+
+        vm.selectedHeaderName = header_name;
+        vm.selectedHeaderIndex = header_index;
+
+
+        vm.selectedIndex = index;
+        vm.cellSelected = true;
+
+
+
+        vm.data_table_structure
+        if (vm.data_table_structure[index] == undefined) {
+          // debugger;
+        }
+        var getfcell_no = vm.data_table_structure[index].cell_no;
+        //// debugger;
+        if (getfcell_no != undefined && getfcell_no == vm.selectedHeaderName + vm.selectedHeaderIndex) {
+          //// debugger;
+          var getformat_type = vm.data_table_structure[index].type
+          // debugger;
+
+          var text_align = vm.data_table_structure[index].text_align
+          var text_position = vm.data_table_structure[index].text_position
+
+          var cell_structure = vm.data_table_structure[index];
+          var cell_value = cell_structure.value
+          vm.model = getformat_type
+          vm.selected_value = vm.model;
+          //// debugger;
+          vm.textShow = true;
+          vm.alignTextStatus = text_align
+          vm.TextPostitionStatus = text_position
+          // debugger;
+          switch (getformat_type) {
+            case 'None':
+            case 'Date':
+              break;
+            case 'Label':
+              vm.lable_show = true;
+              vm.label_name = cell_value
+
+              break;
+            case 'Number':
+              vm.number_show = true;
+              vm.number_type = cell_value
+
+              vm.percentage = cell_structure.percentage
+
+              break;
+            case 'Formula':
+              vm.formula_show = true;
+              vm.formula = cell_value
+              break;
+            case 'Currency':
+              vm.currency_show = true;
+              vm.currency_type = cell_value
+              break;
+            case 'Text':
+              vm.text_show = true;
+              vm.text = parseInt(cell_value);
+              break;
+
+
+            default:
+              break;
+          }
+        }
+        // //// debugger;
+      }
+
+
+
+    };
+
+
+
+
+
+    vm.getdetails = function () {
+      vm.lable_show = false;
+      vm.formula_show = false;
+      vm.selected_value = vm.model;
+      vm.textShow = true;
+      vm.text_show = false;
+      if (vm.selected_value == 'None') {
+        vm.textShow = false;
+      }
+      else if (vm.selected_value == 'Date') {
+
+      }
+
+      else if (vm.selected_value == 'Formula') {
+        vm.formula_show = true;
+      }
+
+      else if (vm.selected_value == 'Currency') {
+        vm.currency_show = true;
+        vm.number_show = false;
+      }
+
+      else if (vm.selected_value == 'Text') {
+        vm.text_show = true;
+      }
+
+      else if (vm.selected_value == 'Number') {
+        vm.currency_show = false;
+        vm.number_show = true;
+      }
+
+      else if (vm.selected_value == 'Label') {
+        vm.lable_show = true;
+      }
+      ////// debugger;
+
+    }
+
+    /****Duplicate Row and Delete Row*******/
+
+    vm.changeRow = function (ev, table_str, index, column, table_id, request_type, rowIndex, headArr, heading) {
+
+      if (request_type == 'header') {
+
+        headArr = [];
+
+        for (var i = 0; i < rowIndex.length; i++) {
+          var cell_type = table_str[i].type;
+          if (cell_type == 'Label') {
+            var cell_value = table_str[i].value;
+            var key = i;
+            var obj = {};
+            obj[key] = cell_value;
+            headArr.push(obj);
+
+          }
+
+
+        }
+
+        if (headArr.length == 0) {
+          $rootScope.message('Table Row cannot set as Header.', 'error');
+          return false;
+        }
+      }
+      /*********** */
+      var new_tbl_str_data = table_str;
+      var table_str_len = new_tbl_str_data.length;
+      var prev_row_data = '';
+      var next_row_data = '';
+      if (index != 0) {
+        prev_row_data = new_tbl_str_data.slice(0, index * column);
+      }
+
+      if (index < table_str_len - 1) {
+        next_row_data = new_tbl_str_data.slice(index * column, table_str_len);
+      }
+
+
+      var duplicate_row = new_tbl_str_data.slice(index * column - column, index * column);
+
+      // var  new_duplicate_row22 =  updateRow(duplicate_row,index,column);
+      /******************** */
+      /********************* */
+
+
+      var currentTableData = vm.field['datatable_' + heading.id_parent + '_' + heading.id];
+
+
+
+
+      var tab_id_update = table_id;
+
+      vm.isLoader = true;
+      var section_id = vm.section_id;
+      var row_no = vm.rows;
+      var columns_no = vm.columns;
+      vm.checklist_id = $stateParams.id_CHK;
+
+      // debugger
+      api.dataTable.changeTableRow(index, column, table_str, tab_id_update, request_type, rowIndex, headArr, currentTableData).success(function (res) {
+        vm.isLoader = false;
+        ////// debugger;
+        if (res.type == 'success') {
+          var currentId = res.heading.id;
+          // var pos = vm.headings.findIndex((obj, hib) => {obj.rid  ==currentId});
+          var pos = vm.headings.findIndex(function (obj) {
+            return obj.rid == currentId;
+          });
+          if (pos > -1) {
+            if (res.heading.datatable[0].table_str) {
+
+              /******************** */
+              update_database_table_cell_values(res);
+
+
+              //// debugger;
+              /******************** */
+
+              // vm['headings'][pos] = res.heading;
+              vm['headings'][pos]['datatable'][0].header = res.heading.datatable[0].header
+              vm['headings'][pos]['datatable'][0].header = res.heading.datatable[0].header
+              vm['headings'][pos]['datatable'][0].column = parseInt(res.heading.datatable[0].column);
+              vm['headings'][pos]['datatable'][0].row = parseInt(res.heading.datatable[0].row);
+
+              vm['headings'][pos]['datatable'][0].table_str = res.heading.datatable[0].table_str;
+
+              //// debugger;
+
+            }
+
+          }
+          ////// debugger;
+
+          console.log(" vm.dataTableArr=", res.heading);
+          ////// debugger;
+          vm.closeDialog();
+
+
+        }
+        else {
+          console.log("Error on request");
+
+
+        }
+
+      })
+
+
+      /******** */
+      //debugger;
+
+    };
+
+    function updateRow(arr, index, column) {
+      arr.length;
+      //debugger;
+      var myArr = [];
+      for (var i = 0; i < arr.length; i++) {
+        var index_no = arr[i].index;
+        var new_index_no = parseInt(index_no) + column;
+
+        myArr[new_index_no] = arr[i];
+
+        var col_no = myArr[new_index_no].col_no;
+        var row_no = myArr[new_index_no].row_no;
+
+        var row_type = myArr[new_index_no].type;
+        var new_col = parseInt(col_no) + 1;
+
+
+        if (row_type == 'Formula') {
+          var row_value = myArr[new_index_no].value;
+          var find = col_no;
+          var re = new RegExp(find, 'g');
+          myArr[new_index_no].value = row_value.replace(re, new_col);
+          //// debugger;          
+        }
+
+        myArr[new_index_no].cell_no = row_no + new_col;
+
+        myArr[new_index_no].col_no = new_col.toString();
+        myArr[new_index_no].index = new_index_no.toString();
+
+      }
+      //// debugger;
+      return myArr;
+
+    }
+
+    /***End ***** */
+
+    vm.saveFormat = function () {
+
+      // //// debugger;
+      vm.value = ''
+      vm.cell_stucture = '';
+
+      var table_key = vm.selectedHeaderName + vm.selectedHeaderIndex
+
+      var d_len = vm.myrecords.length
+
+      for (i = 0; i < d_len; i++) {
+
+        var recArr = vm.myrecords[i]
+        var chkKey = table_key in recArr;
+        if (chkKey) {
+          vm.indexPos = i
+
+        }
+      }
+
+
+      ////// debugger;
+      vm.selColIndex = vm.selectedHeaderIndex - 1
+
+      if (vm.selected_value == 'None') {
+        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': '', 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
+
+
+      }
+      else if (vm.selected_value == 'Formula') {
+        //// debugger;
+        vm.value = vm.formula
+        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
+
+        vm.value = ''
+        //// debugger;
+
+      }
+      else if (vm.selected_value == 'Currency') {
+        vm.value = vm.currency_type;
+
+        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_position': vm.TextPostitionStatus, 'text_align': vm.alignTextStatus }
+
+        vm.value = '';
+
+      }
+      else if (vm.selected_value == 'Date') {
+        vm.value = ''
+
+        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
+
+      }
+
+      else if (vm.selected_value == 'Text') {
+        vm.value = vm.text
+        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
+        vm.value = ''
+      }
+
+      else if (vm.selected_value == 'Number') {
+        vm.value = vm.number_type
+        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'percentage': vm.percentage, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
+        vm.value = ''
+      }
+
+      else {
+        vm.value = vm.label_name
+        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
+        vm.myrecords[vm.indexPos][vm.selectedHeaderName + vm.selectedHeaderIndex]
+        // //// debugger;
+
+
+
+
+      }
+
+      vm.myrecords[vm.indexPos][vm.selectedHeaderName + vm.selectedHeaderIndex] = vm.value
+      vm.data_table_structure[vm.indexPos] = vm.cell_stucture
+
+      ////// debugger;
+      vm.cellSelected = false
+      vm.lable_show = false;
+      vm.label_name = ''
+      vm.formula_show = false;
+      vm.currency_show = false;
+
+      vm.text_show = false;
+      vm.number_show = false;
+      vm.textShow = false;
+
+
+
+      vm.model = $scope.cell_format[0].name;
+      vm.alignTextStatus = $scope.alignTextVal[0].name;
+      vm.TextPostitionStatus = $scope.TextPostition[0].name;
+
+
+
+
+
+
+
+      ////// debugger;
+
+    }
+
+
+
+    vm.selectPercentage = function () {
+      if (vm.percentage) {
+        vm.percentage = false;
+      }
+      else {
+        vm.percentage = true;
+      }
+
+      ////// debugger;
+    };
+
+    vm.saveDone = function (tbl_id) {
+
+
+
+      //// debugger;
+      var tab_id_update = tbl_id != '' ? tbl_id : '';
+
+      vm.isLoader = true;
+      var section_id = vm.section_id;
+      var row_no = vm.rows;
+      var columns_no = vm.columns;
+      vm.checklist_id = $stateParams.id_CHK;
+
+      // debugger
+      api.dataTable.add(vm.dataTableName, row_no, columns_no, section_id, vm.data_table_structure, tab_id_update).success(function (res) {
+        vm.isLoader = false;
+        ////// debugger;
+        if (res.type == 'success') {
+          //// debugger;
+          if (tab_id_update != '') {
+
+            var currentId = res.heading.id;
+            var pos = vm.headings.findIndex(function (obj) {
+              return obj.rid == currentId;
+            });
+            if (pos > -1) {
+              if (res.heading.datatable[0].table_str) {
+                var section_id = res.heading.id_parent;
+                var heading_id = res.heading.id;
+
+                var new_field = "datatable_" + section_id + "_" + heading_id;
+
+                //// debugger;
+                if (vm.field[new_field]) {
+                  //// debugger;
+                  for (var key in vm.field[new_field]) {
+                    vm.field[new_field][key] = null;
+                  }
+                }
+
+
+                vm['headings'][pos]['datatable'][0].header = res.heading.datatable[0].header
+                vm['headings'][pos]['datatable'][0].table_str = res.heading.datatable[0].table_str;
+              }
+
+            }
+          }
+          else {
+            //// debugger;
+            var getHeadingIndex = vm['headings'].length;
+            vm['headings'].push(res.heading);
+
+            window.location.reload();
+          }
+
+
+
+          console.log(" vm.dataTableArr=", res.heading);
+          ////// debugger;
+          vm.closeDialog();
+
+
+        }
+        else {
+          // Display error
+        }
+
+      })
+
+
+
+    };
+
+    vm.saveTableData = function ($event, id, datatable_id, heading) {
+      var currentTableData = vm.field['datatable_' + heading.id_parent + '_' + heading.id];
+      // debugger;   
+
+
+      var $proceed = false;
+      for (var i = 0; i < currentTableData.length; i++) {
+        if (currentTableData[i] !== null && currentTableData[i] != "") {
+          $proceed = true;
+          break;
+        }
+
+      }
+      if (!$proceed) {
+        $rootScope.message('Empty Table Cannot saved.', 'warning');
+        return false;
+      }
+
+
+
+      api.dataTable.saveTable(id, datatable_id, currentTableData).success(function (res) {
+        vm.isLoader = false;
+        ////// debugger;
+        if (res.type == 'success') {
+          //// debugger;
+
+          var currentId = res.heading.id;
+          var pos = vm.headings.findIndex(function (obj) {
+            return obj.rid == currentId;
+          });
+          if (pos > -1) {
+            if (res.heading.datatable[0].table_str) {
+              /******************** */
+              /******************** */
+
+              update_database_table_cell_values(res);
+
+
+              /******************** */
+
+              vm['headings'][pos]['datatable'][0].header = res.heading.datatable[0].header
+              vm['headings'][pos]['datatable'][0].column = parseInt(res.heading.datatable[0].column);
+              vm['headings'][pos]['datatable'][0].row = parseInt(res.heading.datatable[0].row);
+              vm['headings'][pos]['datatable'][0].table_str = res.heading.datatable[0].table_str;
+            }
+
+          }
+
+          ////// debugger;
+
+          console.log(" vm.dataTableArr=", res.heading);
+          ////// debugger;
+          vm.closeDialog();
+
+
+        }
+        else {
+          // Display error
+        }
+
+      })
+
+      ////// debugger;
+
+
+
+    }
+
+    /*****To Update Cell values******* */
+
+    function update_database_table_cell_values(res) {
+
+      var section_id = res.heading.id_parent;
+      var heading_id = res.heading.id;
+
+      var new_field = "datatable_" + section_id + "_" + heading_id;
+
+      //// debugger;
+      if (vm.field[new_field]) {
+        //// debugger;
+        for (var key in res.heading.datatable[0].table_str) {
+          if (res.heading.datatable[0].table_str[key].cell_value) {
+            //// debugger;
+            var cell_new_val = res.heading.datatable[0].table_str[key].cell_value;
+            vm.field[new_field][key] = cell_new_val;
+            vm.col_data_update_str[new_field][key] = cell_new_val;
+          }
+          else {
+            vm.field[new_field][key] = null
+            vm.col_data_update_str[new_field][key] = null;
+          }
+
+        }
+      }
+    }
+
+    /****************** */
+
+
+    /***** all_spreadsheets code starts ******/
+
+    vm.getAllSpreadsheets = getAllSpreadsheets;
+    vm.add_from_database_table = add_from_database_table;
+    vm.getSpreadsheetSingleRow = getSpreadsheetSingleRow;
+
+
+    function add_from_database_table(ev, checklist, heading, rowIndex, rowHeader) {
+
+      if (rowHeader.length == 0) {
+        $rootScope.message('Please set as Header.', 'error');
+        return false;
+
+      }
+
+
+      vm.currentHeading = heading;
+      vm.add_from_db_rowIndex = rowIndex;
+      vm.add_from_db_rowHeader = rowHeader;
+
+      //// debugger;
+
+      // console.log(rowIndex, rowHeader);
+      // console.log(vm.add_from_db_rowIndex, vm.add_from_db_rowHeader);
+
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/checklist/dialogs/checklist/checklist-add-from-database-dialog.html',
+        parent: angular.element($document.find('#checklist')),
+        targetEvent: ev,
+        clickOutsideToClose: false
+      });
+
+
+    }
+
+    vm.excels = {
+
+      view: function (excel, index) {
+
+        if (vm.origColspanLength == undefined || vm.origColspanLength < excel.data.heading.length) {
+          vm.origColspanLength = excel.data.heading.length;
+          if (vm.colspanLength < 4) vm.colspanLength = 2;
+          else vm.colspanLength = vm.origColspanLength - 1;
+        }
+        vm.excel_open_id = excel.id;
+
+      }
+
+    }
+
+    function getAllSpreadsheets() {
+      api.organization.get_all_spreadsheets().then(function (d) {
+        vm.isLoader = false;
+        if (d.data.code == '-1') {
+          if (d.data.message == 'unauthorized access') {
+            $state.go('app.logout');
+          } else {
+          }
+        } else {
+          vm.all_spreadsheets = d.data.spreadsheets;
+
+          vm.excels.progress = false;
+
+        }
+      });
+    };
+    getAllSpreadsheets();
+
+
+
+    function getSpreadsheetSingleRow(record) {
+
+      vm.closeDialog();
+
+      var section_id = vm.currentHeading.id_parent;
+      var heading_id = vm.currentHeading.id;
+
+      var new_field = "datatable_" + section_id + "_" + heading_id;
+
+
+
+
+
+      console.log('getSpreadsheetSingleRow', record);
+      vm.currentHeading;
+      vm.add_from_db_rowIndex;
+      vm.add_from_db_rowHeader;
+
+
+
+
+      var head_len = vm.add_from_db_rowHeader.length;
+      if (head_len > 0) {
+        for (var i = 0; i < head_len; i++) {
+
+          var key = vm.add_from_db_rowHeader[i];
+          var key_find = key.toLowerCase();
+          //// debugger;
+          if (key_find in record) {
+
+            var getIndex = vm.add_from_db_rowIndex[i];
+
+            var type = vm.currentHeading.datatable[0].table_str[getIndex].type;
+            if (type != 'Formula') {
+              vm.field[new_field][getIndex] = record[key_find];
+
+              $scope.autoCalculate(getIndex, vm.currentHeading.datatable[0].table_str, vm.currentHeading);
+            }
+
+          }
+
+
+        }
+      }
+
+      console.log('add_from_db_rowIndex', vm.add_from_db_rowIndex);
+      console.log(' vm.add_from_db_rowHeader', vm.add_from_db_rowHeader);
+
+    }
+
+
+    function createTableFromTemplate(section_id) {
+
+      vm.table_section_id = section_id;
+      console.log('createTableFromTemplate');
+      debugger;
+      api.dataTable.getDataTableTemplate().error(function (res) {
+        return $rootScope.message('Unknown error creating Table from selected Template.', 'warning');
+      }).success(function (res) {
+        vm.isLoader = false;
+        if (res.code) {
+          return $rootScope.message("Error creating Table from Template: (" + res.code + "): " + res.message, 'warning');
+        } else {
+
+          vm.datatable_templates = res.datatable_templates;
+          $mdDialog.show({
+            scope: $scope,
+            preserveScope: true,
+            templateUrl: 'app/main/checklist/dialogs/checklist/checklist-create-table-from-template.html',
+            parent: angular.element($document.find('#checklist')),
+
+            clickOutsideToClose: false
+          });
+
+
+          // vm.closeDialog();
+        }
+      })
+
+    }
+
+    vm.downloadTable = function (temp_id) {
+
+      //// debugger;
+
+      vm.isLoader = true;
+
+      api.dataTable.downloadTable(vm.table_section_id, temp_id).success(function (res) {
+        vm.isLoader = false;
+        if (res.type == 'success') {
+          //// debugger;
+          var current_section_id = res.heading.id_parent;
+          var pos = vm.sections.findIndex(function (obj) {
+            return obj.rid == current_section_id;
+          });
+
+          vm['sections'][pos].headings.push(res.heading);
+          vm.closeDialog();
+
+
+        }
+        else {
+          // Display error
+        }
+
+      })
+
+    };
+
+    vm.openTableFromTemplateDialog = function (temp_id) {
+
+      vm.table_template_name = '';
+      vm.table_template_description = '';
+      vm.table_id = temp_id;
+      vm.title = 'Create New Data Table Template';
+
+      $mdDialog.show({
+        scope: $scope,
+        preserveScope: true,
+        templateUrl: 'app/main/checklist/dialogs/checklist/checklist-add-table-template-dialog.html',
+        parent: angular.element($document.find('#checklist')),
+
+        clickOutsideToClose: false
+      });
+
+    }
+
+    vm.saveTableAsTemplate = function () {
+      vm.table_template_name;
+      vm.table_template_description;
+      //// debugger;
+      vm.isLoader = true;
+      api.dataTable.saveTableAsTemplate(vm.table_id, vm.table_template_name, vm.table_template_description).success(function (res) {
+        vm.isLoader = false;
+        if (res.type == 'success') {
+          //// debugger;
+          vm.closeDialog();
+        }
+
+      })
+
+    };
+
+    /*****Add from database ends******/
+    /*** End Data Table Function */
     
 
-    });
-    
-  }
-
+    function changeUppercase(input){
+      console.log('vm.formula', vm.formula);
+      vm.formula = vm.formula.toUpperCase();
+    }
 
   }
 

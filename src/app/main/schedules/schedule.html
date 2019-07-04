@@ -1,16 +1,154 @@
-<div id="setting" class="page-layout simple tabbed" layout="column">
-    <page-toolbar datas="vm.submenu"> </page-toolbar>
-    <md-toolbar class="pt-20 breadcrumb">
-        <ul>
-          <li>
-            <button type="button" class="white" ng-click="vm.openSchedulePopup()">Add Schedule</button>
-          </li>
-        </ul>
-      </md-toolbar>
-      <div ng-if="vm.item" ng-include="'app/main/schedules/partials/schedule.html'"></div>
+<div id="setting" class="page-layout simple tabbed pt-30" layout="column">
+  <page-toolbar datas="vm.submenu"> </page-toolbar>
 
-  
-      <div class="bd-loader" ng-if="vm.isLoader">
-          <md-progress-circular md-diameter="40"></md-progress-circular>
-        </div>
+
+
+    <md-toolbar ng-if="vm.selectedView=='Gantt'" >
+      <ul class="pt-10 pb-10 custom-date-scheduler-gantt">
+        <li>  Gantt Chart</li>
+      </ul>
+    </md-toolbar> 
+
+        <md-menu class="pull-right ">
+          <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
+            translate translate-attr-aria-label="ORGANIZATION.MORE">
+            <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+          </md-button>
+
+          <md-menu-content  class="menu-height">
+
+            <md-menu-item>
+              <md-button ng-click="vm.AddToScheduleDialog()" aria-label="Add to Schedule"
+                translate-attr-aria-label="ORGANIZATION.ADD_TO_SCHEDULES">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                <span translate="ORGANIZATION.ADD_TO_SCHEDULE">Add to Schedule</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="vm.selectedView=='Gantt'">
+              <md-button ng-click="vm.addRowDialog()"  aria-label="Add Row"
+                translate-attr-aria-label="ORGANIZATION.ADD_ROW">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                <span translate="ORGANIZATION.ADD_ROW">Add Row</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item>
+              <md-button ng-click="vm.changeScale()" aria-label="View Team"
+                translate-attr-aria-label="ORGANIZATION.VIEW_TEAM">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-account-switch"></md-icon>
+                <span translate="ORGANIZATION.VIEW_TEAM">View Team</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item  ng-if="vm.selectedView=='Gantt'">
+              <md-button ng-click="vm.changeScale(vm.selectedView,'hour')" aria-label="Hour"
+                translate-attr-aria-label="ORGANIZATION.HOUR">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-calendar-o"></md-icon>
+                <span translate="ORGANIZATION.HOUR">Hour</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item  ng-if="vm.selectedView=='Calendar'">
+                <md-button ng-click="vm.changeScale(vm.selectedView,'today','today')" aria-label="Today"
+                  translate-attr-aria-label="">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-calendar-o"></md-icon>
+                  <span translate="">Today</span>
+                </md-button>
+              </md-menu-item>
+
+
+            <md-menu-item>
+              <md-button ng-click="vm.changeScale(vm.selectedView,'day','basicDay')" aria-label="Hour"
+                translate-attr-aria-label="ORGANIZATION.DAY">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-bars"></md-icon>
+                <span  translate="ORGANIZATION.DAY">  Day</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="vm.selectedView=='Calendar'">
+              <md-button ng-click="vm.changeScale(vm.selectedView,'day','agendaDay')" aria-label="Hour"
+                translate-attr-aria-label="ORGANIZATION.DAY">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-bars"></md-icon>
+                <span > Agenda Day</span>
+              </md-button>
+            </md-menu-item>
+
+
+
+            <md-menu-item>
+              <md-button ng-click="vm.changeScale(vm.selectedView,'week','basicWeek')" aria-label="Publish as Template"
+                translate-attr-aria-label="ORGANIZATION.WEEK">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-barcode"></md-icon>
+                <span translate="ORGANIZATION.WEEK">Week</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="vm.selectedView=='Calendar'">
+                <md-button ng-click="vm.changeScale(vm.selectedView,'week','agendaWeek')" aria-label="Publish as Template"
+                  translate-attr-aria-label="ORGANIZATION.WEEK">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-barcode"></md-icon>
+                  <span > Agenda Week</span>
+                </md-button>
+              </md-menu-item>
+
+            <md-menu-item>
+              <md-button ng-click="vm.changeScale(vm.selectedView, 'month', 'month')" aria-label="Download PDF"
+                translate-attr-aria-label="ORGANIZATION.MONTH">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-th"></md-icon>
+                <span translate="ORGANIZATION.MONTH">Month</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="vm.selectedView=='Gantt'">
+              <md-button ng-click="vm.ZoomOptions('plus')" aria-label="Zoom In"
+                translate-attr-aria-label="ORGANIZATION.ZOOM_IN">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-search-plus"></md-icon>
+                <span translate="ORGANIZATION.ZOOM_IN">Zoom In</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-if="vm.selectedView=='Gantt'">
+              <md-button ng-click="vm.ZoomOptions('minus')" aria-label="Zoom Out"
+                translate-attr-aria-label="ORGANIZATION.ZOOM_OUT">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-search-minus"></md-icon>
+                <span translate="ORGANIZATION.ZOOM_OUT">Zoom Out</span>
+              </md-button>
+            </md-menu-item>
+
+
+            <md-menu-item ng-if="vm.selectedView=='Gantt'">
+              <md-button ng-click="vm.changeView('Calendar')" aria-label="View Calendar"
+                translate-attr-aria-label="ORGANIZATION.VIEW_CALENDAR">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-calendar"></md-icon>
+                <span translate="ORGANIZATION.VIEW_CALENDAR">View Calendar</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item ng-click="vm.changeView('Gantt')" ng-if="vm.selectedView=='Calendar'">
+              <md-button  aria-label="View Calendar"
+                translate-attr-aria-label="ORGANIZATION.VIEW_CALENDAR">
+                <md-icon class="md-accent-fg s18" md-font-icon="fa fa-calendar"></md-icon>
+                <span>View as Gantt</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item>
+              <md-button ng-click="vm.coypDialog()" aria-label="Download PDF"
+                translate-attr-aria-label="ORGANIZATION.DOWNLOAD_PDF">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-file-pdf"></md-icon>
+                <span translate="ORGANIZATION.DOWNLOAD_PDF">Download PDF</span>
+              </md-button>
+            </md-menu-item>
+
+          </md-menu-content>
+        </md-menu>
+
+      
+  <div ng-if="vm.item " ng-include="'app/main/schedules/partials/schedule.html'"></div>
+
+
+  <div class="bd-loader" ng-if="vm.isLoader">
+    <md-progress-circular md-diameter="40"></md-progress-circular>
+  </div>
 </div>

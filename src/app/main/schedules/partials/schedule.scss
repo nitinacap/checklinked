@@ -5,4 +5,25 @@
     .bordered-table thead th {
         border-bottom: none !important;
     }
+    .md-menu{
+        width: 30px;
+        position: absolute;
+        top: 30px;
+        right: 20px;
+        z-index: 2;
+    }
+    .fc-toolbar .fc-right{
+        margin-right: 30px;
+    }
+    .fc-toolbar .fc-center h2{
+        padding-top: 3px;
+    }
+    ul.custom-date-scheduler-gantt{
+        list-style-type: none;
+        color: black;
+        margin: auto;
+    }
+    md-toolbar{
+        border-bottom: 1px solid #517cc6!important;
+    }
 }
