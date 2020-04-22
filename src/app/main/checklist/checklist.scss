@@ -77,6 +77,11 @@
 
     color: #000 !important;
   }
+
+  sup{
+    line-height: 1.5;
+    font-size: 10px;
+  }
 }
 
 .page-layout.carded.left-sidenav > .center .content-card .toolbar-list {
@@ -118,4 +123,13 @@ md-dialog form#findLinkForm button.md-raised.md-accent.md-button.md-ink-ripple.m
 .scheduler_time_input{
   border: none;
   border-bottom: 1px solid;
+}
+
+.mat-datepicker-content .mat-calendar
+{ 
+     zoom: 0.20!important;
+}
+
+.opacity-5 {
+  opacity: .5;
 }

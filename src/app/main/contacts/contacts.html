@@ -3,7 +3,7 @@
   <div ng-cloak class="subtab pt-30">
 
     <md-tabs md-dynamic-height md-border-bottom md-selected="vm.currentItem">
-      <md-tab ng-click="myvalue = false;">
+      <md-tab  md-on-select="vm.changeTab('Internal')">
         <md-tab-label>
           <span>Internal</span>
         </md-tab-label>
@@ -11,28 +11,12 @@
           <div ng-include="'app/main/contacts/partials/internal.html'"></div>
         </md-tab-body>
       </md-tab>
-
-      <md-tab class="pr-30" ng-click="myvalue = true;">
+<!-- ng-click="myvalue = true;" -->
+      <md-tab class="pr-30" md-on-select="vm.changeTab('Direct')">
         <md-tab-label>
           <span>Direct</span>
-        </md-tab-label>
-        <md-tab-body>
-          <div ng-include="'app/main/contacts/partials/direct.html'"></div>
-        </md-tab-body>
-      </md-tab>
 
-      <md-tab class="pr-30" ng-click="myvalue = false;">
-        <md-tab-label>
-          <span>Secondary</span>
-        </md-tab-label>
-        <md-tab-body>
-          <div ng-include="'app/main/contacts/partials/secondary.html'"></div>
-        </md-tab-body>
-      </md-tab>
-
-      <md-tab class="pr-30 pull-right" ng-disabled="!myvalue">
-        <md-tab-label>
-          <md-menu>
+          <md-menu  class="moreMenuOnTab" ng-if="!$root.viewAs.notMe" ng-disabled="!myvalue">
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
               translate translate-attr-aria-label="CONTACTS.SORT">
               <md-icon  ng-show="myvalue" md-font-icon="icon-dots-vertical s18" id="lh-5" ng-click="$mdOpenMenu($event)"></md-icon>
@@ -71,15 +55,22 @@
             </md-menu-content>
 
           </md-menu>
-
-
         </md-tab-label>
         <md-tab-body>
           <div ng-include="'app/main/contacts/partials/direct.html'"></div>
-
         </md-tab-body>
-
       </md-tab>
+
+      <md-tab class="pr-30" md-on-select="vm.changeTab('Secondary')">
+        <md-tab-label>
+          <span>Secondary</span>
+        </md-tab-label>
+        <md-tab-body>
+          <div ng-include="'app/main/contacts/partials/secondary.html'"></div>
+        </md-tab-body>
+      </md-tab>
+
+
 
     </md-tabs>
   </div>

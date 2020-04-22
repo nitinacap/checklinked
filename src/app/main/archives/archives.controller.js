@@ -96,12 +96,12 @@
     }
 
     vm.submenu = [
-      { link: 'folders', title: 'Projects' },
-      { link: 'groups', title: 'Workflow' },
-      { link: 'checklist', title: 'Checklists' },
-      { link: 'templates', title: 'Templates' },
-      { link: 'other', title: 'Other' },
-      { link: '', title: 'Archives' }
+      { link: 'folders', title: 'Projects', active : false },
+      { link: 'groups', title: 'Workflow', active : false },
+      { link: 'checklist', title: 'Checklists', active : false },
+      { link: 'templates', title: 'Templates', active : false },
+      { link: 'other', title: 'Other', active : false },
+      { link: 'archives', title: 'Archives', active : true }
     ];
 
   }

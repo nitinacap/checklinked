@@ -3,8 +3,8 @@
     <img src="assets/images/logos/loading.gif" width="200">
   </div>
 </div>
-<div id="" class="simple-table-container md-background-bg md-whiteframe-1dp {{vm.isBreadcrum ? 'pt-0' : 'pt-30'}}">
-  <table class="simple row-border hover bordered-table">
+<div id="WorkflowExport" class="simple-table-container md-background-bg md-whiteframe-1dp {{vm.isBreadcrum ? 'pt-0' : 'pt-10'}}">
+  <table class="simple row-border hover bordered-table mb-30">
     <thead class="tool-bg">
       <tr>
         <th>
@@ -12,7 +12,8 @@
             <md-select class="simplified" ng-model="vm.groupOrder" placeholder="Sort By"
               ng-change="vm.groupOrderDescending = vm.groupOrder === 'true ? true : vm.folderOrderDescending">
               <md-option value="name">Sort by A-Z</md-option>
-              <md-option value="-name">Sort by Z-A</md-option>
+              <!-- <md-option value="-name">Sort by Z-A</md-option> -->
+              <md-option value="RecenlyAccessed" >Most Recent</md-option>
             </md-select>
 
             <md-button class="md-icon-button" ng-click="vm.groupOrderDescending = !vm.groupOrderDescending"
@@ -24,12 +25,12 @@
             </md-button>
           </div>
          <div layout="row" layout-align="start center" >
-          <p class="pl-20 pt-20 danger" ng-if="!vm.groups.length  && !vm.isLoader  && !vm.showLoadingImage">You do not have any workflow</p>
+          <p class="pt-10" ng-if="!vm.groups.length  && !vm.isLoader  && !vm.showLoadingImage">You do not have any workflow</p>
         </div>
         </th>
 
         <th class="text-right">
-          <md-menu >
+          <md-menu ng-if="!$root.viewAs.notMe">
             <button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
               translate translate-attr-aria-label="GROUPS.SORT">
               <md-icon ng-class="!vm.groups.length  && !vm.isLoader  && !vm.showLoadingImage ? pt-15 : ''" md-font-icon="icon-dots-horizontal s18"></md-icon>
@@ -37,7 +38,7 @@
 
             <md-menu-content>
               <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
-                <md-button ng-click="vm.openGroupDialog($event)">
+                <md-button ng-click="vm.openGroupDialog($event, group, type, 'new')">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
                   <span translate="">Add New Workflow</span>
                 </md-button>
@@ -67,26 +68,30 @@
       <tr ng-hide="item[$index]"
         ng-repeat="group in vm.groups | orderBy:vm.groupOrder:vm.groupOrderDescending | filter: globalSearch.searchTerm | filter:vm.groupFilters.search track by $index">
         <td>
-          <a href="/checklist/{{group.id}}">
-            {{group.name}}
+          <a matTooltip="Info about the action" href="/checklist/{{group.id}}">
+            {{group.name}} 
+            <md-tooltip ng-if="group.description && group.description!='NULL' && group.description!='null'">{{group.description}}</md-tooltip>
+            
+       
           </a>
         </td>
 
         <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
           class="text-right">
-          <md-menu>
+          <md-menu ng-if="!$root.viewAs.notMe">
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
               translate translate-attr-aria-label="GROUP.MORE">
               <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
             </md-button>
             <md-menu-content width="3" class="menu-height">
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('send-checklists-links-to-other-users') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('send-checklists-links-to-other-users') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-click="vm.sendLinkRequestDialog($event, group)" aria-label="Send Link Request"
                   translate-attr-aria-label="GROUP.SEND_LINK_REQUEST">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-account-plus" class="s18"></md-icon>
                   <span translate="GROUP.SEND_LINK_REQUEST">Send Link Request</span>
                 </md-button>
               </md-menu-item>
+              
               <md-menu-item ng-show="vm.checkIsPermission.indexOf('show-linked-users') !== -1">
                 <md-button ng-click="vm.showLinkedUsers($event, group)" aria-label="Show Linked Users"
                   translate-attr-aria-label="GROUP.SHOW_LINKED_USERS">
@@ -103,22 +108,22 @@
               </md-menu-item>
 
               <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
-                <md-button ng-click="vm.openGroupDialog($event, group)" aria-label="Edit Group"
+                <md-button ng-click="vm.openGroupDialog($event, group, type, 'edit')" aria-label="Edit Group"
                   translate-attr-aria-label="GROUP.EDIT_GROUP">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
                   <span translate="GROUP.EDIT_GROUP">Edit Name</span>
                 </md-button>
               </md-menu-item>
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('duplicate-projects-workflows-checklists') !== -1">
 
-                <md-button ng-click="vm.openGroupDialog(group, '', 'duplicate')" aria-label="Create Duplicate"
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('duplicate-projects-workflows-checklists') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
+                <md-button ng-click="vm.openGroupDialog(group, '', 'duplicate', 'duplicate')" aria-label="Create Duplicate"
                   translate-attr-aria-label="GROUP.DUPLICATE">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
                   <span translate="GROUP.DUPLICATE">Duplicate</span>
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('publish-templates') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('publish-templates') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-click="vm.publishTemplateDialog($event, group.id, group.name)"
                   aria-label="Publish as Template" translate-attr-aria-label="GROUP.PUBLISH_TEMPLATE">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-upload"></md-icon>
@@ -133,7 +138,8 @@
                   <span translate="GROUP.DOWNLOAD_PDF">Download PDF</span>
                 </md-button>
               </md-menu-item>
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1">
+
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-click="vm.archieveDialog($event, group.id)" aria-label="Archive"
                   translate-attr-aria-label="GROUP.ARCHIVE">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
@@ -141,8 +147,8 @@
                 </md-button>
               </md-menu-item>
               <md-divider></md-divider>
-
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+             
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-click="vm.cutDialog(group.id_parent, group.id, 'cut',$index)" aria-label="Cut"
                   translate-attr-aria-label="GROUP.CUT">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
@@ -150,7 +156,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-click="vm.coypDialog(group.id_parent, group.id, 'copy',$index)" aria-label="Copy"
                   translate-attr-aria-label="GROUP.COPY">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
@@ -158,7 +164,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-click="vm.pasteDialog(group.id_parent, group.id, 'paste',$index)" aria-label="Paste"
                   translate-attr-aria-label="GROUP.PASTE">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
@@ -166,7 +172,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1 && group.move_item_id">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1 && group.move_item_id && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-click="vm.undoDialog(group.move_item_id)" aria-label="Undo"
                   translate-attr-aria-label="GROUP.UNDO">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>

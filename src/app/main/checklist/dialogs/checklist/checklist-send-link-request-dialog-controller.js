@@ -92,7 +92,7 @@
           status: info.status,
           invite: info.invites[0],
           request: function() {
-            debugger;
+            // ;
           	console.log('vm', vm);
             var itemID, link;
             link = this;

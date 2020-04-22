@@ -3,7 +3,7 @@
     <thead  class="tool-bg">
       <tr>
         <th>
-          <h3 ng-if="!vm.archives.length">You do not have any archives</h3>
+          <h3 class="ml-20" ng-if="!vm.archives.length">You do not have any archives</h3>
           <div layout="row" layout-align="start center"  ng-if="vm.archives.length">
             <md-select class="simplified" ng-model="vm.folderOrder" placeholder="Most Recent" ng-change="vm.folderOrderDescending = vm.folderOrder === '' ? true : vm.folderOrderDescending">
               <md-option value="name">Most Recent</md-option>
@@ -35,7 +35,7 @@
 
         <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))" class="text-right">
 
-          <md-menu>
+          <md-menu ng-if="!$root.viewAs.notMe">
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
               translate translate-attr-aria-label="FOLDER.RESTORE">
               <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>

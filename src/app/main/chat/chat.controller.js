@@ -6,7 +6,7 @@
     .controller('ChatController', ChatController);
 
   /** @ngInject */
-  function ChatController($rootScope, $cookies, $stateParams, $scope, $filter, $http, $mdSidenav, $timeout, $document, $mdMedia, api, $mdDialog) {
+  function ChatController($state, $rootScope, $cookies, $stateParams, $scope, $filter, $http, $mdSidenav, $interval, $timeout, $document, $mdMedia, api, $mdDialog) {
 
 
     var vm = this;
@@ -61,11 +61,15 @@
       $mdDialog.hide();
     };
 
+
+    // $interval(function(){ // ; $scope.getNewLatestPosts(); }, 10000);
+
     function livechatchecking() {
       $rootScope.socketio.on('livemessages', function (data) {
         $scope.$apply(function () {
           console.log('livemessages=', data);
           vm.messages[data.index] = data;
+          listMenu();
         });
         $('#messageHeight' + data.index).addClass('messagescroll');
         var scroll=$('#messageHeight' + data.index);
@@ -75,24 +79,53 @@
 
     }
 
+    $scope.$watch(function() {
+      return  vm.newLivemessage;
+    }, function() {
+     
+      if( vm.newLivemessage){
+        console.log('livemessages=', vm.newLivemessage);
+        vm.messages[vm.newLivemessage.index] = vm.newLivemessage;
+        listMenu();
+    
+        $('#messageHeight' + vm.newLivemessage.index).addClass('messagescroll');
+        var scroll=$('#messageHeight' + vm.newLivemessage.index);
+        scroll.animate({scrollTop: scroll.prop("scrollHeight")});
+        // 
+      }
+
+        
+    }, true);
+
+
+
 
 
     function readMessage(item) {
+      console.log('read msg', item)
+      // 
+      item.is_read = "1";
       var array = [item.id];
-      if (item.child_data) {
-        item.child_data.reduce(function (map, data) {
-          if (data.is_read == 0) {
-            array.push(data.id);
-          }
-        });
+      console.log('read msg array', array)
+      if(item.user_id != $scope.user_id_){
+        if (item.child_data ) {
+          // 
+          item.child_data.reduce(function (map, data) {
+            if (data.is_read == 0) {
+              array.push(data.id);
+            }
+          });
+        }
+        if (array && array.length > 0) {
+          return api.notifications.read(id, 'notification-count', array).success(function (resp) {
+            console.log('list resp',resp)
+            if (resp) {
+              listMenu();
+            }
+          })
+        }
       }
-      if (array && array.length > 0) {
-        return api.notifications.read(id, 'notification-count', array).success(function (resp) {
-          if (resp) {
-            listMenu();
-          }
-        })
-      }
+
 
     }
 
@@ -113,7 +146,16 @@
       contacts = d.data.friendships;
 
       if (d.data.code == '-1') {
-        $scope.subscriptionAlert(d.data.message);
+        // $scope.subscriptionAlert(d.data.message);
+        console.log('logout no alert')
+        
+        if(d.data.message=='unauthorized access'){
+          $state.go('app.logout');
+        }else{
+
+          $scope.subscriptionAlert(d.data.message);
+        
+        }
       }
 
       for (i = 0; i < contacts.length; i++) {
@@ -237,6 +279,7 @@
           $rootScope.message(res.message, 'warning');
         } else {
           $rootScope.socketio.emit('message', res.posts[0]);
+          $rootScope.messageToEmit = res.posts[0];
         }
       })["finally"](function () {
         // Reset the reply textarea
@@ -379,7 +422,8 @@
 
     ///////SET UP THE SOCKET CONNECTION FOR REALTIME
 
-
+    $scope.user_id_ = $cookies.get("useridCON")
+   
 
     function setSocketStuff() {
       //$rootScope.socketio.emit('join', "/conversation/" + vm.viewingConversation.id);
@@ -395,7 +439,35 @@
 
         return vm.pushPosts(vm.postProcessPosts([post]));
       });
+
+      // $rootScope.messageToEmit
+
+     
     };
+
+    $scope.$watch(function() {
+      return   $rootScope.messageToEmit;
+    }, function() {
+
+      if($rootScope.messageToEmit){
+        var notifyItem;
+        console.log('message received', $rootScope.messageToEmit);
+        if ($rootScope.messageToEmit.idFDI && $rootScope.messageToEmit.id_contact === $rootScope.user.idCON) {
+          notifyItem = $.extend({}, $rootScope.messageToEmit, {
+            type: 'post'
+          });
+          $rootScope.socketio.emit('notify', [notifyItem]);
+        }
+  
+        return vm.pushPosts(vm.postProcessPosts([$rootScope.messageToEmit]));
+        // 
+      }
+
+      
+    }, true);
+
+
+
     if ((ref = $rootScope.socketio) != null ? ref.connected : void 0) {
       console.log('socket was already connected (convo)');
       vm.setSocketStuff();
@@ -417,6 +489,11 @@
       return posts;
     }
 
+
+  
+
+
+
     //new conversion
     $scope.setFile = function (element) {
       //  var files = document.getElementById(element.id).files[0];
@@ -424,7 +501,7 @@
         $scope.theFile = element.files[0];
       });
     };
-    function getNewLatestPosts(id) {
+    $scope.getNewLatestPosts = function(id) {
       vm.isLoader = true;
       api.conversations.getnew(id).success(function (res) {
         vm.chat = [];
@@ -432,7 +509,9 @@
         if (res.type == 'success') {
           var object = res.posts.data.conversions;
           vm.messages = res.posts.data;
+          // 
           vm.directMesage = res.posts.data.contacts;
+          // 
 
         }
       })
@@ -445,7 +524,7 @@
 
       }
     }
-    getNewLatestPosts($cookies.get('useridCON'));
+    $scope.getNewLatestPosts($cookies.get('useridCON'));
     vm.msgChOpen = false;
     function submitMessage(message, index, filename, type_of, type, user_id, parent_id) {
      
@@ -490,7 +569,11 @@
           vm.newPost.submitting = false;
           vm.checklistCionversion = true;
           $rootScope.socketio.emit('livemessages', res.posts[0]);
+          vm.newLivemessage = res.posts[0];
+          
           api.notifications.count_notifi();
+          vm.messages
+          
 
           //vm.conversation.posts.unshift(res.posts[0]);
         }
@@ -558,19 +641,26 @@
     };
 
     function listMenu() {
+     
+     
       var user_id = $cookies.get("useridCON").toString();
       api.notifications.count_notifi().success(function (notification) {
+        // 
+
+        console.log('listMenu', notification)
         var data = notification.item;
         var message_count = data.message_count;
         var notification_count = data["user_notification" + user_id];
         var alert_count = data["user_alert" + user_id];
+        var invites_count = data.invites_count;
 
         vm.submenu = [
-          { link: 'alerts', title: 'Alerts' },
-          { link: 'invitations', title: 'Action Items', notification: alert_count },
-          { link: '', title: 'Messages', notification: message_count },
-          { link: 'notification', title: 'Notifications', notification: notification_count }
+          { link: 'alerts', title: 'Alerts', notification: alert_count, active : false   },
+          { link: 'invitations', title: 'Action Items', notification: invites_count, active : false  },
+          { link: 'chat.message', title: 'Messages', notification: message_count, active : true  },
+          { link: 'notification', title: 'Notifications', notification: notification_count, active : false  }
         ];
+        
       });
     }
 
@@ -593,6 +683,34 @@
     setTimeout(function () {
       $('.Communicate').addClass('communicate');
     }, 800);
+
+    // redirrecting ti checklist heading, section or item when clicked
+    $scope.breadcrumbRedirect = function(what, breadcrumb){
+      // 
+
+      if(what === 'section'){
+        // 
+        $state.go('app.checklist.conflicts', { id: breadcrumb.checklist_id,  sections: [breadcrumb.section_id] });
+      }else if(what === 'heading'){
+        // 
+        $state.go('app.checklist.conflicts', { id: breadcrumb.checklist_id, sections: [breadcrumb.section_id], headings: [breadcrumb.heading_id] });
+      }else if(what === 'line'){
+        // 
+        $state.go('app.checklist.conflicts', { id: breadcrumb.checklist_id,  sections: [breadcrumb.section_id], headings: [breadcrumb.heading_id], items: [breadcrumb.line_id] });
+      }
+      // var checklist = {rid: "827", id: 22, created: 1550842977, idCHK: "690", idFDI: ""}
+
+      // var headings = ["598"]
+      // var sections = ["787"]
+
+      // $state.go('app.checklist.conflicts', { id: checklist.idCHK, checklist: checklist, sections: sections, headings: headings });
+      // $state.go('app.checklist.conflicts', { id: checklist.idCHK, checklist: checklist, sections: sections, headings: headings, items: conflicts.idsITEM });
+      // ----{"project_id":"675","project_name":"CHECK","folder_id":"1913","folder_name":"checking","checklist_name":"hello test 1 23","checklist_id":"1043","folder_chk_id":1135,"flag_complete":null,"section_name":"test 33","section_id":1309,"heading_name":"test 34","heading_id":1205,"line_name":"test 35","line_id":1771} ------
+    }
+
+
+// showMe: {idCON: "40", name: "Mahto202"}
+// showThem: {idCON: "43", name: "Naman
 
 
 

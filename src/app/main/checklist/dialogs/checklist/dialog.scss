@@ -242,3 +242,147 @@ md-dialog {
   }
 }
 }
+
+// data-table-dialog.html css starts
+
+md-dialog.dataTable {
+
+  // md-dialog.dialog {
+    max-width: 95%;
+    width: 95%!important;
+  // }
+
+  .chk_data_table_header {
+    border: 2px solid #9E9E9E !important;
+    border-bottom: 0px !important;
+    border-collapse: collapse;
+  }
+
+  table.table.table-bordered.chk_data_table_header tr td {
+    height: 1px;
+    text-align: center;
+    border: 2px solid #a7a7a7;
+
+    padding: 2px;
+    border-bottom: none !important;
+  }
+
+  table.table.table-bordered.chk_data_table_header tr td:last-child {
+    border-right: 0px !important;
+  }
+
+  .chk_data_table,
+  .chk_data_table_header {
+    width: 100%;
+    white-space: nowrap;
+
+    table-layout: fixed;
+  }
+
+  td.input_border {
+
+    padding: 5px;
+    min-height: 40px;
+    height: 40px;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    /* white-space: pre-wrap;  */
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+  }
+
+  span.table_detail {
+    border-bottom: 2px solid #416ea3;
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    margin-right: 10px;
+  }
+
+  .data_tabel_title {
+    margin-bottom: 20px;
+  }
+
+  .data_tabel_title span {
+    display: inline-block;
+    padding: 0 40px 0 40px;
+    font-size: 22px;
+    font-weight: 700;
+    border-bottom: 2px solid #416ea3;
+  }
+
+  td.cell-border {
+    border: 3px solid #000 !important;
+    /* border-bottom: none !important; */
+    /* padding: 0px !important;
+      border: 1px solid #9E9E9E !important; */
+
+  }
+
+  td.cell-border-none {
+    border: 2px solid #9E9E9E !important;
+    text-align: center;
+
+  }
+
+  .chk_data_table {
+    border-collapse: collapse;
+
+  }
+
+
+
+  .chk_data_table span {
+    display: block;
+  }
+
+  .chk_data_table span.right {
+    text-align: right;
+  }
+
+  .chk_data_table span.left {
+    text-align: left;
+  }
+
+  .chk_data_table span.center {
+    text-align: center;
+  }
+
+  .chk_data_table span.top {
+    vertical-align: top;
+  }
+
+  .chk_data_table span.middle {
+    vertical-align: middle;
+  }
+
+  .chk_data_table span.bottom {
+    vertical-align: bottom;
+  }
+
+  .fs-16 {
+    font-size: 16px;
+  }
+
+  md-input-container label {
+    font-size: 16px;
+  }
+}
+
+// data-table-dialog.html css ends
+
+.header_text{
+  border: none !important;
+  border-bottom: 1px solid #c6c6c6  !important;
+}
+
+div.user_dropdown div{
+  display: inline-block;
+  margin-left: 10px;
+}
+
+div.user_dropdown div button{
+  border: none;
+  border-bottom: 1px solid;
+  border-radius: 0;
+}

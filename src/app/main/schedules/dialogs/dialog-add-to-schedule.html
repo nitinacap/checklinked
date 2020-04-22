@@ -1,5 +1,5 @@
 <md-dialog class="dialog" aria-label="">
-  <form name="checklistForm" class="md-inline-form" ng-submit="vm.SaveNewRow()" novalidate>
+  <form name="checklistForm" class="md-inline-form"  novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <span class="title">Add to Schedule</span>
@@ -35,7 +35,7 @@
           <tbody>
             <tr>
               <td class="text-left">
-                <md-icon class="md-accent-fg " ng-click="vm.oepnAddEditSchedulerDialog(22)" md-font-icon="icon-plus-circle"></md-icon>
+                <md-icon class="md-accent-fg "  ng-click="vm.oepnAddEditSchedulerDialog(22)" md-font-icon="icon-plus-circle"></md-icon>
               </td>
 
               <td class="text-left" colspan=3> <input class="form-control md-accent-fg"
@@ -66,7 +66,7 @@
 
 
             <tr ng-if="vm.displayDataAddToScheduler  && project.display"  class="text-left" ng-repeat-end ng-repeat='checklist in workflow.checklists '>
-              <td><md-icon class="md-accent-fg " ng-click="vm.oepnAddEditSchedulerDialog( checklist.id, 'checklist', project.proj_name, workflow.wf_name, checklist.name)" md-font-icon="icon-plus-circle"></md-icon></td>
+              <td><md-icon class="md-accent-fg " ng-click="vm.oepnAddEditSchedulerDialog( checklist.checklist_id, 'checklist', project.proj_name, workflow.wf_name, checklist.name)" md-font-icon="icon-plus-circle"></md-icon></td>
               <td></td>
               <td></td>
               <td>{{checklist.name}}</td>

@@ -1,5 +1,12 @@
 <div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
-  <table class="simple row-border hover bordered-table">
+
+  <div ng-if="!vm.internal.length" class="info" flex>
+    <div class="title m-10">
+      No Internal Contact found.
+    </div>
+  </div>
+
+  <table ng-if="vm.internal.length" class="simple row-border hover bordered-table">
     <thead>
       <tr ng-if="filteredContacts.length>0">
         <th class="secondary-text">
@@ -25,50 +32,55 @@
       </tr>
     </thead>
     <tbody>
-    
 
-      <tr  ng-repeat="contact in vm.internal | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.idCON "
+
+      <tr
+        ng-repeat="contact in vm.internal | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.idCON "
         ng-switch="(which = vm.showWhichInviteContactData(contact))"
         ng-class="{'md-green-100-bg':vm.passID==contact.idCON}">
         <td>
-          <span class="link-color pointer" ng-click="vm.openDirectMessageDialog(contact, contact.name.full,'internal-message', $event)">{{contact.name.full}}</span>
+          <span class="link-color pointer"
+            ng-click="vm.openDirectMessageDialog(contact, contact.name.full,'internal-message', $event)">{{contact.name.full}}</span>
         </td>
         <td class="hide-xs">
-            {{contact.role_type ? contact.role_type : '--------'}}
+          {{contact.role_type ? contact.role_type : '--------'}}
         </td>
         <td class="hide-xs">
-            {{contact.phone ? contact.phone : '--------'}}
+          {{contact.phone ? contact.phone : '--------'}}
         </td>
         <td class="hide-xs">
-              {{contact.email}}
+          {{contact.email}}
         </td>
         <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
           class="text-right">
-          <md-menu>
+          <md-menu ng-if="!$root.viewAs.notMe">
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
               translate translate-attr-aria-label="">
               <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
             </md-button>
 
-            <md-menu-content width="3">
+            <md-menu-content width="3" >
 
-                <md-menu-item>
-                <md-button ng-click="viewAs.select(member)" aria-label="View As"
+              <md-menu-item  
+              ng-show="(!isUser && !isViewing) || ((isUser) && viewAs.notMe)"
+              ng-if="$root.AccountPermission.isManager">
+                <md-button ng-click="viewAs.select(contact)" aria-label="View As"
                   translate-attr-aria-label="TEAMMEMBERS.VIEW_AS">
-                <button type="button"
-                ng-click=""
-                class="button-icon-reset" aria-label="role">
-                <md-icon ng-show="member.roles.has.indexOf(vm.rolekeys[$index]) == -1"
-                  md-font-icon="icon-checkbox-blank-outline" class="md-accent-fg s18"></md-icon>
-                <md-icon ng-show="member.roles.has.indexOf(vm.rolekeys[$index])!==-1"
-                  md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18"></md-icon>
-              </button>
-              <span translate="">Include in Schedule</span>
-             
-            </md-menu-item>
-             
-                <md-menu-item
-                ng-show="(!isUser && !isViewing) || ((isUser) && viewAs.notMe)  && contact.idCON == user.idCON && contact.manager_id" ng-if="vm.logged_user_roles.indexOf('Manager')!==-1  && contact.manager_id == user.idCON">
+                  <button type="button" ng-click="" class="button-icon-reset" style="margin-top: -7px;"aria-label="role">
+                    <md-icon ng-show="contact.roles.has.indexOf(vm.rolekeys[$index]) == -1"
+                      md-font-icon="icon-checkbox-blank-outline" class="md-accent-fg s18"></md-icon>
+                    <md-icon ng-show="contact.roles.has.indexOf(vm.rolekeys[$index])!==-1"
+                      md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18"></md-icon>
+                  </button>
+                  <span translate="">Include in Schedule </span>
+
+              </md-menu-item>
+
+              <!-- ng-show="(!isUser && !isViewing) || ((isUser) && viewAs.notMe)  && contact.idCON == user.idCON && contact.manager_id" -->
+              <!-- ng-if="vm.logged_user_roles.indexOf('Manager')!==-1  && contact.manager_id == user.idCON" -->
+              <md-menu-item
+                ng-show="(!isUser && !isViewing) || ((isUser) && viewAs.notMe)"
+                ng-if="$root.AccountPermission.isManager">
                 <md-button ng-click="viewAs.select(contact)" aria-label="View As"
                   translate-attr-aria-label="TEAMMEMBERS.VIEW_AS">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-eye"></md-icon>

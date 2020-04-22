@@ -2,3 +2,12 @@
     display: none;
 }
 
+.RedColor{
+    color: #ff0000!important;;
+}
+
+// header icon for toggle arrow on top menu
+#header-user-h i.header-dd-arrow:before {content: "\f107";}
+#header-user-h._md-open i.header-dd-arrow:before {
+    content: "\f106";
+}

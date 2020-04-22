@@ -1,16 +1,22 @@
 <div class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
-<!-- {{ vm.notifications }} -->
 
-  <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0" ng-show="!vm.closeList">
+
+  <div ng-if="!vm.notificationLength" class="info" flex>
+    <div class="title m-10">
+      No Notifications found.
+    </div>
+  </div>
+
+  <table ng-if="vm.notificationLength" class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0" ng-show="!vm.closeList">
     <thead class="tool-bg">
       <tr>
         <th class="max-10" height="50" width="20%">Projects
           <md-button class="md-icon-button" ng-click="vm.sortBy('file.label')" aria-label="Sort Direction" translate
             translate-attr-aria-label="GROUP.SORT_DIRECTION">
-            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.attachmentOrder!='file.label'" class="s18"></md-icon>
+            <!-- <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.attachmentOrder!='file.label'" class="s18"></md-icon>
             <md-icon md-font-icon="icon-sort-ascending" ng-show="vm.reverse  && vm.attachmentOrder=='file.label'" class="s18"></md-icon>
             <md-icon md-font-icon="icon-sort-descending" ng-show="!vm.reverse  && vm.attachmentOrder=='file.label'"
-              class="s18"></md-icon>
+               class="s18"></md-icon> -->
           </md-button>
 
         </th>
@@ -21,7 +27,7 @@
       </tr>
     </thead>
   
-    <tbody ng-repeat="(key, notification) in  vm.notifications"> 
+    <tbody ng-repeat="(key, notification) in  vm.notifications "> 
       <tr ng-class="notification.count_unread_total ? 'unread':'' ">
      
       
@@ -67,10 +73,10 @@
     </thead>
 
     <tbody ng-repeat="projectlist in  vm.checklistDetail| filter: globalSearch.searchTerm" ng-click="vm.projectDetail(projectlist)">
-      <tr ng-class="myvalue ? 'rbb' : '' " class="{{!projectlist.read_by && !myvalue ? 'unread' : ''}}">
-        <td>
+      <tr ng-class="myvalue ? 'rbb' : '' "   class="{{!projectlist.read_by && !myvalue ? 'unread' : ''}}">
+        <td >
        
-          <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true; vm.readNotification(projectlist.id,projectlist.key)" aria-hidden="true" ng-show="!myvalue"></i>
+          <i class="fa fa-chevron-up" ng-click="myvalue = myvalue == true ? false : true; vm.readNotification(projectlist)" aria-hidden="true" ng-show="!myvalue"></i>
           <i class="fa fa-chevron-down" ng-click="myvalue = myvalue == true ? false : true;" aria-hidden="true" ng-show="myvalue"></i>
           <span class="link-color">    {{ projectlist.checklist_name}}</span></td>
         <td><span class="link-color">{{projectlist.user}} </span></td>
@@ -78,7 +84,7 @@
         <td>{{projectlist.issue}}</td>
         <td>
           <!-- <span ng-init="vm.notificationDate(projectlist.updated_at.date)"></span> -->
-         <span ng-bind='projectlist.create_date * 1000 | date: "EEE, MMM yy h:mm a"'></span> 
+         <span ng-bind='projectlist.create_date * 1000 | date: "EEE, MMM d, yyyy h:mm a"'></span> 
         </td>
       </tr>
       <tr ng-show="myvalue">

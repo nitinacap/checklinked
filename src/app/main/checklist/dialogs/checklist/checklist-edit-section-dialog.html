@@ -12,7 +12,7 @@
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block">
         <label translate="CHECKLIST.SECTION.NAME">{{vm.section.name}} Name</label>
-        <input name="name" ng-model="vm.section.name" required md-autofocus>
+        <input name="name" ng-model="vm.sectionName" required md-autofocus>
         <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
           <div ng-message="required">
             <span translate="CHECKLIST.ERRORS.SECTION_NAME_REQUIRED">Section Name field is required</span>

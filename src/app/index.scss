@@ -295,7 +295,10 @@ margin-right: 8px;
 .logo-holder {
     position: fixed;
     left: 20px;
-    top: 4px;
+    // top: 4px;
+    height: 48px;
+    padding-top: 4px;
+    background-color: rgb(255,255,255);
 }
 .md-tab{
     font-size: 13px !important;
@@ -564,3 +567,25 @@ md-toolbar{
     height: 100vh;
     margin: auto;
 }
+
+.moreMenuOnTab{
+    position: absolute;
+    right: 20px;
+    bottom: 7px;
+
+    // position: relative;
+    // bottom: 3px;
+    // left: 10px;
+}
+    
+  md-tabs  md-tab-item.md-active{
+    position:   static;
+  }
+
+
+// md-button.user-button.md-button:hover{
+//     background-color: #fff!important;
+// }
+
+
+// subscription-alert.html

@@ -2,8 +2,8 @@
     <section layout="row" layout-sm="row" layout-align="center center" layout-wrap class="topbar-nav">
 
  
-  <md-button ui-sref="app.{{data.link}}" class="{{ data.link ? 'notactive' : 'active' }}" ui-sref="{{data.link}}" ng-repeat="data in datas">{{data.title}}
-    <span class="badge white-fg" ng-show="data.notification"  style="background-color:green !important; color:#fff;" ng-style="{'background': node.badge.color}">{{data.notification}}</span>
+  <md-button ui-sref="app.{{data.link}}" class="{{ data.active ? 'active' : 'notactive' }}" ui-sref="{{data.link}}" ng-repeat="data in datas">{{data.title}} 
+    <span class="badge white-fg" ng-if="data.title === 'Messages' ? $root.message_count :  data.title === 'Alerts' ? $root.alert_count : data.title === 'Action Items' ? $root.invites_count : data.title === 'Notifications' ? $root.notification_count : false "  style="background-color:green !important; color:#fff;" ng-style="{'background': node.badge.color}">{{data.title === 'Messages' ? $root.message_count :  data.title === 'Alerts' ? $root.alert_count : data.title === 'Action Items' ? $root.invites_count : $root.notification_count }} </span>
 
   </md-button>
 

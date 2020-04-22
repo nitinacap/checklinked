@@ -12,13 +12,13 @@
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block">
         <label translate="CHECKLIST.TEXT_BOX_LABEL"></label>
-        <input name="name" ng-model="vm.item.name">
+        <input name="name" ng-model="vm.Item_name">
       </md-input-container>
 
       <md-input-container class="md-block" disabled>
         <label translate="CHECKLIST.TEXT_BOX_INPUT"></label>
         <div class="md-resize-wrapper">
-          <textarea name="text" ng-model="vm.item.info" required md-autofocus
+          <textarea name="text" ng-model="vm.Item_info" required md-autofocus
                     class="ng-valid md-input ng-not-empty ng-dirty ng-valid-parse ng-valid-md-maxlength ng-touched"
                     md-maxlength="150" max-rows="5"
                     ng-trim="false"></textarea>
@@ -39,7 +39,7 @@
     <md-dialog-actions layout="row" layout-align="space-between center">
       <div layout="row" layout-align="start center">
         <md-button type="submit"
-                   ng-click="vm.saveItem()"
+                   ng-click="vm.saveItem('edit_textbox')"
                    class="md-raised md-accent"
                    ng-disabled="checklistForm.$invalid || checklistForm.$pristine"
                    aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">

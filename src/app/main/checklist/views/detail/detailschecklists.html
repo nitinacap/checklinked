@@ -1,8 +1,8 @@
 <page-toolbar datas="vm.submenu"> </page-toolbar>
 <md-toolbar class="pt-20 custom-breadcrumb" ng-show="vm.isBreadcrum">
   <ul>
-    <li ng-show="vm.checklists && vm.checklists[0].item_bread"><a href="/process/projects" class="white"> {{vm.checklists[0].item_bread.project_name}}<span> - </span></a>
-        <a href="/process/workflows/{{vm.checklists[0].item_bread.project_id}}" class="white"><span> {{vm.checklists[0].item_bread.folder_name}}</span></a>
+    <li ng-show="vm.checklists && vm.checklists[0].item_bread"><a href="/process/workflows/{{vm.checklists[0].item_bread.project_id}}" class="white"> {{vm.checklists[0].item_bread.project_name}}<span> - </span></a>
+        <a href="/checklist/{{vm.checklists[0].item_bread.folder_id}}" class="white"><span> {{vm.checklists[0].item_bread.folder_name}}</span></a>
     </li>
   </ul>
 </md-toolbar>
@@ -12,14 +12,14 @@
     <p>You are not linked to this Checklist.</p>
   </div>
 </div><!-- CHECKLIST LIST ITEMS -->
-<div class="checklist-items {{vm.isBreadcrum ? '' : 'pt-32'}}" id="checklist-details">
+<div id="checklistExport" class="checklist-items {{vm.isBreadcrum ? '' : 'pt-32'}}" id="checklist-details">
 
   <!--Checklists Iteration-->
   <div
     ng-repeat="checklist in vm.checklists | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search track by $index">
 
     <div class="checklist-item checklist-title-bg" md-ink-ripple layout="row" layout-align="start center">
-
+<!-- user_id -->
       <div layout="row" layout-align="start center" flex>
         <div class="info" flex="50">
           <div class="checklist">
@@ -42,7 +42,7 @@
         </div>
 
         <div class="buttons" layout="row" layout-align="start center">
-          <md-menu>
+          <md-menu ng-if="!$root.viewAs.notMe">
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
               translate-attr-aria-label="CHECKLIST.MORE">
               <md-icon md-font-icon="icon-dots-vertical" class="s18 active"></md-icon>
@@ -75,12 +75,11 @@
                   <span translate="CHECKLIST.SCHEDULER">Scheduler</span>
                 </md-button>
               </md-menu-item>
-
-              <md-menu-item  ng-show="vm.checkIsPermission.indexOf('send-checklists-links-to-other-users') !== -1">
+              <md-menu-item  ng-show="vm.checkIsPermission.indexOf('send-checklists-links-to-other-users') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button  ng-disabled="checklist.complete" ng-click="vm.sendLinkRequest($event, vm.idCHK)" aria-label="Send Link Request"
                   translate-attr-aria-label="CHECKLIST.LINK_REQUEST">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-account-plus"></md-icon>
-                  <span translate="CHECKLIST.SEND_LINK_REQUEST">Send Link Request</span>
+                  <span translate="CHECKLIST.SEND_LINK_REQUEST">Send Link Request </span>
                 </md-button>
               </md-menu-item>
               <md-menu-item ng-show="vm.checkIsPermission.indexOf('show-linked-users') !== -1">
@@ -119,7 +118,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('publish-templates') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('publish-templates') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-disabled="checklist.complete"  ng-click="vm.publishTemplate($event, checklist.idCHK, checklist.name)"
                   aria-label="Publish as Template" translate-attr-aria-label="CHECKLIST.PUBLISH_TEMPLATE">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-upload"></md-icon>
@@ -135,7 +134,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-disabled="checklist.complete"  ng-click="vm.archieveDialog($event, group.id)" aria-label="Archive"
                   translate-attr-aria-label="CHECKLIST.ARCHIVE">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
@@ -144,7 +143,7 @@
               </md-menu-item>
 
               <md-divider class="md-default-theme"></md-divider>
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button  ng-disabled="vm.isCuted || checklist.complete" ng-click="vm.cutDialog('checklist', checklist.id, checklist.id_parent)"
                   aria-label="Cut" translate-attr-aria-label="GROUP.CUT">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-cut"></md-icon>
@@ -152,7 +151,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-disabled="vm.isCuted || checklist.complete" ng-click="vm.coypDialog('checklist', checklist.id, checklist.id_parent)" aria-label="Copy"
                   translate-attr-aria-label="GROUP.COPY">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
@@ -160,7 +159,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-disabled="vm.isCuted" ng-click="vm.pasteDialog('section', checklist.id, checklist.idCHK)"
                   aria-label="Paste" translate-attr-aria-label="GROUP.PASTE">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-paste"></md-icon>
@@ -168,7 +167,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('cut-copy-paste-undo-checklist') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-disabled="checklist.complete" ng-click="vm.undoDialog($event, group.id)" aria-label="Undo"
                   translate-attr-aria-label="GROUP.UNDO">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>

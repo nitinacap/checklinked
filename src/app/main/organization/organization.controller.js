@@ -9,13 +9,24 @@
   function OrganizationController($rootScope, $cookieStore, $mdDialog, $cookies, $document, $stateParams, $state, $http, $scope, api, $mdSidenav) {
 
     var vm = this;
-    vm.uploadSpreadsheet = uploadSpreadsheet;
+    // vm.uploadSpreadsheet = uploadSpreadsheet;
     vm.user_Roles = api.isUserRole('Controller');
     if ($stateParams.type) {
       vm.type = $stateParams.type
 
     }
-    vm.currentItem = parseInt($rootScope.curreManuItem);
+    // vm.currentItem = parseInt($rootScope.curreManuItem);
+
+    // function to change the tab from the top menu vertical options starts
+    $scope.$watch(function() {
+      return $rootScope.curreManuItem;
+    }, function() {
+      if($rootScope.curreManuItemName === 'organization'){
+        vm.currentItem = parseInt($rootScope.curreManuItem);
+      }
+    }, true);
+
+    // function to change the tab from the top menu vertical options ends
 
     setTimeout(function () {
       $scope.$apply(function () {
@@ -48,6 +59,7 @@
       } else {
         if (!vm.user.organizationError) {
           vm.orgTmp = vm.user.organization;
+          vm.OrganizationName = vm.orgTmp.name;
         }
         else {
           vm.orgTmp = blank;
@@ -72,6 +84,9 @@
     vm.selectedSubscription = null;
     vm.updating = false;
     function update() {
+      
+     
+      vm.UpdatedSuccess = false;
       vm.updating = true;
       return $http.post(BASEURL + 'organization-update-post.php', {
         org: vm.orgTmp,
@@ -81,18 +96,35 @@
             'Content-Type': 'application/x-www-form-urlencoded'
           }
         }).error(function () {
+          
+          vm.orgTmp.name = vm.OrganizationName ;
           return $rootScope.message('Error talking to server.', 'warning');
         }).success(function (resp) {
+          
           if (resp.code == void 0 || resp === null || resp === '') {
+            
+            vm.orgTmp.name = vm.OrganizationName ;
             return $rootScope.message('Server response is unreadable.', 'warning');
           } else if (resp.code) {
             // $mdDialog.hide();
-            return $rootScope.message(resp.message);
+            
+            vm.orgTmp.name = vm.OrganizationName ;
+           return $rootScope.message(resp.message, 'error');
           } else {
             //$rootScope.user = resp.user;
             //$rootScope.viewAs.user = resp.viewAs;
             //$mdDialog.hide();
-            return $rootScope.message('Organization Information updated successfully.');
+            
+            vm.UpdatedSuccess = true;
+
+            $rootScope.message('Organization Information updated successfully.');
+            
+              vm.OrganizationName = vm.orgTmp.name;
+              $scope.changedInfoDialog($rootScope.user);
+              $scope.status = 'You said the information was "' + answer + '".';
+         
+            
+             
           }
         })["finally"](function () {
           return vm.updating = false;
@@ -122,6 +154,7 @@
             $mdDialog.hide();
             return $rootScope.message(resp.message, 'warning');
           } else {
+
             $rootScope.user = resp.user;
             $mdDialog.hide();
             closeDialog();
@@ -144,7 +177,10 @@
     function openOrgInfoDialog(ev, info) {
 
       vm.info = info;
+      
       vm.newFolder = false;
+
+    
 
       if (!vm.folder) {
         vm.folder = {
@@ -188,10 +224,10 @@
     }
 
     vm.submenu = [
-      { link: 'user', title: 'My Profile' },
-      { link: 'contacts', title: 'Contacts' },
-      { link: '', title: 'Organization' },
-      { link: 'teammembers', title: 'Account' }
+      { link: 'user', title: 'My Profile', active : false },
+      { link: 'contacts', title: 'Contacts', active : false },
+      { link: 'organization', title: 'Organization', active : true },
+      { link: 'teammembers', title: 'Account', active : false }
     ];
 
 
@@ -210,9 +246,8 @@
         clickOutsideToClose: false
       })
         .then(function (answer) {
-          vm.update();
-          $scope.changedInfoDialog($rootScope.user);
-          $scope.status = 'You said the information was "' + answer + '".';
+          vm.update();         
+         
         }, function () {
           $scope.status = 'You cancelled the dialog.';
         });
@@ -246,12 +281,19 @@
 
 
     function Stats() {
+      vm.isLoader = true;
       $http.post(BASEURL + 'organization-stats.php', { 'token': $cookies.get('token') },
         {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           cache: false
-        }).error(function () {
+        }).error(function (resp) {
+
+          vm.isLoader = false;
+          // if(!resp) $rootScope.message('Server Error', 'error')
+          // else
+          if(resp) $rootScope.message(resp.message, 'error')
         }).success(function (resp) {
+          vm.isLoader = false;
           if (resp.type == 'success') {
             vm.stats = resp.stats;
           } else {
@@ -263,29 +305,29 @@
     };
     Stats();
 
-    function uploadSpreadsheet() {
-      var files = document.getElementById('spreadshet').files[0];
-      var fd = new FormData();
-      fd.append('file', files);
-      var filedata = { name: vm.name, description: vm.description };
-      fd.append('data', JSON.stringify(filedata));
+    // function uploadSpreadsheet() {
+    //   var files = document.getElementById('spreadshet').files[0];
+    //   var fd = new FormData();
+    //   fd.append('file', files);
+    //   var filedata = { name: vm.name, description: vm.description };
+    //   fd.append('data', JSON.stringify(filedata));
 
-      $http.post(BASEURL + 'organization-spreadsheet.php', fd,
-        {
-          headers: { 'Content-Type': undefined },
-          cache: false
-        }).error(function () {
-        }).success(function (resp) {
-          if (resp.type == 'success') {
-            vm.stats = resp.stats;
-          } else {
-            console.log('server error while getting stats');
-          }
+    //   $http.post(BASEURL + 'organization-spreadsheet.php', fd,
+    //     {
+    //       headers: { 'Content-Type': undefined },
+    //       cache: false
+    //     }).error(function () {
+    //     }).success(function (resp) {
+    //       if (resp.type == 'success') {
+    //         vm.stats = resp.stats;
+    //       } else {
+    //         console.log('server error while getting stats');
+    //       }
 
-        })
+    //     })
 
 
-    }
+    // }
 
 
     // all_spreadsheets code starts
@@ -293,42 +335,42 @@
    
 
     
-    vm.excels= {
+    // vm.excels= {
 
 
-      all_spreadsheets: [],
-      loading : false,
-      viewing : false,
-      progress: true,
+    //   all_spreadsheets: [],
+    //   loading : false,
+    //   viewing : false,
+    //   progress: true,
 
-      view : function(excel, index) {
-
-
-        vm.excels.viewing = excel;
-        vm.excels.viewing.id = index;
-        vm.excels.success = false;
-
-        vm.excels.viewing = false;
-
-        if(vm.origColspanLength == undefined || vm.origColspanLength < excel.data.heading.length){
-          vm.origColspanLength = excel.data.heading.length ;
-          if(vm.colspanLength < 4 )  vm.colspanLength = 2;
-          else vm.colspanLength = vm.origColspanLength - 1;
-        }
+    //   view : function(excel, index) {
 
 
-        vm.excel_open_id = excel.id;
+    //     vm.excels.viewing = excel;
+    //     vm.excels.viewing.id = index;
+    //     vm.excels.success = false;
+
+    //     vm.excels.viewing = false;
+
+    //     if(vm.origColspanLength == undefined || vm.origColspanLength < excel.data.heading.length){
+    //       vm.origColspanLength = excel.data.heading.length ;
+    //       if(vm.colspanLength < 4 )  vm.colspanLength = 2;
+    //       else vm.colspanLength = vm.origColspanLength - 1;
+    //     }
+
+
+    //     vm.excel_open_id = excel.id;
         
-        vm.sub_excel_data = excel;
+    //     vm.sub_excel_data = excel;
         
-      },
+    //   },
 
-      clear : function(excel) {
-        vm.excels.viewing = false;
+    //   clear : function(excel) {
+    //     vm.excels.viewing = false;
 
-        }
+    //     }
 
-    }
+    // }
 
     vm.excel_sub_heading='';
     vm.reverse = true;
@@ -350,7 +392,7 @@
         }
       });
     };
-    getAllSpreadsheets();
+    // getAllSpreadsheets();
 
 
     vm.total_active_users = function ($index) {

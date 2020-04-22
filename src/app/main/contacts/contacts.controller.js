@@ -50,10 +50,23 @@
     vm.passID = $stateParams.passID;
 
 
-    vm.currentItem = parseInt($rootScope.curreManuItem);
+
+    // function to change the tab from the top menu vertical options starts
+    $scope.$watch(function() {
+      return $rootScope.curreManuItem;
+    }, function() {
+      if($rootScope.curreManuItemName === 'contacts'){
+        vm.currentItem = parseInt($rootScope.curreManuItem);
+
+        if(vm.currentItem === 1) $scope.myvalue = true;
+         
+      }
+    }, true);
+
+    // function to change the tab from the top menu vertical options ends
 
     function filterChange(type) {
-      debugger;
+      // ;
       vm.listType = type;
 
       var me = $rootScope.user.idCON;
@@ -112,7 +125,6 @@
           vm.secondary = res.secondary;
           vm.internal = res.internal;
         
-        //  vm.secondary =  $rootScope.removeDuplicates(res.secondary, 'contacts');
           return vm.loaded.friends = true;
         }
       })["finally"](function () {
@@ -216,7 +228,7 @@
       }
     };
     function acceptConnectionInvitation(idCON, index) {
-      debugger;
+      // ;
       if (vm.LinkList.length > 0) {
         for (var i = 0; i < vm.LinkList.length; i++) {
           if (vm.LinkList[i].contacts.originator.id == idCON) {
@@ -275,7 +287,6 @@
           invite = invites[i];
           results.push(vm.contacts.splice(vm.contacts.indexOf($filter('filter')(vm.contacts, { id: invite.id }, true)[0]), 1));
         } 
-       // $state.go($state.current, {}, { reload: true });
         return results;
       });
     };
@@ -289,7 +300,7 @@
     };
     
     function openContactDialog(ev, contact) {
-      debugger;
+      // ;
       if(contact.organization_detail.name == undefined || contact == undefined)
       return;
       vm.contact = angular.copy(contact);
@@ -339,16 +350,11 @@
     
 
     function openDirectMessageDialog(contact, ev,direct_msg) {
-      debugger;
+
       vm.contact = contact;
-      // getDirectMessage(contact.id);
       vm.titlea = "DATA HERE";
 
       vm.int_msg = direct_msg == 'direct-message' || direct_msg == 'secondary-message' || direct_msg == 'internal-message'  ? direct_msg : ''
-
-
-      
-     
 
       vm.which = vm.showWhichInviteContactData(contact);
       $mdDialog.show({
@@ -405,10 +411,10 @@
     }
 
     vm.submenu = [
-      { link: 'user', title: 'My Profile' },
-      { link: '', title: 'Contacts' },
-      { link: 'organization', title: 'Organization' },
-      { link: 'teammembers', title: 'Account' }
+      { link: 'user', title: 'My Profile', active : false  },
+      { link: 'contacts', title: 'Contacts', active : true  },
+      { link: 'organization', title: 'Organization', active : false  },
+      { link: 'teammembers', title: 'Account', active : false  }
     ];
     vm.sendToggle = sendToggle;
     vm.isMessage = true;
@@ -448,8 +454,12 @@
     };
 
 
+    vm.changeTab = function(tabName){
 
-
+      if(tabName == 'Direct')  $scope.myvalue = true;
+      else $scope.myvalue = false;
+      
+    }
 
   }
 })();

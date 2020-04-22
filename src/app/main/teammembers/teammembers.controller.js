@@ -18,23 +18,36 @@
     vm.EditRoleType = EditRoleType;
     vm.closeDialog = closeDialog;
     vm.addLicence = addLicence;
-   // vm.tabOption = 0;
     vm.members = [];
     vm.cancelSubscription = cancelSubscription;
     vm.openSubscriptionListDialog = openSubscriptionListDialog;
     vm.addManagerTeam = addManagerTeam;
     vm.addTeam = addTeam;
+    vm.changeManager = changeManager;
+    vm.ScreenLocked = true;
 
-    //$scope.members = [];
+
+
+
+    // function to change the tab from the top menu vertical options starts
+    $scope.$watch(function () {
+      return $rootScope.curreManuItem;
+    }, function () {
+      if ($rootScope.curreManuItemName === 'teammembers') {
+        vm.currentItem = parseInt($rootScope.curreManuItem);
+        if (vm.currentItem == 1) {
+          vm.myvalue = true;
+        }
+      }
+    }, true);
+
+    // function to change the tab from the top menu vertical options ends
+
 
     vm.isLoader = true;
-    //permission
 
     var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? JSON.parse(userpermission) : '';
-
-
-
 
 
     //Toggle Left Side Nav
@@ -50,7 +63,6 @@
       return vm.members.load.start();
     });
 
-
     vm.members = {
       list: [],
       roles: [],
@@ -65,10 +77,11 @@
           if (idCON === null) {
             this.inProgress = true;
             this.error = '';
+         
             process = this.processMember;
+           
             return $http.get(BASEURL + "organization_members-get.php").success(function (res) {
               if (res === void 0 || res === null || res === '') {
-                console.log('Error loading team members: ', res);
                 return vm.members.load.error = 'Error loading Team Members! (Server not responding properly.)';
               } else if (res.code) {
                 return vm.members.load.error = "Error loading Team Members: (" + res.code + ") " + res.message;
@@ -77,7 +90,6 @@
                 return vm.members.list = res.members.map(process);
               }
             }).error(function (err) {
-              console.log('Error loading team members: ', err);
               vm.members.load.inProgress = false;
               return vm.members.load.error = 'Error loading Team Members! (Sever not responding.)';
             })["finally"](function () {
@@ -100,32 +112,32 @@
                 role: role,
                 setTo: willHave
               }, {
-                  headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                  },
-                  cache: false
-                }).success(function (res) {
-                  var ref3, ref4;
-                  self.setting.remove(role);
-                  if (res === void 0 || res === null || res === '') {
-                    $rootScope.message('Error updating Team Member role. Server not responding properly.', 'warning');
-                  } else if (res.code) {
-                    $rootScope.message("Error updating Team Member role. (" + res.code + ") " + res.message, 'warning');
-                  } else if (willHave) {
-                    self.has.push(role);
-                  } else {
-                    self.has.remove(role);
-                  }
-                  $rootScope.socketio.emit('roles_updated', raw.idCON);
-                  if ((ref3 = $rootScope.user.organization) != null ? (ref4 = ref3.idACC) != null ? ref4.length : void 0 : void 0) {
-                    return $rootScope.socketio.emit('members_updated', $rootScope.user.organization.idACC);
-                  }
-                }).error(function (err) {
-                  self.setting.remove(role);
-                  return $rootScope.message('Error updating Team Member role.  Server not responding.', 'warning');
-                })["finally"](function () {
-                  return self.setting.remove(role);
-                });
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                cache: false
+              }).success(function (res) {
+                var ref3, ref4;
+                self.setting.remove(role);
+                if (res === void 0 || res === null || res === '') {
+                  $rootScope.message('Error updating Team Member role. Server not responding properly.', 'warning');
+                } else if (res.code) {
+                  $rootScope.message("Error updating Team Member role. (" + res.code + ") " + res.message, 'warning');
+                } else if (willHave) {
+                  self.has.push(role);
+                } else {
+                  self.has.remove(role);
+                }
+                $rootScope.socketio.emit('roles_updated', raw.idCON);
+                if ((ref3 = $rootScope.user.organization) != null ? (ref4 = ref3.idACC) != null ? ref4.length : void 0 : void 0) {
+                  return $rootScope.socketio.emit('members_updated', $rootScope.user.organization.idACC);
+                }
+              }).error(function (err) {
+                self.setting.remove(role);
+                return $rootScope.message('Error updating Team Member role.  Server not responding.', 'warning');
+              })["finally"](function () {
+                return self.setting.remove(role);
+              });
             }
           });
           processed = raw;
@@ -135,7 +147,7 @@
       },
       offboard: {
         inProgress: [],
-        execute: function (member) {
+        execute: function (member, index) {
           var confMsg, self;
           confMsg = "You cannot undo this action.";
           if (member.idCON === $rootScope.user.idCON) {
@@ -147,39 +159,40 @@
           if (confirm(confMsg)) {
             self = vm.members.offboard;
             self.inProgress.push(member.idCON);
-            console.log('offboard member', member);
+
             $http.post(BASEURL + 'organization_member_offboard-post.php', {
               idCON: member.idCON
             }, {
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                cache: false
-              }).error(function (res) {
-                console.log('member offboard error', member, res);
-                return $rootScope.message('Error offboarding member.', 'warning');
-              }).success(function (res) {
-                if (res === void 0 || res === null || res === '') {
-                  console.log('member offboard error', member, res);
-                  return $rootScope.message('Invalid response.', 'warning');
-                } else if (res.code) {
-                  console.log('member offboard error', member, res);
-                  return $rootScope.message(res.message, 'warning');
-                } else {
-                  vm.members.list.remove(member);
-                  if (member.idCON === $rootScope.user.idCON) {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              cache: false
+            }).error(function (res) {
+              return $rootScope.message('Error offboarding member.', 'warning');
+            }).success(function (res) {
+              if (res === void 0 || res === null || res === '') {
+                return $rootScope.message('Invalid response.', 'warning');
+              } else if (res.code) {
+                return $rootScope.message(res.message, 'warning');
+              } else {
 
-                    console.log('offboarded logged in user', res.user);
-                    $rootScope.user = res.user;
-                    if ($rootScope.viewAs.user.idCON !== $rootScope.user.idCON) {
-                      $rootScope.viewAs.set(res.user);
-                    }
-                    return $location.path('/teammembers');
+                vm.memberRoles.list.splice(index, 1)
+                $rootScope.message('"' + member.name.first + ' ' + member.name.last + '" is successfully removed.', 'success');
+
+
+                if (member.idCON === $rootScope.user.idCON) {
+
+                  $rootScope.user = res.user;
+                  if ($rootScope.viewAs.user.idCON !== $rootScope.user.idCON) {
+
+                    $rootScope.viewAs.set(res.user);
                   }
+                  return $location.path('/teammembers');
                 }
-              })["finally"](function () {
-                return self.inProgress.remove(member.idCON);
-              });
+              }
+            })["finally"](function () {
+              return self.inProgress.remove(member.idCON);
+            });
           }
           return false;
         }
@@ -199,7 +212,6 @@
           process = this.processInvite;
           return $http.get(BASEURL + "checklist_invites-get.php?queue=1").success(function (res) {
             if (res === void 0 || res === null || res === '') {
-              console.log('Error loading invites: ', res);
               return vm.templates.load.error = 'Error loading Invites! (Server not responding properly.)';
             } else if (res.code) {
               return vm.queue.load.error = "Error loading Invites: (" + res.code + ") " + res.message;
@@ -207,7 +219,6 @@
               return vm.queue.list = res.invites.map(process);
             }
           }).error(function (err) {
-            console.log('Error loading team members: ', err);
             return vm.queue.load.error = 'Error loading Templates! (Sever not responding.)';
           })["finally"](function () {
             return vm.queue.load.inProgress = false;
@@ -231,24 +242,24 @@
               return $http.post(BASEURL + "checklist_invite-destroy.php", {
                 idCFC: invite.id
               }, {
-                  headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                  },
-                  cache: false
-                }).success(function (res) {
-                  if (res === void 0 || res === null || res === '') {
-                    return $rootScope.message('Error rejecting Checklist. Server not responding properly.', 'warning');
-                  } else if (res.code) {
-                    return $rootScope.message("Error deleting Checklist: (" + res.code + "): " + res.message, 'warning');
-                  } else {
-                    vm.queue.list.remove(invite);
-                    return $rootScope.message('Invite Rejected');
-                  }
-                }).error(function (err) {
-                  return $rootScope.message('Error rejecting Checklist. Server not responding.', 'warning');
-                })["finally"](function () {
-                  return invite.deleting = false;
-                });
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                cache: false
+              }).success(function (res) {
+                if (res === void 0 || res === null || res === '') {
+                  return $rootScope.message('Error rejecting Checklist. Server not responding properly.', 'warning');
+                } else if (res.code) {
+                  return $rootScope.message("Error deleting Checklist: (" + res.code + "): " + res.message, 'warning');
+                } else {
+                  vm.queue.list.remove(invite);
+                  return $rootScope.message('Invite Rejected');
+                }
+              }).error(function (err) {
+                return $rootScope.message('Error rejecting Checklist. Server not responding.', 'warning');
+              })["finally"](function () {
+                return invite.deleting = false;
+              });
             }
           });
           return processed;
@@ -296,15 +307,22 @@
           execute: function () {
             var self;
             vm.inviting = true;
+
+            $mdDialog.hide();
+            vm.isLoader = true;
+
             self = vm.memberInvites.invite.send;
             if (self.email === $rootScope.user.email) {
+              vm.isLoader = false;
               return $rootScope.message('You cannot invite yourself!', 'warning');
             }
             self.inProgress = true;
-            console.log('invite', self.email);
+
             api.subscriptions.invite(self.email, self.role_type, self.phone, self.first_name, self.last_name).error(function (res) {
+              vm.isLoader = false;
               return $rootScope.message('Error inviting.', 'warning');
             }).success(function (res) {
+              vm.isLoader = false;
               vm.inviting = false;
               if (res === void 0 || res === null || res === '') {
                 return $rootScope.message('Invalid response.', 'warning');
@@ -327,17 +345,14 @@
             var self;
             self = vm.memberInvites.invite.withdraw;
             self.inProgress.push(invite.id);
-            console.log('withdraw invite', invite);
+
             api.subscriptions.withdrawInvite(invite).error(function (res) {
-              console.log('invite withdraw error', invite, res);
               $rootScope.message('Error withdrawing invitation.', 'warning');
             }).success(function (res) {
               vm.inviting = false;;
               if (res === void 0 || res === null || res === '') {
-                console.log('invite withdraw error', invite, res);
                 return $rootScope.message('Invalid response.', 'warning');
               } else if (res.code) {
-                console.log('invite withdraw error', invite, res);
                 return $rootScope.message(res.message, 'warning');
               } else {
                 $rootScope.message('Invitation withdrawn.', 'success');
@@ -356,29 +371,23 @@
 
 
     $scope.$on('event:userLoaded', function () {
-      console.log('userLoaded Triggered');
-
-      console.log('vm.members.load.inProgress', vm.members.load.inProgress);
-      console.log('vm.members.list', vm.members.list);
-
 
       if (!vm.members.load.inProgress && !vm.members.list) {
 
-        console.log('Try to load TEAM MEMBERS again');
         vm.members.load.start();
-        console.log('vm members', vm.members.list);
       }
     });
-
-    console.log('vm.members', vm.members);
 
 
 
 
     function openSubscriptionDialog(item) {
-      // alert(JSON.stringify(item));
       vm.item = item;
       vm.title = 'Add Licenses';
+      vm.alreadyclicked = false;
+      vm.plan = '';
+      vm.stepSeconds = false;
+
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
@@ -388,7 +397,6 @@
     };
 
     function openRoleTypeDialog(item) {
-      // alert(JSON.stringify(item));
       vm.item = item;
       vm.title = 'Role Type';
 
@@ -425,6 +433,7 @@
         }).success(function (res) {
           if (res.type == 'success') {
             vm.roleTypes = res.roleType;
+
             vm.name = update ? vm.name : '';
             $rootScope.message("New role type has been" + update ? 'updated' : 'created' + "successfully", 'success');
           }
@@ -436,7 +445,7 @@
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
         });
-      //alert(update_data)
+
     }
 
     vm.getRoleType = getRoleType;
@@ -448,7 +457,6 @@
         .success(function (res) {
           vm.roleTypes = res.roleType;
 
-          debugger;
         });
     };
     getRoleType();
@@ -487,15 +495,16 @@
         }
       })
     };
-    // if(!$stateParams.payment_method_nonce){
-    //   getAllPlans();
 
-    // }
     getAllPlans();
 
     vm.getSinglePlanDetail = getSinglePlanDetail;
     vm.stepFirst = true;
     function getSinglePlanDetail() {
+      vm.alreadyclicked = true;
+
+
+
       return $http.post(BASEURL + 'role-permission.php', {
         item_type: 'plan',
         type: 'getPlanBySlug',
@@ -532,41 +541,28 @@
           vm.rolevalues = Object.values(vm.memberRoles.roles);
           vm.rolekeys = Object.keys(vm.memberRoles.roles);
 
-
           vm.logged_user_roles = $cookies.get('logged_user_roles');
           vm.logged_user_id = $cookies.get('logged_user_id');
-          debugger;
+
         }
       })
     }
     getUserRoles();
 
+    vm.alreadyclicked = false;
 
     function addLicence(item) {
 
-
-
       localStorage.setItem('payment_detail', JSON.stringify(item));
       $scope.payment_detail = item;
-      console.log(item);
-
-      // return $http.post(BASEURL + 'role-permission.php', {
-      //   item_type: 'plan',
-      //   type: 'payment',
-      //   braintree_plan_id: id,
-      //   plan:1,
-
-      // }).success(function (res) {
-      //   if (res.type == 'success') {
-
-      //   }
-      // })
 
     }
 
-    ;
+  
     $scope.payment_method_nonce = function () {
+
       if ($stateParams.payment_method_nonce && JSON.parse(localStorage.payment_detail)) {
+
         var item = JSON.parse(localStorage.payment_detail);
         $http.post(BASEURL + 'role-permission.php', {
           item_type: 'plan',
@@ -578,7 +574,7 @@
         }).success(function (res) {
           if (res.type == 'success') {
             $scope.payment_detail = '';
-            vm.tabOption = 1;
+            vm.currentItem = 1;
             getUserRoles();
           }
         })
@@ -587,8 +583,6 @@
 
     };
     $scope.payment_method_nonce();
-
-
 
     vm.changeRole = changeRole;
     function changeRole(id, role_id, toggle, roles) {
@@ -600,19 +594,18 @@
 
       }
 
-      //|| $role_selected == 'Controller'
       if ($role_selected != '') {
         if ($role_selected == 'Account Owner' || $role_selected == 'Controller') {
           if ($role_selected == 'Controller') {
             $role_selected = 'Account Owner';
           }
           if (user_roles.indexOf($role_selected) == -1) {
-            $rootScope.message('You have not permission', 'warning');
+            $rootScope.message('You do not have permission', 'warning');
             return;
           }
         }
       }
-      debugger;
+
 
 
       vm.isLoader = true;
@@ -625,6 +618,9 @@
       }).success(function (res) {
         vm.isLoader = false;
         if (res.type == 'success') {
+
+          getSubUser();
+
           vm.logged_user_roles = $cookies.get('logged_user_roles');
 
 
@@ -638,7 +634,6 @@
                 vm.logged_user_roles = vm.logged_user_roles + ',' + $role_selected;
                 $cookies.put('logged_user_roles', vm.logged_user_roles);
               }
-              debugger;
 
             }
             else {
@@ -649,12 +644,10 @@
                 var unique_role = role_array.filter(function (e) { return e });
                 vm.logged_user_roles = unique_role.toString();
                 $cookies.put('logged_user_roles', vm.logged_user_roles);
-                debugger;
+
               }
             }
           }
-
-
 
           getUserRoles();
         } else {
@@ -663,6 +656,12 @@
       })
 
     };
+
+    vm.changeTab = function (tabName) {
+      if (tabName == 'Subscription') vm.myvalue = true;
+      else vm.myvalue = false;
+
+    }
 
     vm.addUser = addUser;
 
@@ -703,7 +702,6 @@
           $scope.IsVisible[index] = true;
           $scope.delete_plain = true;
           $rootScope.message('Plan has been deleted successfully', 'success');
-          //vm.items = res.plan;
         } else {
           $rootScope.message(res.message, 'warning');
         }
@@ -726,7 +724,9 @@
 
     getSubscriptions();
 
-    /**/
+
+
+
 
     ///get Plans
 
@@ -736,24 +736,15 @@
         return $http.get(BASEURL + "coe-get.php?t=billing").success(function (res) {
           if (res.type == 'success') {
 
-            //debugger;
-            console.log('billings');
-            // console.log(res);
-            console.log(res.billings);
             vm.billings = res.billings;
-            console.log('billings');
-            // vm.billings = res.billings;
 
-            /*var arr = ["1", "2", "3"];
-  
-              vm.billings = "HELLO A";*/
           }
         })
       }()
     );
 
 
-    /* */
+
 
     function openSubscriptionListDialog(items) {
       vm.isLoader = false;
@@ -768,12 +759,11 @@
     }
 
 
-
     vm.submenu = [
-      { link: 'user', title: 'My Profile' },
-      { link: 'contacts', title: 'Contacts' },
-      { link: 'organization', title: 'Organization' },
-      { link: '', title: 'Account' }
+      { link: 'user', title: 'My Profile', active: false },
+      { link: 'contacts', title: 'Contacts', active: false },
+      { link: 'organization', title: 'Organization', active: false },
+      { link: 'teammembers', title: 'Account', active: true }
     ];
 
 
@@ -791,6 +781,7 @@
     };
 
     function getSubUser() {
+
       return $http.post(BASEURL + 'role-permission.php',
         {
           item_type: 'plan',
@@ -802,49 +793,290 @@
         }).success(function (res) {
           if (res.type == 'success') {
             vm.managers_teamusers = res.plan;
-           // vm.manager_user_list = Object.keys(vm.managers_teamusers.team_users).map(it => vm.managers_teamusers.team_users[it])
+
           }
 
         })
     };
+
     getSubUser();
 
-    $scope.selectedList = [];
-    $scope.getManagerTeamUser_id = function (user_id) {
-      var indexOfDay = $scope.selectedList.indexOf(user_id);
-      if (indexOfDay === -1) {
-        
-        $scope.selectedList.push(user_id)
-      } else {
-        $scope.selectedList.splice(indexOfDay, 1)
+    $scope.changeIncludeAll = function (value) {
+
+      if (!value) {
+        vm.manager_include_all = false;
+        vm.manager.include_all = false;
+
       }
+      else {
+        vm.manager_include_all = true;
+        vm.manager.include_all = true;
+
+      }
+
+      if (value) var SendValue = 'true';
+      else var SendValue = 'false';
+
+      var teamusers = Object.keys(vm.managers_teamusers.team_users);
+
+      teamusers.forEach(function (role) {
+
+        $scope.getManagerTeamUser_id('role', vm.managers_teamusers.team_users[role][0].role_type_id, vm.managers_teamusers.team_users[role][0].role_type_name, SendValue)
+      });
+
     }
+
+
+    $scope.getManagerTeamUser_id = function (type, id, roleName, value) {
+
+
+
+      if (type === 'user') {
+
+        if (value) {
+          console.log('true value')
+
+          if (vm.manager_include_all) vm.manager.include_all = "1";
+
+          vm.managers_teamusers.team_users[roleName].forEach(function (users) {
+
+            if (users.user_id == id) {
+
+              users.selected = true;
+              var index = users.manger_ids.indexOf(vm.manager_id)
+              if (index === -1) {
+
+                users.manger_ids.push(vm.manager_id);
+              }
+
+            }
+
+          })
+
+
+          PushSpliceArray('push', $scope.selectedUserList, id)
+
+
+        } else {
+
+          // to deselct the include all option
+          vm.manager_include_all = false;
+          vm.manager.include_all = "0";
+
+          vm.managers_teamusers.team_users[roleName].forEach(function (users) {
+            if (users.user_id == id) {
+
+              var index = users.manger_ids.indexOf(vm.manager_id)
+              if (index != -1) {
+                users.manger_ids.splice(index, 1);
+              }
+
+              vm.RoleIdToDeselect = users.role_type_id;
+              users.selected = false;
+
+            }
+          })
+
+
+          PushSpliceArray('splice', $scope.selectedUserList, id)
+
+
+          //managing the id of role  of selected user in managers array
+          vm.managers_teamusers.managers.forEach(function (managers) {
+            if (managers.user_id === vm.manager_id) {
+
+              var RoleTypeIndex = managers.role_type_ids.indexOf(vm.RoleIdToDeselect);
+
+              if (RoleTypeIndex != -1) {
+
+                managers.role_type_ids.splice(RoleTypeIndex, 1);
+              }
+
+            }
+
+          })
+
+        }
+
+      } else if (type === 'role') {
+
+
+        vm.managers_teamusers.team_users[roleName].forEach(function (users) {
+
+          if (value == 'true') {
+
+            if (vm.manager_include_all) vm.manager.include_all = "1";
+
+            var IdExists = users.manger_ids.includes(vm.manager_id)
+            var index = users.manger_ids.indexOf(vm.manager_id)
+
+            if (index === -1) {
+              users.manger_ids.push(vm.manager_id);
+
+            }
+            PushSpliceArray('push', $scope.selectedUserList, users.user_id);
+            users.selected = true;
+
+            //managing the id of selected role in managers array
+            vm.managers_teamusers.managers.forEach(function (managers) {
+              if (managers.user_id === vm.manager_id) {
+
+                var RoleTypeIndex = managers.role_type_ids.indexOf(id);
+
+                if (RoleTypeIndex === -1) {
+                  managers.role_type_ids.push(id)
+                }
+
+
+              }
+
+            })
+
+
+            // managing the selectedRoleList array to form the request
+            var selectedRoleListIndex = $scope.selectedRoleList.indexOf(id);
+
+            if (selectedRoleListIndex === -1) {
+              $scope.selectedRoleList.push(id)
+            }
+
+          } else {
+
+            var IdExists = users.manger_ids.includes(vm.manager_id)
+            var index = users.manger_ids.indexOf(vm.manager_id)
+
+            if (index !== -1) {
+              users.manger_ids.splice(index, 1);
+              users.selected = false;
+
+            }
+
+            // to deselct the include all option
+            vm.manager_include_all = false;
+            vm.manager.include_all = "0";
+
+
+            PushSpliceArray('splice', $scope.selectedUserList, users.user_id);
+            users.selected = false;
+
+            //managing the id of selected role in managers array
+
+            vm.managers_teamusers.managers.forEach(function (managers) {
+              if (managers.user_id === vm.manager_id) {
+                var RoleTypeIndex = managers.role_type_ids.indexOf(id);
+                if (RoleTypeIndex != -1) {
+                  managers.role_type_ids.splice(RoleTypeIndex, 1);
+                }
+              }
+            })
+
+
+            // managing the selectedRoleList array to form the request
+            var selectedRoleListIndex = $scope.selectedRoleList.indexOf(id);
+
+            if (selectedRoleListIndex != -1) {
+              $scope.selectedRoleList.splice(selectedRoleListIndex, 1);
+            }
+
+          }
+        })
+      }
+
+    }
+
+    function PushSpliceArray(type, array, element) {
+
+      var index = array.indexOf(element);
+
+      if (type === 'push') {
+
+        if (index === -1) {
+          array.push(element)
+        }
+
+      } else if (type === 'splice') {
+        if (index != -1) {
+          array.splice(index, 1);
+        }
+      }
+
+    }
+
+
+    function changeManager(manager) {
+
+      vm.manager = manager;
+      vm.manager_id = manager.user_id;
+      vm.role_type_ids = manager.role_type_ids;
+
+      if (manager.include_all === "1") vm.manager_include_all = true;
+      else vm.manager_include_all = false;
+
+      $scope.selectedUserList = [];
+      $scope.selectedRoleList = [];
+
+      for (var role in vm.managers_teamusers.team_users) {
+
+        var RoleId = '';
+        vm.managers_teamusers.team_users[role].forEach(function (users) {
+
+          var IdExists = users.manger_ids.includes(vm.manager_id)
+          if (IdExists) {
+            $scope.selectedUserList.push(users.user_id);
+            users.selected = true;
+          } else {
+            users.selected = false;
+          }
+
+          RoleId = users.role_type_id;
+
+        })
+
+
+        vm.managers_teamusers.managers.forEach(function (manager) {
+
+          if (manager.user_id === vm.manager_id) {
+            if (manager.role_type_ids.includes(RoleId)) {
+              PushSpliceArray('push', $scope.selectedRoleList, RoleId)
+            }
+          }
+
+        })
+
+      }
+
+    }
+
 
     function addTeam() {
 
-      return $http.post(BASEURL + 'role-permission.php', {
-          item_type: 'plan',
-          type: 'savemanagerlist',
-          manager_id:vm.manager_id,
-          user_ids: $scope.selectedList
+      var data = {
+        item_type: 'plan',
+        type: 'savemanagerlist',
+        manager_id: vm.manager_id,
+        user_ids: $scope.selectedUserList,
+        role_ids: $scope.selectedRoleList,
+        include_all: vm.manager_include_all
+      };
 
-        },
+
+      return $http.post(BASEURL + 'role-permission.php', data,
         {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         }).success(function (res) {
           if (res.type == 'success') {
+            $mdDialog.hide();
+            vm.manager_id = false;
             $rootScope.message('Data Submitted successfully', 'success');
           }
         })
     };
 
-//     $scope.CheckUncheckAll = function () {
-//       for (var i = 0; i < vm.manager_user_list.length; i++) {
-//         vm.manager_user_list[i].user_id = $scope.IsAllChecked;
-//     }
-// };
-  
+    $scope.ScreenLockManage = function (action) {
+      if (action === 'unlock') vm.ScreenLocked = false;
+      else if (action === 'lock') vm.ScreenLocked = true;
 
+    }
 
   }
 

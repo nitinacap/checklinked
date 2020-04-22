@@ -1,6 +1,12 @@
 <div id="" class="simple-table-container md-background-bg md-whiteframe-1dp">
 
-  <table class="simple row-border hover bordered-table">
+  <div ng-if="!vm.contacts.length" class="info" flex>
+    <div class="title m-10">
+      No Direct Contact found.
+    </div>
+  </div>
+
+  <table ng-if="vm.contacts.length" class="simple row-border hover bordered-table">
     <thead>
 
 
@@ -30,15 +36,19 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-if="contact.contacts.originator.organization!=contact.contacts.accepter.organization && contact.deleted_by!==vm.user_id" ng-repeat="contact in vm.contacts | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
-        ng-switch="(which = vm.showWhichInviteContactData(contact))" 
+      <tr
+        ng-if="contact.contacts.originator.organization!=contact.contacts.accepter.organization && contact.deleted_by!==vm.user_id"
+        ng-repeat="contact in vm.contacts | filter: vm.search | filter: globalSearch.searchTerm | filterByIds:vm.filterIds |  orderBy: vm.listOrder :vm.listOrderAsc | filter:query as filteredContacts track by contact.id "
+        ng-switch="(which = vm.showWhichInviteContactData(contact))"
         ng-class="{'md-green-100-bg':vm.passID==contact.id}">
         <td>
-          <span class="link-color pointer" ng-click="vm.openDirectMessageDialog(contact, contact.name.full,'direct-message', $event)">{{contact.contacts[which].name.full}}</span>
+          <span class="link-color pointer"
+            ng-click="vm.openDirectMessageDialog(contact, contact.name.full,'direct-message', $event)">{{contact.contacts[which].name.full}}</span>
         </td>
         <td class="hide-xs">
-     
-          <span class="link-color pointer" ng-click="vm.openContactDialog($event, contact.contacts[which])"> {{contact.contacts[which].organization}}
+
+          <span class="link-color pointer" ng-click="vm.openContactDialog($event, contact.contacts[which])">
+            {{contact.contacts[which].organization}}
           </span>
         </td>
 
@@ -49,9 +59,10 @@
           {{contact.contacts[which].email}}
         </td>
 
-        <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))" class="text-right">
+        <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
+          class="text-right">
 
-          <md-menu>
+          <md-menu ng-if="!$root.viewAs.notMe">
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
               translate translate-attr-aria-label="">
               <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
@@ -60,7 +71,8 @@
             <md-menu-content width="3">
 
               <md-menu-item ng-if="contact.accepted">
-                <md-button ng-click="vm.Confirmation($event, contact.contacts[which], contact.contacts[which].id, 'delete')">
+                <md-button
+                  ng-click="vm.Confirmation($event, contact.contacts[which], contact.contacts[which].id, 'delete')">
                   <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                   <span translate="CONTACTS.DELETE_CONTACT">Delete Contact</span>
                 </md-button>

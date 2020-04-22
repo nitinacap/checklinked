@@ -14,7 +14,32 @@
     .directive('msNavigationHorizontal', msNavigationHorizontalDirective)
     .controller('MsNavigationHorizontalNodeController', MsNavigationHorizontalNodeController)
     .directive('msNavigationHorizontalNode', msNavigationHorizontalNodeDirective)
-    .directive('msNavigationHorizontalItem', msNavigationHorizontalItemDirective);
+    .directive('msNavigationHorizontalItem', msNavigationHorizontalItemDirective)
+    .directive('clickOutside', clickOutsideDirective)
+
+
+  /** @ngInject */
+  function clickOutsideDirective($document) {
+
+    return {
+      restrict: 'A',
+      scope: {
+        clickOutside: '&'
+      },
+      link: function (scope, el, attr) {
+
+        $document.on('click', function (e) {
+
+          if (el !== e.target && !el[0].contains(e.target)) {
+            scope.$apply(function () {
+
+              scope.$eval(scope.clickOutside);
+            });
+          }
+        });
+      }
+    }
+  }
 
   /** @ngInject */
   function msNavigationServiceProvider() {
@@ -294,8 +319,9 @@
 
         // Clear the vm.navigation from main controller
         if (navigationScope) {
-          debugger
+
           navigationScope.vm.navigation = navigation;
+
         }
       }
 
@@ -330,7 +356,7 @@
         if (root) {
           for (var i = 0; i < navigation.length; i++) {
             if (navigation[i]._id === root) {
-              debugger;
+
               return [navigation[i]];
 
             }
@@ -431,7 +457,7 @@
        * @param navigation
        * @private
        */
-      debugger;
+
       function _flattenNavigation(navigation) {
         var flatNav = [];
 
@@ -443,7 +469,7 @@
 
           // Push the item
           flatNav.push(navToPush);
-          debugger;
+
           // If there are child items in this navigation,
           // do some nested function magic
           if (navigation[x].children.length > 0) {
@@ -457,7 +483,7 @@
   }
 
   /** @ngInject */
-  function MsNavigationController($scope,api, $cookies, msNavigationService, $rootScope) {
+  function MsNavigationController($scope, api, $cookies, msNavigationService, $rootScope) {
     var vm = this;
     vm.folded = false;
     vm.toggleMsNavigationFolded = toggleMsNavigationFolded;
@@ -466,31 +492,108 @@
     //   api.notifications.count_notifi();
     // }, 9000);
 
-
-    api.notifications.count_notifi();
-
-
     var user_id = $cookies.get("useridCON").toString();
-    $scope.$on('event:socketConnected', function () {
 
+    function getNotificationCount() {
+
+      api.notifications.count_notifi().success(function (notification) {
+        var data = notification.item;
+
+
+        $rootScope.socketio.emit('real_time_notification', data);
+
+      });
+
+    }
+
+    getNotificationCount();
+
+
+    // $scope.$watch(function() {
+    //   return $rootScope.notificationCountCheck;
+    // }, function() {
+
+    //   getNotificationCount();
+    // }, true);
+
+
+
+    // // 
+    $scope.$on('event:socketConnected', function () {
+      // // 
       $rootScope.socketio.on('real_time_notification', function (data) {
-        if(data["total"+user_id]!=undefined && data["total"+user_id]!='undefined'){
-          $scope.$apply(function(){
+        // user_id
+        
+        if (data["total" + user_id] != undefined && data["total" + user_id] != 'undefined') {
+          $scope.$apply(function () {
+           
             $rootScope.message_count = data.message_count;
             $rootScope.notification_count = data["user_notification" + user_id];
             $rootScope.alert_count = data["user_alert" + user_id];
+            $rootScope.invites_count = data.invites_count;
             $scope.user_alert = data["user_alert" + user_id];
-            $scope.total = data["total"+user_id];
+            $scope.total = data["total" + user_id];
+            
           });
         }
 
 
       })
 
+      $rootScope.socketio.on('livemessages', function (data) {
+        // user_id
+
+
+        api.notifications.count_notifi().success(function (notification) {
+
+          console.log('listMenu', notification)
+          var data = notification.item;
+          $rootScope.message_count = data.message_count;
+          $rootScope.notification_count = data["user_notification" + user_id];
+          $rootScope.invites_count = data.invites_count;
+          $rootScope.alert_count = data["user_alert" + user_id];
+          $scope.total = data["total" + user_id];
+          $scope.user_alert = data["user_alert" + user_id];
+          
+        });
+
+        
+      })
+
+
+      $scope.$on('event:checklistInviteCountChanged', function () {
+        //// ;
+        api.notifications.count_notifi();
+      });
+
+
     });
 
 
+    // $rootScope.socketio.on('livemessages', function (data) {
+    //   function listMenu() {
+    //    var yy = $cookies.get("useridCON")
+    //     // 
+    //     var user_id = $cookies.get("useridCON").toString();
+    //     api.notifications.count_notifi().success(function (notification) {
 
+    //       console.log('listMenu', notification)
+    //       var data = notification.item;
+    //       var message_count = data.message_count;
+    //       var notification_count = data["user_notification" + user_id];
+    //       var alert_count = data["user_alert" + user_id];
+
+    //       vm.submenu = [
+    //         { link: 'alerts', title: 'Alerts' },
+    //         { link: 'invitations', title: 'Action Items', notification: alert_count },
+    //         { link: '', title: 'Messages', notification: message_count },
+    //         { link: 'notification', title: 'Notifications', notification: notification_count }
+    //       ];
+    //       // 
+    //     });
+    //   }
+
+    // // 
 
     function toggleMsNavigationFolded() {
       vm.folded = !vm.folded;
@@ -510,10 +613,12 @@
     }
     // Data
     if ($scope.root) {
-      debugger;
+
       vm.navigation = msNavigationService.getNavigation($scope.root);
+
     }
     else {
+
       vm.navigation = msNavigationService.getNavigation();
 
     }
@@ -833,7 +938,7 @@
     vm.unread = vm.badgeDataFeed.unread;
 
     vm.unreadCount = vm.unread.length;
-    
+
 
 
     if (vm.appState == 'app.queue') {

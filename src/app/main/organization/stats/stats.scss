@@ -10,12 +10,19 @@ padding:0px;
   }  
 }
 
+// .spreadsheet{
+//     width: 50%;
+//     margin: auto;
+//     border: 1px solid #5555;
+//     margin-top: 20px;
+// }
+
 .spreadsheet{
-    width: 50%;
-    margin: auto;
+
+
     border: 1px solid #5555;
-    margin-top: 20px;
-}
+    padding: 30px;
+  }
 
 .bordered-table tbody td {
     border-bottom: 1px solid #517cc6  !important;

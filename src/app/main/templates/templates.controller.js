@@ -75,7 +75,14 @@
     api.folders.get($rootScope.token).then(function (d) {
 
       if (d.data.code == '-1') {
-        $scope.subscriptionAlert(d.data.message);
+        if(d.data.message=='unauthorized access'){
+          $state.go('app.logout');
+        }else{
+
+          // $scope.subscriptionAlert(d.data.message);
+          $rootScope.message(d.data.message, 'error')
+        
+        }
       } else {
         vm.folders = d.data.folders;
 
@@ -152,7 +159,7 @@
       vm.folder.order = 1;
       vm.folder.order += vm.folders.length;
 
-      api.folders.add(vm.folder.name, vm.folder.description, vm.folder.order, $rootScope.token).error(function (res) {
+      api.folders.add(vm.folder.name, vm.folder.description,'','', vm.folder.order).error(function (res) {
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
@@ -196,7 +203,7 @@
       vm.group.text = groupName;
       vm.group.id_parent = folderID;
 
-      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent, $rootScope.token).error(function (res) {
+      api.groups.add(vm.group.text, vm.group.order, vm.group.id_parent).error(function (res) {
         return $rootScope.message("Error Adding Folder", 'warning');
       }).success(function (res) {
         vm.isLoader = false;
@@ -206,8 +213,10 @@
           return $rootScope.message(res.message, 'warning');
         } else {
 
-          console.log('res.groups', res.groups);
+          // console.log('res.groups', res.groups);
           $rootScope.$broadcast('event:updateModels');
+
+          if( !vm.groups) vm.groups = [];
           vm.groups.push(res.group);
           $rootScope.organizeData();
 
@@ -331,6 +340,7 @@
               return vm.templates.load.error = "Error loading Templates: (" + res.code + ") " + res.message;
             } else if (res.templates) {
               vm.templates.list = res.templates;
+
               vm.publicOrganization = Object.keys(res.templates.public);
 
             }
@@ -412,28 +422,104 @@
       }
     };
 
+    vm.getLabels = function(){
+      // return api.getLabels(BASEURL + 'login-authCheck.php', {
+      //   cache: false
+      // }).then(
+      //   function (d) { //success
+
+
+      //     var res;
+      //    // console.log('success on user pull', d);
+      //     if (d === void 0 || d == null || d == '') {
+      //       //console.log('server did not send response');
+      //     } else {
+      //       res = d.data;
+
+      //       if (typeof res == 'string') {
+      //         res = JSON.parse(d.data, 1);
+      //       }
+      //     }
+      //     if (res === void 0 || res == null || res == '') {
+      //       //console.log('not logged in (no res)');
+      //       $rootScope.user = void 0;
+      //       return check(path);
+      //     } else {
+      //       //console.log('res has content', typeof res, res);
+
+      //       $rootScope.user = res.user;
+
+      //       if ($rootScope.user !== void 0 && $rootScope.user != null && res.viewAs !== void 0 && res.viewAs != null) {
+      //         //console.log('WTF', viewAs);
+      //         $rootScope.viewAs.set(res.viewAs);
+      //       }
+      //       //console.log('about to check path again after user load successful');
+      //       return check(path);
+      //     }
+
+      //   },
+      //   function (err) { //error
+      //     //console.log('error on user pull', err);
+      //     var ref;
+      //     if (!((ref = $rootScope.user) != null ? ref.authenticated : void 0)) {
+      //       ///console.log('user not authenticated already after error on user pull, checking path now');
+      //       return check(path);
+      //     }
+      //   }
+      // );
+
+
+      return api.templates.getLabels().error(function (res) {
+        return $rootScope.message('Unknown error getting labels.', 'warning');
+      }).success(function (res) {
+        vm.isLoader = false;
+        if (res.code) {
+        //  return $rootScope.message("Error creating Checklist from Template: (" + res.code + "): " + res.message, 'warning');
+        } else {
+          $rootScope.user.dashboard.labels = res.labels;
+          // $rootScope.$broadcast('event:updateModels');
+          // $rootScope.message('Template has been downloaded', 'success');
+          // $rootScope.organizeData();
+          // vm.closeDialog();
+          // vm.loginAuthCheck();
+        }
+      })["finally"](function () {
+        //return vm.download.creating = false;
+      });
+    }
+
+    //vm.getLabels();
+
     vm.download = {
       template: null,
       creating: false,
-      begin: function (ev, templateID, templateType) {
+      begin: function (ev, templateID, templateType, attachments) {
+        if(vm.verticalStepper){
+          if(vm.verticalStepper.step1){
+            vm.verticalStepper.step1.folderID = '';
+          }
+        }
+        
         if (templateType == 'checklist') {
           console.log('open openAddChecklistTemplateDialog');
-          vm.openAddChecklistTemplateDialog(ev, templateID, templateType);
+          vm.openAddChecklistTemplateDialog(ev, templateID, templateType, attachments);
         } else if (templateType == 'group') {
           console.log('open openAddFolderTemplateDialog');
-          vm.openAddFolderTemplateDialog(ev, templateID, templateType);
+          vm.openAddFolderTemplateDialog(ev, templateID, templateType, attachments);
         }
+
+        vm.TemplateAttachments = attachments ? 'yes' : 'no';
+        
 
       },
       create: function (idCTMPL, parentID, templateType) {
 
-        debugger;
         console.log('idCTMPL', idCTMPL);
         console.log('parentID', parentID);
         console.log('templateType', templateType);
-
+        
         vm.download.creating = true;
-        return api.checklists.createFromTemplate(idCTMPL, parentID, templateType, $rootScope.token).error(function (res) {
+        return api.checklists.createFromTemplate(idCTMPL, parentID, templateType, vm.TemplateAttachments).error(function (res) {
           return $rootScope.message('Unknown error creating Checklist from selected Template.', 'warning');
         }).success(function (res) {
           vm.isLoader = false;
@@ -445,6 +531,7 @@
             $rootScope.message('Template has been downloaded', 'success');
             $rootScope.organizeData();
             vm.closeDialog();
+            vm.getLabels();
           }
         })["finally"](function () {
           return vm.download.creating = false;
@@ -501,12 +588,12 @@
 
     // Content sub menu
     vm.submenu = [
-      { link: 'folders', title: 'Projects' },
-      { link: 'groups', title: 'Workflow' },
-      { link: 'checklist', title: 'Checklists' },
-      { link: '', title: 'Templates' },
-      { link: 'other', title: 'Other' },
-      { link: 'archives', title: 'Archives' }
+      { link: 'folders', title: 'Projects', active : false },
+      { link: 'groups', title: 'Workflow', active : false },
+      { link: 'checklist', title: 'Checklists', active : false },
+      { link: 'templates', title: 'Templates', active : true },
+      { link: 'other', title: 'Other', active : false },
+      { link: 'archives', title: 'Archives', active : false }
 
     ];
 
@@ -575,19 +662,21 @@
       $mdDialog.hide(answer);
     };
 
-    //Subscription expired alert
-    $scope.subscriptionAlert = function (message) {
-      vm.title = 'Alert';
-      vm.message = message;
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
-        clickOutsideToClose: false
-      });
-    }
+    // //Subscription expired alert
+    // $scope.subscriptionAlert = function (message) {
+    //   vm.title = 'Alert';
+    //   vm.message = message;
+    //   $mdDialog.show({
+    //     scope: $scope,
+    //     preserveScope: true,
+    //     templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+    //     clickOutsideToClose: false
+    //   });
+    // }
 
     function findPublicTemplate() {
+      vm.search_templates_result = {};
+      vm.search =  {};
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
@@ -605,6 +694,16 @@
       });
     }
 
+    
+//     jQuery("md-menu.moreMenuOnTab").parent('md-tab-item').css("position", "static");
+   
+
+// // {/* <script> */}
+// $.noConflict();
+// jQuery( document ).ready(function( $ ) {
+//   // Code that uses jQuery's $ can follow here.
+//   $("md-menu.moreMenuOnTab").css("position", "static");
+// });
 
   }
 

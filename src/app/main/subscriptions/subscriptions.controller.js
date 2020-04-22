@@ -108,6 +108,8 @@
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
+          $rootScope.user
+          // 
           $rootScope.user = res.user;
           return $rootScope.subscriptions.selected.users = res.contacts;
         }
@@ -194,7 +196,7 @@
         }
       });
     }
-debugger;
+// ;
 
     if (((vm.ref = $rootScope.user) != null ? vm.ref.authenticated : void 0) && $rootScope.user.btClientID !== void 0 && $rootScope.user.btClientID !== null && $rootScope.user.btClientID !== '') {
       vm.grabClientToken = $http.get(BASEURL + "braintree_clientID-get.php?cID=" + $rootScope.user.btClientID);

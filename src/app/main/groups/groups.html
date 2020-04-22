@@ -1,7 +1,7 @@
 <div id="groups" class="page-layout simple tabbed pad-0 pt-20" layout="column">
   <md-toolbar class=" custom-breadcrumb" ng-show="vm.isBreadcrum && vm.groups.length > 0">
     <ul>
-      <li><a href="/process/projects" class="white"><span> {{vm.groups[0] ? vm.groups[0].item_bread.project_name: ''}}</span></a></li>
+      <li><a href="/process/workflows/{{vm.groups[0].item_bread.project_id}}" class="white"><span> {{vm.groups[0] ? vm.groups[0].item_bread.project_name: ''}}</span></a></li>
     </ul>
   </md-toolbar>
   <page-toolbar datas="vm.submenu"> </page-toolbar>

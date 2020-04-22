@@ -3,7 +3,7 @@
     <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
       <span class="title">Conflicts: {{ vm.checklists[0].name }}</span>
       <md-button class="md-icon-button custom_close" ng-click="vm.closeConfilicts()">
-      Close Confilicts
+      Check Conflicts
       </md-button>
       <md-button class="md-icon-button" ng-click="closeDialog()">
         <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
@@ -26,7 +26,7 @@
         <td class="">{{(show.idCON == user.idCON)?user.name.full + ' (YOU)':show.name}}</td>
         <td class="">
           <!-- {{vm.nonCompliant[$index]}} -->
-          {{ (show.idCON == user.idCON) ? vm.nonCompliance_count[user.idCON] : vm.nonCompliance_count[show.idCON] }}
+          {{ (show.idCON == user.idCON) ? vm.nonCompliance_count[user.idCON] != null ? vm.nonCompliance_count[user.idCON] : 0 : vm.nonCompliance_count[show.idCON] }}
           </td>
       </tr>
       </tbody>

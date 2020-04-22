@@ -1,4 +1,4 @@
-<md-dialog class="dialog" aria-label="">
+<md-dialog style="position: fixed;" class="dialog" aria-label="">
   <form name="checklistForm" class="md-inline-form" novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
@@ -12,7 +12,7 @@
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block">
         <label translate="CHECKLIST.NAME">{{vm.checklist.name}} Name</label>
-        <input name="name" ng-model="vm.checklist.name" maxlength="150" required md-autofocus>
+        <input name="name" ng-model="vm.checklistName" maxlength="150" required md-autofocus>
         <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
           <div ng-message="required">
             <span translate="CHECKLIST.ERRORS.CHECKLIST_NAME_REQUIRED">Checklist Name field is required</span>
@@ -22,10 +22,23 @@
 
       <md-input-container class="md-block">
         <label translate="CHECKLIST.DESCRIPTION">{{vm.checklist.description}}</label>
-        <input name="name" ng-model="vm.checklist.description">
+        <input name="name" ng-model="vm.checklistDescription">
 
       </md-input-container>
+
+      
     </md-dialog-content>
+    <md-dialog-content ms-scroll ng-show="insertLink && vm.type">
+      <md-input-container class="md-block mb-0" >
+          <label>Insert Link</label>
+          <input type="url" name="link" ng-model="vm.checklist.link" md-autofocus>
+          <div ng-messages="checklistForm.link.$error" ng-show="checklistForm.link.$touched" role="alert">
+            <div ng-message="required">
+              <span>Link is required</span>
+            </div>
+          </div>
+        </md-input-container>
+      </md-dialog-content>
 
     <md-dialog-actions layout="row" layout-align="space-between center">
       <div layout="row" layout-align="end center" flex>
@@ -40,12 +53,24 @@
       </div>
 
       <div layout="row">
-        <md-button ng-if="!vm.newChecklist" class="md-icon-button"
+        <md-button ng-if="!vm.newChecklist && vm.type != 'duplicate'" class="md-icon-button"
                    ng-click="vm.deleteConfirm('checklist', vm.checklist, $event)" aria-label="Delete" translate
                    translate-attr-aria-label="CHECKLIST.DELETE">
           <md-icon md-font-icon="icon-delete"></md-icon>
-          <md-tooltip><span translate="CHECKLIST.DELETE">DELETE</span></md-tooltip>
+          <md-tooltip ><span translate="CHECKLIST.DELETE">DELETE</span></md-tooltip>
         </md-button>
+
+        <md-button ng-show="vm.type" ng-click="insertLink = insertLink == true ? false : true;" class="md-accent capitalize">
+          {{insertLink ? 'Cancel' : 'Insert'}} Link
+        </md-button>
+
+        <md-checkbox ng-if="vm.type === 'duplicate'"
+        ng-model="vm.checklist.attachment"
+        aria-label="Include Attachments"
+        ng-true-value="'yes'"
+        ng-false-value="''"
+        class="md-success md-align-top-left">
+        Include Attachments
       </div>
     </md-dialog-actions>
   </form>

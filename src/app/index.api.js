@@ -20,6 +20,7 @@
 
     // api.sample = $resource(api.baseUrl + 'sample/sample.json');
     api.generateCacheLocal = function () {
+      
 
       var PREFIX, USERNAME, cache;
 
@@ -73,6 +74,7 @@
     api.cache = {
       local: api.generateCacheLocal()
     };
+    
 
     ////////////////////// USER (rootScope.user)
     api.user = {
@@ -89,9 +91,10 @@
 
     ////////////////////// LOGIN
     api.login = {
+     
 
       doAuth: function (creds) {
-
+         
         return $http.post(BASEURL + 'login-doAuth.php', creds, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -106,7 +109,7 @@
             return $rootScope.message(resp.message, 'warning');
           } else {
             $rootScope.user = resp.user;
-
+        // // 
             $rootScope.viewAs.set(resp.viewAs);
             $rootScope.orderThanksData = '';
             //path = CacheLocal.get('navTo');
@@ -210,7 +213,7 @@
       },
       add: function (name, description, link, attachment, order, folder_id) {
         //return $http.post(BASEURL+'coe-post.php', {
-
+   
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'folder',
           name: name,
@@ -265,7 +268,8 @@
           return res.groups;
         });
       },
-      add: function (name, order, to, description, link, duplicate) {
+      add: function (name, order, to, description, link, duplicate, attachment) {
+         
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'group',
           name: name,
@@ -274,7 +278,8 @@
           description: description,
           link: link,
           id: duplicate ? duplicate : '',
-          sub_type: duplicate ? 'duplicate' : ''
+          sub_type: duplicate ? 'duplicate' : '',
+          attachment : attachment
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -335,7 +340,8 @@
           return res.checklists;
         });
       },
-      add: function (name, order, to, token, description, checklist_id, sub_type) {
+      add: function (name, order, to, token, description, checklist_id, sub_type, attachment, link) {
+        
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'checklist',
           name: name,
@@ -344,7 +350,9 @@
           token: token,
           description: description,
           id: checklist_id,
-          sub_type: sub_type
+          sub_type: sub_type,
+          attachment: attachment,
+          link : link
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -374,9 +382,9 @@
             cache: false
           });
       },
-      publish: function (id, name, description, type, pvt) {
+      publish: function (id, name, description, type, pvt, attachment) {
 
-
+         
         if (pvt == null) {
           pvt = false;
         }
@@ -385,7 +393,8 @@
           name: name,
           description: description,
           type: type,
-          pvt: pvt
+          pvt: pvt,
+          attachment: attachment
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -398,11 +407,13 @@
           cache: false
         });
       },
-      createFromTemplate: function (idCTMPL, idGRP, type) {
+      createFromTemplate: function (idCTMPL, idGRP, type, attachmnts) {
+        
         return $http.post(BASEURL + 'checklist-post-fromTemplate.php', {
           idPARENT: idGRP,
           idCTMPL: idCTMPL,
-          type: type
+          type: type, 
+          attachments: attachmnts
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -735,7 +746,7 @@
           return results;
         });
       },
-      add: function (name, order, to, type, info, item_type, alert, option) {
+      add: function (name, order, to, type, info, item_type, alert, option, alert_sms,mobile) {
         if (type == null) {
           type = 1;
         }
@@ -760,7 +771,9 @@
           item_type: item_type,
           item_alert: alert,
           parentID: to,
-          option: type
+          option: type,
+          alert_sms: alert_sms,
+          mobile : mobile
         }, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -820,6 +833,7 @@
         }).error(function (res) {
           $rootScope.message('Error talking to server', 'warning');
         }).success(function (res) {
+          // // 
           return res.checkboxes;
         });
       },
@@ -838,7 +852,10 @@
             return $rootScope.message("Couldn't update checkbox. Unknown error", 'warning');
           }).success(function (res) {
             if (res.code) {
-              $rootScope.message("Couldn't update checkbox. Error: (" + code + "): " + message, 'warning');
+             
+             
+              $rootScope.message("Couldn't update checkbox. Error: (" + res.code + "): " + res.message, 'warning');
+            
             }
             return res;
           });
@@ -1128,13 +1145,15 @@
               cache: false
             });
         },
-        add: function (type , name, explanation ,checkboxinfo) {
+        add: function (type , name, explanation ,checkboxinfo, option) {
 
           return $http.post(BASEURL + 'dashboard_label-post.php', {
             type: type,
             name: name,
             explanation: explanation,
+            option : option,
             checkboxinfo: checkboxinfo ? checkboxinfo : ''
+          
           }, {
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -1326,6 +1345,7 @@
 
       evaluateItem: function (item, checkboxes) {
 
+          
 
         var left, right;
         item.conflicts = false;
@@ -1476,6 +1496,8 @@
       },
       count_notifi: function () {
         var user_id = $cookies.get("useridCON");
+
+        
         return $http.post(BASEURL + 'coe-post.php', {
           type: 'notification-count', id: user_id
         }, {
@@ -1484,13 +1506,45 @@
             },
             cache: false
           }).success(function (resp) {
-            if (resp.type == 'success') {
-
+            
+            if (resp.type === "success") {
+              // $rootScope.notificationCountCheck = resp.item;
+              //// 
               $rootScope.socketio.emit('real_time_notification', resp.item);
+              // // 
+            
+              // $rootScope.socketio.$broadcast('real_time_notification', resp.item);
+              // // 
             }
 
+          }).error(function (resp) {
+
+            // if(resp.message) $rootScope.message(resp.message, 'error');
+            // $rootScope.message('Server Error', 'error');
+            // // 
           });
-      }
+      },
+      // count_notifi: function () {
+      //   var user_id = $cookies.get("useridCON");
+
+      //   // 
+      //   return $http.post(BASEURL + 'coe-post.php', {
+      //     type: 'notification-count', id: user_id
+      //   }, {
+      //       headers: {
+      //         'Content-Type': 'application/x-www-form-urlencoded'
+      //       },
+      //       cache: false
+      //     }).success(function (resp) {
+      //       // 
+      //       if (resp.type == 'success') {
+
+      //         $rootScope.socketio.emit('real_time_notification', resp.item);
+      //         // 
+      //       }
+
+      //     });
+      // }
 
     };
 
@@ -1523,6 +1577,27 @@
             },
             cache: false
           });
+      },
+      getLabels: function () {
+    
+        return $http.get(BASEURL + 'dashboard_label-get.php', {
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message('Could not create data table. Unknown error.', 'warning');
+          }).success(function (res) {
+            // // 
+            if(res.type == "success"){
+              
+              return res.labels;
+             }
+            
+           
+            
+           
+          });
       }
     }
 
@@ -1540,18 +1615,18 @@
       }
     };
 
-    // api.organization = {
+    api.organization = {
 
-    //   get_all_spreadsheets: function () {
-    //     return $http.get(BASEURL + 'coe-get.php?t=spreadsheet', {
-    //     // return $http.get(BASEURL + 'orgSpreadSheetDatabase.php', {
-    //         headers: {
-    //           'Content-Type': 'application/x-www-form-urlencoded'
-    //         },
-    //         cache: false
-    //       });
-    //   }
-    // };
+      get_all_spreadsheets: function () {
+        return $http.get(BASEURL + 'coe-get.php?t=spreadsheet', {
+        // return $http.get(BASEURL + 'orgSpreadSheetDatabase.php', {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: false
+          });
+      }
+    };
 
         ////////////////////// Data Point
         api.alert = {
@@ -1607,7 +1682,7 @@
           }).error(function (res) {
             return $rootScope.message('Could not create data table. Unknown error.', 'warning');
           }).success(function (res) {
-
+            // // 
             if(res.code == -1){
               $rootScope.message(res.message, 'warning');
              }
@@ -1649,6 +1724,7 @@
           });
       },
       saveTableAsTemplate: function (table_id,name,description) {
+        console.log('saveTableAsTemplate',table_id)
         
         return $http.post(BASEURL + 'data-table.php', {
           type: 'datatable-template-create',
@@ -1702,7 +1778,7 @@
           });
       },
       changeTableRow: function (index,column,table_str,table_id,request_type,rowIndex,headArr,data_table_data) {
-        //debugger;
+        //  ;
         var res_type;
         // var res_type = request_type == 'update' ? 'Duplicate' : 'Delete';
         if(request_type == 'update'){
@@ -1714,7 +1790,7 @@
         else{
            res_type =  'Header';
         }
-        //debugger;
+        //  ;
         return $http.post(BASEURL + 'data-table.php', {
           table_structure: table_str,
           type: 'update-row',
@@ -1734,7 +1810,7 @@
            
             return $rootScope.message('Could not '+ res_type+' data table row. Unknown error.', 'warning');
           }).success(function (res) {
-            //debugger;
+            //  ;
              if(res.code == -1){
               $rootScope.message(res.message, 'warning');
              }
@@ -1791,8 +1867,34 @@
       }
     }
 
+    
+
     /** End Here  Data Table functions */
 
+     /****** Reports starts  ******/
+     api.reports = {
+
+      reports: function (data) {
+        
+        return $http.post(BASEURL +'report-dashboard.php', data, {
+            headers: {
+              'Content-Type': 'applicatio/x-www-form-urlencoded'
+            },
+            cache: false
+          }).error(function (res) {
+            return $rootScope.message(res.message, 'error');
+          }).success(function (res) {
+
+            // if(res.code == -1){
+            //     $rootScope.message(res.message, 'warning');
+            //  }
+             
+            
+            return res;
+          });
+      },
+    }
+      /******  Reports Ends ******/
 
 
     return api;

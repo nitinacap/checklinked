@@ -4,7 +4,7 @@
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <span class="title">Select Label</span>
    
-        <md-button class="md-icon-button" ng-click="closeDialog()">
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
           <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
         </md-button>
       </div>
@@ -22,7 +22,8 @@
             <th>User</th>
             <th>Label</th>
             <th>Description</th>
-            <th class="text-center">Select</th>
+            <th>Type</th>
+            <th class="text-center"  ng-if="!vm.reportsRange">Select</th>
             <th></th>
           </tr>
           </thead>
@@ -35,7 +36,8 @@
             <td>{{label.contact.name}}</td>
             <td>{{label.name}}</td>
             <td>{{label.explanation}}</td>
-            <td class="text-center" ng-switch="(selected=vm.labels.isSelected(label))">
+            <td>{{label.item_type}}</td>
+            <td class="text-center"  ng-if="!vm.reportsRange" ng-switch="(selected=vm.labels.isSelected(label))">
               <md-button type="button"
                          ng-click="vm.labels.toggle(label)"
                          class="icon-button">
@@ -49,10 +51,16 @@
             </td>
 
             <td class="text-right">
-              <md-button ng-click="vm.labels.hide(label)"
+              <md-button  ng-if="!vm.reportsRange" ng-click="vm.labels.hide(label)"
                          class="icon-button">
                 <md-icon md-font-icon="icon-trash"
                          class="red-600-fg s18"></md-icon>
+              </md-button>
+
+              <md-button  ng-if="vm.reportsRange" ng-click="vm.selectLabel(label)"
+                         class="icon-button">
+                <md-icon md-font-icon="icon-plus-circle"
+                         class="s18"></md-icon>
               </md-button>
             </td>
           </tr>
@@ -64,7 +72,7 @@
       <div ng-show="vm.labels.create.entering" class="modal-body">
         <md-input-container class="md-icon-float md-block">
           <label>Name</label>
-          <input name="name" ng-model="vm.labels.create.name" required md-autofocus>
+          <input name="name" ng-model="vm.labels.create.name" id="newLabelName" type="text" required md-autofocus="vm.labels.create.entering">
           <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
             <div ng-message="required">
               <span>Name field is required</span>
@@ -78,19 +86,48 @@
           <div ng-messages="checklistForm.explanation.$error" ng-show="checklistForm.explanation.$touched" role="alert">
           </div>
         </md-input-container>
+
+        <span flex="20" class="mt-20 pr-20">Label Type:</span>
+        <span flex="80" class="mt-20" style="display: inline-block; ">
+          <div layout="column">
+            
+            <md-radio-group ng-model="vm.labels.create.item_status" ng-if='vm.SelectedAddDataPointItemType  === "checkbox"'>
+              <md-radio-button 
+                value="applies" class="md-primary">Req</md-radio-button>
+              <md-radio-button 
+                value="complies"> Comply
+              </md-radio-button>
+            </md-radio-group>
+
+            <md-radio-group ng-model="vm.labels.create.item_status" ng-if='vm.SelectedAddDataPointItemType  === "yn"'>
+              <md-radio-button 
+                value="applies" class="md-primary">Yes</md-radio-button>
+              <md-radio-button 
+                value="complies"> No
+              </md-radio-button>
+            </md-radio-group>
+
+            <md-radio-group ng-model="vm.labels.create.item_status" ng-if='vm.SelectedAddDataPointItemType  === "textbox"'>
+              <md-radio-button 
+                value="applies" class="md-primary">If data added</md-radio-button>
+            </md-radio-group>
+          </div>
+        </span>
       </div>
 
     </md-dialog-content>
 
 
     <md-dialog-actions layout="row" layout-align="space-between center">
-      <div layout="row" layout-align="start center">
+
+        
+      <div layout="row" layout-align="start center" ng-if="!vm.reportsRange">
         <md-button type="button"
                    ng-click="vm.labels.create.enter()"
                    class="md-raised md-accent"
                    ng-hide="vm.labels.create.entering"
                    aria-label="Add New Label" translate="CHECKLIST.ADD_LABEL"
-                   translate-attr-aria-label="CHECKLIST.ADD_LABEL">
+                   translate-attr-aria-label="CHECKLIST.ADD_LABEL" >
           ADD NEW LABEL
         </md-button>
 
@@ -116,9 +153,10 @@
         </md-button>
 
       </div>
-  </form>
+  
 
-  </md-dialog-actions>
+    </md-dialog-actions>
+  </form>
   <!-- / DIALOG ACTIONS -->
 
 </md-dialog>

@@ -1,9 +1,10 @@
+
 <div class="checklist-item"
-  ng-class="{'conflict':(item.nonCompliant  && item.item_typeof!='yn' && item.item_typeof!='textbox'), 'md-green-100-bg':vm.passedNotification.id==item.id}"
+  ng-class="{'conflict':(item.nonCompliant  && item.item_typeof!='yn' && item.item_typeof!='textbox'), 'md-green-100-bg':vm.passedNotification.id==item.id, 'opacity-5': section.section_na=='true'}"
   md-ink-ripple layout="row" layout-align="start center">
 
 
-  <div data-as-sortable-item-handle class="handle" ng-click="vm.preventDefault($event)">
+  <div ng-if="!$root.viewAs.notMe" data-as-sortable-item-handle class="handle" ng-click="vm.preventDefault($event)">
     <md-icon md-font-icon="icon-drag-vertical" class="icon"></md-icon>
   </div>
 
@@ -11,22 +12,23 @@
 
     <div class="info" flex>
       <div class="item" layout="row">
-        <div ng-show="vm.isForm(item)" flex="15" layout="row" layout-align="start center">
-          <ul class="checkbox-list">
-            <li ng-show="vm.isForm(item)">
+        <div ng-if="vm.isForm(item)" flex="10" layout="row" layout-align="start center">
+          <!-- <ul class="checkbox-list"> -->
+            <!--  ng-show="vm.isForm(item)" -->
+            <!-- <li> -->
               <button type="button" ng-click="vm.openFormLineDialog($event, item)" class="checkbox">
                 <md-icon class="md-accent-fg s20" md-font-icon="icon-pencil"></md-icon>
               </button>
-            </li>
-          </ul>
+            <!-- </li> -->
+          <!-- </ul> -->
         </div>
 
-        <div flex="10" layout="row" layout-align="start end" ng-init="vm.checkConflictItem(item.nonCompliant)">
+        <div flex="10"  ng-if="!vm.isForm(item)" layout="row" layout-align="start end" ng-init="vm.checkConflictItem(item.nonCompliant)">
           <ul class="checkbox-list">
             <li ng-repeat="show in showingUsers track by $index">
-
+       
               <button
-                ng-disabled="checklist.complete || section.section_na=='true' || viewAs.notMe || (show.idCON !== user.idCON) || (item.section_na=='true')"
+                ng-disabled="checklist.complete || section.section_na=='true' || viewAs.notMe  ||(item.section_na=='true') || (show.idCON !== user.idCON)"
                 type="button"
                 ng-click="vm.toggleCheckbox(item,'applies',(item.item_typeof && item.item_typeof=='yn') ? 'yn':'checkbox',$index);"
                 class="checkbox item_typeof" ng-show="item.item_typeof !='textbox'">
@@ -34,11 +36,12 @@
                 <i ng-show="item.checkbox[$index].applies" class="icon-checkbox-marked-outline"></i>
                 <span class="checkboxLabel"
                   ng-if="showingUsers.length>1">{{(show.idCON ==
-                      showingUsers.idCON)?(showingUsers.length>1)?'YOU': (item.item_typeof=='yn' ? 'Yes' : 'Req'):(item.item_typeof=='yn' ? 'Yes' : 'Req') + '(' + show.name + ')' }}
+                      showingUsers.idCON)?(showingUsers.length>1)?'YOU': (item.item_typeof=='yn' ? 'Yes' : 'Req'):(item.item_typeof=='yn' ? 'Yes' : 'Req') + '(' + show.name + ')' }} 
+
+                      
                 </span>
                 <span class="checkboxLabel" ng-if="showingUsers.length==1">{{ item.item_typeof=='yn' ? 'Yes' : 'Req' }}
                 </span>
-
               </button>
 
             </li>
@@ -48,12 +51,12 @@
         <div flex="70" layout="column" class="pl-10" layout-align="center start">
           <div ng-class="{'text-bold form-line-question': vm.isForm(item)}" class="item" layout-align="start center"
             layout="row" flex>
-            {{item.name}}
+            {{item.name}} 
           </div>
           <div
             ng-show="(item.info.length || item.link) && (checklist.showReferences || section.showReferences || heading.showReferences) && !vm.isForm(item)"
             layout="column" class="item" flex>
-            <div layout="row" flex> <sup>{{ item.info !='rrr' ? item.info : 'Reference is not available' }}</sup></div>
+            <div layout="row"  class="mt-5" flex> <sup>{{ item.info !='rrr' ? item.info : 'Reference is not available' }}</sup></div>
             <div layout="row" flex> <a href="{{item.link}}" target="_blank">{{item.link}}</a>
             </div>
 
@@ -66,17 +69,18 @@
         <div layout="row" flex="10" layout-align="end center">
 
           <md-icon md-font-icon="icon-paperclip s20 pt-0" class="is-important indicator-icon s18 black"
-            ng-click="vm.openUploadAttachmentDialog($event, 'item', item.id, $index, item.attachments)"
+            ng-click="vm.openUploadAttachmentDialog($event, 'item', item.id, $index, item.attachments, section.id, heading.id)"
             ng-if="item.attachments.length>0"></md-icon>
 
           <md-icon md-font-icon="icon-comment-text-outline s20" class="is-important indicator-icon s18"
-            ng-click="vm.openConversationDialog('item', item.id, item.name)" ng-if="item.postCount>0">
+            ng-click="vm.openConversationDialog('item', item.id, item.name)" ng-if="item.postCount>0 && !$root.viewAs.notMe">
           </md-icon>
         </div>
 
         <div ng-hide="vm.isForm(item)" layout="row" layout-align="end center">
           <ul class="checkbox-list">
             <li ng-repeat="show in showingUsers track by $index">
+                
               <button
                 ng-disabled="checklist.complete || section.section_na=='true' || viewAs.notMe || (show.idCON !== user.idCON) || (item.section_na=='true')"
                 type="button"
@@ -101,15 +105,15 @@
 
     <div class="buttons" layout="row" layout-align="start center">
 
-      <md-menu>
+      <md-menu ng-if="!$root.viewAs.notMe ">
         <md-button ng-disabled="checklist.complete || section.section_na=='true'" ng-click="$mdOpenMenu($event)"
           class="md-icon-button" aria-label="More" translate translate-attr-aria-label="CHECKLIST.MORE">
           <md-icon md-font-icon="icon-dots-vertical" class="s18"></md-icon>
         </md-button>
 
         <md-menu-content width="3" class="menu-height">
-
-          <md-menu-item ng-show="item.checkbox[0].applies || item.checkbox[0].complies">
+<!-- ng-show="item.checkbox[0].applies || item.checkbox[0].complies" -->
+          <md-menu-item >
             <md-button ng-disabled="checklist.complete || section.section_na=='true'"
               ng-click="vm.labels.select(item, $event)" aria-label="Add Data Label"
               translate-attr-aria-label="CHECKLIST.ADD_DATA_POINT">
@@ -128,19 +132,19 @@
             </md-button>
           </md-menu-item>
 
-          <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-checklists') !== -1">
+          <!-- <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-checklists') !== -1">
             <md-button ng-click="vm.view_data_upload($event, checklist)" aria-label="View Data Upload">
               <md-icon class="md-accent s18" md-font-icon="icon-file-document"></md-icon>
               <span>View Data Upload</span>
             </md-button>
-          </md-menu-item>
+          </md-menu-item> -->
 
           <md-menu-item ng-hide="vm.isForm(item)">
             <md-button ng-disabled="checklist.complete || section.section_na=='true'"
               ng-click="vm.openItemDialog($event, item)" aria-label="Edit Checkbox Name"
               translate-attr-aria-label="CHECKLIST.EDIT_CHECKBOX_NAME">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
-              <span translate="CHECKLIST.EDIT_CHECKBOX_NAME">Edit Name</span>
+              <span translate="CHECKLIST.EDIT_FORM_LINE">Edit Line</span>
             </md-button>
           </md-menu-item>
 
@@ -163,7 +167,7 @@
           </md-menu-item>
           <md-menu-item>
             <md-button ng-disabled="checklist.complete || section.section_na=='true'"
-              ng-click="vm.openUploadAttachmentDialog($event, 'item', item.id, $index, item.attachments)"
+              ng-click="vm.openUploadAttachmentDialog($event, 'item', item.id, $index, item.attachments, section.id, heading.id)"
               aria-label="Attachments" translate-attr-aria-label="CHECKLIST.ATTACHMENTS">
               <md-icon class="md-accent-fg s18" md-font-icon="icon-attachment"></md-icon>
               <span translate="CHECKLIST.ATTACHMENTS">Attachments</span>
@@ -171,7 +175,7 @@
           </md-menu-item>
           <md-divider class="md-default-theme"></md-divider>
 
-          <md-menu-item>
+          <md-menu-item ng-if="($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
             <md-button ng-disabled="checklist.complete || section.section_na=='true'"
               ng-click="vm.cutDialog('item', item.id, item.id_parent)" aria-label="Cut"
               translate-attr-aria-label="GROUP.CUT">
@@ -180,15 +184,15 @@
             </md-button>
           </md-menu-item>
 
-          <md-menu-item>
+          <md-menu-item ng-if="($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
             <md-button ng-disabled="checklist.complete || section.section_na=='true'"
-              ng-click="vm.coypDialog($event, group.id)" aria-label="Copy" translate-attr-aria-label="GROUP.COPY">
+              ng-click="vm.coypDialog('item', item.id, item.id_parent)" aria-label="Copy" translate-attr-aria-label="GROUP.COPY">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-clone"></md-icon>
               <span>Copy</span>
             </md-button>
           </md-menu-item>
 
-          <md-menu-item>
+          <md-menu-item  ng-if="($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
             <md-button ng-disabled="checklist.complete || section.section_na=='true'"
               ng-click="vm.pasteDialog('item', item.id, item.id_parent)" aria-label="Paste"
               translate-attr-aria-label="GROUP.PASTE">
@@ -197,7 +201,7 @@
             </md-button>
           </md-menu-item>
 
-          <md-menu-item ng-if="item.move_item_id">
+          <md-menu-item ng-if="item.move_item_id  && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
             <md-button ng-disabled="checklist.complete || section.section_na=='true'"
               ng-click="vm.undoDialog(item.move_item_id)" aria-label="Undo" translate-attr-aria-label="GROUP.UNDO">
               <md-icon class="md-accent-fg s18" md-font-icon="fa fa-undo"></md-icon>

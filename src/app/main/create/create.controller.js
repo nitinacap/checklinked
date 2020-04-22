@@ -37,6 +37,7 @@
 			
 
 	    function sendInfo() {
+			
 				vm.create.sending = true;
 				vm.isLoader = true;
 	      return api.create.register(vm.create.reg).success(function(res) {

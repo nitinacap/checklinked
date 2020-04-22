@@ -12,9 +12,9 @@
         <md-dialog-content class="pt-15">
                 <p class="black" ng-if="type">Duplicate all the Groups and Checklists in this Project and create a new Project.
                     </p>
-          <md-input-container class="md-block">
+          <md-input-container class="md-block  mt-10">
                 <label>{{ vm.type ? '' : 'Project' }} Name</label>
-                <input name="name" capitalize ng-model="vm.folder.name" required md-autofocus>
+                <input name="name" ng-model="vm.folderName" required md-autofocus>
                 <div ng-messages="folderForm.name.$error" ng-show="folderForm.name.$touched" role="alert">
                     <div ng-message="required">
                         <span translate="FOLDER.ERRORS.FOLDER_NAME_REQUIRED">Workflow Name field is required</span>

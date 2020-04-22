@@ -6,9 +6,9 @@
     .controller('scheduleController', scheduleController)
 
   /** @ngInject */
-  function scheduleController($rootScope, $window, api, $scope, $mdDialog, uiCalendarConfig) {
+  function scheduleController($rootScope, $window, api, $scope, $mdDialog, uiCalendarConfig, moment) {
     var vm = this;
-    vm.isLoader = false;
+    // vm.isLoader = false;
     vm.changeView = changeView;
     vm.changeScale = changeScale;
     vm.addRowDialog = addRowDialog;
@@ -16,11 +16,17 @@
     vm.closeDialog = closeDialog;
     vm.ZoomOptions = ZoomOptions;
     vm.AddToScheduleDialog = AddToScheduleDialog;
-    vm.SaveNewRow = SaveNewRow;
+    vm.GetAllRows = GetAllRows;
+    vm.changeViewMode = changeViewMode;
     vm.selectedView = 'Calendar';
+    vm.selectedModeOfView = 'Individual';
+    vm.Alreadyclicked = false ;
+    vm.ondatechange = false;
+    // vm.showLoadingImage = true;
+    vm.isLoader = true;
 
-    vm.adding_row = {};
-    vm.adding_row.color = "#000";
+    // vm.adding_row = {};
+    // vm.adding_row.color = "#000";
 
     vm.displayDataAddToScheduler = false;
     vm.displayMoreDataAddToScheduler = displayMoreDataAddToScheduler;
@@ -29,63 +35,136 @@
     vm.deleteScheduler = deleteScheduler;
     vm.deleteConfirm = deleteConfirm;
 
+    vm.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // // 
+
     function getSchedulerByChek() {
       vm.newScheduler = {};
       vm.newScheduler.type = 'get';
+      vm.newScheduler.timezone = vm.timezone;
+
+
 
       api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
 
         console.log('ddddeee', d)
+        debugger;
 
         if (d.data.type == 'success') {
 
           vm.item = d.data.data;
 
-          $scope.eventSources = [{
-            events: vm.item.item
+          $scope.calendarIndividualevents = [{
+            events: vm.item.calendar_individual
 
           }];
+
+         
+
+          $scope.calendarTeamevents = [{
+            events: vm.item.calendar_team
+
+          }];
+
           // $scope.eventSources = [{
-          //   events: [{"title":"Alert Checklist Testing","color":"#ff0000","textColor":"#000000","allDay":false,"start":"2019-06-19 04:01","end":"2019-06-21 21:18", "url": "https://www.google.com"},{"title":"New check","color":null,"textColor":"#000000","allDay":true,"start":"2019-06-03 13:28","end":"2019-06-04 13:28"},{"title":"AAAAAAAAAAAAAAA22222222222229999llll","color":null,"textColor":"#000000","allDay":true,"start":"2019-06-19 13:28","end":"2019-06-20 13:28"},{"title":"Checklist for live notification count22ss","color":"#ffff00","textColor":"#000000","allDay":false,"start":"2019-06-21 12:59","end":"2019-07-25 14:47"},{"title":null,"color":"#ff0080","textColor":"#000000","allDay":false,"start":"2019-06-20 02:01","end":"2019-06-20 13:01"},{"title":null,"color":"#ff0080","textColor":"#000000","allDay":false,"start":"2019-06-20 02:01","end":"2019-06-20 13:01"},{"title":null,"color":"#ff0080","textColor":"#000000","allDay":false,"start":"2019-06-20 02:01","end":"2019-06-20 13:01"},{"title":"dfsfsdfds2222","color":"#ff0000","textColor":"#000000","allDay":false,"start":"2019-06-25 08:08","end":"2019-06-28 08:08"}]
+          //   events: [{"title":"Alert Checklist Testing","color":"#ff0000","textColor":"#000000","allDay":false,"start":"2019-08-09T18:30:00.000Z","end":"2019-08-19T18:30:00.000Z", "url": "https://www.google.com"},{"title":"New check","color":null,"textColor":"#000000","allDay":true,"start":"2019-06-03 13:28","end":"2019-06-04 13:28"},{"title":"AAAAAAAAAAAAAAA22222222222229999llll","color":null,"textColor":"#000000","allDay":true,"start":"2019-06-19 13:28","end":"2019-06-20 13:28"},{"title":"Checklist for live notification count22ss","color":"#ffff00","textColor":"#000000","allDay":false,"start":"2019-06-21 12:59","end":"2019-07-25 14:47"},{"title":null,"color":"#ff0080","textColor":"#000000","allDay":false,"start":"2019-06-20 02:01","end":"2019-06-20 13:01"},{"title":null,"color":"#ff0080","textColor":"#000000","allDay":false,"start":"2019-06-20 02:01","end":"2019-06-20 13:01"},{"title":null,"color":"#ff0080","textColor":"#000000","allDay":false,"start":"2019-06-20 02:01","end":"2019-06-20 13:01"},{"title":"dfsfsdfds2222","color":"#ff0000","textColor":"#000000","allDay":false,"start":"2019-06-25 08:08","end":"2019-06-28 08:08"}]
 
           // }];
 
-
+          // var june = moment("2014-06-01T12:00:00Z");
+          // june.tz(vm.timezone).format('YYYY-MM-DD HH:MM');
+                
+          
+          // // 
           /* config object */
           $scope.uiConfig = {
             calendar: {
-              height: 520,
+              height: "100%",
               editable: false,
               header: {
                 left: '',
                 center: 'prev title next',
                 right: ''
               },
-              dayClick: $scope.alertEventOnClick,
-              eventDrop: $scope.alertOnDrop,
-              eventResize: $scope.alertOnResize
+              // dayClick: $scope.alertEventOnClick,
+              // eventDrop: $scope.alertOnDrop,
+              // eventResize: $scope.alertOnResize
             }
           }
 
 
+          $scope.ganttIndividualData = vm.item.gantt_individual;
+          // $scope.ganttTeamData = vm.item.gantt_individual;
+          $scope.ganttTeamData = vm.item.gantt_team;
+        
+
+          
         }
+        // vm.showLoadingImage = false;
+        vm.isLoader = false;
       })
     };
 
     getSchedulerByChek();
 
+
     // for changing view of calendar
     $scope.changeCalendarView = function (view, calendar) {
+debugger;
+
       console.log('changeCalendarView', uiCalendarConfig);
       uiCalendarConfig.calendars[calendar].fullCalendar('changeView', view);
     };
 
-    // for changing view of gantt chart 
+    // for changing view from calendar to gantt chart and vice versa
     function changeView(view) {
       console.log('changeView', view);
 
-      if (view == 'Gantt') vm.selectedView = 'Gantt';
-      else vm.selectedView = 'Calendar';
+      if (view == 'Gantt')  vm.selectedView = 'Gantt';
+      else  vm.selectedView = 'Calendar'; 
+      
+    }
+
+    // for changing mode of the above view 
+    function changeViewMode(mode) {
+      console.log('changeViewMode', mode);
+
+      console.log('vm.selectedView', vm.selectedView)
+      
+
+      if (mode == 'Individual'){
+
+        vm.selectedModeOfView = 'Individual';
+
+        // if(vm.selectedView == 'Gantt'){
+        //   $scope.data = vm.item.gantt_team;
+        //   console.log('in Individual gantt')
+        // }else{
+        //   $scope.eventSources = [{
+        //     events: vm.item.calendar_individual
+
+        //   }];
+
+        //   console.log('in Individual calendar')
+        // }
+      }else {
+
+        vm.selectedModeOfView = 'Team';
+        
+        // if(vm.selectedView == 'Gantt'){
+        //   $scope.data = vm.item.gantt_individual;
+        //   console.log('in team gantt')
+        // }else{
+        //   $scope.eventSources = [{
+        //     events: vm.item.calendar_team
+  
+        //   }];
+        //   console.log('in team calendar')
+        // }
+      }
+
+      console.log('vm.selectedModeOfView', vm.selectedModeOfView)
+      
     }
 
     function changeScale(activeView, ganttScale, CalendarScale) {
@@ -102,6 +181,8 @@
 
     function addRowDialog() {
 
+      vm.adding_row = {};
+      vm.adding_row.color = "#ffffff";
 
       $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
@@ -114,12 +195,31 @@
         templateUrl: 'app/main/schedules/dialogs/schedule-add-row.html',
         clickOutsideToClose: true
       });
+      
     }
 
     function saveRow() {
       console.log('saveRow', vm.adding_row);
 
       $mdDialog.hide();
+      vm.isLoader = true;
+      var data = {
+        type: "saveRow",
+        rowName: vm.adding_row.name,
+        ParentRowName: vm.adding_row.parent,
+        color: vm.adding_row.color
+      }
+
+      api.checklists.NewScheduler(data).then(function (d) {
+        console.log('dddd', d)
+        if (d.data.type == 'success') {
+          $rootScope.message('Row successfully saved', 'success');
+          getSchedulerByChek();
+          GetAllRows();
+        }
+
+        vm.isLoader = false;
+      })
 
     }
 
@@ -132,6 +232,8 @@
 
     function AddToScheduleDialog() {
       console.log('AddToScheduleDialog');
+      // vm.showLoadingImage = true;
+      vm.isLoader = true;
 
       var req_data = {
         type: 'structure'
@@ -159,9 +261,19 @@
           });
           // $rootScope.message(vm.item ? "Schedule updated successfully" : "New checklist schedule created successfully", 'success');
           // $mdDialog.hide();
+
+          // vm.showLoadingImage = false;
+          vm.isLoader = false;
         }
 
       });
+
+      $scope.dateChangeEvent = function(){
+        console.log('dateChangeEvent')
+        if(vm.single_item) vm.ondatechange = true;
+        
+
+      }
 
       // vm.addToSch = [
       //   {
@@ -219,17 +331,36 @@
      
 
     }
+    $scope.ctrl ={
 
-    function SaveNewRow() {
-      console.log('SaveNewRow');
     }
+
+    function GetAllRows() {
+      console.log('GetAllRows');
+
+
+
+      api.checklists.NewScheduler({type: "getRow"}).then(function (res) {
+        console.log('get rows res', res)
+        
+        if (res.data.type == 'success') {
+          vm.AllRows = res.data.data;
+          
+        }
+
+      
+      })
+
+    }
+
+    GetAllRows();
 
 
     vm.submenu = [
-      { link: 'summary', title: 'Issues' },
-      { link: '', title: 'Schedule' },
-      { link: 'reports', title: 'Reports' },
-      { link: 'dashboard', title: 'Dashboard' }
+      { link: 'summary', title: 'Issues', active : false },
+      { link: 'schedule', title: 'Schedule', active : true },
+      { link: 'reports', title: 'Reports', active : false },
+      { link: 'dashboard', title: 'Dashboard', active : false }
     ];
 
 
@@ -238,158 +369,6 @@
     }, 800);
 
 
-    $scope.data = [
-      {
-        id: '1', name: 'Milestones', height: '3em', color: '#45607D', tasks: [
-          { name: 'Kickoff', color: '#93C47D', from: '2013-04-28 13:01', to: '2013-04-29T13:00:00Z', url: "https://www.google.com" },
-          { name: 'Concept approval', color: '#93C47D', from: '2013-09-18 22:01', to: '2013-098-19 13:01', url: "https://www.yahoo.com" },
-          { name: 'Development finished', color: '#93C47D', from: '2013-10-15 06:01', to: '2013-10-17 13:01', url: "https://www.google.com" }
-        ]
-      },
-      {
-        id: '2', name: 'Parent', color: '#93C47D', tasks: [
-          { name: 'Kickoff', color: '#c6c6c6', from: '2013-04-28 13:01', to: '2013-04-29T13:00:00Z', url: "https://www.google.com" },
-          { name: 'Concept approval', color: '#c6c6c6', from: '2013-09-18 13:01', to: '2013-09-18 22:01', url: "https://www.yahoo.com" },
-          { name: 'Development finished', color: '#c6c6c6', from: '2013-10-13 18:01', to: '2013-10-15 13:01', url: "https://www.google.com" }
-        ]
-      },
-
-      {
-        id: '3', name: 'Football', parent: "2", tasks: [
-          {
-            name: 'Day 1', color: '#9FC5F8', from: '2013-05-07 13:01', to: '2013-11-07 13:01', url: "https://www.google.com"
-          },
-          {
-            name: 'Day 2', color: '#9FC5F8', from: '2013-09-08 13:01', to: '2013-05-07 18:01', url: "https://www.google.com"
-          },
-
-        ]
-      },
-
-      {
-        id: '4', name: 'Cricket', parent: "2", tasks: [
-          {
-            name: 'Day 3', color: '#9FC5F8', from: '2013-09-09 05:01', to: '2013-09-09 13:01', url: "https://www.google.com"
-          }
-        ]
-      },
-
-      {
-        id: '5', name: 'Rcky Behl', parent: "3", tasks: [
-          {
-            name: 'Day 4', color: '#9FC5F8', from: '2013-09-09 11:01', to: '2013-10-09 13:01', url: "https://www.google.com"
-          }
-        ]
-      },
-    ];
-
-    // $scope.data = [2013-04-28T13:00:00Z
-    //   // Order is optional. If not specified it will be assigned automatically
-    //   {
-    //     name: 'Milestones', height: '3em', sortable: false, classes: 'gantt-row-milestone', color: '#45607D', tasks: [
-    //       // Dates can be specified as string, timestamp or javascript date object. The data attribute can be used to attach a custom object
-    //       { name: 'Kickoff', color: '#93C47D', from: '2013-10-07T09:00:00', to: '2013-10-07T10:00:00', data: 'Can contain any custom data or object' , url:"https://www.google.com"},
-    //       { name: 'Concept approval', color: '#93C47D', from: new Date(2013, 9, 18, 18, 0, 0), to: new Date(2013, 9, 18, 18, 0, 0), est: new Date(2013, 9, 16, 7, 0, 0), lct: new Date(2013, 9, 19, 0, 0, 0) , url:"https://www.yahoo.com"},
-    //       { name: 'Development finished', color: '#93C47D', from: new Date(2013, 10, 15, 18, 0, 0), to: new Date(2013, 10, 15, 18, 0, 0) },
-    //       { name: 'Shop is running', color: '#93C47D', from: new Date(2013, 10, 22, 12, 0, 0), to: new Date(2013, 10, 22, 12, 0, 0) },
-    //       { name: 'Go-live', color: '#93C47D', from: new Date(2013, 10, 29, 16, 0, 0), to: new Date(2013, 10, 29, 16, 0, 0) }
-    //     ], data: 'Can contain any custom data or object'
-    //   },
-    //   {
-    //     name: 'Status meetings', tasks: [
-    //       { name: 'Demo #1', color: '#9FC5F8', from: new Date(2013, 9, 25, 15, 0, 0), to: new Date(2013, 9, 25, 18, 30, 0) },
-    //       { name: 'Demo #2', color: '#9FC5F8', from: new Date(2013, 10, 1, 15, 0, 0), to: new Date(2013, 10, 1, 18, 0, 0) },
-    //       { name: 'Demo #3', color: '#9FC5F8', from: new Date(2013, 10, 8, 15, 0, 0), to: new Date(2013, 10, 8, 18, 0, 0) },
-    //       { name: 'Demo #4', color: '#9FC5F8', from: new Date(2013, 10, 15, 15, 0, 0), to: new Date(2013, 10, 15, 18, 0, 0) },
-    //       { name: 'Demo #5', color: '#9FC5F8', from: new Date(2013, 10, 24, 9, 0, 0), to: new Date(2013, 10, 24, 10, 0, 0) }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Kickoff', movable: { allowResizing: false }, tasks: [
-    //       {
-    //         name: 'Day 1', color: '#9FC5F8', from: new Date(2013, 9, 7, 9, 0, 0), to: new Date(2013, 9, 7, 17, 0, 0),
-    //         progress: { percent: 50, color: '#3C8CF8' }, movable: false
-    //       },
-    //       {
-    //         name: 'Day 2', color: '#9FC5F8', from: new Date(2013, 9, 8, 9, 0, 0), to: new Date(2013, 9, 8, 17, 0, 0),
-    //         progress: { percent: 100, color: '#3C8CF8' }
-    //       },
-    //       {
-    //         name: 'Day 3', color: '#9FC5F8', from: new Date(2013, 9, 9, 8, 30, 0), to: new Date(2013, 9, 9, 12, 0, 0),
-    //         progress: { percent: 100, color: '#3C8CF8' }
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Create concept', tasks: [
-    //       {
-    //         name: 'Create concepttt', link:"https://www.google.com", content: '<i class="fa fa-cog" ng-click="scope.handleTaskIconClick(task.model)"></i> {{task.model.name}}', color: '#F1C232', from: new Date(2013, 9, 10, 8, 0, 0), to: new Date(2013, 9, 16, 18, 0, 0), est: new Date(2013, 9, 8, 8, 0, 0), lct: new Date(2013, 9, 18, 20, 0, 0),
-    //         progress: 100
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Finalize concept', tasks: [
-    //       {
-    //         name: 'Finalize concept', color: '#F1C232', from: new Date(2013, 9, 17, 8, 0, 0), to: new Date(2013, 9, 18, 18, 0, 0),
-    //         progress: 100
-    //       }
-    //     ]
-    //   },
-    //   { name: 'Development', children: ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 4'], content: '<i class="fa fa-file-code-o" ng-click="scope.handleRowIconClick(row.model)"></i> {{row.model.name}}' },
-    //   {
-    //     name: 'Sprint 1', tooltips: false, tasks: [
-    //       { name: 'Product list view', color: '#F1C232', from: new Date(2013, 9, 21, 8, 0, 0), to: new Date(2013, 9, 25, 15, 0, 0) }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Sprint 2', tasks: [
-    //       { name: 'Order basket', color: '#F1C232', from: new Date(2013, 9, 28, 8, 0, 0), to: new Date(2013, 10, 1, 15, 0, 0) }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Sprint 3', tasks: [
-    //       { name: 'Checkout', color: '#F1C232', from: new Date(2013, 10, 4, 8, 0, 0), to: new Date(2013, 10, 8, 15, 0, 0) }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Sprint 4', tasks: [
-    //       { name: 'Login & Signup & Admin Views', color: '#F1C232', from: new Date(2013, 10, 11, 8, 0, 0), to: new Date(2013, 10, 15, 15, 0, 0) }
-    //     ]
-    //   },
-    //   { name: 'Hosting' },
-    //   {
-    //     name: 'Setup', tasks: [
-    //       { name: 'HW', color: '#F1C232', from: new Date(2013, 10, 18, 8, 0, 0), to: new Date(2013, 10, 18, 12, 0, 0) }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Config', tasks: [
-    //       { name: 'SW / DNS/ Backups', color: '#F1C232', from: new Date(2013, 10, 18, 12, 0, 0), to: new Date(2013, 10, 21, 18, 0, 0) }
-    //     ]
-    //   },
-    //   { name: 'Server', parent: 'Hosting', children: ['Setup', 'Config'] },
-    //   {
-    //     name: 'Deployment', parent: 'Hosting', tasks: [
-    //       { name: 'Depl. & Final testing', color: '#F1C232', from: new Date(2013, 10, 21, 8, 0, 0), to: new Date(2013, 10, 22, 12, 0, 0), 'classes': 'gantt-task-deployment' }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Workshop', tasks: [
-    //       { name: 'On-side education', color: '#F1C232', from: new Date(2013, 10, 24, 9, 0, 0), to: new Date(2013, 10, 25, 15, 0, 0) }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Content', tasks: [
-    //       { name: 'Supervise content creation', color: '#F1C232', from: new Date(2013, 10, 26, 9, 0, 0), to: new Date(2013, 10, 29, 16, 0, 0) }
-    //     ]
-    //   },
-    //   {
-    //     name: 'Documentation', tasks: [
-    //       { name: 'Technical/User documentation', color: '#F1C232', from: new Date(2013, 10, 26, 8, 0, 0), to: new Date(2013, 10, 28, 18, 0, 0) }
-    //     ]
-    //   }
-    // ];
 
 
     $scope.getColumnWidth = function (widthEnabled, scale, zoom) {
@@ -399,23 +378,27 @@
         return undefined;
       }
 
+      // // 
+
       if (scale.match(/.*?week.*?/)) {
         return 150 * zoom;
       }
 
       if (scale.match(/.*?month.*?/)) {
-        return 300 * zoom;
+        // // 
+        return 150 * zoom;
       }
 
       if (scale.match(/.*?quarter.*?/)) {
-        return 500 * zoom;
+        return 150 * zoom;
       }
 
       if (scale.match(/.*?year.*?/)) {
-        return 800 * zoom;
+        return 150 * zoom;
       }
+      // // 
 
-      return 40 * zoom;
+      return 150 * zoom;
     };
 
 
@@ -428,28 +411,33 @@
       sideMode: 'TreeTable',
       daily: false,
       maxHeight: false,
-      width: false,
+      width: true,
       columnWidth: 20,
+      headers : {'model.name': 'Process'},
       // column_width:"this.scale == 'day' ? 40 : undefined",
       zoom: 1,
-      columns: ['from', 'to'],
-      treeTableColumns: ['from', 'to'],
-      columnsHeaders: { 'model.name': 'Name', 'from': 'From', 'to': 'To' },
-      columnsClasses: { 'model.name': 'gantt-column-name', 'from': 'gantt-column-from', 'to': 'gantt-column-to' },
-      columnsFormatters: {
-        'from': function (from) {
-          return from !== undefined ? from.format('lll') : undefined;
+      columns: ['Process'],
+      // columns: ['from', 'to'],
+      treeTableColumns: ['Process'],
+      columnsHeaders: {
+        'model.name': 'Process'
         },
-        'to': function (to) {
-          return to !== undefined ? to.format('lll') : undefined;
-        }
-      },
-      treeHeaderContent: '<i class="fa fa-align-justify"></i> {{getHeader()}}',
-      columnsHeaderContents: {
-        'model.name': '<i class="fa fa-align-justify"></i> {{getHeader()}}',
-        'from': '<i class="fa fa-calendar"></i> {{getHeader()}}',
-        'to': '<i class="fa fa-calendar"></i> {{getHeader()}}'
-      },
+      // columnsHeaders: { 'model.name': 'Process ', 'from': 'From', 'to': 'To' },
+      // columnsClasses: { 'model.name': 'gantt-column-name', 'from': 'gantt-column-from', 'to': 'gantt-column-to' },
+      // columnsFormatters: {
+      //   'from': function (from) {
+      //     return from !== undefined ? from.format('lll') : undefined;
+      //   },
+      //   'to': function (to) {
+      //     return to !== undefined ? to.format('lll') : undefined;
+      //   }
+      // },
+      // treeHeaderContent: '<i class="fa fa-align-justify"></i> {{getHeader()}}',
+      // columnsHeaderContents: {
+      //   'Process': '<i class="fa fa-align-justify"></i> {{getHeader()}}',
+      //   // 'from': '<i class="fa fa-calendar"></i> {{getHeader()}}',
+      //   // 'to': '<i class="fa fa-calendar"></i> {{getHeader()}}'
+      // },
       autoExpand: 'none',
       taskOutOfRange: 'truncate',
       fromDate: moment(null),
@@ -459,48 +447,49 @@
       allowSideResizing: true,
       labelsEnabled: true,
       currentDate: 'line',
-      currentDateValue: new Date(2013, 9, 23, 11, 20, 0),
+      labelsheaders : ['Process'],
+      // currentDateValue: new Date(2013, 9, 23, 11, 20, 0),
       draw: false,
       readOnly: false,
       groupDisplayMode: 'group',
       filterTask: '',
       filterRow: '',
-      timeFrames: {
-        'day': {
-          start: moment('8:00', 'HH:mm'),
-          end: moment('20:00', 'HH:mm'),
-          working: true,
-          default: true
-        },
-        'noon': {
-          start: moment('12:00', 'HH:mm'),
-          end: moment('13:30', 'HH:mm'),
-          working: false,
-          default: true
-        },
-        'weekend': {
-          working: false
-        },
-        'holiday': {
-          working: false,
-          color: 'red',
-          classes: ['gantt-timeframe-holiday']
-        }
-      },
-      dateFrames: {
-        'weekend': {
-          evaluator: function (date) {
-            return date.isoWeekday() === 6 || date.isoWeekday() === 7;
-          },
-          targets: ['weekend']
-        },
-        '11-november': {
-          evaluator: function (date) {
-            return date.month() === 10 && date.date() === 11;
-          },
-          targets: ['holiday']
-        }
-      },
+      // timeFrames: {
+      //   'day': {
+      //     start: moment('8:00', 'HH:mm'),
+      //     end: moment('20:00', 'HH:mm'),
+      //     working: true,
+      //     default: true
+      //   },
+      //   'noon': {
+      //     start: moment('12:00', 'HH:mm'),
+      //     end: moment('13:30', 'HH:mm'),
+      //     working: false,
+      //     default: true
+      //   },
+      //   'weekend': {
+      //     working: false
+      //   },
+      //   'holiday': {
+      //     working: false,
+      //     color: 'red',
+      //     classes: ['gantt-timeframe-holiday']
+      //   }
+      // },
+      // dateFrames: {
+      //   'weekend': {
+      //     evaluator: function (date) {
+      //       return date.isoWeekday() === 6 || date.isoWeekday() === 7;
+      //     },
+      //     targets: ['weekend']
+      //   },
+      //   '11-november': {
+      //     evaluator: function (date) {
+      //       return date.month() === 10 && date.date() === 11;
+      //     },
+      //     targets: ['holiday']
+      //   }
+      // },
       timeFramesNonWorkingMode: 'visible',
       columnMagnet: '15 minutes',
       timeFramesMagnet: true,
@@ -677,13 +666,17 @@
 
     }
 
+
+
     function oepnAddEditSchedulerDialog(id ,item_type, proj_name, workflow_name, checklist_name){
 
+      vm.isLoader = true;
+debugger;
       
      
-      if(item_type == 'checklist') 
+      // if(item_type == 'checklist') 
    
-      vm.closeDialog();
+      
 
       vm.newScheduler={};
 
@@ -692,20 +685,36 @@
         vm.newScheduler.workflow_name=workflow_name;
         vm.newScheduler.project_name = proj_name;
 
+        vm.newScheduler.title = workflow_name;
+
         vm.newScheduler.item_type = item_type;
 
         vm.display_breadcrumb = proj_name + ' -- ' + workflow_name ;
 
+        // vm.newScheduler.url = 'https://checklinked.azurewebsites.net/checklist/'+ id;
+
         if (item_type == 'checklist') {
           vm.newScheduler.checklist_name=checklist_name;
+          vm.newScheduler.title = checklist_name;
           vm.display_breadcrumb = vm.display_breadcrumb + ' -- ' +  checklist_name;
+          // vm.newScheduler.url = 'https://checklinked.azurewebsites.net/checklist/detail/'+ id
+         
         } 
       }else{
-        vm.display_breadcrumb = vm.non_Checklist_input;
-        vm.newScheduler.item_type = vm.non_Checklist_input;
+        if(vm.non_Checklist_input){
+          vm.newScheduler.url = '';
+          vm.newScheduler.title = vm.display_breadcrumb = vm.non_Checklist_input;
+          vm.newScheduler.item_type = vm.non_Checklist_input;
+        }else{
+          
+          $rootScope.message('Please give name to Non-Checklist event to continue.', 'error');
+          return false;
+          
+        }
+        
 
       }
-
+      vm.closeDialog();
       
       vm.newScheduler.item_type_id = id;
       vm.newScheduler.type = 'get';
@@ -717,21 +726,32 @@
         if (d.data.type == 'success') {
 
          
-        
-          vm.item = d.data.data.item;
-          console.log(' vm.item ',  vm.item )
-          if (vm.item) {
-            vm.newScheduler.from_date = new Date(vm.item.from_date);
-            vm.newScheduler.to_date = new Date(vm.item.to_date);
-            vm.newScheduler.gantt_row = vm.item.gantt_chat;
-            vm.newScheduler.color = vm.item.color;
-            vm.newScheduler.all_day = vm.item.all_day == 1 ? true : false;
-            vm.newScheduler.repeat = vm.item.repeat;
-            vm.newScheduler.start_time = new Date(vm.item.start_time);
-            vm.newScheduler.end_time = new Date(vm.item.end_time);
-            vm.newScheduler.end = vm.item.end;
-            vm.newScheduler.id = vm.item.id;
+          
+          vm.single_item = d.data.data.item;
+          console.log(' vm.single_item ',  vm.single_item )
+          if (vm.single_item) {
+            vm.newScheduler.from_date = new Date(vm.single_item.from_date);
+            vm.newScheduler.to_date = new Date(vm.single_item.to_date);
+            vm.newScheduler.gantt_row = vm.single_item.gantt_chat;
+            vm.newScheduler.color = vm.single_item.color;
+            vm.newScheduler.all_day = vm.single_item.all_day == 1 ? true : false;
+            vm.newScheduler.repeat = vm.single_item.repeat;
+            vm.newScheduler.start_time = new Date(vm.single_item.start_time);
+            vm.newScheduler.end_time = new Date(vm.single_item.end_time);
+            vm.newScheduler.end = vm.single_item.end;
+            vm.newScheduler.id = vm.single_item.id;
+            vm.newScheduler.item_type_id = vm.single_item.item_type_id;
+debugger
+
+            // 
+            if(vm.newScheduler.item_type == 'workflow') vm.newScheduler.url = 'https://checklinked.azurewebsites.net/checklist/'+ vm.single_item.item_type_id;
+            else if(vm.newScheduler.item_type == 'checklist')  vm.newScheduler.url = 'https://checklinked.azurewebsites.net/checklist/detail/'+ vm.single_item.item_type_id
+           // 
+          }else{
+            vm.newScheduler.color = '#ffffff';
           }
+
+          
 
           $mdDialog.show({
             controller: function DialogController($scope, $mdDialog) {
@@ -746,6 +766,8 @@
           });
 
         }
+
+        vm.isLoader = false;
       })
 
       
@@ -763,22 +785,148 @@
 
     }
 
-    function saveScheduler() {
-      console.log(saveScheduler)
+    function saveScheduler(id) {
+      vm.newScheduler.item_type
+      // 
+      vm.Alreadyclicked = true;
+      // console.log(saveScheduler)
       // vm.newScheduler.checklist_id = vm.idCHK;
       // vm.newScheduler.checklist_name = vm.checklists[0].name;
       // vm.newScheduler.workflow_name = vm.checklists[0].item_bread.folder_name;
       // vm.newScheduler.project_name = vm.checklists[0].item_bread.project_name;
-      vm.newScheduler.id = vm.item ? vm.item.id : '';
-      vm.newScheduler.type = vm.item ? 'update' : 'save';
+      vm.newScheduler.id = vm.single_item ? vm.single_item.id : '';
+      vm.newScheduler.type = vm.single_item ? 'update' : 'save';
 
       console.log('vm.newScheduler', vm.newScheduler)
 
       api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
         if (d.data.type == 'success') {
-          $rootScope.message(vm.item ? "Schedule updated successfully" : "New checklist schedule created successfully", 'success');
+          $rootScope.message(vm.single_item  ? "Schedule updated successfully" : "New checklist schedule created successfully", 'success');
           $mdDialog.hide();
+
+          if(!d.data.data.item.all_day) {
+           
+           var s_date = moment(d.data.data.item.from_date).format('YYYY-MM-DD');;;
+           var s_time = moment(d.data.data.item.start_time).format('HH:MM');;;
+           var start = s_date + ' ' + s_time;
+
+            var e_date = moment(d.data.data.item.to_date).format('YYYY-MM-DD');;;
+            var e_time = moment(d.data.data.item.end_time).format('HH:MM');;;
+            var end = e_date + ' ' + e_time;
+
+
+          }else{
+
+            start = moment(d.data.data.item.from_date).format('YYYY-MM-DD');
+            start = start + ' 00:30';
+
+            var end = moment(d.data.data.item.to_date).format('YYYY-MM-DD');
+            end = end + ' 23:30';
+
+          }
+
+       
+          // if created new
+          if(!vm.single_item) {
+            // // 
+            console.log('before', $scope.calendarIndividualevents[0].events)
+            var newData = {
+              url : vm.newScheduler.url,
+              title: vm.newScheduler.title,
+              start: start,
+              end:  end,
+              color:  vm.newScheduler.color,
+              all_day : vm.newScheduler.all_day,
+              id: d.data.data.item.id
+              
+            }
+
+            if(vm.newScheduler.item_type == 'workflow') newData.url = 'https://checklinked.azurewebsites.net/checklist/'+ vm.newScheduler.item_type_id;
+            else   newData.url = 'https://checklinked.azurewebsites.net/checklist/detail/'+ vm.newScheduler.item_type_id;
+
+            // // 
+            console.log('newdata',newData)
+            if(vm.selectedView=='Calendar'){
+              $scope.calendarIndividualevents[0].events.push(newData);
+           
+              $scope.calendarTeamevents[0].events.push(newData);
+
+              // $scope.calendarIndividualevents[0].events;
+           
+              // $scope.calendarTeamevents[0].events;
+              // // 
+            }else{
+              getSchedulerByChek();
+            }
+           
+            console.log('aftee', $scope.calendarIndividualevents[0].events)
+
+            // if updated
+          }else{
+// // 
+            if(vm.selectedView=='Calendar' ){
+              // // 
+              var SourcedataIndividual = $scope.calendarIndividualevents[0].events;
+              var SourcedataTeam =  $scope.calendarTeamevents[0].events;
+
+              for(var i = 0; i < SourcedataIndividual.length; i++) {
+
+                if(SourcedataIndividual[i].id == vm.single_item.id) {
+                  
+                  
+                  SourcedataIndividual[i].start = start;
+                  SourcedataIndividual[i].end = end;
+                  SourcedataIndividual[i].gantt_row = d.data.data.item.gantt_chat;
+                  SourcedataIndividual[i].color = d.data.data.item.color;
+                  SourcedataIndividual[i].all_day = d.data.data.item.all_day;
+                  SourcedataIndividual[i].id = d.data.data.item.id;
+                 
+                  // if(vm.newScheduler.item_type == 'workflow')  SourcedataIndividual[i].url = 'https://checklinked.azurewebsites.net/checklist/'+ vm.newScheduler.item_type_id;
+                  // else    SourcedataIndividual[i].url = 'https://checklinked.azurewebsites.net/checklist/detail/'+ vm.newScheduler.item_type_id;
+
+                    break;
+
+        
+                }
+              }
+
+              for(var i = 0; i < SourcedataTeam.length; i++) {
+
+                if(SourcedataTeam[i].id == vm.single_item.id) {
+                  
+                  
+                  SourcedataTeam[i].start = start;
+                  SourcedataTeam[i].end = end;
+                  SourcedataTeam[i].gantt_row = d.data.data.item.gantt_chat;
+                  SourcedataTeam[i].color = d.data.data.item.color;
+                  SourcedataTeam[i].all_day = d.data.data.item.all_day;
+                  SourcedataTeam[i].id = d.data.data.item.id;
+
+                  // if(vm.newScheduler.item_type == 'workflow')  SourcedataTeam[i].url = 'https://checklinked.azurewebsites.net/checklist/'+ vm.newScheduler.item_type_id;
+                  // else    SourcedataTeam[i].url = 'https://checklinked.azurewebsites.net/checklist/detail/'+ vm.newScheduler.item_type_id
+
+                    break;
+
+        
+                }
+              }
+
+              $scope.calendarIndividualevents[0].events;
+              $scope.calendarTeamevents[0].events;
+
+              // 
+             }else{
+               getSchedulerByChek();
+             }
+      
+
+            
+            
+          }
+
+
         }
+         vm.Alreadyclicked = false;
 
       });
 
@@ -791,9 +939,59 @@
       vm.closeDialog();
 
       console.log("deleteScheduler", id)
+    
+      // return false;
       api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
         if (d.data.type == 'success') {
           $rootScope.message("Schedule deleted successfully", 'success');
+       
+
+          
+          console.log('before',$scope.calendarIndividualevents[0].events )
+          if(vm.selectedView=='Calendar' ){
+            var SourcedataIndividual = $scope.calendarIndividualevents[0].events;
+            var SourcedataTeam =  $scope.calendarTeamevents[0].events;
+
+            for(var i = 0; i < SourcedataIndividual.length; i++) {
+
+              if(SourcedataIndividual[i].id == vm.single_item.id) {
+
+               SourcedataIndividual.splice(i, 1);
+                 break;
+
+              }
+            }
+            for(var i = 0; i < SourcedataTeam.length; i++) {
+
+             if(SourcedataTeam[i].id == vm.single_item.id) {
+
+               SourcedataTeam.splice(i, 1);
+                break;
+
+             }
+           }
+           }else{
+             getSchedulerByChek();
+           }
+
+
+          //  }
+  //  getSchedulerByChek();
+        //   for(var i = 0; i < data.length; i++) {
+        //     i
+        //    var active = data[i];
+        //    var IDD =  data[i].id
+        //    IDD
+        //     id
+        //     // 
+        //     if(data[i].id == id) {
+        //       // 
+        //       data.splice(i, 1);
+        //         break;
+        //     }
+        // }
+
+          console.log('after',$scope.calendarIndividualevents[0].events )
 
         }
 

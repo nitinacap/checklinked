@@ -1,4 +1,11 @@
 <div id="setting" class="page-layout simple tabbed pt-30" layout="column">
+
+    <!-- <div class="showLoadingImage" flex ng-if=" !vm.isLoader && vm.showLoadingImage">
+        <div class="loaderimg">
+          <img src="assets/images/logos/loading.gif" width="200">
+        </div>  
+      </div> -->
+      
   <page-toolbar datas="vm.submenu"> </page-toolbar>
 
 
@@ -17,7 +24,7 @@
 
           <md-menu-content  class="menu-height">
 
-            <md-menu-item>
+            <md-menu-item  ng-if="!$root.viewAs.notMe">
               <md-button ng-click="vm.AddToScheduleDialog()" aria-label="Add to Schedule"
                 translate-attr-aria-label="ORGANIZATION.ADD_TO_SCHEDULES">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
@@ -25,7 +32,7 @@
               </md-button>
             </md-menu-item>
 
-            <md-menu-item ng-if="vm.selectedView=='Gantt'">
+            <md-menu-item ng-if="vm.selectedView=='Gantt' && !$root.viewAs.notMe">
               <md-button ng-click="vm.addRowDialog()"  aria-label="Add Row"
                 translate-attr-aria-label="ORGANIZATION.ADD_ROW">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
@@ -33,11 +40,19 @@
               </md-button>
             </md-menu-item>
 
-            <md-menu-item>
-              <md-button ng-click="vm.changeScale()" aria-label="View Team"
+            <md-menu-item  ng-if="vm.selectedModeOfView == 'Individual'">
+              <md-button ng-click="vm.changeViewMode('Team')" aria-label="View Team"
                 translate-attr-aria-label="ORGANIZATION.VIEW_TEAM">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-account-switch"></md-icon>
                 <span translate="ORGANIZATION.VIEW_TEAM">View Team</span>
+              </md-button>
+            </md-menu-item>
+
+            <md-menu-item  ng-if="vm.selectedModeOfView == 'Team'">
+              <md-button ng-click="vm.changeViewMode('Individual')" aria-label="View Team"
+                translate-attr-aria-label="ORGANIZATION.VIEW_TEAM">
+                <md-icon class="md-accent-fg s18" md-font-icon="icon-account-switch"></md-icon>
+                <span translate="ORGANIZATION.VIEW_INDIVIDUAL">View Indivual</span>
               </md-button>
             </md-menu-item>
 
@@ -134,7 +149,7 @@
             </md-menu-item>
 
             <md-menu-item>
-              <md-button ng-click="vm.coypDialog()" aria-label="Download PDF"
+              <md-button ng-disabled=true ng-click="vm.coypDialog()" aria-label="Download PDF"
                 translate-attr-aria-label="ORGANIZATION.DOWNLOAD_PDF">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-file-pdf"></md-icon>
                 <span translate="ORGANIZATION.DOWNLOAD_PDF">Download PDF</span>

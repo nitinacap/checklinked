@@ -8,7 +8,7 @@
   /** @ngInject */
   function TermController($scope) 
   {
-    debugger
+    // 
     //var vm = this;
     console.log('Term Called');
 

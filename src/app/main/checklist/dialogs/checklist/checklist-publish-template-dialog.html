@@ -1,5 +1,5 @@
 <md-dialog class="dialog" aria-label="">
-  <form name="templateForm" class="md-inline-form" ng-submit="vm.publish.publish()" novalidate>
+  <form name="templateForm" class="md-inline-form"  novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <span class="title">{{vm.title}}</span>
@@ -40,14 +40,23 @@
 
     <md-dialog-actions layout="row" layout-align="space-between center">
       <div layout="row" layout-align="start center">
-        <md-button type="submit"
+        <md-button type="button"
                    class="md-raised md-accent"
+                   ng-click="vm.publish.publish()"
                    ng-disabled="templateForm.$invalid"
                    aria-label="Save" translate="CHECKLIST.PUBLISH" translate-attr-aria-label="CHECKLIST.PUBLISH">
           PUBLISH TEMPLATE
         </md-button>
-      </div>
 
+
+        <md-checkbox 
+        ng-model="vm.publish.attachment"
+        aria-label="Include Attachments"
+        ng-true-value="'yes'"
+        ng-false-value="''"
+        class="md-success md-align-top-left">
+        Include Attachments
+      </div>
     </md-dialog-actions>
   </form>
 </md-dialog>

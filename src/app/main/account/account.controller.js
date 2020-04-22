@@ -90,7 +90,10 @@
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
+          $rootScope.user
+          // 
           $rootScope.user = res.user;
+          // 
           return $rootScope.subscriptions.selected.users = res.contacts;
         }
       })["finally"](function() {
@@ -101,7 +104,6 @@
     idSUI = $stateParams.idSUI;
     
     if (idSUI !== void 0 && idSUI !== null && idSUI !== '') {
-    	console.log('checking idSUI');
     	
       vm.acceptInvite = {
         accepting: false,
@@ -125,16 +127,27 @@
         login: function() {
           vm.acceptInvite.accepting = true;
           return api.subscriptions.acceptInvite(idSUI, 'login', vm.acceptInvite.signin).error(function(res) {
-            console.log('invite accept error', idSUI, res);
+            
             $rootScope.message('Error accepting invitation.', 'warning');
+            console.log('invite accept error', idSUI, res);
           }).success(function(res) {
             if (res === void 0 || res === null || res === '') {
-              console.log('invite accept error', idSUI, res);
+              
             $rootScope.message('Invalid response.', 'warning');
+            console.log('invite accept error', idSUI, res);
             } else if (res.code) {
-              console.log('invite accept error', idSUI, res);
-            $rootScope.message(res.message, 'warning');
+              
+            
+              if(typeof(res.message) == 'string'){
+                return $rootScope.message(res.message, 'warning');
+              }else{
+                return $rootScope.message(res.message.original.message, 'warning');
+              }
+
+
             } else {
+
+              $rootScope.message('Invitation accepted', 'success');
               return vm.acceptInvite.succeeded(res.user.token);
             }
           })["finally"](function() {
@@ -152,8 +165,15 @@
               return $rootScope.message('Invalid response.', 'warning');
             } else if (res.code) {
               console.log('invite accept error', idSUI, res);
-              return $rootScope.message(res.message, 'warning');
+             
+              if(typeof(res.message) == 'string'){
+                return $rootScope.message(res.message, 'warning');
+              }else{
+                return $rootScope.message(res.message.original.message, 'warning');
+              }
+
             } else {
+              $rootScope.message('Invitation accepted', 'success');
               return vm.acceptInvite.succeeded(res.user.token);
             }
           })["finally"](function() {
@@ -185,10 +205,10 @@
   /* inviteAccount END */
   
     vm.submenu = [
-      { link: 'user', title: 'My Profile' },
-      { link: 'contacts', title: 'Contacts' },
-      { link: 'organization', title: 'Organization' },
-      { link: '', title: 'Account' }
+      { link: 'user', title: 'My Profile', active : false },
+      { link: 'contacts', title: 'Contacts', active : false },
+      { link: 'organization', title: 'Organization', active : false },
+      { link: 'teammembers', title: 'Account', active : true }
     ];
 
     }

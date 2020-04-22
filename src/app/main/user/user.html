@@ -16,7 +16,7 @@
 
         <md-tab class="pr-50" ng-disabled="!myvalue">
           <md-tab-label>
-            <md-menu>
+            <md-menu ng-if="!$root.viewAs.notMe">
               <md-icon ng-show="myvalue" md-font-icon="icon-dots-vertical s18" id="lh-5" ng-click="$mdOpenMenu($event)"></md-icon>
               <md-menu-content>
                 <md-menu-item>
@@ -42,7 +42,7 @@
         </md-tab>
 
 
-        <md-tab class="pr-30" ng-click="myvalue = true;">
+        <md-tab class="pr-30" md-on-select="myvalue = true;" ng-click="myvalue = true;">
           <md-tab-label>
             <span>Info</span>
           </md-tab-label>

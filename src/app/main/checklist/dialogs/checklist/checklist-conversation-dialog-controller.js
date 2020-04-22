@@ -21,6 +21,8 @@
     vm.getLatestPosts = getLatestPosts;
     vm.pushPosts = pushPosts;
     vm.submitPost = submitPost;
+    vm.removeFileHttp = vm.removeFileHttp;
+    
     vm.form = {
       'from': userName ? userName : $rootScope.user.name.full,
       'subject': 'Re: ' + vm.convoName,
@@ -77,6 +79,33 @@
     $scope.$on('event:socketConnected', function () {
       return vm.setSocketStuff();
     });
+    vm.downloadFile = [];
+    vm.FileName = [];
+   
+
+     vm.removeFileHttp = function(post, index) {
+     
+      // http://checklinked.azurewebsites.net/api_security/ajax/download.php?file=1578896616.png
+      var file = post.attachments;
+      
+      
+      var originalFile = file.replace(DOMAIN_NAME, '');
+      vm.downloadFile[index] = originalFile;
+      var re = /(?:\.([^.]+))?$/;
+      var FileExt = re.exec(vm.downloadFile[index])[1];
+      // $scope.FileName = []; 
+      // // $scope.FileName[index]='MyFile.'+ FileExt ;
+      // $scope.FileName.push('MyFile.'+ FileExt) ;
+
+      // vm.downloadBaseURL = BASEURL + 'download.php?file=';
+      vm.FileName[index] = vm.downloadFile[index].split(/(\\|\/)/g).pop()
+      post.download = "http://checklinked.azurewebsites.net/api_security/ajax/download.php?file=" + vm.FileName[index];
+
+     // vm.FileName[index] = 'MyFile.' + FileExt;
+      // vm.FileName
+
+      // //////
+    }
 
     function getLatestPosts() {
 
@@ -142,7 +171,7 @@
       }).error(function (res) {
         return $rootScope.message('Could not send message. Unknown error.', 'warning');
       }).success(function (res) {
-        debugger
+        // 
 
         if (res.type == 'success') {
           var fileElement = angular.element('#fileAttachment');
@@ -189,12 +218,12 @@
       $window.open(location, '_blank');
     }
 
-    vm.removeFileHttp = removeFileHttp;
-    function removeFileHttp(file) {
+    // vm.removeFileHttp = removeFileHttp;
+    // function removeFileHttp(file) {
      
-      var originalFile = file ? file.replace('https://checklinked.azurewebsites.net', '') : '';
-      vm.downloadFile = originalFile;
-    }
+    //   var originalFile = file ? file.replace('https://checklinked.azurewebsites.net', '') : '';
+    //   vm.downloadFile = originalFile;
+    // }
 
 
     vm.getLatestPosts();

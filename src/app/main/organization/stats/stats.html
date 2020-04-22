@@ -1,8 +1,15 @@
 <div class="form-wrapper  md-whiteframe-1dp flex">
-  <table class="bordered-table" width="100%" cellpadding="0" cellspacing="0">
+
+  <div ng-if="!vm.stats.length && !vm.isLoader" class="info" flex>
+    <div class="title m-10">
+      No Stats found.
+    </div>
+  </div>
+
+  <table ng-if="vm.stats.length && !vm.isLoader" class="bordered-table" width="100%" cellpadding="0" cellspacing="0">
     <thead>
       <tr>
-        <th  width="15%"></th>
+        <th width="15%"></th>
         <th class="text-center" width="10%">Last 24 Hours</th>
         <th class="text-center" width="10%">Last 7 days</th>
         <th class="text-center" width="10%">Last 30 days</th>
@@ -22,7 +29,7 @@
         <td colspan="2">{{stat.all_time}}</td>
       </tr>
       <tr>
-     </tfoot>
+        </tfoot>
   </table>
 
 </div>

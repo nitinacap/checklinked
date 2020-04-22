@@ -1,111 +1,127 @@
 <md-dialog class="dialog" aria-label="">
-        <!-- <form name="checklistForm" class="md-inline-form" ng-submit="vm.createSegment(vm.newItem.type,vm.newItem.name,vm.newItem.to,vm.newItem.dataTypes,vm.newItem.info,vm.type.type,vm.newItem.alert)" -->
-        <form name="checklistForm" class="md-inline-form" ng-submit="vm.saveScheduler()" novalidate>
-            <md-toolbar class="md-accent md-hue-2">
-                <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-                    <span class="title">Add/Edit Scheduler</span>
-                    <md-button class="md-icon-button" ng-click="vm.closeDialog()">
-                        <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
-                    </md-button>
+    <!-- <form name="checklistForm" class="md-inline-form" ng-submit="vm.createSegment(vm.newItem.type,vm.newItem.name,vm.newItem.to,vm.newItem.dataTypes,vm.newItem.info,vm.type.type,vm.newItem.alert)" -->
+    <form name="AddEditScheduleForm" class="md-inline-form" ng-submit="vm.saveScheduler(vm.newScheduler.id)" novalidate>
+        <md-toolbar class="md-accent md-hue-2">
+            <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+                <span class="title">Add/Edit Scheduler</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+                    <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content ms-scroll>
+
+            <a class=md-default-theme>{{vm.display_breadcrumb}}</a><br><br>
+
+
+            <label>From:</label>
+            <md-datepicker name=from_date ng-change="dateChangeEvent()" md-open-on-focus required
+                ng-model="vm.newScheduler.from_date" md-placeholder="Select date">
+            </md-datepicker>
+
+            &nbsp;&nbsp;
+            <label>To:</label>
+            <md-datepicker name=to_date ng-change="dateChangeEvent()" md-open-on-focus required
+                ng-model="vm.newScheduler.to_date" md-placeholder="Select date">
+            </md-datepicker>
+            <br><br>
+
+            <label>All Day:</label>
+            <md-checkbox id="all_day_chk" ng-model="vm.newScheduler.all_day"></md-checkbox>
+
+            &nbsp;&nbsp;
+            <label>Starts:</label>
+            <input name=start_time class="scheduler_time_input" type=time ng-model="vm.newScheduler.start_time"
+                ng-required="!vm.newScheduler.all_day  " ng-disabled="vm.newScheduler.all_day" />
+
+            &nbsp;&nbsp;
+            <label>Ends:</label>
+            <input name=end_time class="scheduler_time_input" type=time ng-model="vm.newScheduler.end_time"
+                ng-required="!vm.newScheduler.all_day " ng-disabled="vm.newScheduler.all_day" />
+            <br><br>
+
+            <label>Repeat:</label>
+            <md-input-container style="margin-top:-5px;">
+
+                <md-select ng-model="vm.newScheduler.repeat">
+                    <md-option value="none" selected>None</md-option>
+                </md-select>
+            </md-input-container>
+
+            &nbsp;&nbsp;
+            <label>End:</label>
+            <md-input-container style="margin-top:-5px;">
+
+                <md-select ng-model="vm.newScheduler.end">
+                    <md-option value="none" selected>None</md-option>
+                </md-select>
+            </md-input-container> </br>
+
+            <label class="mt-40">Row in Gantt Chart:</label>
+            <md-input-container style="margin-top:-5px;">
+
+                <md-select flex=100 placeholder="Select Row" ng-model="vm.newScheduler.gantt_row" required>
+                    <md-option ng-if="vm.AllRows.length" ng-repeat="row in vm.AllRows" ng-value="row.id">
+                        {{row.row_name}}
+                    </md-option>
+
+                    <md-option ng-if="!vm.AllRows.length" ng-value="0" disabled>
+                        No Row found
+                    </md-option>
+                </md-select>
+                <div ng-messages="AddEditScheduleForm.name.$error" ng-show="AddEditScheduleForm.name.$touched"
+                    role="alert">
+                    <div ng-message="required">
+                        <span ng-show="vm.newItem.dataType==1">Row in Gantt Chart field is required</span>
+                        <span ng-show="vm.newItem.dataType!=1">Row in Gantt Chart field is required</span>
+                    </div>
                 </div>
-            </md-toolbar>
-    
-            <md-dialog-content ms-scroll>
-    
-                <a class=md-default-theme >{{vm.display_breadcrumb}}</a><br><br>
-    
-    
-                <label>From:</label>
-                <md-datepicker md-open-on-focus ng-model="vm.newScheduler.from_date" md-placeholder="Select date">
-                </md-datepicker>
-    
-                &nbsp;&nbsp;
-                <label>To:</label>
-                <md-datepicker md-open-on-focus ng-model="vm.newScheduler.to_date" md-placeholder="Select date">
-                </md-datepicker>
-                <br><br>
-    
-                <label>All Day:</label>
-                <md-checkbox id="all_day_chk" ng-model="vm.newScheduler.all_day"></md-checkbox>
-    
-    
-                &nbsp;&nbsp;
-                <label>Starts:</label>
-                <input class="scheduler_time_input" type=time ng-model="vm.newScheduler.start_time"
-                    ng-disabled="vm.newScheduler.all_day" />
-    
-                &nbsp;&nbsp;
-                <label>Ends:</label>
-                <input class="scheduler_time_input" type=time ng-model="vm.newScheduler.end_time"
-                    ng-disabled="vm.newScheduler.all_day" />
-                <br><br>
-    
-                <label>Repeat:</label>
-                <md-input-container style="margin-top:-5px;">
-    
-                    <md-select ng-model="vm.newScheduler.repeat">
-                        <md-option value="none" selected>None</md-option>
-                    </md-select>
-                </md-input-container>
-    
-                &nbsp;&nbsp;
-                <label>End:</label>
-                <md-input-container style="margin-top:-5px;">
-    
-                    <md-select ng-model="vm.newScheduler.end">
-                        <md-option value="none" selected>None</md-option>
-                    </md-select>
-                </md-input-container>
-    
-    
-                <md-input-container class="md-block">
+            </md-input-container>
+
+
+            <!-- <md-input-container class="md-block">
                     <label>Row in Gantt Chart</label>
                     <input name="name" ng-model="vm.newScheduler.gantt_row" required maxlength="155">
-                    <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
+                    <div ng-messages="AddEditScheduleForm.name.$error" ng-show="AddEditScheduleForm.name.$touched" role="alert">
                         <div ng-message="required">
                             <span ng-show="vm.newItem.dataType==1">{{vm.newItem.type}} Name field is required</span>
                             <span ng-show="vm.newItem.dataType!=1">Text Box Label is required</span>
                         </div>
                     </div>
-                </md-input-container>
-                <md-input-container flex="10" class="md-block">
-    
-                    <label>Color:</label>
-                    <input type=color ng-model="vm.newScheduler.color" placeholder="Select Color" />
-                </md-input-container>
-    
-            </md-dialog-content>
-    
-            <md-dialog-actions layout="row" layout-align="space-between center">
-                <div layout="row" layout-align="start center">
-                    <md-button type="submit" md-no-ink class="md-raised md-accent" aria-label="Save">
-                        {{vm.item ? 'Update' : 'Save'}}
-    
-                    </md-button>
-                </div>
-    
-                <div layout="row" layout-align="center end">
-    
-                    <md-icon ng-click="vm.deleteConfirm('schedule',vm.newScheduler, $event)" class="red-600-fg " md-font-icon="icon-trash"></md-icon>
-    
-                </div>
-    
-    
-            </md-dialog-actions>
-        </form>
-    </md-dialog>     <input name="item_type" value="{{vm.type.type}}" type="hidden" ng-model="vm.type.type">
-    
+                </md-input-container> -->
+            <md-input-container flex="10" class="md-block mt-50">
 
-    
-            </md-dialog-content>
-            <md-dialog-actions layout="row" layout-align="space-between center">
-                <div layout="row" layout-align="start center">
-                    <md-button type="submit" md-no-ink class="md-raised md-accent" 
-                        aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE"  >
-    
-                    </md-button>
-                </div>
-    
-            </md-dialog-actions>
-        </form>
-    </md-dialog>
+                <label>Color:</label>
+                <input type=color ng-model="vm.newScheduler.color" placeholder="Select Color" />
+            </md-input-container>
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="start center">
+
+                <md-button ng-if="!vm.single_item" type="submit" md-no-ink class="md-raised md-accent" aria-label="Save"
+                    ng-disabled=" vm.Alreadyclicked || AddEditScheduleForm.$invalid || AddEditScheduleForm.$pristine ">
+                    Save
+
+                </md-button>
+
+                <md-button ng-if="vm.single_item" type="submit" md-no-ink class="md-raised md-accent"
+                    aria-label="Update" ng-disabled=" vm.Alreadyclicked ">
+                    Update
+
+                </md-button>
+            </div>
+
+            <div ng-if="vm.single_item" layout="row" layout-align="center end">
+
+                <md-icon ng-click="vm.deleteConfirm('schedule',vm.newScheduler, $event)" class="red-600-fg pointer"
+                    md-font-icon="icon-trash"></md-icon>
+
+            </div>
+
+
+        </md-dialog-actions>
+    </form>
+</md-dialog>

@@ -1,7 +1,7 @@
 <div layout="column" layout-align="center center" flex="40" class="div-center">
   <div flex>
-        <h2>Invite From: {{  vm.invites.organization.name}}</h2>
-        <p>To except, use your existing Log In information below.</p>
+        <h2>Invitation From: {{  vm.invites.organization.name}}</h2>
+        <p>To accept, use your existing Log In information below.</p>
    
   </div>
 
@@ -13,10 +13,10 @@
       <div class="title"><b>Choose this option to:</b></div>
 
       <ul class="text-left choose-option">
-        <li><i class="fa fa-check" aria-hidden="true"></i> Keep your existing username/password</li>
-        <li><i class="fa fa-check" aria-hidden="true"></i> Leave your current Org</li>
-        <li><i class="fa fa-check" aria-hidden="true"></i> Lose access to current Org</li>
-        <li><i class="fa fa-check" aria-hidden="true"></i> Keep only Contacts & Direct Message</li>
+        <li><i class="fa fa-check" aria-hidden="true"></i> Keep existing username/password</li>
+        <li><i class="fa fa-check" aria-hidden="true"></i> Leave current Org</li>
+        <li><i class="fa fa-check" aria-hidden="true"></i> Lose access to current Org info</li>
+        <li><i class="fa fa-check" aria-hidden="true"></i> Keep only Contacts & Direct Messages</li>
       </ul>
 
       <form name="loginForm" novalidate ng-submit="vm.acceptInvite.login()">
@@ -62,10 +62,10 @@
   <div flex>
     <h2>Choose this option to:</h2>
     <ul  class="choose-option">
-      <li><i class="fa fa-check" aria-hidden="true"></i>Retain your exixting Username/Password for this Org your currently belong to.</li>
-      <li><i class="fa fa-check" aria-hidden="true"></i>Set  up NEW, seprate Account with NEW username/password, and a DIFFERENT email,  for use under the Org this invite.</li>
+      <li><i class="fa fa-check" aria-hidden="true"></i>Retain your current existing Username/Password for this Org you currently belong to.</li>
+      <li><i class="fa fa-check" aria-hidden="true"></i>Set up NEW, seprate Account with NEW username/password, and a DIFFERENT email, for use under the Org that sent this invite.</li>
     </ul>
-    <p>To create your account, enter your first and last name, email(which acts as your LOgin ID),  and desired password. When you submit, you will be sent a confirmation.</p>
+    <p>To create your Account, enter your first and last name, email(which acts as your Login ID),  and desired password. When you submit, you will be sent a confirmation.</p>
   </div>
   <form name="registerForm" novalidate ng-submit="vm.acceptInvite.signup()">
 

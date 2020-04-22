@@ -3,7 +3,7 @@
         novalidate>
         <md-toolbar class="md-accent md-hue-2">
             <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-                <span class="title">Add New {{vm.type.title}}</span>
+                <span class="title">{{vm.type.title}}</span>
                 <md-button class="md-icon-button" ng-click="vm.closeDialog()">
                     <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
                 </md-button>
@@ -82,7 +82,7 @@
                 </div>
 
                 <div layout="row" layout-wrap>
-                    <md-checkbox ng-model="vm.newItem.alert" aria-label="yes">
+                    <md-checkbox ng-disabled="!vm.newItem.dataTypes" ng-model="vm.newItem.alert" aria-label="yes">
                         Set Alert
                     </md-checkbox>
 
@@ -97,7 +97,7 @@
                 <div ng-if="vm.newItem.alert && vm.newItem.alert_sms" layout="row" layout-wrap >
                     <md-input-container  class="md-block">
                         <label>Mobile Number</label>
-                        <input name="name" style="color: #000;" type="number" ng-model="vm.newItem.mobile" ng-required="vm.newItem.alert_sms" >
+                        <input name="name" style="color: #000;" type="text" ng-model="vm.newItem.mobile" ng-required="vm.newItem.alert_sms" >
                     </md-input-container>
                 </div>
                 

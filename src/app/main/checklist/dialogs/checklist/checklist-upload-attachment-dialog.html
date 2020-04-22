@@ -44,8 +44,14 @@
                   </button>
            
             </td>
+          
+
             <td class="text-center">
-                <a href="{{vm.downloadFile[$index]}}" target="_blank" ng-init="vm.removeFileHttp(attachment.storage.temporary, $index)" download>
+                <!-- <iframe id="my_iframe" style="display:none;"></iframe> ng-click="vm.downloadFleNow(vm.downloadFile[$index])" -->
+                <!-- <a href="{{vm.downloadFile[$index]}}" target="_blank" ng-init="vm.removeFileHttp(attachment.storage.temporary, $index)" download={{vm.FileName[$index]}}>
+                    <md-icon md-font-icon="icon-cloud-download"></md-icon>
+                </a> -->
+                <a href="{{attachment.storage.download}}" class="cursor-pointer" target="_blank" ng-init="vm.removeFileHttp(attachment.storage.temporary, $index)" download={{vm.FileName[$index]}} >
                     <md-icon md-font-icon="icon-cloud-download"></md-icon>
                 </a>
             </td>
@@ -53,15 +59,15 @@
         </tbody>
       </table>
       <div ng-show="vm.upload || !vm.SelectedAttachments.length">
-        <form name="checklistForm" novalidate id="fileattachment">
+        <form name="checklistForm"  id="fileattachment">
           <md-input-container class="md-block">
             <label>Attachment Label</label>
             <input name="label" ng-model="vm.label" required>
-            <!-- <div ng-messages="checklistForm.label.$error" ng-show="checklistForm.label.$touched" role="alert">
+            <div ng-messages="checklistForm.label.$error" ng-show="checklistForm.label.$touched" role="alert">
               <div ng-message="required">
                 <span translate="CHECKLIST.ERRORS.ATTACHMENT_LABEL_REQUIRED">Attachment Label field is required</span>
               </div>
-            </div> -->
+            </div>
           </md-input-container>
           <div layout="column">
             <div>
@@ -93,7 +99,7 @@
 
                 <md-icon ng-show="vm.attachment.storage && vm.editAttachment" ng-click="vm.downloadAttachment($event, vm.attachment.storage.temporary)" md-font-icon="fa fa-eye"></md-icon>
   
-            
+           
           </md-input-container>
   
       </div>
@@ -104,7 +110,7 @@
         <md-button type="button" ng-show="vm.upload || !vm.SelectedAttachments.length" ng-click="vm.uploadAttachment(vm.pType, vm.pID, vm.index)"
           class="capitalize" aria-label="Upload Attachment" ng-disabled="checklistForm.$invalid || checklistForm.$pristine || vm.fileUploadButton"
          ng-if="!vm.editAttachment">
-          Upload Atachment
+          Upload Attachment 
         </md-button>
         <md-button type="button" ng-click="UpdateAttachment(vm.attachment)" translate-attr-aria-label="CHECKLIST.UPLOAD"
           ng-if="vm.editAttachment">

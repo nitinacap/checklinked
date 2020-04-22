@@ -10,6 +10,10 @@
     var vm = this;
     vm.isLoader = false;
     vm.twofactor = false;
+    $rootScope.loginCredentials ={};
+    vm.title = 'Alert';
+    vm.message  = 'Unauthorized Access';
+
     vm.verifyTwoFactorOTP = verifyTwoFactorOTP;
     if ($stateParams.token) {
       var token = $stateParams.token;
@@ -34,15 +38,26 @@
     
         ======*/
     // Methods
-    vm.login = login;
+    // vm.login = login;
     vm.logout = logout;
 
+    function closeDialog() {
+      $mdDialog.hide();
+     
+    }
 
-    function login() {
+    
+    $rootScope.login = function() {
+
+      if(vm.email)  $rootScope.loginCredentials.email = vm.email;
+      if (vm.form.password)  $rootScope.loginCredentials.password = vm.form.password;
+
+
+
       vm.isLoader = true;
       $http.post(BASEURL + "login-doAuth.php", {
-        user: vm.email,
-        pass: vm.form.password
+        user: $rootScope.loginCredentials.email,
+        pass: $rootScope.loginCredentials.password
       }, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -50,6 +65,7 @@
           cache: false
         }).success(function (res) {
           vm.isLoader = false;
+          console.log("Welcom"+ res);
           if (res.code == '-1') {
             // $scope.login_error = "Please enter correct username and password";
             $scope.login_error = res.message;
@@ -65,10 +81,16 @@
             $cookies.put("username", res.user.name.full);
             $cookies.put("useridCON", res.user.idCON);
             $cookies.put("token", res.user.token);
-            $cookies.put('users', res.user);
+            $cookies.put('users', JSON.stringify(res.user)) ;
+            // res.user.roles = ["Paid User"]
+            $cookies.put('userRoles', res.user.roles);
+            
+            // // 
             //localStorage.setItem("org_name",res.user.organization.name);
             $rootScope.token = res.user.token;
             $rootScope.userData = res.user;
+            // $rootScope.user = res.user;
+            // // 
             getUserRoles(res.user.idCON);
 
             var empArray = [];
@@ -76,6 +98,29 @@
 
             $cookies.put('logged_user_roles', res.user.roles);
             $cookies.put('logged_user_id', res.user.idCON);
+
+            // if Object.assign is not valid
+            if (typeof Object.assign != 'function') {
+              Object.assign = function(target) {
+                'use strict';
+                if (target == null) {
+                  throw new TypeError('Cannot convert undefined or null to object');
+                }
+            
+                target = Object(target);
+                for (var index = 1; index < arguments.length; index++) {
+                  var source = arguments[index];
+                  if (source != null) {
+                    for (var key in source) {
+                      if (Object.prototype.hasOwnProperty.call(source, key)) {
+                        target[key] = source[key];
+                      }
+                    }
+                  }
+                }
+                return target;
+              };
+            }
          
             angular.forEach(res.user.roles_permissions.roles, function (item) {
               Object.assign(empArray, item);
@@ -145,7 +190,7 @@
     function logout() {
       $rootScope.token = null;
       $rootScope.user = null;
-      debugger;
+      // ;
       $http.get(BASEURL + 'logout.php')
         .then(
           function (res) {

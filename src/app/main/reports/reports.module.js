@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('app.reports', [])
+    .module('app.reports', ['angularjs-dropdown-multiselect'])
     .config(config);
 
   /** @ngInject */

@@ -3,13 +3,17 @@
 </div>
 <md-toolbar class="pt-20 custom-breadcrumb" ng-show="vm.isBreadcrum && vm.checklists.length > 0">
   <ul>
-    <li ng-show="vm.checklists && vm.checklists[0].item_bread"><a href="/process/projects" class="white"> {{vm.checklists[0].item_bread.project_name}}<span> - </span></a>
-        <a href="/process/workflows/{{vm.checklists[0].item_bread.project_id}}" class="white"><span> {{vm.checklists[0].item_bread.folder_name}}</span></a>
+    <li ng-show="vm.checklists && vm.checklists[0].item_bread"><a href="/process/workflows/{{vm.checklists[0].item_bread.project_id}}" class="white">
+        {{vm.checklists[0].item_bread.project_name}}<span> - </span></a>
+      <a href="/checklist/{{vm.checklists[0].item_bread.folder_id}}" class="white"><span>
+          {{vm.checklists[0].item_bread.folder_name}}</span></a>
     </li>
   </ul>
 </md-toolbar>
 
-<div id="checklist" class="page-layout simple tabbed pt-5 {{vm.isBreadcrum && vm.checklists.length > 0 ? '' : 'pt-35'}}" layout="column">
+
+<div id="checklist" class="page-layout simple tabbed pt-5 {{vm.isBreadcrum && vm.checklists.length > 0 ? '' : 'pt-35'}}"
+  layout="column">
 
   <!-- CENTER -->
 
@@ -22,11 +26,12 @@
       <md-select class="simplified" ng-model="vm.checklistOrder" placeholder="Sort By"
         ng-change="vm.checklistOrderDescending = vm.checklistOrder === '' ? false : vm.checklistOrderDescending">
         <md-option value="name">Sort by A-Z</md-option>
-         <md-option value="-name">Sort by Z-A</md-option>
+        <!-- <md-option value="-name">Sort by Z-A</md-option> -->
+        <md-option value="RecenlyAccessed">Most Recent</md-option>
       </md-select>
 
-      <md-button class="md-icon-button" ng-click="vm.checklistOrderDescending = !vm.checklistOrderDescending" aria-label="Sort Direction" translate
-        translate-attr-aria-label="GROUP.SORT_DIRECTION">
+      <md-button class="md-icon-button" ng-click="vm.checklistOrderDescending = !vm.checklistOrderDescending"
+        aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
         <md-icon style="line-height: 10px !important;" md-font-icon="icon-sort-ascending"
           ng-if="vm.checklistOrderDescending === true" class="s18"></md-icon>
         <md-icon style="line-height: 10px !important;" md-font-icon="icon-sort-descending"
@@ -36,7 +41,7 @@
     <div class="text-right mr-9" layout="row" layout-align="end center">
       <md-icon md-font-icon="icon-alert-circle" class="is-important red-600-fg" ng-if="checklist.important"></md-icon>
 
-      <md-menu>
+      <md-menu ng-if="!$root.viewAs.notMe">
         <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button" aria-label="More" translate
           translate-attr-aria-label="CHECKLIST.MORE">
           <md-icon md-font-icon="icon-dots-horizontal" class="s18"></md-icon>
@@ -63,7 +68,7 @@
   </div>
   <div class="content-card" layout="column" flex>
     <div class="content" layout="row" flex>
-      <md-content class="todo-list-pane" flex ng-include="'app/main/checklist/views/list/checklists.html'"
+      <md-content class="todo-list-pane mb-30" flex ng-include="'app/main/checklist/views/list/checklists.html'"
         ms-scroll="vm.msScrollOptions">
       </md-content>
     </div>

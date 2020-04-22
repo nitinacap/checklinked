@@ -43,9 +43,11 @@
                 <input ng-model="vm.search.state" type="text">
             </md-input-container>
             <h6 ng-if="vm.search_templates_result.length==0">No record found try another search criteria</h6>
-        </md-dialog-content>
+        
         <!-- / DIALOG CONTENT -->
-        <md-dialog-content ms-scroll ng-show="vm.search_templates_result.length">
+        <div   ng-if="vm.search_templates_result.length">
+            <hr>
+            <h3>Search Results</h3>
             <table class="simple bordered-table" ms-responsive-table>
                 <thead>
                     <tr>
@@ -75,8 +77,8 @@
                 </tbody>
             </table>
 
-        </md-dialog-content>
-
+        </div>
+    </md-dialog-content>
         <!-- DIALOG ACTIONS -->
         <md-dialog-actions layout="row" layout-align="space-between center">
             <div layout="row" layout-align="start center">

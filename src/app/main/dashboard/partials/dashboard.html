@@ -1,17 +1,31 @@
-<div class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+<div class="showLoadingImage" flex ng-if=" !vm.isLoader && vm.showLoadingImage">
+    <div class="loaderimg">
+        <img src="assets/images/logos/loading.gif" width="200">
+    </div>
+</div>
+
+<div id="exportthis" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+
+    <div ng-if="!vm.totalCharts.length" class="info" flex>
+        <div class="title m-20">
+            No Charts found.
+        </div>
+    </div>
 
     <div layout="row" layout-align="start center" class="pl-25" ng-hide="!vm.reports.progress">
         <md-progress-circular ng-disabled="!vm.reports.progress" md-mode="indeterminate" md-diameter="20">
         </md-progress-circular>
     </div>
 
-    <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
-        <rbody>
+    <table  ng-if="vm.totalCharts.length" class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
+        <tbody>
             <tr layout="row" layout-align="center center">
 
-                <td flex=100 class="text-center table-header-padding"> <b>Page 1 of 4</b></td>
+                <td flex=100 class="text-center table-header-padding"> <b>Dashboard</b></td>
                 <td class="text-right">
+
                     <md-menu>
+
                         <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button"
                             aria-label="Sort" translate translate-attr-aria-label="DASHBOARD.ARRANGE">
                             <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
@@ -20,68 +34,78 @@
 
                         <md-menu-content width="3">
 
+                            <md-menu-item ng-if="!$root.viewAs.notMe">
+                                <md-button ng-click="openGroupDialog($event, 'arrange')"
+                                    translate-attr-aria-label="DASHBOARD.ARRANGE">
 
-                            <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
-                                <md-button ng-click="vm.openGroupDialog($event, 'arrange')"
-                                    translate-attr-aria-label="DASHBOARD.PASTE">
-                                    <md-icon class="md-accent-fg s18" md-font-icon="icon-square-inc"></md-icon>
+                                    <md-icon ng-if="AllowDragAndDrop" class="md-accent-fg s18"
+                                        md-font-icon="icon-checkbox-marked-outline"></md-icon>
+                                    <md-icon ng-if="!AllowDragAndDrop" class="md-accent-fg s18"
+                                        md-font-icon="icon-checkbox-blank-outline">
+                                    </md-icon>
+
                                     <span translate="DASHBOARD.ARRANGE">Arrange</span>
                                 </md-button>
                             </md-menu-item>
 
                             <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
-                                <md-button ng-click="vm.openGroupDialog($event, 'pdf')" aria-label="Paste"
+                                <md-button ng-click="openGroupDialog($event, 'downloadPDF')" aria-label="Paste"
                                     translate-attr-aria-label="DASHBOARD.DOWNLOAD_PDF">
                                     <md-icon class="md-accent-fg s18" md-font-icon="icon-file-pdf"></md-icon>
                                     <span translate="DASHBOARD.DOWNLOAD_PDF"></span>
                                 </md-button>
                             </md-menu-item>
 
-                            <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
-                                <md-button ng-click="vm.openGroupDialog($event, 'edit')" aria-label="Paste"
-                                    translate-attr-aria-label="DASHBOARD.EDIT_NAME">
-                                    <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
-                                    <span translate="DASHBOARD.EDIT_NAME"></span>
-                                </md-button>
-                            </md-menu-item>
-
-                            <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
-                                <md-button ng-click="vm.openGroupDialog($event, 'delete')" aria-label="Paste"
-                                    translate-attr-aria-label="DASHBOARD.DELETE_TILE">
-                                    <md-icon class="md-accent-fg s18" md-font-icon="icon-trash"></md-icon>
-                                    <span translate="DASHBOARD.DELETE_TILE"></span>
-                                </md-button>
-                            </md-menu-item>
                         </md-menu-content>
                     </md-menu>
-                    </th>
+
 
                 </td>
             </tr>
-            </tbody>
+        </tbody>
 
     </table>
 
-    <div layout="row">
-        <div layout="column" flex="50">
-            <div class="text-center pt-10"><strong>Total Due By Date</strong></div>
-            <!-- <canvas class="chart chart-line p-20" chart-data="data" chart-labels="labels" 
-                chart-series="series" ></canvas>  -->
+    <!-- list of charts starts -->
 
-            <canvas id="bar" class="chart chart-bar p-20" chart-data="graphdata" chart-labels="labels"
-                chart-series="series" chart-colors="ColorBar" chart-options="options" chart-hover="hoverme"
-                chart-dataset-override="DataSetOverride"></canvas>
+    <ul ng-if="vm.totalCharts.length" dnd-list="vm.totalCharts" class="mt-20 mb-50 chart_ul DashboardCharts">
 
-        </div>
+        <li ng-repeat="(index, chart) in vm.totalCharts" dnd-draggable="chart" dnd-moved="vm.totalCharts.splice($index, 1)"
+            dnd-effect-allowed="move" dnd-selected="models.selected = chart" dnd-disable-if="!AllowDragAndDrop"
+            class="mb-20" dnd-dragend="logEvent(dropEffect)">
 
-        <div layout="column" flex="50">
-            <div class="text-center pt-10"><strong>Total Due Dough Rice By Date</strong></div>
-            <canvas id="bar" class="chart chart-bar p-20" chart-data="graphdata" chart-labels="labels"
-                chart-series="series" chart-colors="ColorBar" chart-options="options" chart-hover="hoverme"
-                chart-dataset-override="DataSetOverride"></canvas>
-        </div>
 
-    </div>
+            <canvas id=bar class="chart chart-base" chart-type="chart.chart_data.chartType"
+                chart-data="chart.chart_data.graphdata" chart-labels="chart.chart_data.labels"
+                chart-series="chart.chart_data.series" chart-colors="chart.chart_data.ColorBar"
+                chart-options="chart.chart_data.options" chart-hover="chart.chart_data.hoverme">
+            </canvas>
+
+            <md-menu class="flex-endcursor-pointer" ng-if="!$root.viewAs.notMe">
+                    <button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
+                        translate>
+                        <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+                    </button>
+                    <md-menu-content>
+                        <md-menu-item>
+                            <md-button ng-click="openGroupDialog($event, 'edit_chart_name', chart, index)">
+                                <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                                <span translate="">Edit Name</span>
+                            </md-button>
+                        </md-menu-item>
+    
+                        <md-menu-item>
+                            <md-button ng-click="openGroupDialog($event, 'delete_tile', chart, index)">
+                                <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                                <span translate="">Delete Tile</span>
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+        </li>
+    </ul>
+
+    <!-- list of charts ends -->
 
 
 </div>

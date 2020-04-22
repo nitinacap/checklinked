@@ -1,8 +1,4 @@
-
-    <div id="invite" class="flex-scrollable" layout="column">
-      <div ng-if="vm.invites && vm.invites.idCON!=0" ng-include="'app/main/invite/partials/existing-account.html'"></div>
-      <div ng-if="!vm.invites || vm.invites.idCON ==0 " ng-include="'app/main/invite/partials/create.html'"></div>
-      </div>
-
-
-
+<div  id="invite" class="flex-scrollable" layout="column">
+  <div ng-if="(!vm.invites || vm.invites.idCON ==0) && vm.DisplayDOM " ng-include="'app/main/invite/partials/create.html'"></div>
+  <div ng-if="vm.invites && vm.invites.idCON!=0 && vm.DisplayDOM" ng-include="'app/main/invite/partials/existing-account.html'"></div>
+</div>

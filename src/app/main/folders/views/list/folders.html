@@ -9,7 +9,7 @@
 
       <div class="info" flex>
         <div class="title">
-          <a ng-href="/workflows/{{folder.id}}">
+          <a ng-click="vm.shiftList(folder)" ng-href="/workflows/{{folder.id}}">
             {{folder.name}}
           </a>
         </div>
@@ -31,7 +31,7 @@
                          translate-attr-aria-label="FOLDER.DELETE_FOLDER">
                 <md-icon class="red-600-fg s18"
                          md-font-icon="icon-trash"></md-icon>
-                <span translate="FOLDER.DELETE_FOLDER">Delete Workflow</span>
+                <span translate="FOLDER.DELETE_FOLDER">Delete Project</span>
               </md-button>
             </md-menu-item>
 
@@ -40,7 +40,7 @@
                          translate-attr-aria-label="FOLDER.EDIT_FOLDER">
                 <md-icon class="md-accent-fg s18"
                          md-font-icon="icon-pencil"></md-icon>
-                <span translate="FOLDER.EDIT_FOLDER">Edit Workflow</span>
+                <span translate="FOLDER.EDIT_FOLDER">Edit Project</span>
               </md-button>
             </md-menu-item>
 
@@ -51,7 +51,7 @@
                          translate-attr-aria-label="FOLDER.ADD_NEW_FOLDER">
                 <md-icon class="md-accent-fg s18"
                          md-font-icon="icon-plus-circle-outline"></md-icon>
-                <span translate="FOLDER.ADD_NEW_FOLDER">Add New Workflow</span>
+                <span translate="FOLDER.ADD_NEW_FOLDER">Add New Project</span>
               </md-button>
             </md-menu-item>
 
@@ -68,7 +68,7 @@
 
     <div layout="row" layout-align="start center" flex>
 
-      <div class="info" flex>
+      <div class="info p-10" flex>
         <div class="title">
           You do not have any projects
         </div>
@@ -91,7 +91,7 @@
                          translate-attr-aria-label="FOLDER.ADD_NEW_FOLDER">
                 <md-icon class="md-accent-fg s18"
                          md-font-icon="icon-plus-circle-outline"></md-icon>
-                <span translate="FOLDER.ADD_NEW_FOLDER">Add New Folder</span>
+                <span translate="FOLDER.ADD_NEW_FOLDER">Add New Project</span>
               </md-button>
             </md-menu-item>
 

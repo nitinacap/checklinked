@@ -13,7 +13,7 @@
 
     <md-tab class="pr-30" ng-disabled="!myvalue || !vm.user_Roles">
         <md-tab-label>
-          <md-menu>
+          <md-menu  ng-if="!$root.viewAs.notMe">
             <md-icon ng-show="myvalue" md-font-icon="icon-dots-vertical s18" id="lh-5" ng-click="$mdOpenMenu($event)"></md-icon>
             <md-menu-content class="custom">
               <md-menu-item>
@@ -44,7 +44,7 @@
     </md-tab>
 
     
-    <md-tab class="pr-30" ng-click="myvalue = true;">
+    <!-- <md-tab class="pr-30" ng-click="myvalue = true;">
       <md-tab-label>
         <span>Upload Spreadsheet</span>
       </md-tab-label>
@@ -53,9 +53,9 @@
 
       </md-tab-body>
 
-    </md-tab>
+    </md-tab> -->
 
-    <md-tab class="pr-30">
+    <!-- <md-tab class="pr-30">
       <md-tab-label>
         <span>All Spreadsheet</span>
       </md-tab-label>
@@ -64,6 +64,6 @@
 
       </md-tab-body>
 
-    </md-tab>
+    </md-tab> -->
   </md-tabs>
 </div>

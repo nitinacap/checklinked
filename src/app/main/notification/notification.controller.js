@@ -29,7 +29,7 @@
       angular.forEach(data, function (value, key) {
         vm.newArray.push(value.list);
       });
-      //   debugger;
+      //   // ;
       //   console.log('newArray', vm.newArray);
       //   var totalArray = vm.newArray;
       //  // let concatArray = [];
@@ -49,7 +49,7 @@
           vm.isLoader = false;
           listMenu();
           if (resp.code == '-1') {
-            if(d.data.message=='unauthorized access'){
+            if(resp.message=='unauthorized access'){
               $state.go('app.logout');
             }else{
               $scope.subscriptionAlert(resp.message);
@@ -57,6 +57,8 @@
           } else {
 
             vm.notifications = resp.notifications;
+            vm.notificationLength = Object.keys(vm.notifications).length
+            
             GlobalSearch(vm.notifications);
             vm.closeList = false;
 
@@ -88,6 +90,7 @@
       var key = key ? key : '';
       vm.closeList = true;
       vm.projectlists = detail;
+
       vm.checklistDetail = Object.keys(list).map(function (it) {
         list[it].key = key;
         return list[it]
@@ -124,8 +127,15 @@
     }
     api.notifications.count_notifi();
 
-    function readNotification(id, key) {
-      var key = key ? key : '';
+    function readNotification(projectlist) {
+
+ 
+
+      var id = projectlist.id;
+      var key = projectlist.key;
+      key = key ? key : '';
+
+      
       return api.notifications.read(id, 'notification-read').success(function (resp) {
         if (resp) {
           vm.isLoader = false;
@@ -139,6 +149,10 @@
               vm.notifications[key].count_unread_total = resp.notifications[key].count_unread_total;
               vm.notifications[key].user_changes = resp.notifications[key].user_changes;
               vm.notifications[key].flag_complete = resp.notifications[key].flag_complete;
+
+              projectlist.read_by = vm.user_id ;
+
+              
 
             }
 
@@ -154,19 +168,20 @@
 
     // Content sub menu
     function listMenu() {
-      debugger;
-      var user_id = $cookies.get("useridCON").toString();
+      // // ;
+      vm.user_id = $cookies.get("useridCON").toString();
       api.notifications.count_notifi().success(function(notification) {  
         var data = notification.item;           
         var message_count = data.message_count;
-        var notification_count = data["user_notification" + user_id];
-        var alert_count = data["user_alert" + user_id];
+        var notification_count = data["user_notification" + vm.user_id];
+        var alert_count = data["user_alert" + vm.user_id];
+        var invites_count = data.invites_count;
 
       vm.submenu = [
-        { link: 'alerts', title: 'Alerts', notification: alert_count },
-        { link: 'invitations', title: 'Action Items' },
-        { link: 'chat.message', title: 'Messages', notification: message_count },
-        { link: '', title: 'Notifications', notification: notification_count }
+        { link: 'alerts', title: 'Alerts', notification: alert_count, active : false },
+        { link: 'invitations', title: 'Action Items', notification: invites_count, active : false },
+        { link: 'chat.message', title: 'Messages', notification: message_count, active : false },
+        { link: 'notification', title: 'Notifications', notification: notification_count, active : true }
       ];
 
     })

@@ -4,16 +4,17 @@
   </div>
 </div>
 <div id="" class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
-  <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
+  <table class="simple row-border hover bordered-table mb-30" cellpadding="0" cellspacing="0">
     <thead class="tool-bg">
       <tr>
-        <th>
+        <th style="padding: 10px!important;">
           <span ng-if="!vm.folders.length && !vm.isLoader && !vm.showLoadingImage">You do not have any projects</span>
           <div layout="row" layout-align="start center" ng-if="vm.folders.length  && !vm.isLoader">
             <md-select class="simplified" ng-model="vm.folderOrder" placeholder="Sort By"
               ng-change="vm.folderOrderDescending = vm.folderOrder === '' ? true : vm.folderOrderDescending">
               <md-option value="name">Sort by A-Z</md-option>
-              <md-option value="-name">Sort by Z-A</md-option>
+              <!-- <md-option value="-name">Sort by Z-A</md-option> -->
+              <md-option value="RecenlyAccessed" >Most Recent</md-option>
             </md-select>
             <md-button class="md-icon-button" ng-click="vm.folderOrderDescending = !vm.folderOrderDescending"
               aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
@@ -26,20 +27,21 @@
         </th>
         <th><span ng-if="vm.folders.length">Total projects <strong>({{ vm.folders.length }}) </strong></span></th>
         <th class="text-right">
-          <md-menu>
+          <md-menu ng-if="!$root.viewAs.notMe" >
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
               translate translate-attr-aria-label="CONTACTS.SORT">
               <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
             </md-button>
             <md-menu-content width="3">
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-projects') !== -1">
+              <!--  ng-show="vm.checkIsPermission.indexOf('create-projects') !== -1" -->
+              <md-menu-item>
                 <md-button ng-init="vm.checkPermission('create-projects')" ng-click="vm.openFolderDialog()">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
                   <span translate="">Add New Project</span>
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1">
+              <md-menu-item ng-if="vm.folders.length" ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1">
                 <md-button ng-click="vm.archieveDialog($event, '')" aria-label="Archive All"
                   translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE_ALL">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
@@ -53,7 +55,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr
+      <tr 
         ng-repeat="folder in vm.folders | orderBy:vm.folderOrder:vm.folderOrderDescending | filter: globalSearch.searchTerm | filter:vm.folderFilters.search track by $index">
         <td colspan="2">
 
@@ -69,9 +71,9 @@
             <md-icon class="md-accent-fg s18 pt-0" md-font-icon="icon-plus"></md-icon>
           </a> -->
 
-          <a ng-click="myvalue = myvalue == true ? false : true;">
+          <!-- <a ng-click="myvalue = myvalue == true ? false : true;">
               <md-icon class="md-accent-fg s18 pt-0" md-font-icon="icon-plus"></md-icon>
-            </a>
+            </a> -->
           <a matTooltip="Info about the action" ng-href="/process/workflows/{{folder.id}}" class="{{folder.id_child=='no' ? 'folderchild': '' }}">
             <md-tooltip ng-if="folder.description && folder.description!='NULL' && folder.description!='null'">{{folder.description}}</md-tooltip>
             {{folder.name}}
@@ -91,7 +93,7 @@
         <td ng-switch="(withdrawing = (vm.memberInvites.invite.withdraw.inProgress.indexOf(invite.id) > -1))"
           class="text-right">
 
-          <md-menu>
+          <md-menu ng-if="!$root.viewAs.notMe">
 
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
               translate translate-attr-aria-label="FOLDER.MORE">
@@ -134,7 +136,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('duplicate-projects-workflows-checklists') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('duplicate-projects-workflows-checklists') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-click="vm.openFolderDialog(folder, '' , 'duplicate')" aria-label="Duplicate"
                   translate-attr-aria-label="FOLDER.FOLDER_DUPLICATE">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-files-o"></md-icon>
@@ -142,7 +144,7 @@
                 </md-button>
               </md-menu-item>
 
-              <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1">
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1  && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
                 <md-button ng-click="vm.archieveDialog($event, folder.id)" aria-label="Archive All"
                   translate-attr-aria-label="FOLDER.FOLDER_ARCHIVE">
                   <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>

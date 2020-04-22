@@ -1,0 +1,60 @@
+<div class="checklist-item checklist-heading-bg checklist-data-table" ng-class="{'green':vm.passedNotification.id==heading.id}"
+  md-ink-ripple layout="row" layout-align="start center">
+
+
+    
+  <div ng-repeat="head in heading.datatable" style="width:100%;">
+         
+
+
+  <table class="table table-bordered chk_data_table data-table-show" cellspacing="5" cellpadding="0">
+      <tbody>
+          <tr ng-repeat="x in [].constructor(head.row) track by $index" ng-init="current = $parent.start; $parent.start=$parent.start+head.column;initRow($index);myvar">
+                <td ng-repeat="y in [].constructor(head.column) track by $index" width="{{100/head.column}}%" ng-class="[['Date','Formula','Currency','Text','Number'].indexOf(head.table_str[current + $index].type) > -1 ? 'cell-border' : '',head.table_str[current + $index].text_align,head.table_str[current + $index].text_position]" data-ng-init="init(current + $index,head.table_str[current + $index],heading)">
+                    
+
+                      <div ng-if="head.table_str[current + $index].type == 'Label'" class="t-bold">
+                          <b class="label_bold"> {{head.table_str[current + $index].value}}</b>
+                      </div>
+
+                      <div ng-if="head.table_str[current + $index].type == 'Currency'" class="t-bold" ng-blur="autoCalculate(current + $index,head.table_str,heading)">
+                          <span class="" style="width: auto;text-align: right;padding: 10px;padding-right: 0;"> {{head.table_str[current + $index].value}}</span><input type="text" autocomplete="off" ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]" name="row+current + $index" class="md-input" disabled ng-change="autoCalculate(current + $index,head.table_str,heading)" ng-blur="autoCalculate(current + $index,head.table_str,heading)" ng-class="[head.table_str[current + $index].text_align,head.table_str[current + $index].text_position]" ng-keypress="isNumberKey($event,current + $index,head.table_str[current + $index].value,heading,head.table_str[current + $index].type)" style="width: auto;text-align: left;padding-left: 3px;">
+                      </div>
+
+
+                 <div ng-if="head.table_str[current + $index].type == 'Date'" style="border: 0px solid #fff !important;display: inline-grid;" class="table-cell-date">
+                            <!-- <md-datepicker ng-init="vm.convertDate(vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index],heading,row+current + $index)"  ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index]" class="md-input"></md-datepicker> -->
+
+                            <input disabled type="date" ng-init="vm.convertDate(vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index],heading,row+current + $index)"  ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index]" class="md-input" />
+                           
+                      </div>
+                      <div ng-if="head.table_str[current + $index].type == 'Number'" >
+                          <input disabled type="text" autocomplete="off" ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]" name="row+current + $index" class="md-input" ng-change="autoCalculate(current + $index,head.table_str,heading)"  ng-blur="autoCalculate(current + $index,head.table_str,heading)" ng-class="[head.table_str[current + $index].text_align,head.table_str[current + $index].text_position]" ng-keypress="isNumberKey($event,current + $index,head.table_str[current + $index].value,heading)">
+
+
+                          
+                      </div>
+                      <div ng-if="head.table_str[current + $index].type == 'Text'">
+                          <input disabled type="text" autocomplete="off" ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]" name="row+current + $index" class="md-input"  ng-keypress="autoTrimWord(current + $index,head.table_str)">
+                      </div>
+                      <div ng-if="head.table_str[current + $index].type == 'Formula'" class="t-bold">
+                          <input disabled ng-disabled="true" type="text"  name="row+current + $index" class="md-input" ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]" >
+                      </div>
+
+                      <div ng-if="head.table_str[current + $index].type == undefined" class="t-bold">
+                          {{head.table_str[current + $index].value}}
+                      </div>
+                      
+
+                </td>
+
+          </tr>
+    
+      </tbody>
+    </table>
+  </div>
+
+  <!-- End Here -->
+
+  
+</div>

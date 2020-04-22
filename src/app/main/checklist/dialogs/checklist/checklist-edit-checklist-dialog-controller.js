@@ -68,7 +68,8 @@
           },
           record: res.updated
         };
-        //console.log('emitting data', packet);
+        console.log('emitting data', packet);
+        // 
         $rootScope.socketio.emit('data', packet);
         notifyItem = $.extend({}, res.updated, {
           type: 'data'
@@ -112,7 +113,8 @@
             },
             record: res.updated
           };
-          //console.log('emitting data', packet);
+          console.log('emitting data', packet);
+          // 
           $rootScope.socketio.emit('data', packet);
           notifyItem = $.extend({}, res.updated, {
             type: 'data'
@@ -166,7 +168,8 @@
             },
             record: item
           };
-          //console.log('emitting data', packet);
+          console.log('emitting data', packet);
+          // 
           $rootScope.socketio.emit('data', packet);
           notifyItem = $.extend({}, item, {
             type: 'data'

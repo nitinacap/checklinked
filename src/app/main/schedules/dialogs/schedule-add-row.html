@@ -1,57 +1,68 @@
 <md-dialog class="dialog" aria-label="New Folder">
-        <form name="addRow" class="md-inline-form" novalidate>
-            <md-toolbar class="md-accent md-hue-2">
-                <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-                    <span class="title">Add Row</span>
-                    <md-button class="md-icon-button" ng-click="vm.closeDialog()">
-                        <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
-                    </md-button>
+    <form name="addRow" class="md-inline-form" ng-submit="vm.saveRow()" novalidate>
+        <md-toolbar class="md-accent md-hue-2">
+            <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+                <span class="title">Add Row</span>
+                <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+                    <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+
+            <md-input-container class="md-block">
+                <label translate="ORGANIZATION.ROW_NAME">Row Name</label>
+                <input name="name" ng-model="vm.adding_row.name" required>
+                <div ng-messages="addRow.name.$error" ng-show="addRow.name.$touched" role="alert">
+                    <div ng-message="required">
+                        <span translate="ORGANIZATION.ERRORS.ROW_NAME">Row Name field is required</span>
+                    </div>
                 </div>
-            </md-toolbar>
-    
-            <md-dialog-content>
-    
-              <md-input-container class="md-block">
-                    <label translate="ORGANIZATION.ROW_NAME">Row Name</label>
-                    <input name="name" ng-model="vm.adding_row.name" required >
-                    <div ng-messages="addRow.name.$error" ng-show="addRow.name.$touched" role="alert">
-                        <div ng-message="required">
-                            <span translate="ORGANIZATION.ERRORS.ROW_NAME">Row Name field is required</span>
-                        </div>
-                    </div>
-              </md-input-container>
+            </md-input-container>
 
-              <md-input-container class="md-block">
-                    <label translate="ORGANIZATION.ROW_PARENT">Row Parent</label>
-                    <input name="parent" ng-model="vm.adding_row.parent" required>
-                    <div ng-messages="addRow.parent.$error" ng-show="addRow.parent.$touched" role="alert">
-                        <div ng-message="required">
-                            <span translate="ORGANIZATION.ERRORS.ROW_PARENT">Row Parent field is required</span>
-                        </div>
+            <!-- <md-input-container class="md-block">
+                <label translate="ORGANIZATION.ROW_PARENT">Row Parent</label>
+                <input name="parent" ng-model="vm.adding_row.parent" required>
+                <div ng-messages="addRow.parent.$error" ng-show="addRow.parent.$touched" role="alert">
+                    <div ng-message="required">
+                        <span translate="ORGANIZATION.ERRORS.ROW_PARENT">Row Parent field is required</span>
                     </div>
-              </md-input-container>
+                </div>
+            </md-input-container> -->
 
-              <md-input-container class="md-block"  flex="10" >
-                    <label translate="ORGANIZATION.COLOR">Color</label>
-                    <input type="color" name="color" ng-model="vm.adding_row.color" required md-autofocus>
-                    
-              </md-input-container>
-    
-          
-    
-            </md-dialog-content>
-    
-            <md-dialog-actions layout="row" layout-align="space-between center">
-                <div layout="row" layout-align="end center" flex>
-                    <md-button type="submit"  ng-click="vm.saveRow()"
-                               class="md-raised md-accent"
-                               ng-disabled="addRow.$invalid || addRow.$pristine"
-                               aria-label="Save"
-                                >Save</md-button>
-                              <i class="fa fa-spinner fa-spin" ng-if="vm.spinner" style="font-size:20px"></i>
-                 </div>
-    
-            </md-dialog-actions>
-        </form>
-    </md-dialog>
-    
+
+            <label class="mt-40"  translate="ORGANIZATION.ROW_PARENT">Row Parent:</label>
+            <md-input-container style="margin-top:-5px;">
+                
+                <md-select flex=100 placeholder="Select Row" ng-model="vm.adding_row.parent" >
+                    <md-option ng-if="vm.AllRows.length" ng-repeat="row in vm.AllRows" ng-value="row.id" >
+                        {{row.row_name}}
+                    </md-option>
+                    <md-option ng-if="!vm.AllRows.length"  ng-value="0" disabled >
+                            No Row found
+                        </md-option>
+                </md-select>
+              
+            </md-input-container>
+
+            <md-input-container class="md-block mt-40" flex="10">
+                <label translate="ORGANIZATION.COLOR">Color</label>
+                <input type="color" ng-value="vm.adding_row.color" name="color" ng-model="vm.adding_row.color" required >
+
+            </md-input-container>
+
+
+         
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="space-between center">
+            <div layout="row" layout-align="end center" flex>
+                <md-button type="submit"  class="md-raised md-accent"
+                    ng-disabled="addRow.$invalid || addRow.$pristine" aria-label="Save">Save</md-button>
+                <i class="fa fa-spinner fa-spin" ng-if="vm.spinner" style="font-size:20px"></i>
+            </div>
+
+        </md-dialog-actions>
+    </form>
+</md-dialog>

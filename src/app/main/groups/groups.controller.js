@@ -6,13 +6,15 @@
     .controller('GroupsController', GroupsController);
 
   /** @ngInject */
-  function GroupsController($scope, $rootScope, api, $stateParams, $cookies, $mdDialog, $mdSidenav, $document, $http) {
+  function GroupsController($scope, $rootScope, api, $stateParams, $cookies, $mdDialog, $mdSidenav, $document, $http, $state) {
     var vm = this;
     vm.isLoader = true;
     vm.showLoadingImage = true;
 
     var userpermission = $cookies.get("userpermission");
     vm.checkIsPermission = userpermission ? userpermission : '';
+
+    vm.Alreadyclicked = false;
 
     console.log("userpermission=",vm.checkIsPermission);
 
@@ -34,7 +36,8 @@
           if(d.data.message=='unauthorized access'){
             $state.go('app.logout');
           }else{
-            $scope.subscriptionAlert(d.data.message);
+            // $scope.subscriptionAlert(d.data.message);
+            $rootScope.message(d.data.message, 'error')
           }
           vm.showLoadingImage = false;
         } else {
@@ -83,14 +86,32 @@
     vm.publishTemplateDialog = publishTemplateDialog;
     vm.linkExistingDialog = linkExistingDialog;
     vm.undoDialog = undoDialog;
-
+  
 
     /* Dialog Methods */
 
-    function openGroupDialog(ev, group, type) {
+    function openGroupDialog(ev, group, type, what) {
 
       vm.group = group;
-      vm.title = 'Edit Workflow';
+
+      if(what === 'edit') {
+        vm.groupName = group.name;
+        vm.projectParamId = group.item_bread.project_id;
+        vm.ChooseProject = false;
+    
+        vm.title = 'Edit Workflow';
+      }
+      else {
+        vm.groupName = '';
+        vm.ChooseProject = true;
+
+        if(what === 'duplicate')  vm.DuplicateWorkflowID = vm.projectParamId = ev.item_bread.project_id;
+        else if(what === 'new') vm.projectParamId = '';
+      
+        vm.title = 'Duplicate Workflow';
+        
+      } 
+     
       vm.newGroup = false;
       vm.type = type;
 
@@ -101,7 +122,8 @@
           'description': '',
           'link': '',
           'order': '',
-          'deleted': false
+          'deleted': false,
+          'attachment': ''
         };
         vm.title = type ? 'Duplicate Workflow' : 'Create New Workflow';
         vm.folderID = ev;
@@ -219,18 +241,27 @@
 
     /* Add New Group */
     vm.projectParamId = $stateParams.id ? $stateParams.id : '';
+    // 
 
     function addNewGroup(duplicate) {
+
+       
 
       //Close Dialog Window
       vm.closeDialog();
       vm.showLoadingImage = true;
 
+      if(vm.DuplicateWorkflowID){
+        vm.group.Id = vm.DuplicateWorkflowID;
+      }
+
       vm.group.parentId = $stateParams.id ? $stateParams.id : vm.group.Id;
+
+      vm.group.name = vm.groupName;
       vm.group.sending = true;
       vm.group.order = 1;
       vm.group.order += vm.groups ? vm.groups.length : '';
-      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description, vm.group.link, duplicate ? duplicate.id : '').error(function (res) {
+      api.groups.add(vm.group.name, vm.group.order, vm.group.parentId, vm.group.description, vm.group.link, duplicate ? duplicate.id : '', vm.group.attachment).error(function (res) {
         vm.showLoadingImage = false;
         return $rootScope.message("Error Creating Workflow", 'warning');
       }).success(function (res) {
@@ -241,12 +272,17 @@
           vm.showLoadingImage = false;
           return $rootScope.message(res.message, 'warning');
         } else {
-
+          
+          vm.showLoadingImage = false;
           /* Reset Group Object */
-          vm.group.id = res.group.id ? res.group.id : '';
-          vm.group.name = res.group.name;
-          vm.group.id_parent = res.group.id_parent;
-          vm.group.order = res.group.order;
+          
+          if(res.group){
+            vm.group.id = res.group.id ? res.group.id : '';
+            vm.group.name = res.group.name;
+            vm.group.id_parent = res.group.id_parent;
+            vm.group.order = res.group.order;
+          }
+          
 
 
           $rootScope.$broadcast('event:updateModels');
@@ -258,13 +294,15 @@
           
 
           //Add New Group to Groups object
-          if (res.group.length > 0) {
-            vm.groups.unshift(vm.groups);
+          if(res.group){
+            if (res.group.length > 0) {
+              vm.groups.unshift(vm.groups);
 
+            }
           }
 
           vm.group.sending = false;
-
+          vm.showLoadingImage = false;
           // vm.showLoadingImage = false;
 
           //Close Dialog Window
@@ -277,11 +315,13 @@
 
     /* Save Group */
     function saveGroup() {
-
+       
       //Close Dialog Window
       vm.closeDialog();
 
       vm.showLoadingImage = true;
+
+      vm.group.name = vm.groupName;
 
       var editPack;
 
@@ -480,6 +520,17 @@
       vm.groupFilters = angular.copy(vm.groupFiltersDefaults);
     }
 
+    vm.downloadPDF = function(ev,  group_id, group_name){
+      var pdfName = group_name + '.pdf';
+      // 
+
+      kendo.drawing.drawDOM($("#WorkflowExport")).then(function(group) {
+        // 
+        kendo.drawing.pdf.saveAs(group, pdfName);
+        // 
+      });
+    }
+
     //Archieve Dialog
     vm.archieveDialog = archieveDialog;
     vm.saveArchieve = saveArchieve;
@@ -524,12 +575,12 @@
     };
     // Content sub menu
     vm.submenu = [
-      { link: 'folders.folders', title: 'Projects' },
-      { link: '', title: 'Workflows' },
-      { link: 'checklist', title: 'Checklists' },
-      { link: 'templates', title: 'Templates' },
-      { link: 'other', title: 'Other' },
-      { link: 'archives', title: 'Archives' }
+      { link: 'folders.folders', title: 'Projects', active : false },
+      { link: 'groups', title: 'Workflows', active : true },
+      { link: 'checklist', title: 'Checklists', active : false },
+      { link: 'templates', title: 'Templates', active : false },
+      { link: 'other', title: 'Other', active : false },
+      { link: 'archives', title: 'Archives', active : false}
 
     ];
 
@@ -576,7 +627,7 @@
         $rootScope.alertMessage('You can not paste in the same workflow');
       }
       else {
-        debugger;
+        // ;
         if ($rootScope.id_parent && $rootScope.id_parent != '') {
           var parent_origin_id = $scope.cutWorkflow.parent_origin_id;
           var parent_destination_id = $stateParams.id;
@@ -589,7 +640,7 @@
             if (res.type = 'success') {
               localStorage.removeItem('cutWorkflow');
               $rootScope.id_parent = '';
-              $rootScope.alertMessage('Paste successfully');
+              $rootScope.alertMessage('Pasted successfully');
               $scope.getGroups();
             }
 
@@ -661,16 +712,16 @@
       $mdDialog.hide(answer);
     };
 
-    $scope.subscriptionAlert = function (message) {
-      vm.title = 'Alert';
-      vm.message = message;
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
-        clickOutsideToClose: false
-      });
-    }
+    // $scope.subscriptionAlert = function (message) {
+    //   vm.title = 'Alert';
+    //   vm.message = message;
+    //   $mdDialog.show({
+    //     scope: $scope,
+    //     preserveScope: true,
+    //     templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+    //     clickOutsideToClose: false
+    //   });
+    // }
 
     // Schedule starts
 
@@ -678,12 +729,12 @@
     vm.saveScheduler = saveScheduler;
     vm.deleteScheduler = deleteScheduler;
 
-    function getSchedulerByChek() {
+    function getSchedulerByChek(group_id) {
 
 
       vm.newScheduler = {};
       vm.newScheduler.type = 'get';
-      vm.newScheduler.item_type_id = vm.scheduler_type.group_id;
+      vm.newScheduler.item_type_id = group_id;
       vm.newScheduler.item_type = 'workflow';
 
       api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
@@ -702,6 +753,9 @@
             vm.newScheduler.end_time = new Date(vm.item.end_time);
             vm.newScheduler.end = vm.item.end;
             vm.newScheduler.id = vm.item.id;
+          }else{
+            
+            vm.newScheduler.color = '#ffffff';
           }
 
         }
@@ -712,6 +766,8 @@
 
     function addschedule(ev, group) {
 
+      getSchedulerByChek(group.id);
+
       // vm.type.title = "Scheduler";
       vm.scheduler_type = {};
 
@@ -719,7 +775,7 @@
       vm.scheduler_type.group_name = group.name;
       vm.scheduler_type.group_id = group.id;
 
-      getSchedulerByChek();
+      // getSchedulerByChek(group.id);
 
       console.log('group', group);
       console.log('vm.scheduler_type.group_id', vm.scheduler_type);
@@ -739,10 +795,31 @@
       });
     };
 
+    function GetAllGanttRows() {
+      console.log('GetAllRows');
+
+
+
+      api.checklists.NewScheduler({type: "getRow"}).then(function (res) {
+        console.log('get rows res', res)
+        // 
+        if (res.data.type == 'success') {
+          vm.AllGanttRows = res.data.data;
+          
+        }
+
+      
+      })
+
+    }
+
+    GetAllGanttRows();
+
     function saveScheduler() {
 
       // = group.item_bread.project_name;
       //  = group.name;
+      vm.Alreadyclicked = true;
 
       vm.newScheduler.item_type_id = vm.scheduler_type.group_id;
       vm.newScheduler.item_type = 'workflow';
@@ -762,6 +839,8 @@
           $rootScope.message(vm.item ? "Schedule updated successfully" : "New Worrkflow schedule created successfully", 'success');
           $mdDialog.hide();
         }
+
+        vm.Alreadyclicked = false;
 
       });
 

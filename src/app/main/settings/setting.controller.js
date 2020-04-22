@@ -13,12 +13,12 @@
   //  vm.isLoader = true;
     // Content sub menu
     vm.submenu = [
-      { link: 'folders', title: 'Projects' },
-      { link: '', title: 'Workflows' },
-      { link: 'checklist', title: 'Checklists' },
-      { link: 'templates', title: 'Templates' },
-      { link: 'other', title: 'Other' },
-      { link: 'archives', title: 'Archives' }
+      { link: 'folders', title: 'Projects', active : false },
+      { link: 'groups', title: 'Workflows', active : false },
+      { link: 'checklist', title: 'Checklists', active : false },
+      { link: 'templates', title: 'Templates', active : false },
+      { link: 'other', title: 'Other', active : true },
+      { link: 'archives', title: 'Archives', active : false }
     ];
 
 

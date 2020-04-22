@@ -63,10 +63,16 @@
         vm.reports.loading = true;
         vm.reports.viewing = false;
         return api.summary.reports.get().success(function (res) {
+         
           vm.isLoader = false;
-
           if (res.code == '-1') {
-            $scope.subscriptionAlert(res.message);
+            if(res.message=='unauthorized access'){
+              $state.go('app.logout');
+            }else{
+    
+              // $scope.subscriptionAlert(res.message);
+              $rootScope.message(res.message, 'error')
+            }
           }
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Reports not loaded.', 'warning');
@@ -74,29 +80,64 @@
             // return $rootScope.message("Error loading reports: (" + res.code + ": " + res.message + ")");
           } else {
 
-            res.reports.forEach(function (report) {
+            // api.checklists.get().success(function (res) {
+            //   var ref;
+            //   if ((ref = res.checklists) != null ? ref.length : void 0) {
+            //     $rootScope.checklists = res.checklists;
+            //   }
+            //   $rootScope.loaded.checklists = true;
+          
+              
+            //   console.log('$rootScope.checklists issue--- ', $rootScope.checklists)
+
+            // })["finally"](function () {
+              
+              
+            // });
+            
+         
+            res.reports.forEach(function (report, index) {
               var checklists;
               checklists = [];
+              // index
+        
+               $rootScope.checklists
               report.idsCHK.forEach(function (idCHK) {
                 var checklist;
                 checklist = $filter('filter')($rootScope.checklists, {
                  idCHK: idCHK
                 });
+                
                 if (checklist !== void 0 && checklist.length) {
                   checklist = JSON.parse(JSON.stringify(checklist[0]));
                   checklist.lines = $filter('filter')(report.lines, {
                     idCHK: idCHK
                   });
+                  
                   return checklists.push(checklist);
                 }
               });
+              
+              // report.lines.forEach(function (line) {
+                  
+                report.chk_count = $scope.initChecklist(report.lines)
+                report.all_act_users = vm.total_active_us(report)
+              
+
+           
+              
               console.log(' -----------');
               console.log(' TEst it loaded reports', report.checklists);
+              
               console.log(' -----------');
               return report.checklists = checklists;
             });
             console.log('loaded reports', res.reports);
+            vm.isLoader = false;
+             
             return vm.reports.list = res.reports;
+
+           
           }
         }).error(function (err) {
           return $rootScope.message('Unable to load reports.', 'warning');
@@ -105,21 +146,35 @@
         });
       },
       request: function () {
+        vm.isLoader = true;
         vm.reports.requesting = true;
         vm.reports.progress = true;
-        vm.requestReportsProgress(vm.reports.progressDuration);
+        // vm.requestReportsProgress(vm.reports.progressDuration);
+        //  
+        $rootScope.message("Report is being processed. Please wait for a while to see the result.");
         return api.summary.reports.request().success(function (res) {
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Report not requested.', 'warning');
           } else if (res.code) {
             return $rootScope.message("Error requesting report: (" + res.code + ": " + res.message + ")");
           } else {
-         
-            $rootScope.message("Report is being processed.  Refresh in a little while to see the result.");
+            // vm.reports.refresh();
+            vm.reports.success = true;
+             
+            vm.reports.refresh();
+            //report = vm.reports.list[0];
+            //vm.reports.view(report, 0);
+            // res.posts;
+            vm.reports.progress = false;
+            $rootScope.message("Report has processed completely.");
           }
+
+          vm.isLoader = false;
         }).error(function (err) {
+          vm.isLoader = false;
           return $rootScope.message('Unable to request report.', 'warning');
         })["finally"](function () {
+          vm.isLoader = false;
           return vm.reports.requesting = false;
         });
       },
@@ -129,6 +184,7 @@
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Report not requested.', 'warning');
           } else if (res.type=='success') {
+             
            vm.reports.refresh();
            $rootScope.message("Report has been deleted successfully ", 'success');
           // return  vm.reports.list = res.reports;
@@ -139,21 +195,37 @@
           //return vm.reports.requesting = false;
         });
       },
-      view: function (report, id) {
+      view: function (report, id, tot_issues) {
+         
         var i;
         var x;
         console.log('report', report);
+        console.log('lines',  vm.reports.viewing.lines);
+        console.log('checklist', vm.reports.viewing.checklists);
+       
         vm.reports.viewing = report;
         vm.reports.viewing.id = id;
         vm.reports.success = false;
+        vm.TotalIssueReport = tot_issues;
+         
+ 
+        console.log('vm.reports.viewing', vm.reports.viewing);
 
         for (i = 0; i < vm.reports.viewing.idsCHK.length; i++) {
-          //console.log('vm.reports.viewing.idCHK[index]', vm.reports.viewing.idsCHK[i]);
+          console.log('vm.reports.viewing.idCHK[index] i-', i, vm.reports.viewing.idsCHK[i]);
+          
           for (x = 0; x < vm.reports.viewing.lines.length; x++) {
-            //console.log('vm.reports.viewing.lines[index]', vm.reports.viewing.lines[x]);
-            if (vm.reports.viewing.checklists[i].idCHK === vm.reports.viewing.lines[x].idCHK) {
-              return vm.reports.viewSub(vm.reports.viewing.checklists[i], i, vm.reports.viewing.checklists[i].lastActive);
+             
+            console.log('vm.reports.viewing.lines[index] x -', x, vm.reports.viewing.lines[x]);
+            console.log('vm.reports.viewing.checklists i -', i, vm.reports.viewing.checklists[i]);
+            
+            if(vm.reports.viewing.checklists ){
+              if (vm.reports.viewing.checklists[i].idCHK === vm.reports.viewing.lines[x].idCHK) {
+                 
+                return vm.reports.viewSub(vm.reports.viewing.checklists[i], i, vm.reports.viewing.checklists[i].lastActive);
+              }
             }
+            
           }
         }
         console.log('vm.reports.viewing', vm.reports.viewing);
@@ -161,10 +233,14 @@
       viewSub: function (checklist, id, lastActive) {
         console.log('checklist', checklist);
         console.log('id', id);
+        
+        $scope.initChecklist(vm.reports.viewing.lines);
+
         vm.reports.viewingSub = checklist;
         vm.reports.viewingSub.id = id;
         vm.reports.viewingSub.lastActive = lastActive;
         console.log('vm.reports.viewingSub', vm.reports.viewingSub);
+        // 
       },
       clear: function () {
         console.log('vm.reports.viewing', vm.reports.viewing);
@@ -206,14 +282,37 @@
       }
     };
 
-    vm.total_active_users = function ($index) {
-      // debugger;
+    // vm.total_active_users = function ($index) {
+    //   // // ;
+    //   var tot_active_users_all = 0;
+    //   var arr = [];
+    //   var idChk_arr = [];
+    //   //var report_len = vm.reports.list.length;
+    //   var report = vm.reports.list[$index];
+    //  // // ;
+    //     if(report.lines.length > 0){
+    //         for(var i= 0;i<report.lines.length;i++){
+    //           var cur_idChk = report.lines[i].idCHK;
+    //           if(idChk_arr.indexOf(cur_idChk) === -1){
+    //             tot_active_users_all  += parseInt(report.lines[i].counts.active_users);
+    //             idChk_arr.push(report.lines[i].idCHK);
+    //           }
+             
+    //         }
+    //     }        
+    //    // // ;
+    //     return tot_active_users_all;
+
+    // }
+
+    vm.total_active_us = function (report) {
+      // // ;
       var tot_active_users_all = 0;
       var arr = [];
       var idChk_arr = [];
       //var report_len = vm.reports.list.length;
-      var report = vm.reports.list[$index];
-     // debugger;
+      // var report = vm.reports.list[$index];
+     // // ;
         if(report.lines.length > 0){
             for(var i= 0;i<report.lines.length;i++){
               var cur_idChk = report.lines[i].idCHK;
@@ -224,7 +323,6 @@
              
             }
         }        
-       // debugger;
         return tot_active_users_all;
 
     }
@@ -260,13 +358,15 @@
         arr['tot_msg'] = tot_msg;
         arr['tot_active_users'] = tot_active_users;
         return arr;
-        // debugger;
+   
 
     }
 
     $scope.initChecklist = function (lines) {
+        
       var idChk_arr = [];
       var chk_count = 0;
+  
       if(lines.length > 0){
           for(var i= 0;i<lines.length;i++){
             var cur_idChk = lines[i].idCHK;
@@ -279,6 +379,10 @@
           }
          
         }
+        console.log('chk_count', chk_count)
+        console.log('idChk_arr', idChk_arr)
+        vm.chk_count = chk_count;
+       
         return chk_count;
 
     }
@@ -293,7 +397,7 @@
     //         }
     //     }
     //     return tot_msg;
-    //     debugger;
+    //     // ;
 
     // }
 
@@ -306,6 +410,7 @@
       return $rootScope.viewAs.select(user).then(function () {
         console.log('viewing as', user);
         console.log('about to nav to', checklist, $rootScope.viewAs.notMe);
+        // 
         if ($rootScope.viewAs.notMe) {
           return $location.path("/checklist/detail/" + checklist.idCHK);
         }
@@ -313,7 +418,7 @@
     };
 
     function showComparison(checklist, user, conflicts) {
-      // debugger;
+      // // ;
       //console.log('checklist', checklist);
       console.log('conflicts', conflicts);
       //console.log('user', user);
@@ -350,7 +455,7 @@
       ];
       */
 
-      // debugger;
+
       //console.log('conflicts2', conflicts2);
       $rootScope.showingUsers = [showMe, showThem];
 
@@ -363,6 +468,7 @@
       $timeout(function () {
         var report;
         vm.reports.success = true;
+         
         vm.reports.refresh();
         //report = vm.reports.list[0];
         //vm.reports.view(report, 0);
@@ -395,6 +501,7 @@
 
     $scope.$on('event:checklistsLoaded', function () {
       if (!vm.reports.loading) {
+         
         return vm.reports.refresh();
       }
     });
@@ -411,14 +518,14 @@
       });
     }
 
-
+     
     vm.reports.refresh();
     // Content sub menu
     vm.submenu = [
-      { link: '', title: 'Issues' },
-      { link: 'schedule', title: 'Schedules' },
-      { link: 'reports', title: 'Reports' },
-      { link: 'dashboard', title: 'Dashboard' }
+      { link: 'summary', title: 'Issues', active : true },
+      { link: 'schedule', title: 'Schedules', active : false },
+      { link: 'reports', title: 'Reports', active : false },
+      { link: 'dashboard', title: 'Dashboard', active : false }
     ];
 
     $('.Communicate').removeClass('communicate');

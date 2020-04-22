@@ -68,10 +68,23 @@
                 </div>
 
                 <div layout="row" layout-wrap>
-                    <md-checkbox ng-model="vm.datapoint_item.item_alert" aria-label="yes">
+                    <md-checkbox ng-disabled="!vm.datapoint_item.item_type" ng-model="vm.datapoint_item.item_alert" aria-label="Set Alert">
                         Set Alert
                     </md-checkbox>
 
+                </div>
+
+                <div ng-if="vm.datapoint_item.item_alert" layout="row" layout-wrap>
+                    <md-checkbox ng-model="vm.datapoint_item.alert_sms" aria-label="Send Alert as SMS Text" class="md-block">
+                        Send Alert as SMS Text
+                    </md-checkbox>
+                </div>
+
+                <div ng-if="vm.datapoint_item.item_alert && vm.datapoint_item.alert_sms" layout="row" layout-wrap >
+                    <md-input-container  class="md-block">
+                        <label>Mobile Number</label>
+                        <input name="name" style="color: #000;" type="text" ng-model="vm.datapoint_item.mobile" ng-required="vm.datapoint_item.alert_sms" >
+                    </md-input-container>
                 </div>
 
             </md-input-container>
@@ -81,8 +94,8 @@
         <md-dialog-actions layout="row" layout-align="space-between center">
             <div layout="row" layout-align="start center">
                 <md-button type="submit" md-no-ink class="md-raised md-accent" 
-                    aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">
-
+                    aria-label="Save" translate="" translate-attr-aria-label="" ng-disabled="checklistForm.$invalid || checklistForm.$pristine || vm.headingDialog">
+                    {{ (vm.datapoint_item.id) ? 'Update' : 'Save' }}
                 </md-button>
             </div>
 

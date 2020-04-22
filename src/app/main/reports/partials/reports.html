@@ -1,65 +1,288 @@
+<div class="showLoadingImage" flex ng-if=" !vm.isLoader && vm.showLoadingImage">
+  <div class="loaderimg">
+    <img src="assets/images/logos/loading.gif" width="200">
+  </div>
+</div>
+
+<!-- <div ng-dropdown-multiselect="" options="myDropdownOptions" selected-model="myDropdownModel" extra-settings="myDropdownSettings"></div> -->
 <div class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
 
+  <div ng-if="!vm.totalReports.length" class="info" flex>
+    <div class="title m-20">
+      No reports created yet.
 
-  <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0" ng-show="!vm.closeList">
+      <md-menu class="pr-10 " style="float:right;" ng-if="!$root.viewAs.notMe && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
+        <button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort" translate>
+          <md-icon ng-class="!vm.groups.length  && !vm.isLoader  && !vm.showLoadingImage ? pt-15 : ''"
+            md-font-icon="icon-dots-horizontal s18"></md-icon>
+        </button>
+
+        <md-menu-content>
+          <md-menu-item>
+            <md-button ng-click="vm.openDialog('AddEdit')">
+              <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+              <span translate="">Add New Report</span>
+            </md-button>
+          </md-menu-item>
+
+        </md-menu-content>
+      </md-menu>
+    </div>
+
+  </div>
+
+
+
+  <table ng-if="vm.totalReports.length" class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0"
+    ng-show="!vm.closeList">
     <thead class="tool-bg">
       <tr>
-        <th >Invoice Date
-          <md-button class="md-icon-button" ng-click="vm.reportDateDescending = !vm.reportDateDescending"
-          aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
-            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportDateDescending!='file.label'" class="s18"></md-icon>
-            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportDateDescending === true" class="s18">
-            </md-icon>
-            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.reportDateDescending === false" class="s18">
-            </md-icon>
+        <th class="max-10" height="50" width="20%">Name
+          <md-button class="md-icon-button" ng-click="vm.sortBy('file.label')" aria-label="Sort Direction" translate
+            translate-attr-aria-label="GROUP.SORT_DIRECTION">
           </md-button>
-
         </th>
-        <th >Checklist Changes
-          <md-button class="md-icon-button" ng-click="vm.reportChecklistDescending = !vm.reportChecklistDescending"
-          aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
-          <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportChecklistDescending!='file.label'" class="s18"></md-icon>
-            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportChecklistDescending === true" class="s18">
-            </md-icon>
-            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.reportChecklistDescending === false" class="s18">
-            </md-icon>
-          </md-button>
+        <th>Rows </th>
+        <th>Columns</th>
 
-        </th>
-        <th >User Changes
-          <md-button class="md-icon-button" ng-click="vm.reportUserDescending = !vm.reportUserDescending"
-          aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
-          <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportUserDescending!='file.label'" class="s18"></md-icon>
-            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportUserDescending === true" class="s18">
-            </md-icon>
-            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.reportUserDescending === false" class="s18">
-            </md-icon>
-          </md-button>
 
-        </th>
-        <th >Marked Complete
-          <md-button class="md-icon-button" ng-click="vm.reportMarkedDescending = !vm.reportMarkedDescending"
-          aria-label="Sort Direction" translate translate-attr-aria-label="GROUP.SORT_DIRECTION">
-          <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportMarkedDescending!='file.label'" class="s18"></md-icon>
-            <md-icon md-font-icon="icon-sort-ascending" ng-if="vm.reportMarkedDescending === true" class="s18">
-            </md-icon>
-            <md-icon md-font-icon="icon-sort-descending" ng-if="vm.reportMarkedDescending === false" class="s18">
-            </md-icon>
-          </md-button>
+        <th class="text-right ">
+          <md-menu class="pr-10" ng-if="!$root.viewAs.notMe">
+            <button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
+              translate>
+              <md-icon ng-class="!vm.groups.length  && !vm.isLoader  && !vm.showLoadingImage ? pt-15 : ''"
+                md-font-icon="icon-dots-horizontal s18"></md-icon>
+            </button>
 
+            <md-menu-content>
+              <md-menu-item>
+                <md-button ng-click="vm.openDialog('AddEdit')">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                  <span translate="">Add New Report</span>
+                </md-button>
+              </md-menu-item>
+
+            </md-menu-content>
+          </md-menu>
         </th>
       </tr>
     </thead>
-  <!-- ng-repeat="(key, notification) in  vm.notifications" -->
-    <tbody > 
-      <tr >
-     
-      
-        <td>ghfg</td>
-        <td>fgdg</td>
-        <td>dfgg</td>
-        <td>dfgg</td>
+
+    <tbody ng-repeat="(index, report) in  vm.totalReports | filter: globalSearch.searchTerm">
+      <tr>
+
+
+        <td class="max-10"><span class="link-color pointer capitalize" ng-click=" ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager) && vm.reportDetails(report, index);">
+            <!-- <md-button class="md-icon-button " "> -->
+            <md-icon md-font-icon="icon-sort-ascending" class="fa fa-angle-down"></md-icon>
+
+            <!-- </md-button> -->
+            {{report.name}}
+
+          </span></td>
+
+
+        <td>{{report.report_datatable[0].row}}</td>
+        <td>{{report.report_datatable[0].column}}</td>
+
+        <td></td>
+
       </tr>
+    </tbody>
+  </table>
+
+  <table class="simple row-border hover bordered-table list" cellpadding="0" cellspacing="0"
+    ng-if="vm.reportListNAme &&  vm.closeList">
+    <thead>
+      <tr>
+        <th height="50" width="50%">
+          <!-- flex-end pull-right -->
+          <!-- class="fa fa-times-circle danger" -->
+          <!-- <md-button class="md-icon-button " > -->
+          <md-icon md-font-icon="icon-sort-ascending" ng-click="vm.closeReportDetails()" class="fa fa-angle-up">
+          </md-icon>
+
+          <!-- </md-button> -->
+          <span class="link-color capitalize"> {{ vm.reportListNAme }} </span>
+          </span>
+        </th>
+        <th width="50%" colspan="4">
+
+          <!-- </th>
+
+          <th width="5%" class="text-right " > -->
+
+          <md-menu class="pr-10 flex-end pull-right" ng-if="!$root.viewAs.notMe">
+            <button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort"
+              translate>
+              <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+            </button>
+
+            <md-menu-content>
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport('edit_report')">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                  <span translate="">Edit Report</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport()">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-filter"></md-icon>
+                  <span translate="">Filter</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport('add chart')">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                  <span translate="">Add Chart</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport('report_duplicate')">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+                  <span translate="">Duplicate Report</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport()" ng-disabled=true>
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-comment-multipe-outline"></md-icon>
+                  <span translate="">Messages</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport()" ng-disabled=true>
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-account-plus"></md-icon>
+                  <span translate="">Send Link Request</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport()" ng-disabled=true>
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-account-switch"></md-icon>
+                  <span translate="">Show Link Request</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport('export_csv')">
+                  <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
+                  <span translate="">Export CSV</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport()" ng-disabled=true>
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-file-pdf"></md-icon>
+                  <span translate="">Download PDF</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport('edit_report_name')">
+                  <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                  <span translate="">Edit Name</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item>
+                <md-button ng-click="vm.ActionReport('delete_report')">
+                  <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+                  <span translate="">Delete Report</span>
+                </md-button>
+              </md-menu-item>
+
+            </md-menu-content>
+          </md-menu>
+
+        </th>
+
+      </tr>
+    </thead>
+  </table>
+
+  <!-- charts start -->
+  <div ng-if="vm.reportListNAme &&  vm.closeList && vm.reportView.chart_list.length"
+    ng-repeat="(index, chart) in vm.reportView.chart_list " class=" chart-class pt-20" layout="column" flex="50">
+
+    <md-menu class="pr-10 flex-end pull-right">
+      <button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="Sort" translate>
+        <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+      </button>
+      <md-menu-content>
+
+        <md-menu-item ng-if="chart.show_in_dashboard == 0">
+          <md-button ng-click="vm.ActionReport('show_in_dashboard', chart)">
+            <md-icon class="md-accent-fg s18" md-font-icon="icon-plus-circle-outline"></md-icon>
+            <span translate="">Add To Dashboard </span>
+          </md-button>
+        </md-menu-item>
+
+        <md-menu-item>
+          <md-button ng-click="vm.ActionReport('delete_chart', chart, index)">
+            <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
+            <span translate="">Delete Chart</span>
+          </md-button>
+        </md-menu-item>
+
+      </md-menu-content>
+    </md-menu>
+
+    <canvas id=bar class="chart chart-base" chart-type="chart.chart_data.chartType"
+      chart-data="chart.chart_data.graphdata" chart-labels="chart.chart_data.labels"
+      chart-options="chart.chart_data.options"></canvas>
+
+  </div>
+  <!-- charts end -->
+
+  <hr ng-if="vm.reportListNAme &&  vm.closeList && vm.reportView.chart_list.length" class="mb-20">
+
+  <table class="simple row-border hover bordered-table list mb-30" cellpadding="0" cellspacing="0"
+    ng-if="vm.reportListNAme &&  vm.closeList">
+    <!-- <thead>
+      <tr>
+        <th ng-repeat="(index, header) in vm.reportView.report_header track by index">
+          <b>{{header === null ? '' : header }}</b>
+        </th>
+
+      </tr>
+    </thead> -->
+
+
+
+    <!--  | filter: globalSearch.searchTerm -->
+    <tbody ng-repeat="dataa in  vm.reportView.report_datatable">
+      <!-- <tr ng-repeat="data in  vm.reportView.report_data">
+        <td> {{data.value}} </td>
+        <td></td>
+        
+        <td colspan={{vm.CountColSpan}} ></td>
+        
+      </tr> -->
+
+      <tr ng-repeat="(row_index, row) in [].constructor(dataa.row) track by row_index">
+        <td ng-repeat="(column_index, column) in [].constructor(dataa.column) track by column_index">
+
+          <div ng-class="data.type == 'Label' ? 'text-capitalize text-semibold' : ''"
+            ng-if="(data.col -1) == column_index  && (data.row_no-1) === row_index" ng-repeat="data in dataa.table_str">
+            <span> {{data.final_Val ? data.final_Val : data.type == 'Label' ? data.value :'--'}}</span>
+            <!-- <span ng-repeat="value in vm.reportView.report_data"> {{((data.col_no-1) == (value.col-1)  == column_index  && (data.row_no-1)  == (value.row-1) == row_index  && (value.index = data.index)) ? value.value : '--'}}</span> -->
+            <!-- <span ng-repeat="value in vm.reportView.report_data"> {{data.col_no}}== {{value.col}} -- {{data.row_no}}   == {{value.row}} -- {{value.value }}</span> -->
+          </div>
+          <!-- ng-if="data.col_no == column_index" -->
+          <!-- ng-if="(data.col_no -1) === column_index && (data.row_no -1) === row_index "  -->
+        </td>
+      </tr>
+
+      <!-- <tr ng-repeat="data in  vm.reportView.report_data"> -->
+      <!-- <td ng-repeat="data in  vm.reportView[]"> {{data.}} </td>
+        <td ng-repeat="data in  vm.reportView.report_data">{{data.label }} </td> -->
+
+      <!-- </tr> -->
     </tbody>
   </table>
 

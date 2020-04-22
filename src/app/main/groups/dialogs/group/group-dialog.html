@@ -1,4 +1,4 @@
-<md-dialog class="dialog" aria-label="">
+<md-dialog style="position: fixed;" class="dialog" aria-label="">
   <form name="groupForm" class="md-inline-form" novalidate>
     <md-toolbar class="md-accent md-hue-2">
       <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
@@ -8,7 +8,7 @@
         </md-button>
       </div>
     </md-toolbar>
-    <md-dialog-content ms-scroll ng-if="!vm.projectParamId">
+    <md-dialog-content ms-scroll ng-if="vm.ChooseProject">
       <md-input-container class="md-block mb-0">
         <label translate="GROUP.NAME">Group Name {{vm.projects}}</label>
         <md-select name="project_id" required ng-model="vm.group.Id" placeholder="Select a Project">
@@ -25,7 +25,7 @@
     <md-dialog-content ms-scroll>
       <md-input-container class="md-block mb-0">
         <label>{{ vm.type ? '' : 'Workflow' }} Name</label>
-        <input name="name" ng-model="vm.group.name" required md-autofocus>
+        <input name="name" ng-model="vm.groupName" required md-autofocus>
         <div ng-messages="groupForm.name.$error" ng-show="groupForm.name.$touched" role="alert">
           <div ng-message="required">
             <span translate="GROUP.ERRORS.GROUP_NAME_REQUIRED">Workflow Name field is required</span>
@@ -57,7 +57,7 @@
       <div layout="row" layout-align="end center" flex>
         <md-button type="submit" ng-if="!vm.newGroup" ng-click="vm.saveGroup()" class="md-raised md-accent" ng-disabled="groupForm.$invalid || groupForm.$pristine"
           aria-label="Save" translate="GROUP.SAVE" translate-attr-aria-label="GROUP.SAVE">
-          SAVE GROUP
+          SAVE 
         </md-button>
 
         <md-button type="submit" ng-if="vm.newGroup" ng-click="vm.addNewGroup(vm.folderID)" class="md-raised md-accent"
@@ -68,6 +68,13 @@
         <md-button ng-show="vm.type" ng-click="insertLink = insertLink == true ? false : true;" class="md-accent capitalize">
           {{insertLink ? 'Cancel' : 'Insert'}} Link
         </md-button>
+        <md-checkbox ng-if="vm.type"
+        ng-model="vm.group.attachment"
+        aria-label="Include Attachments"
+        ng-true-value="'yes'"
+        ng-false-value="''"
+        class="md-success md-align-top-left">
+        Include Attachments
       </div>
 
       <div layout="row">

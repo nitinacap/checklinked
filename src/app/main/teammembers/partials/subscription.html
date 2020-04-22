@@ -1,3 +1,4 @@
+
 <div class="simple-table-container form-container md-background-bg md-whiteframe-1dp">
   <table class="simple row-border hover bordered-table" cellspacing="0" cellpadding="0" ms-responsive-table>
     <thead>
@@ -9,52 +10,123 @@
           </div>
         </th>
 
+        <th></th>
+
         <th ng-repeat="role in vm.memberRoles.permission_set" class="hide-xs secondary-text">
-          <div class="text-center capitalize">{{role[0].role}} {{ role[0].role =='Manager' ||  role[0].role =='Paid User'  ? '('+role[0].assign + '/' + role[0].total+')' : ''  }}
+          <div class="text-center capitalize">{{role[0].role}} {{ role[0].role =='Manager' ||  role[0].role =='Paid User'  ? '('+role[0].assign + '/' + role[0].total+')' : ''  }} 
         </th>
         <th class="secondary-text">
-          <div class="text-center"></div>
+          <div class="text-center">
+            <!-- <div style="position: relative;top:30px;right: 30px;"> -->
+              <!-- <i ng-if="vm.myvalue && vm.ScreenLocked && !$root.viewAs.notMe && ($root.AccountPermission.isManager || $root.AccountPermission.isAdmin || (($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager) && ($root.AccountPermission.isController || $root.AccountPermission.isAccountOwner)))"  ng-click="ScreenLockManage('unlock')" class="fa fa-lock lockTop" aria-hidden="true"></i>
+                <i ng-if="vm.myvalue && !vm.ScreenLocked  && !$root.viewAs.notMe" ng-click="ScreenLockManage('lock')" class="fa fa-unlock lockTop" aria-hidden="true"></i>
+                
+                <md-menu ng-if = "!$root.viewAs.notMe " class="moreMenuOnTab" ng-disabled="!vm.myvalue">
+                    <md-icon ng-click="$mdOpenMenu($event)"  ng-show="vm.myvalue" md-font-icon="icon-dots-vertical s18"></md-icon>
+      
+      
+      
+                  <md-menu-content width="3">
+      
+                    <md-menu-item
+                      ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1"
+                      ng-if="vm.memberRoles.subscribed_status == 'un-subscribed' || $root.AccountPermission.isController || $root.AccountPermission.isAdmin" >
+                      <md-button ng-click="vm.openSubscriptionDialog(member)">
+                        <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                        </md-icon>
+                        <span ng-if="vm.memberRoles.subscribed_status == 'un-subscribed'">Add Paid Account</span>
+                        <span ng-if="vm.memberRoles.subscribed_status == 'subscribed'">Add Subscription</span>
+                      </md-button>
+                    </md-menu-item>
+      
+      
+                    <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-assign-roles') !== -1">
+                      <md-button ng-click="vm.openRoleTypeDialog(member)">
+                        <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                        </md-icon>
+                        <span ng-show="vm.roleTypes.length == 0">Add Role</span>
+                        <span ng-show="vm.roleTypes.length > 0">Add / Edit Role</span>
+                      </md-button>
+                    </md-menu-item>
+      
+      
+                    <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1"
+                      ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                      <md-button ng-click="vm.addUser(vm.memberRoles.subscribed_status)">
+                        <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                        </md-icon>
+                        <span>Add User</span>
+                      </md-button>
+                    </md-menu-item>
+      
+                    <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1"
+                      ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                      <md-button ng-click="vm.addManagerTeam(vm.memberRoles.subscribed_status)">
+                        <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                        </md-icon>
+                        <span>Add/Edit Manager’s Team</span>
+                      </md-button>
+                    </md-menu-item>
+      
+                    <md-menu-item
+                      ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1"
+                      ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                      <md-button ng-click="vm.openSubscriptionDialog(member)">
+                        <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                        </md-icon>
+                        <span ng-if="vm.memberRoles.subscribed_status == 'subscribed'">Edit Subscription</span>
+                      </md-button>
+                    </md-menu-item>
+      
+                  </md-menu-content>
+                </md-menu> -->
+      
+              <!-- </div> -->
+          </div>
         </th>
       </tr>
 
-     
+
     </thead>
     <tbody>
       <tr ng-repeat="member in vm.memberRoles.list | filter: globalSearch.searchTerm"
         ng-class="[{success2:(isUser = (member.idCON == user.idCON))},{warning:(isViewing = (viewAs.notMe && (member.idCON == viewAs.user.idCON)))}]">
 
-        <td>{{member.name.full}}  {{ member.owner =='owner' ? '(Admin)' : member.role_type  }}&nbsp; <md-icon ng-show="isViewing" layout-align="start center" class="md-accent-fg s18"
-            md-font-icon="icon-eye"></md-icon>
-        </td>
+        <td>{{member.name.full}} &nbsp; <md-icon ng-show="isViewing" layout-align="start center" class="md-accent-fg s18 pt-0 "
+          md-font-icon="icon-eye"></md-icon>
+      </td>
+
+      <td> {{ member.owner =='owner' ? 'Admin' : member.role_type  }} </td>
 
         
         <td ng-repeat="role in vm.memberRoles.roles " ng-switch="member.roles" class="text-center hide-xs">
           
           <button type="button"
             ng-click="vm.changeRole(member.idCON, vm.rolevalues[$index], member.roles.has.indexOf(vm.rolekeys[$index]),vm.memberRoles.roles )"
-            class="button-icon-reset" aria-label="role">
+            class="button-icon-reset" aria-label="role" ng-disabled="vm.ScreenLocked"> 
             <md-icon ng-show="member.roles.has.indexOf(vm.rolekeys[$index]) == -1"
-              md-font-icon="icon-checkbox-blank-outline" class="md-accent-fg s18"></md-icon>
+              md-font-icon="icon-checkbox-blank-outline" class="md-accent-fg s18 pt-0 "></md-icon>
             <md-icon ng-show="member.roles.has.indexOf(vm.rolekeys[$index])!==-1"
-              md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18"></md-icon>
+              md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18 pt-0 "></md-icon>
           </button>
 
         </td>
 
         <td ng-switch="(offboarding = (vm.members.offboard.inProgress.indexOf(member.idCON) > -1))" class="text-right" >
-            
-          <div class="buttons" layout="row" layout-align="end center">
-            <md-menu>
+          
+            <!-- ng-if="!$root.viewAs.notMe && !member.roles.has.includes('Free User') && member.roles.has.includes('Controller')" -->
+          <div ng-if="!$root.viewAs.notMe && $root.AccountPermission.isManager || (vm.logged_user_roles.indexOf('Controller')!==-1 && member.idCON == user.idCON) || (vm.logged_user_roles.indexOf('Controller')!==-1  && ($root.AccountPermission.isManager ||  $root.AccountPermission.isAdmin))"  class="buttons" layout="row" layout-align="end center">
+            <md-menu ng-if="$root.AccountPermission.isPaidUser"> 
               <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
                 translate translate-attr-aria-label="">
-                <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
+                <md-icon md-font-icon="icon-dots-vertical s18 "></md-icon>
               </md-button>
 
 
-              <md-menu-content width="3">
+              <md-menu-content width="3" >
                 <!-- <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1">
                   <md-button ng-click="vm.addUser(vm.memberRoles.subscribed_status)">
-                    <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                    <md-icon class="md-accent-fg fa fa-plus-circle s18 pt-0 " md-font-icon="icon-comment-multipe-outline">
                     </md-icon>
                     <span>Add User</span>
                   </md-button>
@@ -62,9 +134,9 @@
 
                 
                 <md-menu-item
-                ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1" ng-if="vm.logged_user_roles.indexOf('Controller')!==-1 && member.idCON == user.idCON">
+                ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1" ng-if="vm.logged_user_roles.indexOf('Controller')!==-1 && member.idCON == user.idCON ">
                 <md-button ng-click="vm.openSubscriptionDialog(member)">
-                  <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                  <md-icon class="md-accent-fg fa fa-plus-circle s18 " md-font-icon="icon-comment-multipe-outline">
                   </md-icon>
                  
                   <span>Add Subscription</span>
@@ -74,8 +146,8 @@
 
 
                 <md-menu-item
-                  ng-show="vm.checkIsPermission.indexOf('delete-users-managers') !== -1 && member.idCON != user.idCON" ng-if="vm.logged_user_roles.indexOf('Controller')!==-1">
-                  <md-button ng-click="vm.members.offboard.execute(member)" ng-disabled="offboarding"
+                  ng-show="vm.checkIsPermission.indexOf('delete-users-managers') !== -1 && member.idCON != user.idCON" ng-if="vm.logged_user_roles.indexOf('Controller')!==-1  && ($root.AccountPermission.isManager ||  $root.AccountPermission.isAdmin)">
+                  <md-button ng-click="vm.members.offboard.execute(member, $index)" ng-disabled="offboarding"
                     translate-attr-aria-label="TEAMMEMBERS.DELETE_MEMBER">
                     <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                     <span translate="TEAMMEMBERS.DELETE_MEMBER">Delete Member </span>
@@ -86,7 +158,7 @@
                 <!-- <md-menu-item
                   ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1">
                   <md-button ng-click="vm.openSubscriptionDialog(member)">
-                    <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                    <md-icon class="md-accent-fg fa fa-plus-circle s18 pt-0 " md-font-icon="icon-comment-multipe-outline">
                     </md-icon>
                     <span>Add Subscriptions</span>
                   </md-button>
@@ -95,7 +167,7 @@
                 <!-- <md-menu-item
                   ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1">
                   <md-button ng-click="vm.openSubscriptionListDialog(vm.getsubscriptions)">
-                    <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                    <md-icon class="md-accent-fg fa fa-plus-circle s18 pt-0 " md-font-icon="icon-comment-multipe-outline">
                     </md-icon>
                     <span>Cancel Subscriptions</span>
                   </md-button>
@@ -104,7 +176,7 @@
 
                 <!-- <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-assign-roles') !== -1">
                   <md-button ng-click="vm.openRoleTypeDialog(member)">
-                    <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                    <md-icon class="md-accent-fg fa fa-plus-circle s18 pt-0 " md-font-icon="icon-comment-multipe-outline">
                     </md-icon>
                     <span>Add Edit/Role</span>
                   </md-button>
@@ -113,7 +185,7 @@
 
                 <md-menu-item
                   ng-show="(!isUser && !isViewing) || ((isUser) && viewAs.notMe)  && member.idCON == user.idCON" ng-if="vm.logged_user_roles.indexOf('Manager')!==-1">
-                  <md-button ng-click="viewAs.select(member)" aria-label="View As"
+                  <md-button ng-click="ScreenLockManage('lock'); viewAs.select(member)" aria-label="View As"
                     translate-attr-aria-label="TEAMMEMBERS.VIEW_AS">
                     <md-icon class="md-accent-fg s18" md-font-icon="icon-eye"></md-icon>
                     <span translate="TEAMMEMBERS.VIEW_AS">View As</span>

@@ -1,8 +1,8 @@
 <table class="bordered-table public" cellpadding="0" cellspacing="0" width="100%">
   <thead>
     <tr ng-if="vm.templates.list.internal.length">
-      <th class="text-left">
-        <div class="table-header">
+      <th class="text-center ">
+        <!-- <div class="table-header text-center"> -->
           <span class="column-title">Name</span>
           <md-button class="md-icon-button" ng-click="vm.sortBy('name')" aria-label="Sort Direction" translate
             translate-attr-aria-label="GROUP.SORT_DIRECTION">
@@ -13,10 +13,10 @@
             <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='name'" class="s18">
             </md-icon>
           </md-button>
-        </div>
+        <!-- </div> -->
       </th>
-      <th class="text-left">
-        <div class="table-header">
+      <th class="text-center">
+        <!-- <div class="table-header text-center"> -->
           <span class="column-title">Author</span>
           <md-button class="md-icon-button" ng-click="vm.sortBy('author')" aria-label="Sort Direction" translate
             translate-attr-aria-label="GROUP.SORT_DIRECTION">
@@ -27,10 +27,10 @@
             <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='author'" class="s18">
             </md-icon>
           </md-button>
-        </div>
+        <!-- </div> -->
       </th>
-      <th class="text-left">
-        <div class="table-header">
+      <th class="text-center">
+        <!-- <div class="table-header text-center"> -->
           <span class="column-title">Type</span>
           <md-button class="md-icon-button" ng-click="vm.sortBy('type')" aria-label="Sort Direction" translate
             translate-attr-aria-label="GROUP.SORT_DIRECTION">
@@ -41,7 +41,7 @@
             <md-icon md-font-icon="icon-sort-descending" ng-if="!vm.reverse && vm.templateOrder=='type'" class="s18">
             </md-icon>
           </md-button>
-        </div>
+        <!-- </div> -->
       </th>
 
       <th></th>
@@ -56,12 +56,12 @@
             md-font-icon="icon-plus" aria-hidden="true">
           </md-icon>
         </a>
-        <span class="textcolor">{{template.name}}</span></td>
+        <span class="textcolor text-center">{{template.name}}</span></td>
       <td width="15%"><span class="textcolor">{{template.author}}</span></td>
-      <td width="15%" ng-if="template.type">{{template.type}}</td>
+      <td class="text-center" width="15%" ng-if="template.type">{{template.type}}</td>
       <td class="text-right">
 
-        <md-menu>
+        <md-menu ng-if="!$root.viewAs.notMe">
           <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
             translate translate-attr-aria-label="">
             <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>
@@ -70,28 +70,28 @@
           <md-menu-content width="3">
 
             <md-menu-item>
-              <md-button ng-click="vm.download.begin($event, template.id, 'checklist')" translate-attr-aria-label="">
+              <md-button ng-click="vm.download.begin($event, template.id, 'checklist',template.attachments)" translate-attr-aria-label="">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
                 <span translate="">Download Template</span>
               </md-button>
             </md-menu-item>
 
             <md-menu-item ng-show="template.type=='group'">
-              <md-button ng-click="vm.download.begin($event, template.id, 'group')" translate-attr-aria-label="">
+              <md-button ng-click="vm.download.begin($event, template.id, 'group', template.attachments)" translate-attr-aria-label="">
                 <md-icon class="md-accent-fg s18" md-font-icon="icon-cloud-download"></md-icon>
                 <span translate="">Download Template</span>
               </md-button>
             </md-menu-item>
 
             <md-menu-item
-              ng-show="vm.checkIsPermission.indexOf('delete-their-own-templates') !== -1 && template.idCON == user.idCON">
+              ng-show="vm.checkIsPermission.indexOf('delete-their-own-templates') !== -1 && template.idCON == user.idCON && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
               <md-button ng-click="vm.deleteItemConfirm(template,  $event)" translate-attr-aria-label="">
                 <md-icon class="red-600-fg s18" md-font-icon="icon-trash"></md-icon>
                 <span translate="">Delete Template</span>
               </md-button>
             </md-menu-item>
 
-            <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1">
+            <md-menu-item ng-show="vm.checkIsPermission.indexOf('archive-projects-workflows-checklists') !== -1 && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)">
               <md-button ng-click="vm.archieveDialog($event, template.id, 'internal template')"
                 aria-label="Archive All">
                 <md-icon class="md-accent-fg s18" md-font-icon="fa fa-download"></md-icon>
@@ -113,7 +113,8 @@
     </tr>
   </tbody>
 </table>
-
-<h3 ng-if="!vm.templates.list.internal.length">No internal templates yet. Download public templates from
-  menu above.
-</h3>
+<div class="pl-20">
+  <h3 ng-if="!vm.templates.list.internal.length" >No internal templates yet. Download public templates from
+    menu above.
+  </h3>
+</div>

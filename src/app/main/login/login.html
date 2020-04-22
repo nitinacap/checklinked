@@ -18,7 +18,7 @@
                 </div>
                 <div class="title text-left" ng-if="login_error || firstLogin" ng-bind="login_error" style="color:red; font-size:12px;"></div>
 
-                <form name="loginForm" novalidate ng-submit="vm.login()" ng-if="!firstLogin">
+                <form name="loginForm" novalidate ng-submit="$root.login()" ng-if="!firstLogin">
                     <md-input-container class="md-block" md-no-float>
                         <input type="email" name="email" ng-model="vm.email" placeholder="Email" ng-pattern="/^.+@.+\..+$/"
                             required>
@@ -112,7 +112,7 @@
             <div class="title">Log in to your account</div>
             <div class="title text-left" ng-if="login_error" ng-bind="login_error" style="color:red; font-size:12px;"></div>
 
-            <form name="loginForm" novalidate ng-submit="vm.login()">
+            <form name="loginForm" novalidate ng-submit="$root.login()">
                 <md-input-container class="md-block" md-no-float>
                     <input type="email" name="email" ng-model="vm.email" placeholder="Email" ng-pattern="/^.+@.+\..+$/" required>
                     <div ng-messages="loginForm.email.$error" role="alert" multiple>
@@ -153,3 +153,6 @@
         </div>
     </div>
 </div> -->
+
+
+<!-- https://checklinked.azurewebsites.net/assets/images/logos/checklinked.png -->

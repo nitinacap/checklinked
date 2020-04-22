@@ -54,7 +54,7 @@
         },
         login: function () {
           console.log('idSUI', idSUI);
-          debugger;
+          // ;
 
           vm.acceptInvite.accepting = true;
           return api.subscriptions.acceptInvite(idSUI, 'login', vm.acceptInvite.signin).error(function (res) {
@@ -66,8 +66,15 @@
               return $rootScope.message('Invalid response.', 'warning');
             } else if (res.code) {
               console.log('invite accept error', idSUI, res);
-              return $rootScope.message(res.message, 'warning');
+           
+              if(typeof(res.message) == 'string'){
+                return $rootScope.message(res.message, 'warning');
+              }else{
+                return $rootScope.message(res.message.original.message, 'warning');
+              }
+             
             } else {
+              $rootScope.message('Invitation accepted', 'success');
               return vm.acceptInvite.succeeded(res.user.token);
             }
           })["finally"](function () {
@@ -87,17 +94,28 @@
             console.log('invite accept error', idSUI, res);
             return $rootScope.message('Error accepting invitation.', 'warning');
           }).success(function (res) {
+
             if (res === void 0 || res === null || res === '') {
               console.log('invite accept error', idSUI, res);
               return $rootScope.message('Invalid response.', 'warning');
             } else if (res.code && !res.original) {
               console.log('invite accept error', idSUI, res);
-              return $rootScope.message(res.message, 'warning');
+
+              if(typeof(res.message) == 'string'){
+                return $rootScope.message(res.message, 'warning');
+              }else{
+                return $rootScope.message(res.message.original.message, 'warning');
+              }
+            
             }
-            else if (res.message.original.success='0') {
+
+            else if (res.message.original.success=='0') {
               console.log('invite accept error', idSUI, res);
+              
               return $rootScope.message(res.message.original.success, 'warning');
+             
             } else {
+              $rootScope.message('Invitation accepted', 'success');
               $state.go('app.logout');
              // return vm.acceptInvite.succeeded(res.user.token);
             }
@@ -119,7 +137,11 @@
               return $rootScope.message('Invalid response.', 'warning');
             } else if (res.code) {
               console.log('invite accept error', idSUI, res);
-              return $rootScope.message(res.message, 'warning');
+               if(typeof(res.message) == 'string'){
+                return $rootScope.message(res.message, 'warning');
+              }else{
+                return $rootScope.message(res.message.original.success, 'warning');
+              }
             } else {
               $state.go('app.logout');
            
@@ -133,12 +155,14 @@
       //Needs Fixed
       vm.invite = api.subscriptions.getInvite(idSUI).success(function (res) {
         if (res === void 0 || res === null || res === '') {
-
+          vm.DisplayDOM= true;
         }  else {
-
+           
           if(res.invite)
           vm.item =  {'organization_id':res.invite ? res.invite.idACC : '', 'invitee_user_id': res.invite.json_data.created_by, 'subscription_id':res.invite.id, 'email': res.invite.email, 'phone':res.invite.json_data.phone, 'first':res.invite.json_data.last_name, 'last':res.invite.json_data.last_name,'role_type':res.invite.json_data.role_type, 'baseURL':'http://checklinked.com', 'notifications': 1, 'type': 'invite'};
+         debugger
           vm.invites = res.invite;
+          vm.DisplayDOM= true;
           // vm.item.email = res.invite.email;
           // vm.item.first_name = res.invite.json_data.last_name;
           // vm.item.last_name = res.invite.json_data.last_name;
@@ -146,6 +170,8 @@
           // vm.item.role_type = res.invite.json_data.role_type;
         }
       });
+
+      
     }
 
     function viewToggle(open, close) {
@@ -190,9 +216,9 @@
             .parent(angular.element(document.querySelector('#popupContainer')))
             .clickOutsideToClose(false)
             .title('Success Message')
-            .textContent('Your new account has been created successfuly please login')
+            .textContent('Your new account has been created successfully, please login.')
             .ariaLabel('Email Verification')
-            .ok('Prceed')
+            .ok('Proceed')
             .targetEvent(ev)
            
         );

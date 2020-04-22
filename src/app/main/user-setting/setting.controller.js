@@ -28,10 +28,10 @@
     }
 
     vm.submenu = [
-      { link: '', title: 'My Profile' },
-      { link: 'contacts', title: 'Contacts' },
-      { link: 'organization', title: 'Organization' },
-      { link: 'account', title: 'Account' }
+      { link: 'user', title: 'My Profile', active : true },
+      { link: 'contacts', title: 'Contacts', active : false },
+      { link: 'organization', title: 'Organization', active : false },
+      { link: 'account', title: 'Account', active : false }
     ];
 
 

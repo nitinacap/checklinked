@@ -7,7 +7,7 @@
     .controller('FoldersController', FoldersController);
 
   /** @ngInject */
-  function FoldersController($rootScope, api, $stateParams, $location, $cookies, $mdDialog, $mdSidenav, $document, $http, $scope) {
+  function FoldersController($rootScope, api, $state, $stateParams, $location, $cookies, $mdDialog, $mdSidenav, $document, $http, $scope) {
 
     var vm = this;
     vm.isLoader = true
@@ -35,20 +35,26 @@
           api.folders.get().then(function (d) {
             vm.isLoader = false;
             if (d.data && d.data.code == '-1') {
-              if(vm.firstAlert){
-                if(d.data.message=='unauthorized access'){
-                  $state.go('app.logout');
-                }else{
-                  $scope.subscriptionAlert(d.data.message);
-                  vm.firstAlert = false;
-                }
 
-                vm.showLoadingImage = false;
-        
+              if (d.data.message == 'unauthorized access') {
+                $state.go('app.logout');
+              } else {
+
+                $rootScope.message(d.data.message, 'error');
+
               }
 
-            } else {
+              vm.showLoadingImage = false;
+
+            }
+
+            else {
+              // $state.go('app.logout');
+              //     // 
+
               vm.folders = d.data.folders;
+
+
               vm.showLoadingImage = false;
             }
           });
@@ -194,6 +200,9 @@
       vm.type = type;
       vm.datas = ev;
 
+      if (vm.folder) vm.folderName = vm.folder.name;
+      else vm.folderName = '';
+
       if (!vm.folder) {
         vm.folder = {
           'id': '',
@@ -204,9 +213,12 @@
           'order': '',
           'deleted': false
         };
+
         vm.title = type ? 'Duplicate Project' : 'Create New Project';
         vm.newFolder = true;
       }
+
+      if (vm.folder.description === "NULL") vm.folder.description = "";
 
       $mdDialog.show({
         scope: $scope,
@@ -239,7 +251,8 @@
 
     /* Add New Folder */
     function addNewFolder(item) {
-      debugger;
+      // ;
+      vm.folder.name = vm.folderName;
       vm.folder.sending = true;
       vm.folder.order = 1;
       vm.folder.order += vm.folders ? vm.folders.length : 0;
@@ -254,24 +267,24 @@
         return $rootScope.message("Error Creating Project", 'warning');
       }).success(function (res) {
         if (res === void 0 || res === null || res === '') {
-          
+
           vm.showLoadingImage = false;
           return $rootScope.message("Error Creating Project", 'warning');
         } else if (!res.type) {
           vm.showLoadingImage = false;
-         
+
           return $rootScope.message(res.message, 'warning');
 
         } else {
 
           /* Reset Folder Object */
-         
+
           $rootScope.message('Project has been created successfully');
-          vm.folder.id = res.folder.id;
-          vm.folder.name = res.folder.name;
-          vm.folder.description = res.folder.description;
-          vm.folder.order = res.folder.order;
-          vm.folder.id_parent = res.folder.id_parent;
+          // vm.folder.id = res.folder.id;
+          // vm.folder.name = res.folder.name;
+          // vm.folder.description = res.folder.description;
+          // vm.folder.order = res.folder.order;
+          // vm.folder.id_parent = res.folder.id_parent;
 
           $scope.getFolder();
 
@@ -285,13 +298,36 @@
 
           vm.folder.sending = false;
 
-          
+
           vm.showLoadingImage = false;
         }
       });
       //Close Left Navigation
       $mdSidenav('folder-sidenav').close();
     }
+
+    vm.shiftList = shiftList;
+    function shiftList(folder) {
+      // $scope.data.unshift(
+      console.log('shiftList', vm.folders)
+      vm.folders.unshift(folder);
+      console.log('shiftList', vm.folders)
+      // 
+    }
+
+    // vm.SortByRecenlyAccessed = function(){
+    //   vm.folders.sort(function(a, b){
+    //     var keyA = new Date(a.access_timestamp),
+    //         keyB = new Date(b.access_timestamp);
+    //     // Compare the 2 dates
+    //     if(keyA > keyB) return -1;
+    //     if(keyA < keyB) return 1;
+    //     return 0;
+    // });
+
+    // // vm.folders
+    // // // 
+    // }
 
     /* Save Folder */
     function saveFolder() {
@@ -300,12 +336,15 @@
       vm.closeDialog();
 
       vm.showLoadingImage = true;
+      // vm.folder.name = vm.folderName;
+      //  
+
 
       var editPack;
 
       editPack = {
         'type': 'folder',
-        'text': vm.folder.name,
+        'text': vm.folderName,
         'description': vm.folder.description,
         'link': vm.folder.link,
         'attachment': vm.folder.attachment,
@@ -319,17 +358,20 @@
         vm.showLoadingImage = false;
         return $rootScope.message("Error Editing Project", 'warning');
       }).success(function (res) {
+
         if (res === void 0 || res === null || res === '') {
           return $rootScope.message("Error Editing Project", 'warning');
         } else if (res.code) {
           return $rootScope.message(res.message, 'warning');
         } else {
 
+          vm.folder.name = vm.folderName;
+
           //Toaster Notification
           $rootScope.message('Project Name ' + vm.folder.name + ' Edited');
           $scope.getFolder();
           vm.folder.sending = false;
-         
+
         }
         vm.showLoadingImage = false;
       });
@@ -387,8 +429,8 @@
 
     function deleteFoderItem(folder) {
 
-     // vm.isLoader = true;
-     vm.showLoadingImage = true;
+      // vm.isLoader = true;
+      vm.showLoadingImage = true;
 
       api.folders.destroy(folder.id, $rootScope.user.token).error(function (res) {
         return $rootScope.message("Error Deleteing Project", 'warning');
@@ -440,12 +482,12 @@
 
     // Content sub menu
     vm.submenu = [
-      { link: '', title: 'Projects' },
-      { link: 'groups', title: 'Workflow' },
-      { link: 'checklist', title: 'Checklists' },
-      { link: 'templates', title: 'Templates' },
-      { link: 'other', title: 'Other' },
-      { link: 'archives', title: 'Archives' }
+      { link: 'folders', title: 'Projects', active: true },
+      { link: 'groups', title: 'Workflow', active: false },
+      { link: 'checklist', title: 'Checklists', active: false },
+      { link: 'templates', title: 'Templates', active: false },
+      { link: 'other', title: 'Other', active: false },
+      { link: 'archives', title: 'Archives', active: false }
 
     ];
     vm.saveArchieve = saveArchieve;

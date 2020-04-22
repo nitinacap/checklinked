@@ -5,7 +5,7 @@
     .module('app.checklist',
       ['NgModel',
         'as.sortable',
-        'textAngular',
+        'textAngular'
       ])
     .config(config);
 

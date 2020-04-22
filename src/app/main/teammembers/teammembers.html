@@ -1,9 +1,10 @@
 <div id="team-members" class="page-layout simple tabbed pad-0" layout="column">
   <div class="subtab pt-30">
     <page-toolbar datas="vm.submenu"> </page-toolbar>
-    <md-tabs md-dynamic-height md-border-bottom md-selected="vm.tabOption">
+    <!--  md-selected="vm.tabOption" -->
+    <md-tabs md-dynamic-height md-border-bottom md-selected="vm.currentItem">
  
-      <md-tab ng-click="vm.myvalue = false;">
+      <md-tab md-on-select="vm.changeTab('Permissions')">
         <md-tab-label>
           <span>Permissions </span>
         </md-tab-label>
@@ -12,36 +13,105 @@
         </md-tab-body>
       </md-tab>
 
-      <md-tab class="pr-30" ng-click="vm.myvalue = true;"
+      <md-tab class="mr-0"  md-on-select="vm.changeTab('Subscription')"
         ng-if="vm.checkIsPermission.indexOf('assign-permissions') !== -1 && vm.checkIsPermission.indexOf('manage-subscription') !== -1"
         >
         <md-tab-label>
           <span>Subscription </span>
+
+     
+          <i ng-if="vm.myvalue && vm.ScreenLocked && !$root.viewAs.notMe && ($root.AccountPermission.isManager || $root.AccountPermission.isAdmin || (($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager) && ($root.AccountPermission.isController || $root.AccountPermission.isAccountOwner)))"  ng-click="ScreenLockManage('unlock')" class="fa fa-lock lockTop" aria-hidden="true"></i>
+          <i ng-if="vm.myvalue && !vm.ScreenLocked  && !$root.viewAs.notMe" ng-click="ScreenLockManage('lock')" class="fa fa-unlock lockTop" aria-hidden="true"></i>
+          
+          <md-menu ng-if = "!$root.viewAs.notMe " class="moreMenuOnTab" ng-disabled="!vm.myvalue">
+              <md-icon ng-click="$mdOpenMenu($event)"  ng-show="vm.myvalue" md-font-icon="icon-dots-vertical s18"></md-icon>
+
+
+
+            <md-menu-content width="3">
+
+              <md-menu-item
+                ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1"
+                ng-if="vm.memberRoles.subscribed_status == 'un-subscribed' || $root.AccountPermission.isController || $root.AccountPermission.isAdmin" >
+                <md-button ng-click="vm.openSubscriptionDialog(member)">
+                  <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                  </md-icon>
+                  <span ng-if="vm.memberRoles.subscribed_status == 'un-subscribed'">Add Paid Account</span>
+                  <span ng-if="vm.memberRoles.subscribed_status == 'subscribed'">Add Subscription</span>
+                </md-button>
+              </md-menu-item>
+
+
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-assign-roles') !== -1">
+                <md-button ng-click="vm.openRoleTypeDialog(member)">
+                  <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                  </md-icon>
+                  <span ng-show="vm.roleTypes.length == 0">Add Role</span>
+                  <span ng-show="vm.roleTypes.length > 0">Add / Edit Role</span>
+                </md-button>
+              </md-menu-item>
+
+
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1"
+                ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                <md-button ng-click="vm.addUser(vm.memberRoles.subscribed_status)">
+                  <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                  </md-icon>
+                  <span>Add User</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1"
+                ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                <md-button ng-click="vm.addManagerTeam(vm.memberRoles.subscribed_status)">
+                  <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                  </md-icon>
+                  <span>Add/Edit Manager’s Team</span>
+                </md-button>
+              </md-menu-item>
+
+              <md-menu-item
+                ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1"
+                ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                <md-button ng-click="ScreenLockManage('unlock')">
+                  <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
+                  </md-icon>
+                  <span ng-if="vm.memberRoles.subscribed_status == 'subscribed'">Edit Subscription</span>
+                </md-button>
+              </md-menu-item>
+
+            </md-menu-content>
+          </md-menu>
         </md-tab-label>
         <md-tab-body>
           <div ng-include="'app/main/teammembers/partials/subscription.html'"></div>
         </md-tab-body>
       </md-tab>
 
-      <md-tab ng-show="vm.billings" ng-click="vm.myvalue = false;">
+      <md-tab ng-if="vm.billings && ($root.AccountPermission.isPaidUser || $root.AccountPermission.isManager)"  md-on-select="vm.changeTab('Billing')" >
         <md-tab-label>
-          <span>Billing</span>
+          <span>Billing </span>
         </md-tab-label>
         <md-tab-body>
           <div ng-include="'app/main/teammembers/partials/billings.html'"></div>
         </md-tab-body>
       </md-tab>
 
-      <md-tab class="lasttab"  ng-disabled="!vm.myvalue" >
+
+
+      <!-- ================================================================================ -->
+
+
+      
+      <!-- ================================================================================ -->
+
+      <!-- <md-tab class="lasttab"  ng-disabled="!vm.myvalue" >
         <md-tab-label>
 
           <div class="buttons" layout="row" layout-align="end center">
-            <md-menu>
+            <md-menu class="moreMenuOnTab" ng-disabled="!vm.myvalue">
                 <md-icon ng-click="$mdOpenMenu($event)"  ng-show="vm.myvalue" md-font-icon="icon-dots-vertical s18"></md-icon>
-              <!-- <md-button  ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button"
-                aria-label="More" translate translate-attr-aria-label="">
-                <md-icon ng-show="vm.myvalue" md-font-icon="icon-dots-vertical s18"></md-icon>
-              </md-button> -->
+
 
 
               <md-menu-content width="3">
@@ -74,19 +144,19 @@
                     </md-icon>
                     <span>Add User</span>
                   </md-button>
-                </md-menu-item>
+                </md-menu-item>-->
 
                 <!-- add edit manager permission role  -->
-                <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1"
-                  ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
+                <!-- <md-menu-item ng-show="vm.checkIsPermission.indexOf('add-users-to-the-organization') !== -1"
+                  ng-if="vm.memberRoles.subscribed_status == 'subscribed' && ($root.AccountPermission.isController || $root.AccountPermission.isAccountOwner)">
                   <md-button ng-click="vm.addManagerTeam(vm.memberRoles.subscribed_status)">
                     <md-icon class="md-accent-fg fa fa-plus-circle s18" md-font-icon="icon-comment-multipe-outline">
                     </md-icon>
                     <span>Add/Edit Manager’s Team</span>
                   </md-button>
-                </md-menu-item>
+                </md-menu-item> -->
                 <!-- add edit manager permission role  end -->
-                <md-menu-item
+                <!-- <md-menu-item
                   ng-show="vm.checkIsPermission.indexOf('add-additional-subscriptions-and-send-payments') !== -1"
                   ng-if="vm.memberRoles.subscribed_status == 'subscribed'">
                   <md-button ng-click="vm.openSubscriptionDialog(member)">
@@ -102,10 +172,9 @@
         <md-tab-body>
 
         </md-tab-body>
-      </md-tab>
+      </md-tab>  -->
 
-      <!-- </td> -->
-      <!-- End -->
+
     </md-tabs>
   </div>
   <div class="bd-loader" ng-if="vm.isLoader">

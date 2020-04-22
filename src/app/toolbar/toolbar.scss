@@ -2,7 +2,7 @@
   height: $toolbarHeight;
   min-height: $toolbarHeight;
   max-height: $toolbarHeight;
-  z-index: 71 !important;
+  z-index: 11 !important;
 
 
 
@@ -266,4 +266,14 @@ body {
 .user-menu span.ng-scope {
   text-transform: capitalize;
   font-weight: 400;
+}
+
+.bd-loader{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 71;
 }

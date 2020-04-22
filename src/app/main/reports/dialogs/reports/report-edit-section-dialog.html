@@ -1,0 +1,61 @@
+<md-dialog class="dialog" aria-label="">
+  <form name="checklistForm" class="md-inline-form" novalidate>
+    <md-toolbar class="md-accent md-hue-2">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+        <span class="title">{{vm.dialog.title}}</span>
+        <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+          <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+
+<!--  ng-if="vm.dialog.type != 'add chart'" -->
+    <md-dialog-content ms-scroll>
+    <div ng-if="vm.dialog.type == 'add chart'">Choose Name and Type of Chart and Save to Continue</div>
+
+      <md-input-container class="md-block">
+        <label >{{vm.dialog.name}}</label>
+        <input name="name" ng-model="vm.editDialog.name" required md-autofocus>
+        <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
+          <div ng-message="required">
+            <span >{{vm.dialog.name}} field is required</span>
+          </div>
+        </div>
+      </md-input-container>
+
+      
+      <div ng-if="vm.dialog.type == 'add chart'" layout="row" layout-wrap>
+        <div flex="15" class="mt-20"><span>Type of Chart: </span></div>
+        <div flex="85">
+            <div layout="column">
+                <md-radio-group ng-model="vm.editDialog.chartType">
+                    <md-radio-button value="bar">Bar  <md-icon class="chart-icons" md-font-icon="icon-chart-bar "></md-icon></md-radio-button> 
+                   
+
+                    <md-radio-button value="line">Line  <md-icon class="chart-icons" md-font-icon="icon-chart-line"></md-icon></md-radio-button>
+                   
+
+                    <md-radio-button value="pie"> Pie <md-icon class="chart-icons" md-font-icon="icon-chart-pie" ></md-icon></md-radio-button>
+                    
+                </md-radio-group>
+            </div>
+        </div>
+
+    </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="start center">
+        <md-button type="submit"
+                   ng-click="vm.saveDialog()"
+                   class="md-raised md-accent"
+                   ng-disabled="checklistForm.$invalid || checklistForm.$pristine"
+                   aria-label="Save" translate="CHECKLIST.SAVE" translate-attr-aria-label="CHECKLIST.SAVE">
+          SAVE
+        </md-button>
+      </div>
+
+    </md-dialog-actions>
+  </form>
+</md-dialog>

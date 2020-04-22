@@ -1,5 +1,7 @@
 <md-dialog class="dialog" aria-label="Show Linked Users">
-<form name="checklistForm" class="md-inline-form" novalidate target="_blank" method="post" action="http://wdc1.acapqa.net:8081/dist/dpdf/checklinked.php">
+    <form name="checklistForm" class="md-inline-form" novalidate ng-submit="vm.pdfDownloadDone()">
+
+        <!-- action="http://wdc1.acapqa.net:8081/dist/dpdf/checklinked.php" target="_blank" method="post"-->
         <md-toolbar class="md-accent md-hue-2">
             <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
                 <span class="title">{{ vm.title }}</span>
@@ -9,64 +11,322 @@
             </div>
         </md-toolbar>
 
-		<!-- DIALOG CONTENT -->
+        <!-- DIALOG CONTENT -->
         <md-dialog-content ms-scroll>
 
-<div  id="pdfContent">
+            <div id="pdfContent">
 
-<table class="simple">
-	<colgroup>
-            <col width="10%">
-                <col width="80%">
-                    <col width="10%">
-        </colgroup>
-    <tbody>
-        <tr ng-repeat-start="checklist in vm.checklists track by $index">
-        	<td>&nbsp;</td>
-            <td>
-               {{checklist.name}}
-            </td>
-            <td>&nbsp;</td>
-        </tr>
-        <tr ng-repeat-start="section in checklist.sections track by $index">
-        	<td>&nbsp;</td>
-            <td>
-                {{section.name}}
-            </td>
-            <td>&nbsp;</td>
-        </tr>
-		<tr ng-repeat-start="heading in section.headings track by $index">
-			<td>&nbsp;</td>
-            <td>
-                {{heading.name}}
-            </td>
-            <td>&nbsp;</td>
-        </tr>
-        <tr ng-repeat-end ng-repeat="item in heading.items">
-        	<td>COMPLY</td>
-            	<td>
-                {{item.name}}
-            </td>
-           <td>APPLY</td>
-        </tr>
-        <tr ng-repeat-end><td></td><td></td><td></td></tr>
-          <tr ng-repeat-end><td></td><td></td><td></td></tr>
-    </tbody>
-</table>
+                <div id="checklistExport" class="checklist-items" id="checklist-details">
 
-</div>
+                    <!--Checklists Iteration-->
+                    <div
+                        ng-repeat="checklist in vm.checklists | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search track by $index">
 
-	</md-dialog-content>
+                        <div class="checklist-item checklist-title-bg" md-ink-ripple layout="row"
+                            layout-align="start center">
+                            <!-- user_id -->
+                            <div layout="row" layout-align="start center" flex>
+                                <div class="info" flex="50">
+                                    <div class="checklist">
+                                        {{checklist.name}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checklist-items" data-as-sortable="vm.dragControlListenersSections"
+                            data-ng-model="checklist.sections">
 
-<md-dialog-actions layout="row" layout-align="space-between center">
+                            <div data-as-sortable-item md-ink-ripple
+                                data-ng-repeat="section in checklist.sections | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+                                <div ng-show="!section.notApplicable"
+                                    ng-class="{'completed': section.notApplicable, 'green':vm.passedNotification.id==section.id}"
+                                    class="checklist-item  checklist-section-bg" md-ink-ripple layout="row"
+                                    layout-align="start center">
+
+                                    <div layout="row" layout-align="start center" flex>
+
+                                        <div class="info" flex>
+                                            <div class="section">
+                                                {{section.name}}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="checklist-items" data-as-sortable="vm.dragControlListenersHeadings"
+                                    data-ng-model="section.headings">
+
+                                    <div data-as-sortable-item md-ink-ripple
+                                        ng-show="!section.notApplicable && vm.isExpandedForPdf('section',section) || globalSearch.searchTerm"
+                                        data-ng-repeat="heading in section.headings | filter: globalSearch.searchTerm | filter: vm.checklistFilters.search">
+                                        <div class="checklist-item checklist-heading-bg"
+                                            ng-class="{'green':vm.passedNotification.id==heading.id}" md-ink-ripple
+                                            layout="row" layout-align="start center">
+
+                                            <div layout="row" layout-align="start center" flex n>
+
+                                                <div class="info" flex>
+                                                    <div class="heading">
+                                                        {{heading.name}}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div ng-show="heading.item_type=='table'">
+                                            <div class="checklist-item checklist-heading-bg checklist-data-table"
+                                                ng-class="{'green':vm.passedNotification.id==heading.id}" md-ink-ripple
+                                                layout="row" layout-align="start center" style="overflow:scroll;">
+
+
+
+                                                <div ng-repeat="head in heading.datatable" style="width:100%;">
+
+
+
+                                                    <table class="table table-bordered chk_data_table data-table-show" style="table-layout: fixed;"
+                                                        cellspacing="5" cellpadding="0">
+                                                        <tbody>
+                                                            <tr ng-repeat="x in [].constructor(head.row) track by $index"
+                                                                ng-init="current = $parent.start; $parent.start=$parent.start+head.column;initRow($index);myvar">
+                                                                <td ng-repeat="y in [].constructor(head.column) track by $index"
+                                                                    width="{{100/head.column}}%"
+                                                                    ng-class="[['Date','Formula','Currency','Text','Number'].indexOf(head.table_str[current + $index].type) > -1 ? 'cell-border' : '',head.table_str[current + $index].text_align,head.table_str[current + $index].text_position]"
+                                                                    data-ng-init="init(current + $index,head.table_str[current + $index],heading)">
+
+
+                                                                    <div ng-if="head.table_str[current + $index].type == 'Label'"
+                                                                        class="t-bold">
+                                                                        <b class="label_bold">
+                                                                            {{head.table_str[current + $index].value}}</b>
+                                                                    </div>
+
+                                                                    <div ng-if="head.table_str[current + $index].type == 'Currency'"
+                                                                        class="t-bold"
+                                                                        ng-blur="autoCalculate(current + $index,head.table_str,heading)">
+                                                                        <span class=""
+                                                                            style="width: auto;text-align: right;padding: 10px;padding-right: 0;">
+                                                                            {{head.table_str[current + $index].value}}</span><input
+                                                                            type="text" autocomplete="off"
+                                                                            ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]"
+                                                                            name="row+current + $index" class="md-input"
+                                                                            disabled
+                                                                            ng-change="autoCalculate(current + $index,head.table_str,heading)"
+                                                                            ng-blur="autoCalculate(current + $index,head.table_str,heading)"
+                                                                            ng-class="[head.table_str[current + $index].text_align,head.table_str[current + $index].text_position]"
+                                                                            ng-keypress="isNumberKey($event,current + $index,head.table_str[current + $index].value,heading,head.table_str[current + $index].type)"
+                                                                            style="width: 100%;text-align: left;padding-left: 3px;">
+                                                                    </div>
+
+
+                                                                    <div ng-if="head.table_str[current + $index].type == 'Date'"
+                                                                        style="border: 0px solid #fff !important;display: inline-grid;"
+                                                                        class="table-cell-date">
+                                                                        <!-- <md-datepicker ng-init="vm.convertDate(vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index],heading,row+current + $index)"  ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index]" class="md-input"></md-datepicker> -->
+
+                                                                        <input disabled type="date"
+                                                                            ng-init="vm.convertDate(vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index],heading,row+current + $index)"
+                                                                            ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][row+current + $index]"
+                                                                            class="md-input" />
+
+                                                                    </div>
+                                                                    <div
+                                                                        ng-if="head.table_str[current + $index].type == 'Number'">
+                                                                        <input disabled type="text" autocomplete="off"
+                                                                            ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]"
+                                                                            name="row+current + $index" class="md-input"
+                                                                            ng-change="autoCalculate(current + $index,head.table_str,heading)"
+                                                                            ng-blur="autoCalculate(current + $index,head.table_str,heading)"
+                                                                            ng-class="[head.table_str[current + $index].text_align,head.table_str[current + $index].text_position]"
+                                                                            ng-keypress="isNumberKey($event,current + $index,head.table_str[current + $index].value,heading)" style="width:100%;">
+
+
+
+                                                                    </div>
+                                                                    <div
+                                                                        ng-if="head.table_str[current + $index].type == 'Text'">
+                                                                        <input disabled type="text" autocomplete="off"
+                                                                            ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index]"
+                                                                            name="row+current + $index" class="md-input"
+                                                                            ng-keypress="autoTrimWord(current + $index,head.table_str)" style="width:100%;">
+                                                                    </div>
+                                                                    <div ng-if="head.table_str[current + $index].type == 'Formula'"
+                                                                        class="t-bold">
+                                                                        <input disabled ng-disabled="true" type="text"
+                                                                            name="row+current + $index" class="md-input"
+                                                                            ng-model="vm.field['datatable_'+heading.id_parent+'_'+heading.id][current + $index] " style="width:100%;" style="width:100%;" >
+                                                                    </div>
+
+                                                                    <div ng-if="head.table_str[current + $index].type == undefined"
+                                                                        class="t-bold">
+                                                                        {{head.table_str[current + $index].value}}
+                                                                    </div>
+
+
+                                                                </td>
+
+                                                            </tr>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- End Here -->
+
+
+                                            </div>
+                                        </div>
+
+                                        <div style="margin-left:-40px;" class="checklist-items" data-as-sortable="vm.dragControlListenersItems"
+                                            data-ng-model="heading.items">
+                                            <div data-as-sortable-item md-ink-ripple
+                                                ng-show="!heading.notApplicable && vm.isExpandedForPdf('heading', heading) || vm.isHeader || globalSearch.searchTerm"
+                                                data-ng-repeat="item in heading.items">
+                                                <div class="checklist-item"
+                                                    ng-class="{'conflict':(item.nonCompliant  && item.item_typeof!='yn' && item.item_typeof!='textbox'), 'md-green-100-bg':vm.passedNotification.id==item.id}"
+                                                    md-ink-ripple layout="row" layout-align="start center">
+
+
+
+                                                    <div layout="row" layout-align="start center" flex>
+
+                                                        <div class="info" flex>
+                                                            <div class="item" layout="row">
+                                                                <div ng-if="vm.isForm(item)" flex="10" layout="row"
+                                                                    layout-align="start center">
+
+                                                                    <button type="button" class="checkbox">
+                                                                        <md-icon class="md-accent-fg s20"
+                                                                            md-font-icon="icon-pencil"></md-icon>
+                                                                    </button>
+
+                                                                </div>
+
+                                                                <div flex="10" ng-if="!vm.isForm(item)" layout="row"
+                                                                    layout-align="start end"
+                                                                    ng-init="vm.checkConflictItem(item.nonCompliant)">
+                                                                    <ul class="checkbox-list">
+                                                                        <li
+                                                                            ng-repeat="show in showingUsers track by $index">
+                                                                            <!--  || -->
+                                                                            <button
+                                                                                ng-disabled="checklist.complete || section.section_na=='true' || viewAs.notMe  ||(item.section_na=='true') || (show.idCON !== user.idCON)"
+                                                                                type="button"
+                                                                                class="checkbox item_typeof"
+                                                                                ng-show="item.item_typeof !='textbox'">
+                                                                                <i ng-hide="item.checkbox[$index].applies"
+                                                                                    class="icon-checkbox-blank-outline" style="padding-right: 45px;"></i>
+                                                                                   <i  ng-show="item.checkbox[$index].applies" style="padding-right: 45px;" class="icon-checkbox-marked-outline"></i>
+                                                                                <span class="checkboxLabel"
+                                                                                    ng-if="showingUsers.length>1">{{(show.idCON ==
+                      showingUsers.idCON)?(showingUsers.length>1)?'YOU': (item.item_typeof=='yn' ? 'Yes' : 'Req'):(item.item_typeof=='yn' ? 'Yes' : 'Req') + '(' + show.name + ')' }}
+
+
+                                                                                </span>
+                                                                                <span class="checkboxLabel"
+                                                                                    ng-if="showingUsers.length==1">{{ item.item_typeof=='yn' ? 'Yes' : 'Req' }}
+                                                                                </span>
+
+                                                                            </button>
+
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+
+                                                                <div flex="70" layout="column" class="pl-100"
+                                                                    layout-align="center start">
+                                                                    <div ng-class="{'text-bold form-line-question': vm.isForm(item)}"
+                                                                        class="item" layout-align="start center"
+                                                                        layout="row" flex>
+                                                                                           {{item.name}}
+                                                                    </div>
+                                                                    <div ng-show="(item.info.length || item.link) && (checklist.showReferences || section.showReferences || heading.showReferences) && !vm.isForm(item)"
+                                                                        layout="column" class="item" flex>
+                                                                        <div layout="row" class="mt-5" flex>
+                                                                            <span>{{ item.info !='rrr' ? item.info : 'Reference is not available' }}</span>
+                                                                        </div>
+                                                                        <div layout="row" flex> <a>{{item.link}}</a>
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div ng-show="vm.isForm(item)" layout="row"
+                                                                        class="item" flex>
+                                                                        <span>{{ item.info ? item.info : 'Reference is not available'}}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div layout="row" flex="10" layout-align="end center">
+
+                                                                    <md-icon md-font-icon="icon-paperclip s20 pt-0"
+                                                                        class="is-important indicator-icon s18 black"
+                                                                        ng-if="item.attachments.length>0"></md-icon>
+
+                                                                    <md-icon
+                                                                        md-font-icon="icon-comment-text-outline s20"
+                                                                        class="is-important indicator-icon s18"
+                                                                        ng-if="item.postCount>0 && !$root.viewAs.notMe">
+                                                                    </md-icon>
+                                                                </div>
+
+                                                                <div ng-hide="vm.isForm(item)" layout="row"
+                                                                    layout-align="end center">
+                                                                    <ul class="checkbox-list">
+                                                                        <li
+                                                                            ng-repeat="show in showingUsers track by $index">
+
+                                                                            <button
+                                                                                ng-disabled="checklist.complete || section.section_na=='true' || viewAs.notMe || (show.idCON !== user.idCON) || (item.section_na=='true')"
+                                                                                type="button"
+                                                                                class="checkbox item_typeof"
+                                                                                ng-show="item.item_typeof!='textbox'">
+                                                                                <i ng-hide="item.checkbox[$index].complies" style="padding-right: 45px;"
+                                                                                    class="icon-checkbox-blank-outline"></i>
+                                                                                <i ng-show="item.checkbox[$index].complies" style="padding-right: 45px;" 
+                                                                                    class="icon-checkbox-marked-outline"></i>
+
+                                                                                <span class="checkboxLabel"
+                                                                                    ng-if="showingUsers.length>1">{{(show.idCON ==
+                  showingUsers.idCON)?(showingUsers.length>1)?'YOU': (item.item_typeof=='yn' ? 'No' : 'Req'):(item.item_typeof=='yn' ? 'No' : 'Comp') + '(' + show.name + ')' }}
+                                                                                </span>
+                                                                                <span class="checkboxLabel"
+                                                                                    ng-if="showingUsers.length==1">{{item.item_typeof=='yn' ? 'No' : 'Comp' }}
+                                                                                </span>
+                                                                            </button>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- / CHECKLIST LIST ITEMS -->
+
+            </div>
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="space-between center">
             <div layout="row" layout-align="start center">
-            	<input type="hidden" name="array" value="{{ vm.checklists }}">
-                <md-button type="submit"
-                           class="send-button md-accent md-raised"
-                           aria-label="Save" translate="CHECKLIST.DOWNLOAD_PDF" translate-attr-aria-label="CHECKLIST.DOWNLOAD_PDF">
+                <input type="hidden" name="array" value="{{ vm.checklists }}">
+                <md-button type="submit" class="send-button md-accent md-raised" aria-label="Save"
+                    translate="CHECKLIST.DOWNLOAD_PDF" translate-attr-aria-label="CHECKLIST.DOWNLOAD_PDF">
                     DOWNLOAD PDF
                 </md-button>
-             </div>
+            </div>
 
         </md-dialog-actions>
 

@@ -154,6 +154,8 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
               cache: false
             }).then(
               function (d) { //success
+
+                
                 var res;
                // console.log('success on user pull', d);
                 if (d === void 0 || d == null || d == '') {
@@ -173,6 +175,8 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
                   //console.log('res has content', typeof res, res);
 
                   $rootScope.user = res.user;
+                  
+                  //// 
                   if ($rootScope.user !== void 0 && $rootScope.user != null && res.viewAs !== void 0 && res.viewAs != null) {
                     //console.log('WTF', viewAs);
                     $rootScope.viewAs.set(res.viewAs);
@@ -400,6 +404,8 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
       restore: function () {
        // console.log('restoring view to logged in user');
         this.select($rootScope.user);
+        // window.location.reload();
+        // // 
         return true;
       },
       set: function (user) {
@@ -407,20 +413,19 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         $rootScope.folders = [];
         $rootScope.groups = [];
         $rootScope.checklists = [];
+       
         $rootScope.$broadcast('event:userSelected');
-        //console.log('broadcast event:userSelected');
+
         this.user = user;
-        //console.log('viewAs.user set', user);
         this.notMe = (user != null ? user.idCON : void 0) !== ((ref = $rootScope.user) != null ? ref.idCON : void 0) ? true : false;
-        //console.log('viewAs.notMe set', this.notMe);
         $rootScope.$broadcast('event:userLoaded');
-        //console.log('broadcast event:userLoaded');
         this.loading = false;
         return true;
       },
       select: function (contact) {
         var self;
         if (contact.idCON === this.user.idCON) {
+          
           return false;
         }
         this.loading = contact.idCON;
@@ -442,6 +447,8 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         }, function (err) {
           return $rootScope.message("Server not responding.", 'warning');
         }).then(function () {
+
+          window.location.reload();
           return self.loading = false;
         });
       }
@@ -466,10 +473,8 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         unmarking: [],
         marked: [],
         mark: function (itemIDs) {
-          //console.log('mark:', itemIDs);
           $rootScope.feed.marking.concat(itemIDs);
           $rootScope.feed.unread = $rootScope.feed.unread.diff(itemIDs);
-          //console.log('$rootScope.feed.unread', $rootScope.feed.unread);
           $rootScope.socketio.emit('mark_feed_items_read', $rootScope.user.idCON, itemIDs);
         },
         unmark: function (itemIDs) {
@@ -649,8 +654,9 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         idCON: $rootScope.viewAs.user.idCON,
         name: $rootScope.viewAs.user.name.first
       };
+       
       $rootScope.showingUsers = [show];
-      //console.log('set showing users', $rootScope.showingUsers);
+
       api.folders.get().success(function (res) {
         var ref;
         if ((ref = res.folders) != null ? ref.length : void 0) {
@@ -675,40 +681,39 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
           $rootScope.checklists = res.checklists;
         }
         $rootScope.loaded.checklists = true;
+      
         return $rootScope.$broadcast('event:checklistsLoaded');
       })["finally"](function () {
         $rootScope.loading.checklists = false;
 
-        //console.log('rootScopeChecklists', $rootScope.checklists);
 
         return $rootScope.organizeData();
       });
-      //console.log('received event:userLoaded', $rootScope.user);
+
       if ($location.search().devMode === true) {
         realtime = 'https://socket.checklinked.com/';
-        // realtime = 'http://168.61.165.204:8085/';
 
       } else {
         realtime = 'https://socket.checklinked.com/';
       }
       $rootScope.socketio = io(realtime, {
         transports: ['websocket', 'polling', 'flashsocket'],
-        secure: true
+        secure: false
       });
       return $rootScope.socketio.on('connect', function () {
         var ids, sock, subs, subscriptionDetails, u;
         sock = $rootScope.socketio;
         u = $rootScope.user;
         subs = u.subscriptions;
-        //console.log('broadcasted event:socketConnected');
+
         $rootScope.$broadcast('event:socketConnected');
-        //console.log('subscriptions', subs);
+
         ids = subs.contacts || [];
         ids = ids.concat(subs.checklists || []);
         ids = ids.concat(subs.sections || []);
         ids = ids.concat(subs.headings || []);
         ids = ids.concat(subs.items || []);
-        //console.log('ids', ids);
+
         subscriptionDetails = {
           idCON: u.idCON,
           ids: ids
@@ -716,13 +721,11 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
 
         sock.emit('join', "/feed/" + $rootScope.user.idCON);
 
-        //console.log('sending total subscription', subscriptionDetails);
+
         sock.emit('feed_total_subscription_update', subscriptionDetails);
 
         sock.on('notification', function (notes) {
-          //console.log('received notes: ', notes);
           notes.forEach(function (note) {
-            //console.log('note', note);
             var existing, f;
             if (note.user.id !== u.idCON || note.type === 'invite_answered') {
               f = $rootScope.feed;
@@ -786,7 +789,6 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
                   id: note.id
                 }).length > 0
               };
-              //console.log('existing.unread', existing.unread);
               if (f.isUnread(note) && !existing.unread) {
                 f.unread.push(note.id);
               }
@@ -807,12 +809,10 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
 
 
         if ($rootScope.socketio._callbacks['$checklist_invite_count'] === void 0) {
-          //console.log('socket checklist_invite_count callback is not defined; defining now');
           $rootScope.socketio.on('checklist_invite_count', function (count) {
-            //console.log('received checklist invite count', count);
             if ($rootScope.inviteCounts.checklists !== count) {
-              //console.log('broadcasting event:checklistInviteCountChanged');
               $rootScope.$broadcast('event:checklistInviteCountChanged');
+              api.notifications.count_notifi();
             }
             $rootScope.inviteCounts.checklists = count;
             return $rootScope.$apply();
@@ -820,11 +820,10 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         }
 
         if ($rootScope.socketio._callbacks['$labels_changed'] === void 0) {
-         // console.log('socket labels_changed callback is not defined; defining now');
           $rootScope.socketio.on('labels_changed', function () {
-            //console.log('received labels_changed');
             return $rootScope.addUserData('labels-reset').then(function (d) {
               var res;
+              // 
               if (typeof d !== 'object') {
                 return false;
               }
@@ -842,10 +841,9 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         }
 
         if ($rootScope.socketio._callbacks['$friendship_invite_count'] === void 0) {
-         // console.log('socket friendship_invite_count callback is not defined; defining now');
           $rootScope.socketio.on('friendship_invite_count', function (count) {
             var update;
-            //console.log('received friendship invite count', count);
+            api.notifications.count_notifi();
             if (count !== $rootScope.inviteCounts.friendships) {
               update = true;
             }
@@ -858,38 +856,25 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         }
 
         if ($rootScope.socketio._callbacks['$error_marking_feed_items_read'] === void 0) {
-          //console.log('socket error_marking_feed_items_read callback is not defined; defining now');
           $rootScope.socketio.on('error_marking_feed_items_read', function (itemIDs) {
-            //console.log('received error marking feed items read', itemIDs, err);
             $rootScope.feed.marking = $rootScope.feed.marking.diff(itemIDs);
             return $rootScope.feed.unread = $rootScope.feed.unread.concat(itemIDs);
           });
         }
 
         if ($rootScope.socketio._callbacks['$feed_items_marked_read'] === void 0) {
-          //console.log('socket feed_items_marked_read callback is not defined; defining now');
           $rootScope.socketio.on('feed_items_marked_read', function (itemIDs) {
-           // console.log('received feed items marked read', itemIDs);
-
 
             $rootScope.feed.marking = $rootScope.feed.marking.diff(itemIDs);
             $rootScope.feed.marked = $rootScope.feed.marked.concat(itemIDs);
 
-            /*
-             $rootScope.feed.items.forEach(function (item) {
-             if ($rootScope.feed.unread.indexOf(item.id) < 0) {
-
-             return item.unread = false;
-             }
-             });
-             */
             return $rootScope.$apply();
           });
         }
 
         if ($rootScope.socketio._callbacks['$invite_count_update_ping'] === void 0) {
-          //console.log('socket invite_count_update_ping callback is not defined; defining now');
           $rootScope.socketio.on('invite_count_update_ping', function (type) {
+            api.notifications.count_notifi();
             return $rootScope.socketio.emit('get_' + type + '_invite_count', $rootScope.user.idCON);
           });
         }
@@ -901,15 +886,14 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
           sock.emit('join', "/organization/" + $rootScope.user.organization.idACC);
         }
 
-        //console.log('sending total subscription', subscriptionDetails);
         sock.emit('feed_total_subscription_update', subscriptionDetails);
         sock.emit('feed_load', u.idCON);
         sock.emit('get_checklist_invite_count', u.idCON);
         sock.emit('get_friendship_invite_count', u.idCON);
 
         return $rootScope.sendInviteCountUpdatePing = function (idCON, type) {
-          //console.log('sending invite count update ping', idCON, type);
           sock.emit('ping_invite_count', idCON, type);
+          api.notifications.count_notifi();
           return true;
         };
 
@@ -939,11 +923,10 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
         });
       },
       select: function (offer) {
-        //console.log('select', offer);
+
         $rootScope.subscriptions.doSelect(offer);
         $rootScope.enterPaymentMethodValues = {
           submit: function () {
-            console.log('method form submitted');
             return false;
           },
           submitText: 'Enter Method'
@@ -952,7 +935,7 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
       },
       finalize: function () {
         $rootScope.subscriptions.finalizing = true;
-       // console.log('finalizing with values', $rootScope.subscriptions, $rootScope.currentPaymentMethod);
+
         if (!$rootScope.subscriptions.agreeToTerms) {
           $rootScope.message('You cannot subscribe if you do not agree to Checklink\'s Terms and Conditions!', 'warning');
           return false;
@@ -984,24 +967,21 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
     var stateChangeStartEvent = $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, options) {
 
       $rootScope.loadingProgress = true;
-      //console.log('checking route for permissions');
 
       var mod, loginCheck;
       $rootScope.module = mod = toState.name.split('.');
 
       $rootScope.section = '';
       $rootScope.section = mod[1] === 'login' && !mod[2] ? 'login' : mod[1];
+    
       if ($rootScope.section !== 'feed') {
-        //console.log('is not the feed');
         $rootScope.backTo = '#' + toState.url;
       }
       if (mod[1] === 'login') {
-        //console.log('is the login');
       } else if (mod[1] === 'logout') {
         var token = { token: $rootScope.token };
         $http.post(BASEURL + 'logout.php', token).then(
           function (d) { //success
-            //$rootScope.socketio.disconnect();
             $rootScope.user = void 0;
             $cookies.remove("username");
             $cookies.remove("useridCON");
@@ -1009,11 +989,11 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
             var loginTime = '';
             loginCheck = $rootScope.checkLogin(event, toState);
             if (!loginCheck) {
-              //console.log('preventing logout', toState);
               event.preventDefault();
               $state.go('app.login');
             } else {
               //console.log('logout good');
+              console.log('index.run.js line 1023')
             }
           }
           , function (err) {
@@ -1066,6 +1046,7 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
       api.checklists.get().success(function (res) {
         var ref;
         if ((ref = res.checklists) != null ? ref.length : void 0) {
+           
           $rootScope.checklists = res.checklists;
         }
         $rootScope.loaded.checklists = true;
@@ -1119,11 +1100,6 @@ var APIURL = 'https://checklinkedapp.azurewebsites.net/api/';
       }
       return newArray;
     }
-
-
-
-
-
 
   }
 })();

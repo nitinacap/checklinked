@@ -15,6 +15,7 @@
         "ROW_NAME": "Row Name",
         "ROW_PARENT": "Row Parent",
         "COLOR": "Color",
+        "VIEW_INDIVIDUAL": "View Individual",
 	"ERRORS": {
             "PLACEHOLDER": "placeholder",
             "ROW_NAME" : "Row Name field is required",

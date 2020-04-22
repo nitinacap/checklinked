@@ -1,8 +1,9 @@
-<h3 ng-if="!vm.templates.list.public">No public templates yet.
+<h3 ng-if="!vm.templates.list.public" class="pl-20" >No public templates yet.
 </h3>
 <table class="bordered-table" cellpadding="0" cellspacing="0" width="100%">
   <tbody class="public-table" ng-if="vm.templates.list.public"
-    ng-repeat="publics in vm.templates.list.public |orderBy:vm.templateOrder:vm.reverse">
+    ng-repeat="publics in vm.templates.list.public ">
+    <!-- |orderBy:vm.templateOrder:vm.reverse -->
     <tr ng-class="{'isdec':isDescp==true}">
       <td width="25%" colspan="5"><a href="">
           <md-icon style="padding-top:0px;" ng-click="isDescp = isDescp== true ? false :true;"
@@ -15,7 +16,7 @@
     </tr>
     <tr ng-show="isDescp ">
       <th class="text-center" width="15%">
-        <div class="table-header">
+        <div class="table-header text-center">
           <span class="column-title">Name</span>
           <md-button class="md-icon-button" ng-click="vm.sortBy('name')" aria-label="Sort Direction" translate
             translate-attr-aria-label="GROUP.SORT_DIRECTION">
@@ -29,7 +30,7 @@
         </div>
       </th>
       <th class="text-center"  width="15%">
-        <div class="table-header">
+        <div class="table-header  text-center">
           <span class="column-title">Author</span>
           <md-button class="md-icon-button" ng-click="vm.sortBy('organization')" aria-label="Sort Direction" translate
             translate-attr-aria-label="GROUP.SORT_DIRECTION">
@@ -42,7 +43,7 @@
         </div>
       </th>
       <th class="text-center"  width="15%">
-        <div class="table-header">
+        <div class="table-header  text-center">
           <span class="column-title">Type</span>
           <md-button class="md-icon-button" ng-click="vm.sortBy('type')" aria-label="Sort Direction" translate
             translate-attr-aria-label="GROUP.SORT_DIRECTION">
@@ -74,7 +75,7 @@
             <td width="45%"  class="pl-0"  ng-if="public.type">{{public.created * 1000 | date : "medium" }}</td>
             <td >
 
-              <md-menu>
+              <md-menu ng-if="!$root.viewAs.notMe">
                 <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button" aria-label="More"
                   translate translate-attr-aria-label="">
                   <md-icon md-font-icon="icon-dots-vertical s18"></md-icon>

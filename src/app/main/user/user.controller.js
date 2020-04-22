@@ -20,7 +20,21 @@
   }
      
     // }
-    vm.currentItem = parseInt($rootScope.curreManuItem);
+    // vm.currentItem = parseInt($rootScope.curreManuItem);
+
+
+    // function to change the tab from the top menu vertical options starts
+    $scope.$watch(function() {
+      return $rootScope.curreManuItem;
+    }, function() {
+      if($rootScope.curreManuItemName === 'user'){
+        vm.currentItem = parseInt($rootScope.curreManuItem);
+      }
+    }, true);
+
+    // function to change the tab from the top menu vertical options ends
+
+
     vm.update = {
       editable: false,
       sending: false,
@@ -37,6 +51,8 @@
           if (res === void 0 || res === null || res === '') {
             return $rootScope.message('Error talking to server', 'warning');
           } else if (res.code) {
+            $rootScope.user
+            // 
            $rootScope.user = res.user;
             return $rootScope.message(res.message, 'warning');
           } else {
@@ -155,13 +171,20 @@
     };
 
     function userStats() {
+
+      vm.isLoader = true;
+      
       $http.post(BASEURL + 'user-stats.php', {'token':$cookies.get('token') },
         {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           cache: false
-        }).error(function () {
+        }).error(function (resp) {
+          vm.isLoader = false;
+           if(resp) $rootScope.message(resp.message, 'error')
+          // else 
+          // $rootScope.message('Server Error', 'error')
         }).success(function (resp) {
-          
+          vm.isLoader = false;
           if (resp.type == 'success') {
             $scope.stats = resp.stats;
           } else {
@@ -186,10 +209,10 @@
         // }
 
     vm.submenu = [
-      { link: '', title: 'My Profile' },
-      { link: 'contacts', title: 'Contacts' },
-      { link: 'organization', title: 'Organization' },
-      { link: 'teammembers', title: 'Account' }
+      { link: 'user', title: 'My Profile', active : true },
+      { link: 'contacts', title: 'Contacts', active : false },
+      { link: 'organization', title: 'Organization', active : false },
+      { link: 'teammembers', title: 'Account', active : false }
     ];
 
 

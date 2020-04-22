@@ -53,6 +53,7 @@
 
 
     $scope.toggleShowCheckboxes = function (user) {
+
       var show;
       console.log('user', user);
       show = {
@@ -68,6 +69,7 @@
         //$scope.displayUserCheckboxes(show);
         console.log('displayed user', user, show);
         console.log('showingUsers', $scope.showingUsers);
+        debugger
       }
       return true;
     };

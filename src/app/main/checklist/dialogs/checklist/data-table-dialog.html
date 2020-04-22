@@ -1,293 +1,261 @@
 
-<style>
+
+<md-dialog class="dialog dataTable" aria-label="">
+  <form  name="checklistForm" novalidate>
+  <md-toolbar class="md-accent md-hue-2">
+    <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+      <span class="title">{{  vm.table_id == "" ? 'Add New' : 'Edit' }} Data Table</span>
+      <md-button class="md-icon-button" ng-click="vm.closeDialog()">
+        <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+
+  <md-dialog-content ms-scroll>
+    <div id="" class="simple-table-container md-background-bg md-whiteframe-1dp p-15">
+     
 
 
-  md-dialog.dialog {
-    max-width: 95%;
-    width: 95%;
-}
-
-   .chk_data_table_header {
-    border: 2px solid #9E9E9E  !important;
-    border-bottom: 0px !important;
-    border-collapse: collapse;
-  }
-  table.table.table-bordered.chk_data_table_header tr td {
-    height: 1px;
-    text-align: center;
-   border:  2px solid #a7a7a7;
-   
-    padding: 2px;
-    border-bottom:none !important;
-}
-
-table.table.table-bordered.chk_data_table_header tr td:last-child {
-    border-right: 0px !important;
-}
-
-  .chk_data_table,.chk_data_table_header {
-    width: 100%; 
-    white-space: nowrap;
-   
-    table-layout: fixed;
-  }
-  td.input_border {
-   
-    padding: 5px;
-    min-height: 40px;
-    height: 40px;
-    white-space: -o-pre-wrap; 
-    word-wrap: break-word;
-    /* white-space: pre-wrap;  */
-    white-space: -moz-pre-wrap; 
-    white-space: -pre-wrap; 
-}
-
-span.table_detail {
-    border-bottom: 2px solid #416ea3;
-    display: inline-block;
-    width: 20px;
-    text-align: center;
-    margin-right: 10px;
-}
-.data_tabel_title {
-    margin-bottom: 20px;
-}
-
-.data_tabel_title span {
-    display: inline-block;
-    padding: 0 40px 0 40px;
-    font-size: 22px;
-    font-weight: 700;
-    border-bottom: 2px solid #416ea3;
-}
-
-td.cell-border{
-  border: 3px solid #000 !important; 
-  /* border-bottom: none !important; */
-  /* padding: 0px !important;
-       border: 1px solid #9E9E9E !important; */
- 
-}
-td.cell-border-none{
-       border: 2px solid #9E9E9E !important; 
-       text-align: center; 
- 
-}
-
-.chk_data_table{
-    border-collapse: collapse;
-
-}
-
-
-
-.chk_data_table span{
-   display: block;
-}
-.chk_data_table span.right {
-  text-align:right;
-}
-.chk_data_table span.left {
-  text-align:left;
-}
-.chk_data_table span.center {
-  text-align:center;
-}
-
-.chk_data_table span.top {
-  vertical-align:top;
-}
-.chk_data_table span.middle {
-  vertical-align:middle;
-}
-.chk_data_table span.bottom {
-  vertical-align:bottom;
-}
-
-.fs-16{
-  font-size: 16px;
-}
-
-md-input-container label {
-    font-size: 16px;
-}
-
-
-
-</style>
-
-<md-dialog class="dialog" aria-label="">
-
-    <md-toolbar class="md-accent md-hue-2">
-        <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
-            <span class="title">{{  vm.table_id == "" ? 'Add New' : 'Edit' }} Data Table</span>
-            <md-button class="md-icon-button" ng-click="vm.closeDialog()">
-                <md-icon md-font-icon="icon-close" aria-label="Close dialog"></md-icon>
-            </md-button>
-        </div>
-    </md-toolbar>
-
-    <md-dialog-content ms-scroll>
-      <div id="" class="simple-table-container md-background-bg md-whiteframe-1dp p-15">
+      <div>
+        <p>Select Cell to Format or Done When Complete</p>
+        <h3>Cell to Format</h3>
 
         <div>
-          <p>Select Cell to Format or Done When Complete</p>
-            <h3>Cell to Format</h3>
+          Columns <span class="table_detail"> {{columns.length}}</span>
+          Rows <span class="table_detail"> {{rows.length}}</span>
+
+        </div>
+      </div>
+
+
+
+
+
+      <form name="formatForm" class="md-inline-form" novalidate>
+
+        <div ng-if="vm.reportsRange">
+
+
+          <label>Range</label>
+          <md-radio-group ng-model="vm.newItem.range" layout="row">
+            <md-radio-button value="All" aria-label='All'>All</md-radio-button>
+            <md-radio-button value="Today" aria-label='Today'>Today</md-radio-button>
+            <md-radio-button value="Yesterday" aria-label='Yesterday'>Yesterday</md-radio-button>
+            <md-radio-button value="Last 7 days" aria-label='Last 7 days'>Last 7 days</md-radio-button>
+            <md-radio-button value="Last 30 days" aria-label='Last 30 days'>Last 30 days</md-radio-button>
+            <md-radio-button value="This month" aria-label='This month'>This month</md-radio-button>
+            <md-radio-button value="This year" aria-label='This year'>This year</md-radio-button>
+            <md-radio-button value="MTD" aria-label='MTD'>MTD</md-radio-button>
+            <md-radio-button value="YTD" aria-label='YTD'>YTD</md-radio-button>
+            <md-radio-button value="Custom" aria-label='Custom'>Custom</md-radio-button>
+          </md-radio-group>
+
+          <div ng-if="vm.newItem.range == 'Custom'">
+            <md-datepicker md-open-on-focus ng-model="vm.newItem.from_date" md-placeholder="From date"
+              ng-required="vm.newItem.range == 'Custom'">
+            </md-datepicker>
+
+            &nbsp;&nbsp;
+            <md-datepicker md-open-on-focus ng-model="vm.newItem.to_date" md-placeholder="To date"
+              ng-required="vm.newItem.range == 'Custom'">
+            </md-datepicker>
+          </div>
+        </div>
+
+        
+        <div class="user_dropdown mt-10" ng-if="vm.reportsRange">
+
+          <label>User</label>
+          <div ng-dropdown-multiselect="" options="myDropdownOptions" selected-model="myDropdownModel" extra-settings="myDropdownSettings"></div>
+<!--  translation-texts="myDropdownTranslation" -->
+        </div>
+
+
+<!-- {{vm.reportsRange ? format.name : format.name == 'Data Point' ? '----' : format.name }} -->
+        <div class="formating-holder">
+          <label>Format</label>
+          <md-input-container class="md-block mb-0">
+            <md-select name="selected_format_id" required ng-model="vm.model" placeholder="" style="width:140px"
+              ng-change="dataTable.getdetails(vm.model )" ng-disabled="!$root.DataTableFields.cellSelected">
+              <md-option ng-if="vm.reportsRange || (!vm.reportsRange && format.name != 'Data Point')" ng-value="format.name" ng-repeat="format in vm.formats">{{format.name }} </md-option>
+            </md-select>
+          </md-input-container>
+
+
+
+          <md-input-container class="md-block mb-0">
+            <md-select name="selected_textAlign" ng-model="vm.alignTextStatus" placeholder="" style="width:140px"
+              ng-disabled="!$root.DataTableFields.textShow">
+              <md-option ng-value="al.name" ng-repeat="al in alignTextVal"><i class="fa fa-align-{{al.name}}">
+                  <div class="_md-text ng-binding"></div>
+                </i></md-option>
+            </md-select>
+          </md-input-container>
+
+
+          <md-input-container class="md-block mb-0">
+            <md-select name="selected_textPostion" ng-model="vm.TextPostitionStatus" placeholder="" style="width:140px"
+              ng-disabled="!$root.DataTableFields.textShow">
+              <md-option ng-value="position.name" ng-repeat="position in TextPostition">
+                <i class="fa {{position.pos}}" aria-hidden="true"></i></md-option>
+            </md-select>
+          </md-input-container>
+
+          <!-- <label ng-show="$root.DataTableFields.formula_show" class="ml-30">Header Text</label>
+          <input ng-show="$root.DataTableFields.formula_show" name="header_text" class="header_text"
+            ng-model=$root.DataTableFields.Header_Text placeholder="Header Text"> -->
+        </div>
+
+        <md-input-container class="md-block mb-0" ng-show="$root.DataTableFields.lable_show">
+          <input name="name" ng-bind-html="$root.DataTableFields.label_name" ng-model="$root.DataTableFields.label_name"
+            required md-autofocus placeholder="Name">
+        </md-input-container>
+
+        <label ng-show="formula_show" class="fs-16">Formula </label>
+        <md-input-container class="md-block mb-0" ng-show="$root.DataTableFields.formula_show">
+          <input name="name"  ng-model=$root.DataTableFields.formula required md-autofocus uppercased
+            placeholder="Formula">
+        </md-input-container>
+        <!-- uppercased ng-keyup='vm.changeUppercase(vm.formula)' -->
+
+        <!-- currency type -->
+        <md-input-container class="md-block mb-0" ng-show="$root.DataTableFields.currency_show">
+
+          <label class="fs-16">Currency Type </label>
+          <md-select name="currency_type" ng-model="$root.DataTableFields.currency_type"
+            placeholder="Select a Currency" style="width:140px" ng-disabled="!$root.DataTableFields.currency_show">
+            <md-option ng-value="curr.name" ng-repeat="curr in currency">{{curr.name}}</md-option>
+          </md-select>
+
+        </md-input-container>
+        <!-- end -->
+       
+
+        <!-- data POint starts -->
+        <label ng-show="$root.DataTableFields.data_point_show">Function </label>
+        <md-input-container style="margin-bottom: 10px; display: inline-block;"  class="md-block mt-0 mb-10 d-inline-block" ng-show="$root.DataTableFields.data_point_show">
+
           
+          <md-select name="datapoint_function" ng-model="$root.DataTableFields.data_point_function"
+            placeholder="Select a function" style="width:140px" ng-disabled="!$root.DataTableFields.data_point_show">
+            <md-option ng-value="datapoint.name" ng-repeat="datapoint in datapoint_functions">{{datapoint.name}}</md-option>
+          </md-select>
+
+        </md-input-container>
+        <!-- data POint ends -->
+
+
+        <!-- Decimals type -->
+        <div class="numbers-holder">
+          <md-input-container class="md-block mb-0" ng-show="$root.DataTableFields.number_show">
             <div>
-                Columns <span class="table_detail"> {{columns.length}}</span>
-                Rows <span class="table_detail"> {{rows.length}}</span>
-                
-            </div>
-      </div>   
-
-          <form name="formatForm" class="md-inline-form" novalidate>
-
-            
-          
-            <div class="formating-holder">
-              <label>Format</label>
-              <md-input-container class="md-block mb-0" >
-              <md-select name="selected_format_id" required ng-model="vm.model" placeholder="" style="width:140px" ng-change="vm.getdetails()" ng-disabled="!vm.cellSelected">
-                <md-option ng-value="format.name" ng-repeat="format in vm.formats">{{format.name}}</md-option>
+              <label class="fs-16">Decimals </label>
+              <md-select name="number_type" required ng-model="$root.DataTableFields.number_type" placeholder=""
+                style="width:140px" ng-disabled="!$root.DataTableFields.number_show">
+                <md-option ng-value="deci.value" ng-repeat="deci in decimal">{{deci.value}}</md-option>
               </md-select>
-            </md-input-container>
-              <md-input-container class="md-block mb-0" >
-                  <md-select name="selected_textAlign"  ng-model="vm.alignTextStatus" placeholder="" style="width:140px" ng-disabled="!vm.textShow" >
-                    <md-option ng-value="al.name" ng-repeat="al in alignTextVal"><i class="fa fa-align-{{al.name}}"><div class="_md-text ng-binding"></div></i></md-option>
-                  </md-select>
-                </md-input-container>
-  
-  
-                <md-input-container class="md-block mb-0" > 
-                <md-select name="selected_textPostion"  ng-model="vm.TextPostitionStatus" placeholder="" style="width:140px"  ng-disabled="!vm.textShow">
-                    <md-option ng-value="position.name" ng-repeat="position in TextPostition">
-                        <i class="fa {{position.pos}}" aria-hidden="true"></i></md-option>
-                  </md-select>
-                </md-input-container>
-            </div>            
 
-           
+            </div>
 
-            <md-input-container class="md-block mb-0" ng-show="vm.lable_show">
-                <input name="name"  ng-bind-html="vm.label_name"  ng-model="vm.label_name" required md-autofocus placeholder="Name">
-              </md-input-container>
+            <div>
 
-              <label ng-show="formula_show" class="fs-16">Formula </label>
-                <md-input-container class="md-block mb-0" ng-show="vm.formula_show">
-                  <input name="name"  ng-model=vm.formula required md-autofocus uppercased placeholder="Formula" >
-                </md-input-container>
-                <!-- uppercased ng-keyup='vm.changeUppercase(vm.formula)' -->
+              <label ng-show="$root.DataTableFields.number_show" class="fs-16">Percentage </label>
+              <button type="button" ng-click="dataTable.selectPercentage()" class="button-icon-reset" aria-label="role">
+                <md-icon ng-show="!$root.DataTableFields.percentage" md-font-icon="icon-checkbox-blank-outline"
+                  class="md-accent-fg s18"></md-icon>
+                <md-icon ng-show="$root.DataTableFields.percentage" md-font-icon="icon-checkbox-marked-outline"
+                  class="md-accent-fg s18"></md-icon>
+              </button>
 
-              <!-- currency type -->
-              <md-input-container class="md-block mb-0" ng-show="vm.currency_show">
-                
-                  <label  class="fs-16">Currency Type </label>
-                  <md-select name="currency_type" required ng-model="vm.currency_type" placeholder="Select a Currency" style="width:140px"  ng-disabled="!vm.currency_show">
-                    <md-option ng-value="curr.name" ng-repeat="curr in currency">{{curr.name}}</md-option>
-                  </md-select>
-                
-                </md-input-container>
-              <!-- end -->
+            </div>
 
-              
+          </md-input-container>
+        </div>
+        <!-- end -->
 
 
-                <!-- Decimals type -->
-                <div class="numbers-holder">
-                <md-input-container class="md-block mb-0" ng-show="vm.number_show">
-                    <div>
-                    <label  class="fs-16">Decimals </label>
-                    <md-select name="number_type" required ng-model="vm.number_type" placeholder="" style="width:140px"  ng-disabled="!vm.number_show">
-                      <md-option ng-value="deci.value" ng-repeat="deci in decimal">{{deci.value}}</md-option>
-                    </md-select>
-
-                  </div>
-
-                    <div>
-                    
-                        <label ng-show="vm.number_show" class="fs-16">Percentage </label>
-                        <button type="button"
-                        ng-click="vm.selectPercentage()"
-                        class="button-icon-reset" aria-label="role">
-                        <md-icon ng-show="!vm.percentage"
-                          md-font-icon="icon-checkbox-blank-outline" class="md-accent-fg s18"></md-icon>
-                        <md-icon ng-show="vm.percentage"
-                          md-font-icon="icon-checkbox-marked-outline" class="md-accent-fg s18"></md-icon>
-                      </button>
-                    
-                       
+        <!-- Text Cell -->
+        <label ng-show="$root.DataTableFields.text_show">Characters before wrapping text </label>
+        <md-input-container class="md-block mb-0" ng-show="$root.DataTableFields.text_show">
+          <input type="number" name="name" ng-model="$root.DataTableFields.text" required md-autofocus placeholder="">
+        </md-input-container>
 
 
-                    </div>
+      </form>
 
-                  
-                  
-                  </md-input-container>
-                </div>
-                <!-- end -->
+      <!-- Text Cell -->
+      <md-dialog-actions layout="row" layout-align="space-between center">
+        <div  ng-if="$root.DataTableFields.data_point_show && vm.reportsRange" layout="row" layout-align="start center" flex>
+          <md-button type="button" ng-click="openDatapointDialog($event, 'AddDataPoint')" md-no-ink
+            aria-label="Add Data Point" translate="" translate-attr-aria-label="Add Data Point">
+            Add Data Point
+          </md-button>
 
+          <span>
+            {{vm.dataPointName}}
+          </span>
+        </div>
+        <div layout="row" layout-align="end center" flex>
 
-                <!-- Text Cell -->
-                  <label ng-show="vm.text_show">Characters before wrapping text </label>
-                <md-input-container class="md-block mb-0" ng-show="vm.text_show">
-                    <input type="number" name="name" ng-model="vm.text" required md-autofocus placeholder="">
-                  </md-input-container>
+          <md-button type="submit" ng-click="vm.saveFormat()" class="md-raised md-accent" aria-label="Save"
+            translate="GROUP.SAVE" translate-attr-aria-label="GROUP.SAVE"
+            ng-disabled="!$root.DataTableFields.cellSelected">
+            SAVE
+          </md-button>
 
-              <!-- Text Cell -->
-              <md-dialog-actions layout="row" layout-align="space-between center">
-                  <div layout="row" layout-align="end center" flex>
-                    <md-button type="submit"  ng-click="vm.saveFormat()" class="md-raised md-accent" 
-                      aria-label="Save" translate="GROUP.SAVE" translate-attr-aria-label="GROUP.SAVE" ng-disabled="!vm.cellSelected">
-                      SAVE 
-                    </md-button>
-
-                    <md-button type="submit"  ng-click="vm.saveDone(vm.table_id)" class="md-raised md-accent" 
-                    aria-label="Done" translate="" translate-attr-aria-label="">Done
-                  </md-button>
-
-                 
-
-                  
+          <md-button type="submit" ng-click="vm.saveDone(vm.table_id)" class="md-raised md-accent" aria-label="Done"
+            translate="" translate-attr-aria-label="">Done
+          </md-button>
 
 
-                  </div>
-            
-                </md-dialog-actions>
 
-                <div class="data_tabel_title" style="text-align: center"><span>{{vm.dataTableName}}</span></div>
+
+
+
+        </div>
+
+      </md-dialog-actions>
+
+      <!-- <div class="data_tabel_title" style="text-align: center"><span>{{vm.dataTableName}}</span></div> -->
 
 
       <table class="table table-bordered chk_data_table_header">
-          <tbody>
-              <tr>
-                  <td height="20" style="width: 2%; cursor: pointer;border: none !important;" class="block"></td>
-                  <td  height="20" ng-repeat="(key,header) in vm.header_names" style="width: 100px; cursor: pointer"  class="block">                  
-                        {{header}} 
-                      </td>
-                    </tr>
-              </tbody>
-          </table>
-          <table class="table table-bordered chk_data_table" cellspacing="0" cellpadding="0">
-              
-              <!-- {{vm.records}} -->
-              <tbody>
+        <tbody>
+          <tr>
+            <td height="20" style="width: 2%; cursor: pointer;border: none !important;" class="block"></td>
+            <td height="20" ng-repeat="(key,header) in vm.header_names" style="width: 100px; cursor: pointer"
+              class="block">
+              {{header}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-bordered chk_data_table" cellspacing="0" cellpadding="0">
 
-                  <tr ng-repeat="(key_row,row) in rows track by $index"  ng-init="current = $first ? $parent.start=0 : $parent.start; $parent.start=$parent.start+columns.length;initRow(key_row)">
-                      <td height="20" style="width: 2%; cursor: pointer" class="input_border block cell-border-none">{{key_row + 1}}</td>
-                      <td  height="20" ng-repeat="(key,column) in columns" style="width: 100px; cursor: pointer"
-                        ng-click="vm.select(row, column,current + $index,vm.header_names[$index],key_row+1)"
-                        ng-style="{ background: row == vm.selectedRow && column == vm.selectedColumn ? 'yellow' : 'none' }" data-ng-init="init(vm.header_names[$index], key,key_row+1,$index,current + $index)" class="input_border block" ng-class="['Date','Formula','Currency','Text','Number'].indexOf(vm.data_table_structure[current + $index].type) > -1 ? 'cell-border' : 'cell-border-none'">
-                       <div>
-                        <b><span ng-bind-html="vm.myrecords[current + $index][vm.header_names[$index]+vm.rowIndex[key_row]]" class="{{vm.data_table_structure[current + $index].text_align}} {{vm.data_table_structure[current + $index].text_position}}"></span></b></div>
-                                              
-                      </td>
-                    </tr>
+        <!-- {{vm.records}} -->
+        <tbody>
 
-                    <!-- {{vm.data_table_structure[current + $index].text_align}}, {{vm.data_table_structure[current + $index].text_position}} -->
+          <tr ng-repeat="(key_row,row) in rows track by $index"
+            ng-init="current = $first ? $parent.start=0 : $parent.start; $parent.start=$parent.start+columns.length;initRow(key_row)">
+            <td height="20" style="width: 2%; cursor: pointer" class="input_border block cell-border-none">
+              {{key_row + 1}}</td>
+            <td height="20" ng-repeat="(key,column) in columns" style="width: 100px; cursor: pointer"
+              ng-click="vm.select(row, column,current + $index,vm.header_names[$index],key_row+1)"
+              ng-style="{ background: row == vm.selectedRow && column == vm.selectedColumn ? 'yellow' : 'none' }"
+              data-ng-init="init(vm.header_names[$index], key,key_row+1,$index,current + $index)"
+              class="input_border block"
+              ng-class="['Date','Formula','Currency','Text','Number', 'Data Point'].indexOf(vm.data_table_structure[current + $index].type) > -1 ? 'cell-border' : 'cell-border-none'">
+              <div>
+                <b><span ng-bind-html="vm.myrecords[current + $index][vm.header_names[$index]+vm.rowIndex[key_row]]"
+                    class="{{vm.data_table_structure[current + $index].text_align}} {{vm.data_table_structure[current + $index].text_position}}"></span></b>
+              </div>
 
-                  <!-- <tr ng-repeat="row in vm.records">
+            </td>
+          </tr>
+
+          <!-- {{vm.data_table_structure[current + $index].text_align}}, {{vm.data_table_structure[current + $index].text_position}} -->
+
+          <!-- <tr ng-repeat="row in vm.records">
                       <td ng-repeat="column in row" >
                           <span ng-bind-html="column"></span>
                       </td>
@@ -313,10 +281,10 @@ md-input-container label {
 
                     </tr> -->
 
-              <tr ng-repeat="record in vm.records">
-                
-                
-                <!-- <td class="text-center">
+          <tr ng-repeat="record in vm.records">
+
+
+            <!-- <td class="text-center">
                     <i class="fa fa-times-circle fa-lg text-danger" 
                     ng-if="!$first"
                     ng-click="vm.remove($index)"
@@ -327,17 +295,17 @@ md-input-container label {
                     ng-click="vm.add()"
                     title="Add" aria-hidden="true"></i>
                 </td> -->
-              </tr>
-              </tbody>
-            </table>
-            <br>
-          
-          <!-- Selected (row, column): 
+          </tr>
+        </tbody>
+      </table>
+      <br>
+
+      <!-- Selected (row, column): 
           <br>
           ({{selectedRow || 'undefined'}}, {{selectedColumn || 'undefined'}}) -->
 
 
-        <!-- <table class="simple row-border hover bordered-table">
+      <!-- <table class="simple row-border hover bordered-table">
           <thead>
 
 
@@ -441,7 +409,8 @@ md-input-container label {
             </tr>
           </tbody>
         </table> -->
-
-      </div>
-</md-dialog-content>
+     
+    </div>
+  </md-dialog-content>
+</form>
 </md-dialog>

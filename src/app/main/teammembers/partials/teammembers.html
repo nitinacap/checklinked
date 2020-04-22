@@ -88,7 +88,7 @@
 
 
               <md-menu-item ng-show="(!isUser && !isViewing) || ((isUser) && viewAs.notMe)">
-                <md-button ng-click="viewAs.select(member)" aria-label="View As"
+                <md-button ng-click="viewAs.select(member); " aria-label="View As"
                            translate-attr-aria-label="TEAMMEMBERS.VIEW_AS">
                   <md-icon class="md-accent-fg s18" md-font-icon="icon-eye"></md-icon>
                   <span translate="TEAMMEMBERS.VIEW_AS">View As</span>

@@ -77,7 +77,14 @@
     api.folders.get().then(function (d) {
       
       if (d.data.code == '-1') {
-        $scope.subscriptionAlert(d.data.message);
+        
+        if(d.data.message=='unauthorized access'){
+          $state.go('app.logout');
+        }else{
+
+          //$scope.subscriptionAlert(d.data.message);
+        
+        }
       }
       vm.folders = d.data.folders;
       console.log('vm.folders', vm.folders);
@@ -153,6 +160,7 @@
         return api.checklists.invite.get().error(function (res) {
           return vm.inviteControl.error = 'Unknown error talking to server.';
         }).success(function (res) {
+           
           vm.isLoader = false;
           if (res.code) {
             console.log('res.code', res);
@@ -247,6 +255,7 @@
           if (res.code) {
             return invite.errors.accepting = res.message;
           } else {
+             
             vm.invites.received.remove(invite);
             if (invite.type === 'group') {
               $rootScope.groups.push(res.groups[0]);
@@ -324,6 +333,8 @@
     });
     $scope.$on('event:checklistInviteCountChanged', function () {
       if ($rootScope.userAuthenticated() && !$rootScope.loading.invites) {
+        //// 
+        api.notifications.count_notifi();
         return vm.inviteControl.load();
       }
     });
@@ -353,6 +364,9 @@
           }
           cancelGroupInput();
           $rootScope.$broadcast('event:updateModels');
+
+          if(!vm.folders) vm.folders=[];
+
           vm.folders.push(res.folder);
           $rootScope.organizeData();
           fetchGroups(res.folder.id);
@@ -444,10 +458,10 @@
 
     // Content sub menu
     vm.submenu = [
-      { link: 'alerts', title: 'Alerts' },
-      { link: '', title: 'Action Items' },
-      { link: 'chat.message', title: 'Messages', notification: $rootScope.message_count },
-      { link: 'notification', title: 'Notifications', notification: $rootScope.notification_count }
+      { link: 'alerts', title: 'Alerts', active : false },
+      { link: 'invitations', title: 'Action Items', active : true },
+      { link: 'chat.message', title: 'Messages', notification: $rootScope.message_count, active : false },
+      { link: 'notification', title: 'Notifications', notification: $rootScope.notification_count, active : false }
     ];
 
     setTimeout(function () {

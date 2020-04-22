@@ -13,10 +13,9 @@ var indexOf = [].indexOf || function (item) {
     .controller('checklistController', checklistController);
 
   /** @ngInject */
-  function checklistController($rootScope, $scope, $cookies, api, $state, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $filter, $window) {
+  function checklistController($rootScope, $scope, $cookies, api, $state, $stateParams, $location, $mdDialog, $mdSidenav, $document, $http, $filter, $window, dataTable) {
     var vm = this;
     var ref;
-
     vm.setChecklistCtrlBlank = setChecklistCtrlBlank;
     vm.preventDefault = preventDefault;
     vm.deleteConfirm = deleteConfirm;
@@ -99,7 +98,7 @@ var indexOf = [].indexOf || function (item) {
     vm.expand = expand;
     vm.collapse = collapse;
     vm.isExpanded = isExpanded;
-    vm.toggle = toggle;
+    // vm.toggle = toggle;
     vm.downloadAttachment = downloadAttachment;
     vm.showAllHeaders = showAllHeaders;
     vm.selectWorkflowById = selectWorkflowById
@@ -110,9 +109,12 @@ var indexOf = [].indexOf || function (item) {
     vm.deleteScheduler = deleteScheduler;
 
     vm.changeUppercase = changeUppercase;
+    vm.newScheduler = {};
+    vm.Alreadyclicked = false;
 
     /**Data Table Function Code Start Here ** */
     vm.createDataTableSegment = createDataTableSegment;
+    vm.createTableFromTemplate = createTableFromTemplate;
 
     vm.head_row = 0;
     vm.field = [];
@@ -126,7 +128,13 @@ var indexOf = [].indexOf || function (item) {
       referencess: []
     };
 
+   
+
     vm.checklistFromGroup = false;
+
+    $scope.dataTable = dataTable;
+
+   
 
 
     //check permission
@@ -145,13 +153,24 @@ var indexOf = [].indexOf || function (item) {
     vm.folders = [];
     var token = $cookies.get("token");
 
+
+    //on navigating another checklist if extra users are still visible than klogged in one in items
+    if($rootScope.showingUsers.length > 1){
+      $rootScope.showingUsers = [{
+        idCON: $rootScope.user.idCON, 
+        name: $rootScope.user.name.first
+      }];
+      
+    }  
+    
     api.folders.get(token).then(function (d) {
       vm.isLoader = false;
       if (d.data.code == '-1') {
         if (d.data.message == 'unauthorized access') {
           $state.go('app.logout');
         } else {
-          $scope.subscriptionAlert(d.data.message);
+          // $scope.subscriptionAlert(d.data.message);
+          $rootScope.message(d.data.message, 'error')
         }
       } else {
         vm.folders = d.data.folders;
@@ -169,18 +188,24 @@ var indexOf = [].indexOf || function (item) {
 
     vm.tempGroup = {};
 
+    $rootScope.DataTableFields = {
+      // number_type : '',
+      // currency_type : ''
+    }
+
     $scope.$broadcast('event:checklistLoaded');
     if (!vm.isExpandedCounter) {
       vm.isExpandedCounter = 0;
     }
     if ($stateParams.id !== undefined && $stateParams.id != null) {
       console.log('myShowingUser', $rootScope.showingUsers)
+    //  
       if ($stateParams.id == '') {
         console.log('$stateParams empty', $stateParams);
         console.log('$state', $state);
         $location.path('/checklist');
       } else if ($state.is('app.checklist.detail')) {
-        //////debugger;
+        //////// //////;
         console.log('stateParams', $stateParams);
         console.log('$state', $state);
         vm.passChecklist = [];
@@ -456,10 +481,12 @@ var indexOf = [].indexOf || function (item) {
             return $rootScope.message("Error updating reorder information. (" + res.code + ": " + res.message + ")");
           } else {
 
+
             vm.isLoader = false;
             $rootScope.message("Section order has been modified");
 
             var itemIndex;
+
 
             itemIndex = vm.sections.indexOf(itemMoved);
             console.log('itemIndex', itemIndex);
@@ -614,6 +641,7 @@ var indexOf = [].indexOf || function (item) {
               record: vm.headings[itemIndex]
             };
             console.log('emitting data', packet);
+            // //////
             $rootScope.socketio.emit('data', packet);
 
           }
@@ -625,7 +653,12 @@ var indexOf = [].indexOf || function (item) {
     };
 
     vm.dragControlListenersItems = {
+
       accept: function (sourceItemHandleScope, destSortableScope, destItemScope) {
+        console.log('accept drag')
+        console.log('sourceItemHandleScope', sourceItemHandleScope)
+        console.log('destSortableScope', destSortableScope)
+        console.log('destItemScope', destItemScope)
 
         if (sourceItemHandleScope.itemScope.item) {
           //console.log('truthy');
@@ -670,6 +703,7 @@ var indexOf = [].indexOf || function (item) {
 
       },
       orderChanged: function (event) {
+        
         console.log('event', event);
 
         // Location where item was dragged to
@@ -860,7 +894,7 @@ var indexOf = [].indexOf || function (item) {
         }
       });
     };
-    function expand(what, which, parentID) {
+    function expand(what, which, parentID, forPdf) {
 
 
       var catalog, item, items, key, whats;
@@ -876,19 +910,37 @@ var indexOf = [].indexOf || function (item) {
           items = vm.toggleableChildren(what, parentID);
           for (key in items) {
             item = items[key];
-            if (indexOf.call(vm.expanded[whats], item) < 0) {
-              catalog.push(item);
+
+            if (forPdf === 'forPDF') {
+              if (indexOf.call(vm.expandedPdf[whats], item) < 0) {
+                catalog.push(item);
+              }
+            } else {
+              if (indexOf.call(vm.expanded[whats], item) < 0) {
+                catalog.push(item);
+              }
             }
+
           }
         }
         console.log('vm.expanded', vm.expanded);
-        return vm.expanded[whats] = vm.expanded[whats].concat(catalog);
+        if (forPdf === 'forPDF') {
+          return vm.expandedPdf[whats] = vm.expandedPdf[whats].concat(catalog);
+        }
+        else {
+          return vm.expanded[whats] = vm.expanded[whats].concat(catalog);
+        }
       } else {
-        vm.expanded[whats].push(which);
+        if (forPdf === 'forPDF') {
+          return vm.expandedPdf[whats].push(which);
+        } else {
+          vm.expanded[whats].push(which);
+        }
+
         console.log('vm.expanded after push', vm.expanded);
       }
     };
-    function collapse(what, which, parentID) {
+    function collapse(what, which, parentID, forPdf) {
       var catalog, item, items, key, ref1, whats;
       if (parentID == null) {
         parentID = null;
@@ -898,7 +950,12 @@ var indexOf = [].indexOf || function (item) {
         catalog = [];
         if (parentID === !null) {
           items = vm.toggleableChildren(what, parentID);
-          ref1 = vm.expanded[whats];
+          if (forPdf === 'forPDF') {
+            ref1 = vm.expandedPdf[whats];
+          } else {
+            ref1 = vm.expanded[whats];
+          }
+
           for (key in ref1) {
             item = ref1[key];
             if (indexOf.call(items, item) < 0) {
@@ -906,26 +963,69 @@ var indexOf = [].indexOf || function (item) {
             }
           }
         }
-        return vm.expanded[whats] = catalog;
+        if (forPdf === 'forPDF') {
+          return vm.expandedPdf[whats] = catalog;
+        } else {
+          return vm.expanded[whats] = catalog;
+        }
+
       } else {
-        return vm.expanded[whats].remove(which);
+        if (forPdf === 'forPDF') {
+          return vm.expandedPdf[whats].remove(which);
+        } else {
+          return vm.expanded[whats].remove(which);
+        }
+
       }
     };
     function isExpanded(what, which) {
+
       var whats, i, x;
       whats = what + 's';
       x = false;
 
       vm.isExpandedCounter++;
+      vm.isExpandedCounter
+
 
       //console.log('indexOf', vm.expanded[whats].indexOf(which.id));
 
       for (i = 0; i < vm.expanded[whats].length; i++) {
         if (vm.expanded[whats][i].id == which.id) {
           // console.log('found');
+
           return true;
         }
       }
+    };
+
+
+    vm.expandedPdf = {
+      sections: [],
+      headings: [],
+      items: [],
+      referencess: []
+    };
+
+    vm.isExpandedForPdf = function (what, which) {
+
+      // var whats, i, x;
+      // whats = what + 's';
+      // x = false;
+
+      // vm.isExpandedPdfCounter++;
+
+
+      // //console.log('indexOf', vm.expanded[whats].indexOf(which.id));
+
+      // for (i = 0; i < vm.expandedPdf[whats].length; i++) {
+      //   if (vm.expandedPdf[whats][i].id == which.id) {
+      //     // console.log('found');
+
+      //     return true;
+      //   }
+      // }
+      return true;
     };
 
     function toggle(what, which, parentID) {
@@ -951,6 +1051,19 @@ var indexOf = [].indexOf || function (item) {
         return vm.collapse(what, which, parentID);
       } else {
         return vm.expand(what, which, parentID);
+      }
+    };
+
+    vm.toggleForPdf = function (what, which, parentID) {
+      // if (parentID == 'allheader') {
+      //   return true;
+      // }
+
+      if (vm.isExpandedForPdf(what, which)) {
+
+        return vm.collapse(what, which, parentID, 'forPDF');
+      } else {
+        return vm.expand(what, which, parentID, 'forPDF');
       }
     };
 
@@ -1055,26 +1168,81 @@ var indexOf = [].indexOf || function (item) {
       //return $scope.$broadcast('event:dataOrganized');
     };
 
+    vm.ElementExists = function (id, array1) {
+      return array1.some(function (el) {
+        return el.id === id;
+      });
+    }
+
     function organizeData() {
-      vm.items.forEach(function (item) {
-        return item.attachments = vm.children('attachments', item.id.toString());
-      });
-      vm.headings.forEach(function (heading) {
-        heading.items = vm.children('items', heading.id.toString());
-        return heading.attachments = vm.children('attachments', heading.id.toString());
-      });
-      vm.sections.forEach(function (section) {
-        var section_id = section.id.toString();
+      // vm.items
 
-        section.headings = vm.children('headings', section_id);
-        return section.attachments = vm.children('attachments', section.id.toString());
-      });
 
-      vm.checklists.forEach(function (checklist) {
-        checklist.sections = vm.children('sections', checklist.idCHK);
-        return checklist.attachments = vm.children('attachments', checklist.idCHK.toString());
-      });
-      //console.log('data organized', vm.checklists);
+      //  
+      // if (!vm.items.length) vm.items = [];
+      // vm.items.forEach(function (item1, index) {
+      //    
+      //   if (item1 == undefined) {
+      //     vm.items.splice(index, 1)
+      //   }
+      // });
+
+
+      //  
+      // console.log(' vm.items organize data', vm.items)
+
+      // if(vm.RecentlyAddedCHecklistItem) {
+      //   vm.RecentlyAddedCHecklistItem = res.item;
+
+      //    
+      //   if(!vm.ElementExists(vm.RecentlyAddedCHecklistItem.id, vm.items)){
+      //      
+      //     if (!vm.items.length) vm.items = [];
+      //     vm.items.push(vm.RecentlyAddedCHecklistItem)
+      //   }
+      // }
+
+      // if(!vm.items.length) vm.items = []
+      // vm.items.push(res.item);
+
+
+
+      if (vm.items.length) {
+
+        vm.items.forEach(function (item) {
+          if (item) {
+            return item.attachments = vm.children('attachments', item.id.toString());
+          } else return 1;
+
+        });
+      }
+
+      if (vm.headings.length) {
+        vm.headings.forEach(function (heading) {
+          heading.items = vm.children('items', heading.id.toString());
+          return heading.attachments = vm.children('attachments', heading.id.toString());
+        });
+      }
+
+      if (vm.sections.length) {
+        vm.sections.forEach(function (section) {
+          var section_id = section.id.toString();
+
+          section.headings = vm.children('headings', section_id);
+
+          return section.attachments = vm.children('attachments', section.id.toString());
+        });
+      }
+
+      if (vm.checklists.length) {
+        vm.checklists.forEach(function (checklist) {
+          checklist.sections = vm.children('sections', checklist.idCHK);
+          return checklist.attachments = vm.children('attachments', checklist.idCHK.toString());
+        });
+      }
+
+      arrangeAttachments();
+
     }
 
     function checkIfLinked(idCHK) {
@@ -1101,16 +1269,20 @@ var indexOf = [].indexOf || function (item) {
           $scope.getChecklinked = function () {
             console.log('$scope.getChecklinked');
 
-            toggleCheckbox
+
             api.checklists.get(idCHK, token).success(function (res) {
               var ref;
 
               if ((ref = res.checklists) != null ? ref.length : void 0) {
                 vm.checklists = res.checklists;
+
                 vm.isLinked = true;
                 vm.isLoader = false;
-                vm.nonCompliance_count = res.checklists[0].nonCompliance_count;
-                vm.total_nonCompliance = res.checklists[0].nonCompliance_total;
+                vm.nonCompliance_count = res.checklists[0].nonCompliance_count ? res.checklists[0].nonCompliance_count : 0;
+                vm.total_nonCompliance = res.checklists[0].nonCompliance_total ? res.checklists[0].nonCompliance_total : 0;
+
+
+                vm.DownloadedFromTemplaeId = vm.checklists[0].template_id;
 
                 vm.showLoadingImage = false;
               } else {
@@ -1167,8 +1339,15 @@ var indexOf = [].indexOf || function (item) {
           api.items.get(idCHK).success(function (res) {
             var ref;
             if ((ref = res.items) != null ? ref.length : void 0) {
+
               vm.items = res.items;
               console.log('res.items', res.items)
+
+              // vm.items.forEach(function(item){
+              //   item
+
+
+              // });
             }
             vm.loaded.items = true;
 
@@ -1210,6 +1389,10 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function getAttachments() {
+      vm.SectionAttachmentID
+      vm.HeadingAttachmentID
+      vm.pType, vm.pID, vm.index
+
       api.attachments.checklist($stateParams.id).success(function (res) {
         var ref;
         console.log(res);
@@ -1219,6 +1402,10 @@ var indexOf = [].indexOf || function (item) {
           $rootScope.attachments = res.attachments;
           vm.attachments = res.attachments;
           vm.SelectedAttachments = res.attachments;
+
+          vm.checklists
+
+
           console.log("attachmentlength", res.attachments.length);
         }
         vm.loaded.attachments = true;
@@ -1228,6 +1415,66 @@ var indexOf = [].indexOf || function (item) {
         vm.loading.attachments = false;
         return vm.completeLoad();
       });
+    }
+
+    function arrangeAttachments() {
+      if (vm.pType === "checklist") {
+        // //ng-click="vm.openUploadAttachmentDialog($event, 'item', item.id, $index, item.attachments)"
+        // // vm.pType = pType;
+        // vm.openUploadAttachmentDialog(vm.pType, vm.pID, vm.index)
+        // // vm.title = 'Attachments';
+        // // vm.index = index;
+        // // vm.SelectedAttachments = attachments;
+        // // vm.upload = false;
+        // vm.checklists
+
+
+        vm.SelectedAttachments = res.attachments;
+      } else if (vm.pType === "section") {
+
+        vm.checklists[0].sections.forEach(function (section) {
+
+          if (section.id == vm.pID) {
+            vm.SelectedAttachments = section.attachments;
+          }
+        });
+      } else if (vm.pType === "heading") {
+
+        vm.checklists[0].sections.forEach(function (section) {
+
+          if (section.id == vm.SectionAttachmentID) {
+
+            section.headings.forEach(function (heading) {
+
+              if (heading.id == vm.HeadingAttachmentID) {
+                vm.SelectedAttachments = heading.attachments;
+              }
+            })
+
+          }
+        });
+      } else if (vm.pType === "item") {
+
+        vm.checklists[0].sections.forEach(function (section) {
+
+          if (section.id == vm.SectionAttachmentID) {
+
+            section.headings.forEach(function (heading) {
+
+              if (heading.id == vm.HeadingAttachmentID) {
+
+                heading.items.forEach(function (item) {
+
+                  if (item.id == vm.pID) {
+                    vm.SelectedAttachments = item.attachments;
+                  }
+                })
+
+              }
+            })
+          }
+        });
+      }
     }
 
     // $scope.$on('event:checklistsLoaded', function () {
@@ -1240,6 +1487,7 @@ var indexOf = [].indexOf || function (item) {
      SET UP THE SOCKET CONNECTION FOR REALTIME
      */
     function setSocketStuff() {
+
       //console.log('setting socket stuff for checklist');
       vm.joinFeeds();
       return $rootScope.socketio.on('data', function (update) {
@@ -1330,6 +1578,7 @@ var indexOf = [].indexOf || function (item) {
         return api.items;
       }
       if (what === 'checkbox') {
+
         return api.checkbox;
       }
     };
@@ -1359,8 +1608,9 @@ var indexOf = [].indexOf || function (item) {
 
 
     function createSegment(what, name, to, type, info, item_type, alert, alert_sms, mobile) {
-      debugger;
+
       console.log("optiondata=" + vm.newItem.dataType);
+      console.log("what=" + what, to, type, info);
       var count, order, ref1, svc, whats;
       if (to == null) {
         to = null;
@@ -1406,26 +1656,23 @@ var indexOf = [].indexOf || function (item) {
       }
       vm.headingDialog = true;
 
-      if(alert_sms && alert){
-        console.log('alert_sms, mobile', alert_sms, alert);
-        console.log('Please send sms to ',mobile);
 
-      }
-
-      
-      return svc.add(name, order, to, type, info, item_type, alert, vm.option).success(function (res) {
+      return svc.add(name, order, to, type, info, item_type, alert, vm.option, alert_sms, mobile).success(function (res) {
         vm.headingDialog = false;
         var notifyItem, packet;
+
+
         if (res.code) {
           vm.isLoader = false;
           vm.closeDialog();
           return $rootScope.message(res.message, 'warning');
         } else {
 
-          if (what == 'item') {
-            vm.labels.create.save(res.item, 'new');
 
-          }
+          // if (what == 'item') {
+          // vm.labels.create.save(res.item, 'new');
+
+          //   }
 
 
           if (alert) {
@@ -1437,9 +1684,18 @@ var indexOf = [].indexOf || function (item) {
           vm.isLoader = false;
           vm[whats].push(res[what]);
           vm.organizeData();
+
           if (what == "item") {
             $scope.getChecklinked();
+
+            vm.RecentlyAddedCHecklistItem = res.item;
+
+            // if(!vm.items.length) vm.items = []
+            // vm.items.push(res.item);
           }
+
+
+
           packet = {
             catalog: whats,
             type: 'add',
@@ -1449,7 +1705,9 @@ var indexOf = [].indexOf || function (item) {
             },
             record: res[what]
           };
-          //console.log('emitting data', packet);
+
+          console.log('emitting data', packet);
+
           $rootScope.socketio.emit('data', packet);
           notifyItem = $.extend({}, res[what], {
             type: 'data'
@@ -1480,7 +1738,14 @@ var indexOf = [].indexOf || function (item) {
       });
     };
 
+
+    // constructor(public dataTable: dataTable) {
+
+    // }
+
     function destroy(what, item) {
+
+
       console.log('destroy destroy')
 
       var svc, whats;
@@ -1504,7 +1769,15 @@ var indexOf = [].indexOf || function (item) {
             },
             record: item
           };
-          $rootScope.socketio.emit('data', packet);
+          console.log(packet);
+
+          var dat = {
+            record: {
+              idhg: 45
+            }
+          }
+          $rootScope.socketio.emit('data', dat);
+          // $rootScope.socketio.emit('data', packet);
           notifyItem = $.extend({}, item, {
             type: 'data'
           });
@@ -1514,15 +1787,18 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function isForm(item) {
+
       /*
        1= bool, 2= str, 3 =num
        */
-      return item.type === 2 || item.type === 3;
+      return item.type == 2;
     };
 
     function add(what, to, ev, option) {
       var option;
       var title;
+
+
 
       if (option === void 0 || option === null || option === '') {
         option = 1;
@@ -1535,37 +1811,37 @@ var indexOf = [].indexOf || function (item) {
         case 'item':
           if (option == '1') {
             vm.type =
-              {
-                title: 'Checkbox',
-                label: 'Checkbox Label',
-                type: 'checkbox',
-              }
+            {
+              title: 'Add New Checkbox',
+              label: 'Checkbox Label',
+              type: 'checkbox',
+            }
           } else if (option == '2') {
             vm.type =
-              {
-                title: 'Text Box',
-                label: 'Name',
-                type: 'textbox',
+            {
+              title: 'Add New Text Box',
+              label: 'Name',
+              type: 'textbox',
 
-              }
+            }
           }
           else if (option == 'yn') {
             vm.type =
-              {
-                title: 'Add Y/N Checkboxes',
-                label: 'Add Y/N Checkboxes Label',
-                type: 'yn',
+            {
+              title: 'Add New Y/N Checkboxes',
+              label: 'Add Y/N Checkboxes Label',
+              type: 'yn',
 
-              }
+            }
           }
           break;
         case 'section':
-          vm.type.title = 'Section';
+          vm.type.title = 'Add New Section';
           vm.type.label = 'Section Label'
           vm.type.type = '';
           break;
         case 'heading':
-          vm.type.title = 'Heading';
+          vm.type.title = 'Add New Heading';
           vm.type.label = 'Heading Label';
           vm.type.type = '';
           break;
@@ -1593,6 +1869,8 @@ var indexOf = [].indexOf || function (item) {
         dataType: option
       };
 
+      console.log('vm.newItem0', vm.newItem)
+
       var templ_url = 'app/main/checklist/dialogs/checklist/checklist-add-dialog.html'
       if (what === 'datatable') {
 
@@ -1616,6 +1894,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function userCheckboxes(userID) {
+      // 
       return $filter('filter')(vm.checkboxes, {
         id_user: userID
       }, true);
@@ -1668,19 +1947,25 @@ var indexOf = [].indexOf || function (item) {
         }).success(function (res) {
           vm.isLoader = false;
           console.log('vm.checkboxes', vm.checkboxes);
+          // 
 
           vm.checkboxes = vm.checkboxes.concat(res.checkboxes);
-          return vm.appendCheckboxesToItems(user);
+          // return vm.appendCheckboxesToItems(user);
         })["finally"](function () {
+          
+          vm.appendCheckboxesToItems(user);
           return vm.loading.checkboxes = false;
         });
       }
     };
 
     function evaluateConflicts(item, operation) {
+      // item
+      // 
 
 
       var addConflicts, leftNonCompliant, ref1, ref2, rightNonCompliant;
+
       item = api.summary.evaluateItem(item, item.checkbox, token);
       // addConflicts = operation * +item.conflicts;
       vm.conflicts += addConflicts;
@@ -1696,7 +1981,7 @@ var indexOf = [].indexOf || function (item) {
     }
 
     function appendCheckboxesToItems(user) {
-      ////debugger;
+
       var userKey;
       vm.nonCompliant = [0, 0];
       vm.conflicts = 0;
@@ -1706,16 +1991,67 @@ var indexOf = [].indexOf || function (item) {
       }
       return vm.items.forEach(function (item) {
         var checkbox;
-        if (item.checkbox === void 0) {
-          item.checkbox = [];
+        
+        if (item) {
+          if (item.checkbox === void 0) {
+            item.checkbox = [];
+          }
+
+
+          if (vm.checkboxes) {
+            
+            if(vm.checkboxes[0]){
+              
+              if(vm.checkboxes[0].parent_item_id === "0"){
+
+             return   checkbox = $filter('filter')(vm.checkboxes, {
+                  id_item: item.id,
+                  id_contact: user.idCON
+                }, true);
+              }
+            }
+
+        //  } else {
+          }
+            
+
+            checkbox = $filter('filter')(vm.checkboxes, {
+              parent_item_id: item.ref_id,
+              id_contact: user.idCON
+            }, true);
+
+        //  }
+
+
+
+
         }
-        checkbox = $filter('filter')(vm.checkboxes, {
-          id_item: item.id,
-          id_contact: user.idCON
-        }, true);
+
+
+
+        //   vm.users
+        //  if($rootScope.showingUsers.length > 1){
+        //   
+        //   checkbox = $filter('filter')(vm.checkboxes, {
+        //     id_item: item.id,
+        //     id_contact: user.idCON
+        //   }, true);
+        //  }else{
+        //   
+        //   checkbox = $filter('filter')(vm.checkboxes, {
+        //     id_item: item.id,
+        //     // id_contact: user.idCON
+        //   }, true);
+
+        //  }
+
+        // checkbox
+        // 
         if (checkbox != null ? checkbox.length : void 0) {
           item.checkbox[userKey] = checkbox[0];
+          // 
         }
+
         return vm.evaluateConflicts(item, +1);
       });
     };
@@ -1738,6 +2074,7 @@ var indexOf = [].indexOf || function (item) {
         }
         return item.checkbox[1] = [];
       });
+      // 
       $rootScope.showingUsers[action]();
       vm.conflicts = 0;
       vm.nonCompliant = [0, 0];
@@ -1772,30 +2109,135 @@ var indexOf = [].indexOf || function (item) {
     }
 
     $scope.$on('event:itemsLoaded', function () {
+
       return $rootScope.showingUsers.forEach(function (user) {
         vm.displayUserCheckboxes(user);
       });
     });
 
-    function toggleCheckbox(item, which, type, userKey) {
-      vm.evaluateConflicts(item, -1);
-      vm.isLoader = true;
-      return api.checkbox.toggle(item.id, $rootScope.showingUsers[userKey].idCON, which, type).success(function (res) {
-        if (item.checkbox === void 0) {
-          item.checkbox = [];
-        }
-        $scope.getChecklinked();
-        vm.isLoader = false;
-        // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
-        //  item.checkbox[userKey] = res.checkboxes[0];
-        item.checkbox[userKey] = res.checkboxes[0];
-        vm.labels.create.save(res.checkboxes[0], 'checked');
+    function toggleCheckbox(item, which, type, userKey, value) {
+      console.log('item with checkbox -- ', item);
 
-        return vm.evaluateConflicts(item, +1);
-      });
+      vm.evaluateConflicts(item, -1);
+      //vm.isLoader = true;
+
+
+      var applies = item.checkbox[userKey].applies
+      var complies = item.checkbox[userKey].complies
+
+      // item.checkbox[0].applies
+      // item.checkbox[0].complies
+      // item.checkbox[0].options
+
+
+      // case of yes no
+      if (type === "yn") {
+        //in case no is clicked
+        if (which === "complies") {
+
+          // uncheck the no
+          if (complies) {
+            item.checkbox[0].applies = applies;
+            item.checkbox[0].complies = 0;
+            item.checkbox[0].options = null;
+            item.item_status = null;
+
+          } else {
+            // check the no
+            item.checkbox[0].applies = 0;
+            item.checkbox[0].complies = 1;
+            item.checkbox[0].options = "complies";
+            item.item_status = "No";
+          }
+
+        } else {
+          //in case yes is clicked
+          // uncheck the yes
+          if (applies) {
+            item.checkbox[0].applies = 0;
+            item.checkbox[0].complies = 0;
+            item.checkbox[0].options = null;
+            item.item_status = null;
+
+            // check the yes
+          } else {
+            item.checkbox[0].applies = 1;
+            item.checkbox[0].complies = 0;
+            item.checkbox[0].options = "applies";
+            item.item_status = "Yes";
+          }
+        }
+        // case of req comp
+      } else {
+        //in case Comply is clicked
+        if (which === "complies") {
+
+          // uncheck the Comply
+          if (complies) {
+            item.checkbox[0].applies = applies;
+            item.checkbox[0].complies = 0;
+            if (applies) {
+              item.checkbox[0].options = "applies";
+              item.item_status = "Req";
+            }
+            else {
+              item.checkbox[0].options = null;
+              item.item_status = null;
+            }
+
+          } else {
+            // check the Comply
+            item.checkbox[0].applies = 1;
+            item.checkbox[0].complies = 1;
+            item.checkbox[0].options = "complies";
+            item.item_status = "Comp";
+          }
+
+        } else {
+          //in case Req is clicked
+          // uncheck the Req
+          if (applies) {
+            item.checkbox[0].applies = 0;
+            item.checkbox[0].complies = 0;
+            item.checkbox[0].options = null;
+            item.item_status = null;
+
+            // check the Req
+          } else {
+            item.checkbox[0].applies = 1;
+            item.checkbox[0].complies = 0;
+            item.checkbox[0].options = "applies";
+            item.item_status = "Req";
+          }
+        }
+      }
+
+      vm.datapoint_item = item;
+      // ////
+      saveItem('editFromToggle', item, userKey, which, type);
+      // (idCLI, idCON, which, type)
+      // return api.checkbox.toggle(item.id, $rootScope.showingUsers[userKey].idCON, which, type).success(function (res) {
+      //   if (item.checkbox === void 0) {
+      //     item.checkbox = [];
+      //   }
+      //   $scope.getChecklinked();
+      //   vm.isLoader = false;
+
+      //   // item
+      //   // ////
+      //   // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
+      //   //  item.checkbox[userKey] = res.checkboxes[0];
+      //   item.checkbox[userKey] = res.checkboxes[0];
+      // //  vm.labels.create.save(res.checkboxes[0], 'checked');
+
+
+
+      //   return vm.evaluateConflicts( vm.datapoint_item, +1);
+      // });
     };
 
     function showWhichInviteContactData(friend) {
+
       var ref1, ref2, ref3;
       if (((ref1 = $rootScope.user) != null ? ref1.idCON : void 0) === (friend != null ? (ref2 = friend.contacts) != null ? (ref3 = ref2.accepter) != null ? ref3.id : void 0 : void 0 : void 0)) {
         return 'originator';
@@ -1847,6 +2289,7 @@ var indexOf = [].indexOf || function (item) {
      */
     vm.publish = {
       idCHK: null,
+      attachment: '',
       name: null,
       pvt: true,
       submitting: false,
@@ -1860,12 +2303,17 @@ var indexOf = [].indexOf || function (item) {
       },
       publish: function () {
 
-        console.log('vm.publish.name', vm.publish.name);
+        console.log('vm.publish.name', vm.publish);
+
+        if (!vm.publish.attachment) {
+          vm.publish.attachment = '';
+        }
 
         var ref1, ref2;
         if (((ref1 = vm.publish.idCHK) != null ? ref1.length : void 0) && ((ref2 = vm.publish.name) != null ? ref2.length : void 0)) {
+
           vm.publish.submitting = true;
-          return api.checklists.publish(vm.publish.idCHK, vm.publish.name, 'checklist', vm.publish.pvt, token).error(function (res) {
+          return api.checklists.publish(vm.publish.idCHK, vm.publish.name, 'checklist', vm.publish.pvt, token, vm.publish.attachment).error(function (res) {
             return $rootScope.message('Unknown error publishing Template.', 'warning');
           }).success(function (res) {
             vm.isLoader = false;
@@ -1973,6 +2421,7 @@ var indexOf = [].indexOf || function (item) {
         return vm[whats][which.index].editing = false;
       },
       submit: function (which) {
+
         var whats;
         whats = which.type + 's';
         if (vm[whats][which.index].edit.text === vm[whats][which.index].name && vm[whats][which.index].edit.info === vm[whats][which.index].info) {
@@ -1996,6 +2445,7 @@ var indexOf = [].indexOf || function (item) {
             record: res.updated
           };
           console.log('emitting data', packet);
+          // //////
           $rootScope.socketio.emit('data', packet);
           notifyItem = $.extend({}, res.updated, {
             type: 'data'
@@ -2003,6 +2453,7 @@ var indexOf = [].indexOf || function (item) {
           $rootScope.notify(notifyItem);
           vm.organizeData();
           return $rootScope.showingUsers.forEach(function (user) {
+            // 
             return vm.appendCheckboxesToItems(user);
           });
         })["finally"](function () {
@@ -2016,15 +2467,18 @@ var indexOf = [].indexOf || function (item) {
      LABELS
      */
     $scope.$on('event:labelsUpdated', function () {
-      if($rootScope.user.dashboard){
 
-      return vm.labels.selectable = $filter('filter')($rootScope.user.dashboard.labels, {
-        type: vm.labels.item.type
-      });
-    }
+      if ($rootScope.user.dashboard) {
+
+        return vm.labels.selectable = $filter('filter')($rootScope.user.dashboard.labels, {
+          type: vm.labels.item.type
+        });
+      }
 
     });
     $scope.$on('event:labelSelectionUpdated', function (e, data) {
+
+
       var idx, item, itemLocal, showModal, user;
       console.log('labelSelectionUpdated triggered', data);
       user = data.user;
@@ -2068,12 +2522,21 @@ var indexOf = [].indexOf || function (item) {
       selected: [],
       selectable: [],
       select: function (item) {
+
+        vm.SelectedAddDataPointOptions = item.checkbox[0].options;
+        vm.SelectedAddDataPointItemType = item.checkbox[0].item_type
+
+        var option = '';
+        if (item.item_type === 'checkbox') option = 'complies';
+        else option = 'applies';
+
         var base, base1;
         vm.labels.selected = item.labels;
         vm.labels.item = {
           id: item.id,
           index: vm.items.indexOf(item),
           type: item.type,
+          option: option,
           item_type: item.item_type,
           displayType: typeof (base = item.type === 2) === "function" ? base({
             'Text': typeof (base1 = item.type === 3) === "function" ? base1({
@@ -2089,15 +2552,32 @@ var indexOf = [].indexOf || function (item) {
         vm.labels.selectable = $filter('filter')($rootScope.user.dashboard.labels, {
           type: item.type
         });
+
         //console.log('item selected for label update', item);
         //console.log('labels selectable for item label update', vm.labels);
         vm.setLabels(item);
         return false;
+
+        //comply
+        // {"type":"item","name":"comply","info":"vv","order":15,"dataType":1,"item_type":"checkbox","item_alert":"","parentID":"1124","option":"complies"}
+
+        //yes 
+        //{"type":"item","name":"yes yes","info":"tt","order":16,"dataType":3,"item_type":"yn","item_alert":"","parentID":"1124","option":"applies"}: 
+
+        // ?text
+        // {"type":"item","name":"text","info":"ycy","order":6,"dataType":2,"item_type":"textbox","item_alert":"","parentID":"1036","option":"applies"}: 
+
+        // right now going
+        //{"type":"3","name":"hell","explanation":"fff","checkboxinfo":{"id":"1725","index":12,"type":"3","item_type":"yn","key":"new"}}: 
+        // {"type":"1","name":"ff","explanation":"ff","checkboxinfo":{"id":"1726","index":13,"type":"1","item_type":"checkbox","key":"new"}}: 
+
       },
       isSelected: function (label) {
         //console.log('isSelected => label', label);
         var index;
+
         index = vm.labels.selected.indexOf(label.id);
+
         if (index < 0) {
           return false;
         }
@@ -2114,6 +2594,8 @@ var indexOf = [].indexOf || function (item) {
         }
       },
       hide: function (lbl) {
+
+
         lbl.hiding = true;
         return api.dashboard.labels.hide(lbl.id).success(function (res) {
           var idx;
@@ -2135,6 +2617,7 @@ var indexOf = [].indexOf || function (item) {
         });
       },
       save: function () {
+
         vm.isLoader = true;
         vm.labels.saving = true;
         return api.dashboard.labels.update(this.item.id, this.selected).success(function (res) {
@@ -2145,7 +2628,8 @@ var indexOf = [].indexOf || function (item) {
           } else if (res.code) {
             return $rootScope.message(res.message, 'warning');
           } else {
-            vm.items[vm.labels.item.index] = res.item;
+
+            vm.items[vm.labels.item.index] = res.item ? res.item : vm.items[vm.labels.item.index];
             packet = {
               catalog: 'items',
               type: 'edit',
@@ -2153,13 +2637,18 @@ var indexOf = [].indexOf || function (item) {
                 idCON: $rootScope.user.idCON,
                 name: $rootScope.user.name
               },
-              record: res.item
+              record: res.item ? res.item : vm.items[vm.labels.item.index]
             };
-            //console.log('emitting data', packet);
+            console.log('emitting data', packet);
+            // //////
             $rootScope.socketio.emit('data', packet);
-            notifyItem = $.extend({}, res.item, {
-              type: 'data'
-            });
+
+            if (res.item) {
+              notifyItem = $.extend({}, res.item, {
+                type: 'data'
+              });
+            }
+
             //console.log('about to sent notify event', notifyItem);
             $rootScope.socketio.emit('notify', [notifyItem]);
             $rootScope.message("Labels saved.", 'success');
@@ -2178,19 +2667,32 @@ var indexOf = [].indexOf || function (item) {
         saving: false,
         name: '',
         explanation: '',
+        item_status: '',
         enter: function () {
           vm.labels.create.entering = true;
+
+          vm.labels.create.name = '';
+          vm.labels.create.explanation = '';
+          vm.labels.create.name = '';
+          vm.labels.create.item_status = '';
+
+          // $('input#newLabelName').focus(function() {
+          //   alert( "Handler for .focus() called." );
+          //   ////
+          // });
+          // ////
           return false;
         },
         save: function (labels, key) {
 
-          // debugger;
+
 
           if (labels && key == 'checked') {
             vm.type = '2';
             this.name = 'test';
             this.explanation = '';
             labels.key = key;
+
           }
           else if (key == 'new' && labels) {
             vm.type = labels ? labels.type : '';
@@ -2204,13 +2706,20 @@ var indexOf = [].indexOf || function (item) {
             delete labels.ownerDetails;
 
 
+
           } else {
-            debugger;
+
             if (vm.labels.item) {
               vm.type = vm.labels.item.type;
               this.name = this.name;
               vm.labels.item.key = 'new';
               this.explanation = this.explanation;
+
+              if (vm.labels.create.item_status === '') {
+                return $rootScope.message("Please select label type to continue.", 'error');
+              }
+
+
             }
 
           }
@@ -2219,19 +2728,23 @@ var indexOf = [].indexOf || function (item) {
 
 
           //console.log('adding new label', vm.labels.item, this.name, this.explanation);
-          return api.dashboard.labels.add(vm.type, this.name, this.explanation, labels ? labels : vm.labels.item).success(function (res) {
+          return api.dashboard.labels.add(vm.type, this.name, this.explanation, labels ? labels : vm.labels.item, labels ? labels.option : vm.labels.create.item_status).success(function (res) {
             vm.isLoader = false;
+
+
+
             if (res === void 0 || res === null || res === '') {
               return $rootScope.message("Server not responding properly.", 'warning');
             } else if (res.code) {
-              //return $rootScope.message(res.message, 'warning');
+              // return $rootScope.message(res.message, 'warning');
             } else {
               vm.labels.selectable.push(res.labels[0]);
               vm.labels.create.entering = false;
+
               $rootScope.user = res.user;
               //console.log('about to propagate labels created', $rootScope.user.organization.idACC, $rootScope.socketio);
               $rootScope.socketio.emit('labels_changed', $rootScope.user.organization.idACC);
-              return $rootScope.message("New Label added", 'success');
+              // return $rootScope.message("New Label added", 'success');
               //vm.closeDialog();
             }
           }).error(function (res) {
@@ -2240,7 +2753,11 @@ var indexOf = [].indexOf || function (item) {
             return vm.labels.create.saving = false;
 
           });
+
         }
+
+
+
       },
       test: function (label) {
         //console.log(label);
@@ -2336,7 +2853,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function addChecklistDialog(ev) {
-      //////debugger;
+      //////// //////;
       vm.verticalStepper = {
         step1: {},
         step2: {},
@@ -2353,7 +2870,7 @@ var indexOf = [].indexOf || function (item) {
       $mdDialog.show({
         controller: function DialogController($scope, $mdDialog) {
           $scope.closeDialog = function () {
-            // debugger
+            // // //////
             vm.wizard.newFolder = false;
             vm.wizard.newGroup = false;
             vm.wizard.newChecklist = false;
@@ -2387,13 +2904,16 @@ var indexOf = [].indexOf || function (item) {
     };
 
 
-    function openUploadAttachmentDialog(ev, pType, pID, index, attachments) {
+    function openUploadAttachmentDialog(ev, pType, pID, index, attachments, sectionId, headingId) {
+
       vm.pType = pType;
       vm.pID = pID;
       vm.title = 'Attachments';
       vm.index = index;
       vm.SelectedAttachments = attachments;
       vm.upload = false;
+      vm.SectionAttachmentID = sectionId;
+      vm.HeadingAttachmentID = headingId;
       console.log('vm.attachments', vm.attachments);
 
 
@@ -2437,41 +2957,69 @@ var indexOf = [].indexOf || function (item) {
       var whats;
       whats = what + 's';
 
+      if ($scope.files[0]) {
+        vm.file_name = $scope.files[0].name;
+        var fd = new FormData();
+        angular.forEach($scope.files, function (file) {
+          fd.append('file', file);
+        });
+        vm.spinner = true;
+        vm.sizeLimit = 10585760; // 10MB in Bytes
 
-      vm.file_name = $scope.files[0].name;
-      var fd = new FormData();
-      angular.forEach($scope.files, function (file) {
-        fd.append('file', file);
-      });
-      vm.spinner = true;
-      vm.sizeLimit = 10585760; // 10MB in Bytes
+        var filedata = { 'pID': vm.pID, 'pType': whats, 'aws': '', 'name': vm.file_name, 'size': vm.sizeLimit, 'label': vm.label };
+        fd.append('data', JSON.stringify(filedata));
+        $http.post(BASEURL + 'attachments-finish_upload-post.php', fd,
+          {
+            headers: { 'Content-Type': undefined }
+          }).success(function (res) {
+            vm.spinner = false;
+            if (res && res.type == 'success') {
+              // //////;
+              //  $mdDialog.hide();
+              vm.upload = false;
 
-      var filedata = { 'pID': vm.pID, 'pType': whats, 'aws': '', 'name': vm.file_name, 'size': vm.sizeLimit, 'label': vm.label };
-      fd.append('data', JSON.stringify(filedata));
-      $http.post(BASEURL + 'attachments-finish_upload-post.php', fd,
-        {
-          headers: { 'Content-Type': undefined }
-        }).success(function (res) {
-          vm.spinner = false;
-          if (res && res.type == 'success') {
-            debugger;
-            //  $mdDialog.hide();
-            vm.upload = false;
-            //vm.attachments.push(res.attachments[0]);
-            vm.SelectedAttachments.push(res.attachments[0]);
-            vm[whats][index].attachments.push(res.attachments[0]);
-            vm.label = null;
-            vm.file = '';
-            // organizeData();
-            $rootScope.message("Attachment label added successfully", 'success');
-          } else {
-            $rootScope.message(res.message, 'warning');
-          }
-        })
+              //vm.attachments.push(res.attachments[0]);
+              // var SelectedAttachmentsArray = [];
+              //  vm.SelectedAttachments.push(res.attachments[0]);
+
+              getAttachments();
+
+              vm[whats][index].attachments.push(res.attachments[0]);
+              //////
+
+              // vm.SelectedAttachments = vm.SelectedAttachments.filter( function(attachment, index, self) {
+              //   index === self.findIndex( function(t) {
+
+              //     t.id === attachment.id && t.name === attachment.name
+              //      })
+              //   });
+
+              // removeDuplicates(vm.SelectedAttachments, 'id')
+
+              var myData = vm.SelectedAttachments;
+
+              vm.SelectedAttachments = Array.from(new Set(myData.map(JSON.stringify))).map(JSON.parse);
+
+              vm.SelectedAttachments
+
+
+              vm.label = null;
+              vm.file = '';
+              // organizeData();
+              $rootScope.message("Attachment label added successfully", 'success');
+            } else {
+              if (res.message.file_label) $rootScope.message(res.message.file_label[0], 'warning');
+              else $rootScope.message(res.message, 'warning');
+            }
+          })
+      } else {
+        $rootScope.message("Please choose atleast one file to upload", 'error');
+      }
+
 
 
       // api.attachments.add(vm.pID, vm.pType, vm.aws, 'files', 'sizeLimit', vm.label,fd).error(function (res) {
-      //   ////debugger;
+      //   ////// //////;
       //   return $rootScope.message("Error Uploading Attachment", 'warning');
       // }).success(function (res) {
       //   vm.spinner = false;
@@ -2498,6 +3046,23 @@ var indexOf = [].indexOf || function (item) {
       // finalFileUload();
 
     }
+
+
+
+    //   function removeDuplicates(originalArray, prop) {
+    //     var newArray = [];
+    //     var lookupObject  = {};
+
+    //     for(var i in originalArray) {
+    //        lookupObject[originalArray[i][prop]] = originalArray[i];
+    //     }
+
+    //     for(i in lookupObject) {
+    //         newArray.push(lookupObject[i]);
+    //     }
+    //      return newArray;
+    // }
+
 
     // function uniqueString() {
     //   var text = "";
@@ -2548,7 +3113,7 @@ var indexOf = [].indexOf || function (item) {
 
 
     function openFolderInput() {
-      ////debugger;
+      ////// //////;
       vm.folder = '';
       vm.group = '';
       vm.wizard.newFolder = true;
@@ -2662,7 +3227,7 @@ var indexOf = [].indexOf || function (item) {
       });
     };
 
-    function addNewChecklist(checklistName, checklistDescription, groupID, folderID, checklist_id, sub_type) {
+    function addNewChecklist(checklistName, checklistDescription, groupID, folderID, checklist_id, sub_type, attachment, link) {
 
       //Set sending variable for buttons
       vm.checklist.sending = true;
@@ -2672,7 +3237,7 @@ var indexOf = [].indexOf || function (item) {
       vm.checklist.order += vm.checklists.length;
 
       //name, order, to
-      api.checklists.add(checklistName, vm.checklist.order, groupID, token, checklistDescription, checklist_id ? checklist_id : '', sub_type ? sub_type : '').error(function (res) {
+      api.checklists.add(checklistName, vm.checklist.order, groupID, token, checklistDescription, checklist_id ? checklist_id : '', sub_type ? sub_type : '', attachment, link).error(function (res) {
         return $rootScope.message("Error Adding Checklist", 'warning');
       }).success(function (res) {
         vm.isLoader = false;
@@ -2685,8 +3250,8 @@ var indexOf = [].indexOf || function (item) {
           vm.showLoadingImage = true;
           console.log(' $scope', $scope);
 
-          if(vm.checklistFromGroup)  getChecklistGroup();
-          else  $scope.getChecklinked();
+          if (vm.checklistFromGroup) getChecklistGroup();
+          else $scope.getChecklinked();
           // loadChecklist($stateParams.id);
 
           // $rootScope.createStats('checklist', 'created', res.checklist.id);
@@ -2698,7 +3263,7 @@ var indexOf = [].indexOf || function (item) {
               return $rootScope.message("Error Adding Section", 'warning');
 
             } else {
-              console.log('sections',vm.sections);
+              console.log('sections', vm.sections);
               vm.sections.push(res.section);
 
             }
@@ -2711,6 +3276,7 @@ var indexOf = [].indexOf || function (item) {
 
           $rootScope.organizeData();
           //$rootScope.message(res.type, 'success');
+          vm.total_nonCompliance = 0;
 
         }
       });
@@ -2772,7 +3338,7 @@ var indexOf = [].indexOf || function (item) {
       vm.warning = 'Warning: This can’t be undone';
       vm.description = "Please confirm you want to delete this <span class='link'>" + item.name + "</span><br>All of the contents will be deleted and can’t be recovered"
 
-     
+
 
       $mdDialog.show({
         scope: $scope,
@@ -2794,23 +3360,25 @@ var indexOf = [].indexOf || function (item) {
 
     function deleteItem(what, item, ev) {
 
-      if( what == "schedule") {
-      
+
+
+      if (what == "schedule") {
+
         deleteScheduler(item.id)
 
         return 1;
 
-      } 
+      }
 
-     
+
       vm.isLoader = true;
       var svc, whats;
       whats = what + 's';
 
       svc = vm.svc(what);
-      console.log('svc',svc);
-      console.log('what',what);
-      console.log('item.id',item.id);
+      console.log('svc', svc);
+      console.log('what', what);
+      console.log('item.id', item.id);
 
       return svc.destroy(item.id).success(function (res) {
         vm.isLoader = false;
@@ -2824,6 +3392,7 @@ var indexOf = [].indexOf || function (item) {
             $scope.getChecklinked();
           }
           vm.organizeData();
+
           packet = {
             catalog: whats,
             type: 'delete',
@@ -2833,7 +3402,8 @@ var indexOf = [].indexOf || function (item) {
             },
             record: item
           };
-          //console.log('emitting data', packet);
+          console.log('emitting data', packet);
+
           $rootScope.socketio.emit('data', packet);
           notifyItem = $.extend({}, item, {
             type: 'data'
@@ -2937,6 +3507,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function toggleShowCheckboxes(user) {
+      
       var show;
       show = {
         idCON: user.idCON,
@@ -3075,6 +3646,10 @@ var indexOf = [].indexOf || function (item) {
       vm.checklist = checklist;
       vm.type = type;
 
+      vm.checklistName = type ? '' : vm.checklist.name;
+      vm.checklistDescription = type ? '' : vm.checklist.description;
+
+
       $mdDialog.show({
         scope: $scope,
         preserveScope: true,
@@ -3086,8 +3661,18 @@ var indexOf = [].indexOf || function (item) {
     }
 
     function saveChecklist(type) {
+
+
+
+      if (!vm.checklist.attachment) {
+        vm.checklist.attachment = '';
+      }
+
+      vm.checklist.name = vm.checklistName;
+      vm.checklist.description = vm.checklistDescription;
+
       if (type) {
-        addNewChecklist(vm.checklist.name, vm.checklist.description, vm.checklist.item_bread.project_id, vm.workflow.id, vm.checklist.id, 'duplicate')
+        addNewChecklist(vm.checklist.name, vm.checklist.description, vm.checklist.item_bread.project_id, vm.checklist.item_bread.folder_id, vm.checklist.id, 'duplicate', vm.checklist.attachment, vm.checklist.link)
       } else {
 
         var editPack;
@@ -3098,7 +3683,9 @@ var indexOf = [].indexOf || function (item) {
           'type': 'checklist',
           'text': vm.checklist.name,
           'description': vm.checklist.description,
-          'token': token
+          'token': token,
+          'link': vm.checklist.link,
+          'attachment': vm.checklist.attachment
         };
 
 
@@ -3131,6 +3718,9 @@ var indexOf = [].indexOf || function (item) {
       vm.section = section;
       vm.title = 'Edit Section';
 
+      vm.sectionName = vm.section.name;
+      // 
+
       console.log('vm.section', vm.section);
 
 
@@ -3145,58 +3735,103 @@ var indexOf = [].indexOf || function (item) {
     }
 
 
+
     function saveSection(section, section_na, index) {
-      var section_na = section_na ? section_na : '';
-      var index = index ? index : 0;
-      var sectionIndex = index;
-      var token = $cookies.get("token");
-      var editPack;
-      editPack = {
-        'id': vm.section ? vm.section.id : section.id,
-        'rid': vm.section ? vm.section.rid : section.rid,
-        'index': 0,
-        'type': 'section',
-        'section_type': section_na,
-        'text': vm.section ? vm.section.name : section.name,
-        'section_na': section.section_na == 'true' ? 'false' : 'true',
-        'token': token
-      };
+      vm.sectionCanBeNA = true;
 
-      api.checklists.edit(editPack).error(function (res) {
-        $rootScope.message("Error Editing Section", 'warning');
-      }).success(function (res) {
-        if (res === void 0 || res === null || res === '') {
+      section.headings.forEach(function sectionLoop(heading) {
+        if (sectionLoop.stop) { return; }
+
+        heading.items.forEach(function headingLoop(item) {
+          if (headingLoop.stop) { return; }
+
+          if (item.checkbox[0].applies || item.checkbox[0].complies) {
+            $rootScope.message('Section cannot be marked N/A with inputs on the Line Item(s)', 'error');
+            vm.sectionCanBeNA = false;
+            headingLoop.stop = true;
+          }
+        });
+
+        if (!vm.sectionCanBeNA) {
+          sectionLoop.stop = true;
+        }
+
+      });
+
+
+      if (vm.sectionCanBeNA) {
+        vm.section = section;
+        var section_na = section_na ? section_na : '';
+        var index = index ? index : 0;
+        var sectionIndex = index;
+        var token = $cookies.get("token");
+        var editPack;
+
+
+        editPack = {
+          'id': vm.section ? vm.section.id : section.id,
+          'rid': vm.section ? vm.section.rid : section.rid,
+          'index': 0,
+          'type': 'section',
+          'section_type': section_na,
+          'text': vm.sectionName,
+          'section_na': section.section_na == 'true' ? 'false' : 'true',
+          'token': token
+        };
+
+        api.checklists.edit(editPack).error(function (res) {
           $rootScope.message("Error Editing Section", 'warning');
-        } else if (res.code) {
-          $rootScope.message(res.message, 'warning');
-        } else {
-          vm.closeDialog();
+        }).success(function (res) {
+          if (res === void 0 || res === null || res === '') {
+            $rootScope.message("Error Editing Section", 'warning');
+          } else if (res.code) {
+            $rootScope.message(res.message, 'warning');
+          } else {
 
-          //chekSectionNA(vm.section_na)
-          // loadChecklist(vm.idCHK);
-          if (section_na == 'section_na') {
-            if (res.updated.section_na == 'true') {
-              $rootScope.message('Section has been marked as Section N/A', 'success');
+            if (vm.title === 'Edit Section') vm.section.name = vm.sectionName;
+
+
+            vm.closeDialog();
+
+            //chekSectionNA(vm.section_na)
+            // loadChecklist(vm.idCHK);
+            if (section_na == 'section_na') {
+              // vm.section.section_na = res.updated.section_na;
+              if (res.updated.section_na == 'true') {
+
+                $rootScope.message('Section has been marked as Section N/A', 'success');
+              }
+              else {
+                $rootScope.message('Section has been unmarked from Section N/A', 'success');
+              }
+              vm.sections[sectionIndex].section_na = res.updated.section_na == 'true' ? 'true' : 'false';
+              // item.section_na = res.updated.section_na == 'true' ? 'true' : 'false';
+
+              vm.items.forEach(function (item) {
+                if (vm.section.id == item.item_bread.section_id) {
+                  item.section_na = res.updated.section_na == 'true' ? 'true' : 'false';
+
+                }
+
+
+              });
             }
             else {
-              $rootScope.message('Section has been unmarked from Section N/A', 'success');
+              $rootScope.message('Section has been changed successfully', 'success');
             }
-            vm.sections[sectionIndex].section_na = res.updated.section_na == 'true' ? 'true' : 'false';
+
+
+
+
           }
-          else {
-            $rootScope.message('Section has been changed successfully', 'success');
-          }
+        });
+      }
 
-
-
-
-        }
-      });
     }
 
     // function saveSectionNA(item_type,id,section_na,name) {
     // var token = $cookies.get("token");;
-    //  debugger;
+    //  // //////;
     //   var editPack;
     //   editPack = {
     //     'id':id,
@@ -3214,7 +3849,7 @@ var indexOf = [].indexOf || function (item) {
     //   api.checklists.edit(editPack).error(function (res) {
     //     $rootScope.message("Error Editing Section", 'warning');
     //   }).success(function (res) {
-    //     debugger;
+    //     // //////;
     //     if (res === void 0 || res === null || res === '') {
     //       $rootScope.message("Error Editing Section", 'warning');
     //     } else if (res.code) {
@@ -3244,7 +3879,7 @@ var indexOf = [].indexOf || function (item) {
     //Worked for the section NA
     // vm.saveSectionNA = saveSectionNA;
     //   function saveSectionNA(section) {
-    //     debugger;
+    //     // //////;
     //     var editPack;
     //     editPack = {
     //       'id': section.id,
@@ -3295,16 +3930,19 @@ var indexOf = [].indexOf || function (item) {
     /**Data Table Function Updated Code Start Here ** */
 
     function openHeadingDialog(ev, heading, heading_type, heading_type_action) {
-      debugger;
+      // //////;
       vm.heading_type = heading_type != '' ? heading_type : '';
       var heading_type_action = heading_type_action != '' ? heading_type_action : '';
       vm.heading = heading;
-      //// debugger;
+      // 
+      //// // //////;
 
       if (vm.heading_type == 'table' && heading_type_action != '' && heading_type_action == 'edit') {
         vm.title = 'Table';
         /**********************/
         var what = 'heading';
+
+
 
         var name = heading.name;
         var to = heading.id_parent;
@@ -3317,12 +3955,15 @@ var indexOf = [].indexOf || function (item) {
         var table_id = heading.datatable[0].id;
         var table_str = heading.datatable[0].table_str;
 
+        console.log(what, name, to, type, info, item_type, alert, columns, rows, ev, table_id, table_str, heading)
         createDataTableSegment(what, name, to, type, info, item_type, alert, columns, rows, ev, table_id, table_str, heading);
 
         /******************* */
       }
       else {
         vm.title = 'Heading';
+
+        vm.headingName = heading.name;
 
         if (vm.heading_type == 'table') {
           vm.title = "Table";
@@ -3353,7 +3994,7 @@ var indexOf = [].indexOf || function (item) {
         'rid': vm.heading.rid,
         'index': 0,
         'type': 'heading',
-        'text': vm.heading.name,
+        'text': vm.headingName,
         'token': token
       };
 
@@ -3365,6 +4006,9 @@ var indexOf = [].indexOf || function (item) {
         } else if (res.code) {
           $rootScope.message(res.message, 'warning');
         } else {
+
+          vm.heading.name = vm.headingName;
+
           //$rootScope.createStats('heading', 'created', vm.heading.id);
           $rootScope.message('Heading has been changed successfully ', 'success');
 
@@ -3377,7 +4021,7 @@ var indexOf = [].indexOf || function (item) {
 
 
     function closeConfilicts() {
-      ////debugger;
+      ////// //////;
       if ($rootScope.showingUsers.length > 1) {
         $rootScope.showingUsers.splice(1, 1);
         $state.go('app.summary');
@@ -3387,24 +4031,194 @@ var indexOf = [].indexOf || function (item) {
     }
 
     function openItemDialog(ev, item) {
-      ////debugger;
-      vm.item = item;
-      vm.title = 'Edit Checkbox Line';
+      vm.ChnagedItem = item;
+
+
+      // //   vm.newItem = {};
+
+      // //   vm.newItem.name = item.name;
+      // //   vm.newItem.to = item.item_bread.heading_id
+      // //   vm.newItem.dataTypes = item.
+      // //   vm.newItem.info = item.info
+      // //   vm.newItem.alert = item.checkbox[0].item_alert
+      // //   if(item.checkbox[0].item_alert_sms) vm.newItem.alert_sms = item.checkbox[0].item_alert_sms
+      // //   if(item.checkbox[0].mobile) vm.newItem.mobile = item.checkbox[0].mobile
+      //   vm.title = 'Edit Checkbox Line';
+
+      //   if(item.info) vm.Item_info = item.info;
+      //   else vm.Item_info = '';
+
+      // //  if (item.type === '2'){
+      // //   var option = 'yn';
+      // //  }else var option = item.type;
+
+
+
+      // //   if (option == '1') {
+      // //     vm.type =
+      // //       {
+      // //         title: 'Edit Checkbox',
+      // //         label: 'Checkbox Label',
+      // //         type: 'checkbox',
+      // //       }
+
+      // //     vm.newItem.type = "Checkbox";
+      // //   } else if (option == '2') {
+      // //     vm.type =
+      // //       {
+      // //         title: 'Edit Text Box',
+      // //         label: 'Name',
+      // //         type: 'textbox',
+
+      // //       }
+      // //       vm.newItem.type = "Textbox";
+      // //   }
+      // //   else if (option == 'yn') {
+      // //     vm.type =
+      // //       {
+      // //         title: 'Edit Y/N Checkboxes',
+      // //         label: 'Add Y/N Checkboxes Label',
+      // //         type: 'yn',
+
+      // //       }
+      // //       vm.newItem.type = "Y/N";
+      // //   }
+
+
+
+      // //   // vm.newItem = {
+
+      // //   //   type: vm.
+      // //   //   option: item.type,
+      // //   //   name: '',
+      // //   //   submitting: false,
+      // //   //   dataType: option
+      // //   // };
+
+      // //   // console.log('vm.newItem0', vm.newItem)
+
+      // //   var templ_url = 'app/main/checklist/dialogs/checklist/checklist-add-dialog.html'
+
+      //   $mdDialog.show({
+      //     scope: $scope,
+      //     preserveScope: true,
+      //     // templateUrl: templ_url,
+      //     templateUrl: 'app/main/checklist/dialogs/checklist/checklist-edit-item-dialog.html',
+      //     parent: angular.element($document.find('#checklist')),
+      //     targetEvent: ev,
+      //     clickOutsideToClose: true
+      //   });
+      // }
+
+      EvaluatingDialogDataEditItem(item)
+
+      // vm.datapoint_item = item;
+
+      console.log('datapoint_item', vm.datapoint_item)
+
 
       $mdDialog.show({
+        controller: function DialogController($scope, $mdDialog) {
+          $scope.closeDialog = function () {
+            $mdDialog.hide();
+            EvaluatingDialogDataEditItem(item)
+
+          }
+        },
         scope: $scope,
         preserveScope: true,
         templateUrl: 'app/main/checklist/dialogs/checklist/checklist-edit-item-dialog.html',
         parent: angular.element($document.find('#checklist')),
-        targetEvent: ev,
-        clickOutsideToClose: true
+        clickOutsideToClose: false
       });
+
     }
 
+    function EvaluatingDialogDataEditItem(item) {
+      vm.datapoint_item = {};
+
+
+
+
+      console.log('datapoint.type', item.type)
+      if (item.type == '1') {
+
+        vm.datapoint_item =
+        {
+          title: 'Checkbox',
+          label: 'Checkbox Label'
+        }
+
+        if (item.checkbox[0].complies) vm.datapoint_item.item_status = 'Comp';
+        else if (item.checkbox[0].applies) vm.datapoint_item.item_status = 'Req';
+
+      } else if (item.type == '2') {
+        vm.datapoint_item =
+        {
+          title: 'Text Box',
+          label: 'Name'
+        }
+      }
+      else if (item.type == '3') {
+
+
+        vm.datapoint_item =
+        {
+          title: ' Y/N Checkboxes',
+          label: ' Y/N Checkboxes Label'
+        }
+
+        if (item.checkbox[0].applies) vm.datapoint_item.item_status = 'Yes';
+        else if (item.checkbox[0].complies) vm.datapoint_item.item_status = 'No';
+      }
+
+
+      // vm.datapoint_item = datapoint
+      vm.datapoint_item.checkbox = item.checkbox;
+      vm.datapoint_item.item_type = item.item_type;
+      // vm.datapoint_item.item_status = item.item_status;
+      vm.datapoint_item.name = item.name;
+      vm.datapoint_item.info = item.info;
+      vm.datapoint_item.type = item.type;
+      vm.datapoint_item.id = item.id;
+
+      if (item.checkbox[0].item_alert === "0" || item.checkbox[0].item_alert === null) {
+        vm.datapoint_item.checkbox[0].alert = false;
+      } else if (item.checkbox[0].item_alert === "1") {
+        vm.datapoint_item.checkbox[0].alert = true;
+      } else {
+        vm.datapoint_item.checkbox[0].alert = item.checkbox[0].item_alert;
+      }
+
+      if (item.checkbox[0].sms_alert == "0" || item.checkbox[0].sms_alert === null) {
+        vm.datapoint_item.checkbox[0].sms_alert = false;
+      } else if (item.checkbox[0].sms_alert == "1") {
+        vm.datapoint_item.checkbox[0].sms_alert = true;
+      } else {
+        vm.datapoint_item.checkbox[0].sms_alert = item.checkbox[0].sms_alert;
+      }
+
+
+      // vm.datapoint_item.checkbox[0].alert = item.checkbox[0].item_alert === "0" || item.checkbox[0].item_alert === null ? false : true;
+      // vm.datapoint_item.checkbox[0].sms_alert = item.checkbox[0].sms_alert  === "0" || item.checkbox[0].sms_alert === null  ? false : true;
+      vm.datapoint_item.checkbox[0].sms_alert_number = item.checkbox[0].sms_alert_number;
+
+      // vm.datapoint_item = item;
+
+
+    }
+
+
+
     function openFormLineDialog(ev, item) {
-      ////debugger;
+      ////// //////;
       vm.item = item;
       vm.title = 'Edit Item';
+
+      // vm.item.info = vm.Item_info;
+      vm.Item_info = vm.item.info;
+      vm.Item_name = vm.item.name;
+
 
       console.log('vm.item', vm.item);
 
@@ -3419,20 +4233,91 @@ var indexOf = [].indexOf || function (item) {
       });
     }
 
-    function saveItem() {
+    function saveItem(check, item, userKey, which, type) {
+
+      vm.isLoader = true;
+
+      if (check === 'edit_yn_checkbox') {
+
+        if (vm.datapoint_item.item_status === "No") {
+          vm.datapoint_item.checkbox[0].applies = 0;
+          vm.datapoint_item.checkbox[0].complies = 1;
+          vm.datapoint_item.checkbox[0].options = 'complies';
+
+        } else if (vm.datapoint_item.item_status === "Comp") {
+          vm.datapoint_item.checkbox[0].applies = 1;
+          vm.datapoint_item.checkbox[0].complies = 1;
+          vm.datapoint_item.checkbox[0].options = 'complies';
+
+        } else if (vm.datapoint_item.item_status === "Yes" || vm.datapoint_item.item_status === "Req") {
+          vm.datapoint_item.checkbox[0].applies = 1;
+          vm.datapoint_item.checkbox[0].complies = 0;
+          vm.datapoint_item.checkbox[0].options = 'applies';
+
+        }
+      }
 
       var editPack;
 
-      editPack = {
-        'id': vm.item.id,
-        'rid': vm.item.rid,
-        'index': 0,
-        'type': 'item',
-        'info': vm.item.info,
-        'text': vm.item.name,
-        'link': vm.item.link,
-        'token': token
-      };
+      if (check === 'edit_yn_checkbox') {
+
+        editPack = {
+          'id': vm.datapoint_item.id,
+          'rid': vm.datapoint_item.rid,
+          'index': 0,
+          'type': 'item',
+          'info': vm.datapoint_item.info,
+          'text': vm.datapoint_item.name,
+          'link': vm.datapoint_item.link,
+          'token': token,
+          'applies': vm.datapoint_item.checkbox[0].applies,
+          'complies': vm.datapoint_item.checkbox[0].complies,
+          'option': vm.datapoint_item.checkbox[0].options,
+          'item_status': vm.datapoint_item.item_status,
+          'alert': vm.datapoint_item.checkbox[0].alert,
+          'sms_alert': vm.datapoint_item.checkbox[0].sms_alert,
+          'sms_alert_number': vm.datapoint_item.checkbox[0].sms_alert_number
+        };
+      } else if (check === 'editFromToggle') {
+        editPack = {
+          'id': vm.datapoint_item.id,
+          'rid': vm.datapoint_item.rid,
+          'index': 0,
+          'type': 'item',
+          'info': vm.datapoint_item.info,
+          'text': vm.datapoint_item.name,
+          'link': vm.datapoint_item.link,
+          'token': token,
+          'applies': vm.datapoint_item.checkbox[0].applies,
+          'complies': vm.datapoint_item.checkbox[0].complies,
+          'option': vm.datapoint_item.checkbox[0].options,
+          'item_status': vm.datapoint_item.item_status,
+          'alert': vm.datapoint_item.checkbox[0].alert,
+          'sms_alert': vm.datapoint_item.checkbox[0].sms_alert,
+          'sms_alert_number': vm.datapoint_item.checkbox[0].sms_alert_number,
+          'idCLI': item.id,
+          'idCON': $rootScope.showingUsers[userKey].idCON,
+          'which': which,
+          'item_type': type
+        };
+      }
+
+      if (check === 'edit_textbox') {
+
+
+
+        editPack = {
+          'id': vm.item.id,
+          'rid': vm.item.rid,
+          'index': 0,
+          'type': 'item',
+          'info': vm.Item_info,
+          'text': vm.Item_name,
+          'link': vm.item.link,
+          'token': token,
+          'attachment': vm.checklist.attachment
+        };
+      }
 
       api.checklists.edit(editPack).error(function (res) {
         $rootScope.message("Error Editing Item", 'warning');
@@ -3443,17 +4328,149 @@ var indexOf = [].indexOf || function (item) {
           $rootScope.message(res.message, 'warning');
         } else {
           // $rootScope.createStats('item', 'created', vm.item.id);
+          // vm.item.info = vm.Item_info;
+
+          // if (check) {
+          //   vm.items.forEach(function (item, index) {
+          //     if (item.id === vm.datapoint_item.id) {
+
+          //       item = vm.datapoint_item;
+
+          // vm.datapoint_item.checkbox = item.checkbox;
+
+          if (check === 'edit_yn_checkbox' || check === 'editFromToggle') {
+
+            if (vm.ChnagedItem) {
+              vm.ChnagedItem.item_type = vm.datapoint_item.item_type;
+              vm.ChnagedItem.item_status = vm.datapoint_item.item_status;
+              vm.ChnagedItem.name = vm.datapoint_item.name;
+              vm.ChnagedItem.info = vm.datapoint_item.info;
+              vm.ChnagedItem.type = vm.datapoint_item.type;
+              vm.ChnagedItem.checkbox[0].item_alert = vm.datapoint_item.checkbox[0].alert;
+              vm.ChnagedItem.checkbox[0].sms_alert = vm.datapoint_item.checkbox[0].sms_alert;
+              vm.ChnagedItem.checkbox[0].sms_alert_number = vm.datapoint_item.checkbox[0].sms_alert_number;
+            }
+
+
+
+
+            if (item) {
+              if (item.checkbox === void 0) {
+                item.checkbox = [];
+              }
+
+
+              item.checkbox[userKey] = res.checkboxes[0];
+
+            }
+
+            $scope.getChecklinked();
+            vm.evaluateConflicts(vm.datapoint_item, +1);
+            // vm.evaluateConflicts( vm.datapoint_item, +1);
+            // $scope.getChecklinked();
+            // index 
+          } else if (check === 'edit_textbox') {
+            vm.item.info = vm.Item_info;
+            vm.item.name = vm.Item_name;
+          }
+          //else  if (check === 'edit_yn_checkbox' || check === 'editFromToggle') {
+          // if (item.checkbox === void 0) {
+          //   item.checkbox = [];
+          // }
+          // $scope.getChecklinked();
+          // vm.isLoader = false;
+          // 
+          // item
+          // ////
+          // $rootScope.createStats('checkbox', which == 'applies' ? 'checked' : 'uncheckd', vm.item.id);
+          //  item.checkbox[userKey] = res.checkboxes[0];
+          //  vm.datapoint_item.checkbox[userKey] = res.checkboxes[0];
+          //  vm.labels.create.save(res.checkboxes[0], 'checked');
+
+
+
+          //  vm.evaluateConflicts( vm.datapoint_item, +1);
+          //   }
+
+
+          // vm.datapoint_item. = item.item_status;
+          // vm.datapoint_item. = item.name;
+          // vm.datapoint_item. = item.info;
+          // vm.datapoint_item. = item.type;
+          // vm.datapoint_item. = item.id;
+          // vm.datapoint_item.alert = item.alert ;
+          // vm.datapoint_item.sms_alert = item.sms_alert ;
+          // vm.datapoint_item.number = item.number ;
+
+
+          //     }
+          //   })
+          // }
+
           $rootScope.message('Item has been changed successfully', 'success');
 
           vm.item.sending = false;
 
           vm.closeDialog();
         }
+        vm.isLoader = false;
       });
     }
 
+
+
+    vm.saveDataPoint = function (val) {
+
+
+
+      vm.closeDialog();
+
+      if (vm.datapoint_item.label) delete vm.datapoint_item.label;
+      if (vm.datapoint_item.title) delete vm.datapoint_item.title;
+
+      if (vm.datapoint_item.item_type == 'Req' || vm.datapoint_item.item_type == 'No') vm.datapoint_item.option = "applies";
+      else vm.datapoint_item.option = "complies";
+
+
+
+
+      // vm.datapoint_item.data_points_check = "no";
+
+
+      vm.datapoint_item.key = 'update';
+
+
+      api.datapoint.datapoint(vm.datapoint_item).then(function (d) {
+        if (d && d.data == '-1') {
+          if (d.data.message == 'unauthorized access') {
+            $state.go('app.logout');
+          } else {
+            $rootScope.message(d.data.message, 'error')
+          }
+        }
+        else {
+
+          vm.item.name = vm.datapoint_item.name;
+          vm.item.info = vm.datapoint_item.info;
+
+          $rootScope.message('Updated successfully', 'success');
+
+        }
+      });
+
+      // dataType: 3
+      // info: "reference"
+      // item_alert: true
+      // item_type: "yn"
+      // name: "ee"
+      // option: "applies"
+      // order: 68
+      // parentID: "1002"
+      // type: "item"
+    }
+
     function openConversationDialog(producerType, id, name, $event) {
-      ////debugger;
+      ////// //////;
       console.log('id', id);
       console.log('name', name);
       console.log('producerType', producerType);
@@ -3543,6 +4560,8 @@ var indexOf = [].indexOf || function (item) {
           vm[whats][which.index].edit.error = res.code;
           return vm[whats][which.index].edit.message = res.message;
         }).success(function (res) {
+
+
           var notifyItem, packet;
           vm[whats][which.index] = res.updated;
           packet = {
@@ -3554,7 +4573,8 @@ var indexOf = [].indexOf || function (item) {
             },
             record: res.updated
           };
-          //console.log('emitting data', packet);
+          console.log('emitting data', packet);
+          //////
           $rootScope.socketio.emit('data', packet);
           notifyItem = $.extend({}, res.updated, {
             type: 'data'
@@ -3600,9 +4620,46 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function downloadPDF(ev, idCHK, chkName) {
-      ////debugger;
+      ////// //////;
       vm.title = 'Download ' + chkName + ' To PDF';
+      vm.chkNameForPDF = chkName;
 
+      //  vm.showAllHeadersForPdf( vm.sections.headings);
+      vm.sections.forEach(function (section) {
+
+        vm.showAllHeadersForPdf(section.headings);
+
+        // section.headings.forEach(function (heading) {
+        //   
+        //   vm.showAllHeadersForPdf(heading);
+        // });
+
+
+
+      });
+      // vm.showAllHeadersForPdf
+
+
+
+      // section.headings.forEach(function sectionLoop(heading) {
+      //   if (sectionLoop.stop) { return; }
+      //   heading.items.forEach(function headingLoop(item) {
+      //     if (headingLoop.stop) { return; }
+
+      //     item.checkbox[0].applies
+      //     item.checkbox[0].complies
+      //     
+      //     if (item.checkbox[0].applies || item.checkbox[0].complies) {
+      //       $rootScope.message('Section cannot be marked N/A with inputs on the Line Item(s)', 'error');
+      //       vm.sectionCanBeNA = false;
+      //       headingLoop.stop = true;
+      //     }
+      //   });
+      //   if (!vm.sectionCanBeNA) {
+      //     sectionLoop.stop = true;
+      //   }
+
+      // });
 
       $mdDialog.show({
         scope: $scope,
@@ -3610,12 +4667,37 @@ var indexOf = [].indexOf || function (item) {
         templateUrl: 'app/main/checklist/dialogs/checklist/checklist-dialog-pdf.html',
         parent: angular.element($document.find('#todo')),
         targetEvent: ev,
-        clickOutsideToClose: true,
+        clickOutsideToClose: false,
         locals: {
           idCHK: idCHK,
           chkName: chkName
         }
       });
+
+
+
+    }
+
+    vm.pdfDownloadDone = function () {
+      var pdfName = vm.chkNameForPDF + '.pdf';
+
+      kendo.drawing.drawDOM($("#pdfContent")).then(function (group) {
+
+        return kendo.drawing.exportPDF(group, {
+          paperSize: "auto",
+          margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+        })
+
+      }).done(function (data) {
+        // Save the PDF file
+        kendo.saveAs({
+          dataURI: data,
+          fileName: pdfName
+
+        });
+      });
+
+      vm.closeDialog();
 
     }
 
@@ -3630,6 +4712,7 @@ var indexOf = [].indexOf || function (item) {
       // $window.location.href = (location);
       $window.open(location, '_blank');
     }
+
 
 
     function fetchHeadingBlock(section, idCHK) {
@@ -3894,14 +4977,16 @@ var indexOf = [].indexOf || function (item) {
       $mdDialog.hide();
     }
 
+
+
     // Content sub menu
     vm.submenu = [
-      { link: 'folders', title: 'Projects' },
-      { link: 'groups', title: 'Workflow' },
-      { link: '', title: 'Checklists' },
-      { link: 'templates', title: 'Templates' },
-      { link: 'other', title: 'Other' },
-      { link: 'archives', title: 'Archives' }
+      { link: 'folders', title: 'Projects', active: false },
+      { link: 'groups', title: 'Workflow', active: false },
+      { link: 'checklist', title: 'Checklists', active: true },
+      { link: 'templates', title: 'Templates', active: false },
+      { link: 'other', title: 'Other', active: false },
+      { link: 'archives', title: 'Archives', active: false }
 
     ];
 
@@ -3919,12 +5004,15 @@ var indexOf = [].indexOf || function (item) {
       $scope.deleteAttachment(attachment);
       vm.isDelete = false;
       vm.spinner = true;
+
     }
     function deleteCancel() {
       vm.isDelete = false;
     }
 
     $scope.deleteAttachment = function (attachment) {
+
+
       $http.post(BASEURL + "destroy_attachment.php", { 'id': attachment.id, 'idCON': $rootScope.user.idCON })
         .success(function (res) {
           vm.spinner = false;
@@ -3932,6 +5020,8 @@ var indexOf = [].indexOf || function (item) {
             vm.SelectedAttachments.splice(vm.SelectedAttachments.indexOf(attachment), 1);
             getAttachments();;
             vm.upload = false;
+            //////
+            organizeData();
             $rootScope.message(res.message, 'success');
 
 
@@ -3955,6 +5045,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     $scope.UpdateAttachment = function (attachment) {
+
       $http.post(BASEURL + "edit_attachment.php", { 'idCON': $rootScope.user.idCON, 'id': attachment.id, 'label': vm.label })
         .success(function (res) {
 
@@ -4063,7 +5154,9 @@ var indexOf = [].indexOf || function (item) {
     };
 
     function coypDialog(type, id, parent_id) {
+
       $scope.cutObj = { type: type, id: id, parent_destination_id: parent_id, action_type: 'copy' };
+
       localStorage.setItem('cutObj', JSON.stringify($scope.cutObj));
     };
 
@@ -4102,7 +5195,7 @@ var indexOf = [].indexOf || function (item) {
       api.item.paste(origin, destination, type, action_type, move_item_id).error(function (res) {
         return $rootScope.message("Error creating on paste item", 'warning');
       }).success(function (res) {
-        $rootScope.alertMessage('Paste successfully');
+        $rootScope.alertMessage('Pasted successfully');
         if ($scope.cutObj.type == 'checklist') {
           getChecklistGroup()
         } else {
@@ -4147,7 +5240,7 @@ var indexOf = [].indexOf || function (item) {
     };
 
     $scope.answer = function (answer) {
-      
+
       $mdDialog.hide(answer);
     };
     // create stats
@@ -4161,13 +5254,39 @@ var indexOf = [].indexOf || function (item) {
 
     //   });
     // };
-
+    vm.FileName = {}
     vm.downloadFile = [];
     vm.removeFileHttp = removeFileHttp;
     function removeFileHttp(file, index) {
+
       var originalFile = file.replace(DOMAIN_NAME, '');
       vm.downloadFile[index] = originalFile;
+      var re = /(?:\.([^.]+))?$/;
+      var FileExt = re.exec(vm.downloadFile[index])[1];
+      // $scope.FileName = []; 
+      // // $scope.FileName[index]='MyFile.'+ FileExt ;
+      // $scope.FileName.push('MyFile.'+ FileExt) ;
+
+      // vm.downloadBaseURL = BASEURL + 'download.php?file=';
+
+
+      vm.FileName[index] = 'MyFile.' + FileExt;
+      // vm.FileName
+
+      // //////
     }
+
+    vm.downloadFleNow = function (url) {
+
+
+      document.getElementById('my_iframe').src = url;
+
+      //////
+    }
+
+
+
+
     // vm.toggle('section',section); vm.fetchHeadingBlock(section, checklist.id)
 
     //vm.toggle('heading', heading); vm.fetchItemBlock(heading, checklist.id)
@@ -4186,17 +5305,35 @@ var indexOf = [].indexOf || function (item) {
       //vm.showallheaders = true;
     }
 
-    //Subscription expired alert
-    $scope.subscriptionAlert = function (message) {
-      vm.title = 'Alert';
-      vm.message = message;
-      $mdDialog.show({
-        scope: $scope,
-        preserveScope: true,
-        templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
-        clickOutsideToClose: false
+    vm.showAllHeadersForPdf = function (heading) {
+
+      vm.toggleForPdf('section', heading);
+
+      heading.forEach(function (heading_item) {
+        vm.isHeader = vm.isExpandedForPdf('heading', heading_item);
+        // alert( vm.isHeader);
+        if (vm.toggleForPdf('heading', heading_item)) {
+
+        }
+
       });
+      // vm.isExpanded('heading', headings);
+      //vm.showallheaders = true;
     }
+
+
+
+    // //Subscription expired alert
+    // $scope.subscriptionAlert = function (message) {
+    //   vm.title = 'Alert';
+    //   vm.message = message;
+    //   $mdDialog.show({
+    //     scope: $scope,
+    //     preserveScope: true,
+    //     templateUrl: 'app/main/teammembers/dialogs/subscription-alert.html',
+    //     clickOutsideToClose: false
+    //   });
+    // }
 
 
 
@@ -4211,9 +5348,22 @@ var indexOf = [].indexOf || function (item) {
       vm.checklistFromGroup = true;
       vm.checklists = [];
       api.checklists.getGroup($stateParams.id, token).then(function (d) {
-        vm.checklists = d.data.checklists;
 
-        vm.showLoadingImage = false;
+        if (d.data && d.data.code == '-1') {
+          if (d.data.message == 'unauthorized access') {
+            $state.go('app.logout');
+          } else {
+            // $scope.subscriptionAlert(d.data.message);
+            $rootScope.message(d.data.message, 'error')
+          }
+          vm.showLoadingImage = false;
+        } else {
+
+          vm.checklists = d.data.checklists;
+
+          vm.showLoadingImage = false;
+        }
+
       });
     };
 
@@ -4242,23 +5392,26 @@ var indexOf = [].indexOf || function (item) {
 
     function saveScheduler() {
 
+      vm.Alreadyclicked = true;
+
       vm.newScheduler.item_type = 'checklist';
       vm.newScheduler.item_type_id = vm.idCHK;
       vm.newScheduler.checklist_name = vm.checklists[0].name;
       vm.newScheduler.workflow_name = vm.checklists[0].item_bread.folder_name;
       vm.newScheduler.project_name = vm.checklists[0].item_bread.project_name;
-      vm.newScheduler.id = vm.item ? vm.item.id : '';
-     
-      vm.newScheduler.type = vm.item ? 'update' : 'save';
+      vm.newScheduler.id = vm.single_item ? vm.single_item.id : '';
+
+      vm.newScheduler.type = vm.single_item ? 'update' : 'save';
 
       console.log('vm.newScheduler save', vm.newScheduler)
 
       api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
         if (d.data.type == 'success') {
-          $rootScope.message(vm.item ? "Schedule updated successfully" : "New checklist schedule created successfully", 'success');
+          $rootScope.message(vm.single_item ? "Schedule updated successfully" : "New checklist schedule created successfully", 'success');
           $mdDialog.hide();
         }
 
+        vm.Alreadyclicked = false;
       });
 
     };
@@ -4274,20 +5427,25 @@ var indexOf = [].indexOf || function (item) {
       api.checklists.NewScheduler(vm.newScheduler).then(function (d) {
         if (d.data.type == 'success') {
           console.log('dddd', d)
-          
-          vm.item = d.data.data.item;
-          console.log('vm.item getSchedulerByChek', vm.item)
-          if (vm.item) {
-            vm.newScheduler.from_date = new Date(vm.item.from_date);
-            vm.newScheduler.to_date = new Date(vm.item.to_date);
-            vm.newScheduler.gantt_row = vm.item.gantt_chat;
-            vm.newScheduler.color = vm.item.color;
-            vm.newScheduler.all_day = vm.item.all_day == 1 ? true : false;
-            vm.newScheduler.repeat = vm.item.repeat;
-            vm.newScheduler.start_time = new Date(vm.item.start_time);
-            vm.newScheduler.end_time = new Date(vm.item.end_time);
-            vm.newScheduler.end = vm.item.end;
-            vm.newScheduler.id = vm.item.id;
+          vm.single_item = d.data.data.item;
+          //////
+
+          console.log('vm.item getSchedulerByChek', vm.single_item)
+          if (vm.single_item) {
+            //////
+            vm.newScheduler.from_date = new Date(vm.single_item.from_date);
+            vm.newScheduler.to_date = new Date(vm.single_item.to_date);
+            vm.newScheduler.gantt_row = vm.single_item.gantt_chat;
+            vm.newScheduler.color = vm.single_item.color;
+            vm.newScheduler.all_day = vm.single_item.all_day == 1 ? true : false;
+            vm.newScheduler.repeat = vm.single_item.repeat;
+            vm.newScheduler.start_time = new Date(vm.single_item.start_time);
+            vm.newScheduler.end_time = new Date(vm.single_item.end_time);
+            vm.newScheduler.end = vm.single_item.end;
+            vm.newScheduler.id = vm.single_item.id;
+          } else {
+
+            vm.newScheduler.color = '#ffffff';
           }
 
         }
@@ -4297,6 +5455,7 @@ var indexOf = [].indexOf || function (item) {
     getSchedulerByChek();
 
     function addschedule(ev) {
+      getSchedulerByChek();
 
       vm.type.title = "Scheduler";
 
@@ -4328,9 +5487,28 @@ var indexOf = [].indexOf || function (item) {
 
       });
 
-      console.log('newScheduler delete',vm.newScheduler)
+      console.log('newScheduler delete', vm.newScheduler)
     }
 
+    function GetAllGanttRows() {
+      console.log('GetAllRows');
+
+
+
+      api.checklists.NewScheduler({ type: "getRow" }).then(function (res) {
+        console.log('get rows res', res)
+        //////
+        if (res.data.type == 'success') {
+          vm.AllGanttRows = res.data.data;
+
+        }
+
+
+      })
+
+    }
+
+    GetAllGanttRows();
 
 
     // all_spreadsheets code starts
@@ -4367,26 +5545,28 @@ var indexOf = [].indexOf || function (item) {
 
 
 
-    function getAllSpreadsheets() {
-      api.organization.get_all_spreadsheets().then(function (d) {
-        vm.isLoader = false;
-        if (d.data.code == '-1') {
-          if (d.data.message == 'unauthorized access') {
-            $state.go('app.logout');
-          } else {
-          }
-        } else {
-          vm.all_spreadsheets = d.data.spreadsheets;
+    // function getAllSpreadsheets() {
+    //   api.organization.get_all_spreadsheets().then(function (d) {
+    //     vm.isLoader = false;
+    //     if (d.data.code == '-1') {
+    //       if (d.data.message == 'unauthorized access') {
+    //         $state.go('app.logout');
+    //       } else {
+    //       }
+    //     } else {
+    //       vm.all_spreadsheets = d.data.spreadsheets;
 
-        }
-      });
-    };
-    getAllSpreadsheets();
+    //     }
+    //   });
+    // };
+    // getAllSpreadsheets();
 
     function checklistAlert(item) {
       api.alert.save(item).then(function (d) {
         if (d.data.code != '-1') {
           console.log('new alert created');
+
+          api.notifications.count_notifi();
         }
 
 
@@ -4406,7 +5586,7 @@ var indexOf = [].indexOf || function (item) {
       if (param2.length == 0) {
         return false;
       }
-      // debugger;
+      // // //////;
       return angular.equals(param1, param2)
     }
 
@@ -4415,7 +5595,7 @@ var indexOf = [].indexOf || function (item) {
     /*****Value Intialize********/
 
     vm.convertDate = function (value, heading, current_index) {
-      // debugger;
+      // // //////;
       if (value != '' && value != null) {
         var newDate = new Date(value)
         vm.field['datatable_' + heading.id_parent + '_' + heading.id][current_index] = newDate;
@@ -4426,7 +5606,7 @@ var indexOf = [].indexOf || function (item) {
 
 
     vm.finished = function (column, index, tbl_str, heading) {
-      //// debugger;
+      //// // //////;
       var $index = index;
       var $row_detail = [];
       var $row_arr = [];
@@ -4444,7 +5624,7 @@ var indexOf = [].indexOf || function (item) {
 
           $head_arr.push(obj);
           $head_arr_header.push(tbl_str[$start].value);
-          // debugger;
+          // // //////;
         }
 
         $start++;
@@ -4457,7 +5637,7 @@ var indexOf = [].indexOf || function (item) {
 
 
 
-      //// debugger;
+      //// // //////;
       return $row_detail;
 
 
@@ -4470,6 +5650,7 @@ var indexOf = [].indexOf || function (item) {
 
 
     $scope.init = function (index, table_str, heading) {
+      // ////
       var section_id = heading.id_parent;
       var heading_id = heading.id;
 
@@ -4496,7 +5677,7 @@ var indexOf = [].indexOf || function (item) {
 
 
       vm.col_data_update_str[new_field][table_str.cell_no] = table_str; // may need to fixed this as well
-      //debugger;
+      //// //////;
 
     };
 
@@ -4505,7 +5686,7 @@ var indexOf = [].indexOf || function (item) {
     $scope.autoTrimWord = function (index, table_str) {
       var length = table_str[index].value;
       //var text_len = vm.field[index].length;
-      //debugger;
+      //// //////;
     };
 
     $scope.autoFixedPoint = function (index, table_str) {
@@ -4516,7 +5697,7 @@ var indexOf = [].indexOf || function (item) {
 
 
     $scope.isNumberKey = function (evt, index, precision, heading, cell_type) {
-      //debugger;
+      //// //////;
 
       var cell_type = cell_type != undefined ? cell_type : '';
       if (cell_type != '') {
@@ -4539,7 +5720,7 @@ var indexOf = [].indexOf || function (item) {
 
       if (typeof (value) == 'number') value = value.toString();
 
-       debugger;
+      // //////;
       var dotcontains = value.indexOf(".") != -1;
       if (precision > 0) {
         if (dotcontains)
@@ -4567,259 +5748,279 @@ var indexOf = [].indexOf || function (item) {
 
 
 
-    $scope.autoCalculate = function (index,table_str,heading) {
-    
+
+    $scope.autoCalculate = function (index, table_str, heading) {
+      //
       var section_id = heading.id_parent;
       var heading_id = heading.id;
-  
-      var new_field = "datatable_"+section_id+"_"+heading_id;
-  
+
+      var new_field = "datatable_" + section_id + "_" + heading_id;
+
       vm.field
       vm.col_data_update_str
-  
-      
-  
-      if(table_str[index].type == 'Number' && table_str[index].is_percentage == 1 ){
+
+
+
+      if (table_str[index].type == 'Number' && table_str[index].is_percentage == 1) {
         var index_value = vm.field[new_field][index];
-      
+
       }
-  
-  
-      vm.result =  $filter('filter')(table_str, {'type':'Formula'});
-  
-  
+
+
+      vm.result = $filter('filter')(table_str, { 'type': 'Formula' });
+
+
       var chkCell = table_str[index].cell_no;
       var reLen = vm.result.length;
-  
-      for(var i=0;i<reLen; i++){
+
+      for (var i = 0; i < reLen; i++) {
         vm.value_status = true;
-         vm.myString = '';
-          var value  =vm.result[i].value;
-          var index  =vm.result[i].index; // vm.field 11
-      
-            var split_val = value.split('=');
-            if(split_val[1] == undefined){
-              return;
+        vm.myString = '';
+        var value = vm.result[i].value;
+        var index = vm.result[i].index; // vm.field 11
+        // if( value.indexOf(chkCell) >= 0){ // A3
+
+        // var cell_index = vm.col_data_update_str[chkCell].index;
+        // var cell_current_value =  vm.field[cell_index];
+        var split_val = value.split('=');
+        if (split_val[1] == undefined) {
+          return;
+        }
+
+        var yourstring = split_val[1];
+
+        vm.myString = yourstring;
+        vm.myString = vm.myString.toUpperCase();
+
+        var pattrnList = ['SUM', 'AVG'];
+        var patValChk = '';
+
+        if (vm.myString != '' && vm.myString != undefined) {
+
+          for (var l = 0; l < pattrnList.length; l++) {
+            var patVal = pattrnList[l];
+            if (vm.myString.indexOf(patVal) != -1) {
+              patValChk = patVal;
+              break;
             }
-           
-            var yourstring = split_val[1];
-           
-            vm.myString = yourstring;
-            vm.myString=  vm.myString.toUpperCase();
-  
-            var pattrnList = ['SUM','AVG'];
-            var patValChk ='';
-            
-            if(vm.myString !='' && vm.myString !=undefined){
-  
-              for(var l=0;l<pattrnList.length;l++){
-                  var patVal = pattrnList[l];
-                  if(vm.myString.indexOf(patVal) != -1){
-                    patValChk = patVal;
-                    break;
-                  }
-  
+
+          }
+
+          var pattType = false;
+          if (patValChk != '') {
+
+            vm.myString = vm.myString.replace(patValChk, '');
+
+            var total_element;
+
+            if (vm.myString.indexOf(',') != -1) {
+              vm.myString = vm.myString.replace(',', '+');
+              total_element = vm.myString.split(',').length;
+              // 
+            }
+            else if (vm.myString.indexOf(':') != -1) {
+              var arr_cell_range = [];
+
+              var arr_cell_exist = [];
+              var arr_cell_remove = [];
+              var row = heading.datatable[0].row;
+
+              // 
+              var table_column = heading.datatable[0].column;
+              var spl = vm.myString.replace('(', '');
+              spl = spl.replace(')', '');
+              spl = spl.trim();
+              var spl = spl.split(':');
+
+
+              var max_charName = String.fromCharCode(65 + table_column - 1); // D
+              var firstval = spl[0];
+              var lastval = spl[1];
+
+
+              var startIndex = parseInt(firstval.replace(/[^0-9\.]/g, ''), 10);
+              var lastIndex = parseInt(lastval.replace(/[^0-9\.]/g, ''), 10);
+
+
+              /***Auto Checked Start Here */
+              // 
+
+              arr_cell_exist.push(firstval.replace(startIndex, ''));
+              arr_cell_exist.push(lastval.replace(lastIndex, ''));
+
+
+              var arr_cell_exist = Array.from(new Set(arr_cell_exist));
+
+              for (var x = 0; x < table_column; x++) {
+                var cellName = String.fromCharCode(65 + x);
+
+                if (arr_cell_exist.indexOf(cellName) == -1 && (cellName < arr_cell_exist[0] || cellName > arr_cell_exist[1])) {
+                  arr_cell_remove.push(cellName)
+                }
+
               }
-  
-            
-              if(patValChk != ''){
-                  
-                   vm.myString=   vm.myString.replace(patValChk,'');
-  
-                    var total_element;
-                    
-                    if(vm.myString.indexOf(',') != -1){
-                      vm.myString=  vm.myString.replace(',','+');
-                      total_element = vm.myString.split(',').length;
-                   
-                    }
-                    else if(vm.myString.indexOf(':') != -1){
-                      var arr_cell_range = [];
-  
-                      var arr_cell_exist= [];
-                      var arr_cell_remove= [];
-                      var row =  heading.datatable[0].row;
-  
-                      
-                      var table_column = heading.datatable[0].column;
-                      var spl = vm.myString.replace('(','');
-                      spl = spl.replace(')','');
-                      spl = spl.trim();
-                      var spl = spl.split(':');
-                    
-  
-                      var max_charName = String.fromCharCode(65 + table_column-1); // D
-                      var firstval = spl[0];
-                      var lastval = spl[1];
-             
-  
-                      var startIndex =  parseInt(firstval.replace(/[^0-9\.]/g, ''), 10);
-                      var lastIndex =  parseInt(lastval.replace(/[^0-9\.]/g, ''), 10);
-  
-  
-                        /***Auto Checked Start Here */
-                  
-  
-                        arr_cell_exist.push(firstval.replace(startIndex,''));
-                        arr_cell_exist.push(lastval.replace(lastIndex,''));
-                        
-  
-                        var arr_cell_exist =  Array.from(new Set(arr_cell_exist));
-    
-                          for(var x=0;x<table_column;x++){
-                                var cellName = 	String.fromCharCode(65 + x);
-    
-                                if(arr_cell_exist.indexOf(cellName) == -1 && (cellName <  arr_cell_exist[0] || cellName >  arr_cell_exist[1])){
-                                      arr_cell_remove.push(cellName)
-                                }
-    
-                          }
-  
-                          for(var p=0;p<row;p++){
-  
-                      
-                            for(var k=1;k<=table_column;k++){
-                                  var a= 	String.fromCharCode(65 + k-1);
-  
-                                  if(arr_cell_remove.indexOf(a) != -1){
-                                    continue;
-                                  }
-  
-                              console.log(a+(p+1));
-                              arr_cell_range.push(a+(p+1))
-  
-                            }
-  
-                          }
-  
-                        
-                          
-                          var startPos = arr_cell_range.indexOf(firstval);
-                          var endPos = arr_cell_range.indexOf(lastval);
-  
-                         var arr_cell_range = arr_cell_range.slice(startPos,endPos+1);
-                      
-    
-                        /******* */
-  
-  
-                      var replaceStrPtrn = firstval+":"+lastval
-                      var newMyString  = '';
-                      var k= 1;
-                      for(var p=0;p<arr_cell_range.length;p++){
-                        if(k == 1){
-                          newMyString  = arr_cell_range[p];
-                        }
-                        else{
-                          newMyString  += "+"+arr_cell_range[p];
-                        }
-                          
-                
-                          total_element = k;
-                          k++;
-                         
-  
-                      }
-  
-                        vm.myString =  vm.myString.replace(replaceStrPtrn,newMyString);
-  
-                    }
-  
-                
-              }
-            }
-            else{
-              return;
-            }
-        
-  
-            /***///
-               vm.myString = vm.myString.trim();
-               vm.spl_arr =  vm.myString.split(/[*,/,+,-]+/);
-  
-               var replace_chr = ['(',')'];
-               var chr_len = replace_chr.length;
-               for(var k=0;k<chr_len; k++){
-  
-                  vm.spl_arr =vm.spl_arr.map(function(item,index){
-                    return item.replace(replace_chr[k].trim(),'')                
-                  })
-  
-               }
-  
-              
-               var spl_arr_len = vm.spl_arr.length;
-             
-  
-               for(var j=0;j<spl_arr_len; j++){
-               
-                if(!vm.col_data_update_str[new_field].hasOwnProperty(vm.spl_arr[j].trim())){
+
+              for (var p = 0; p < row; p++) {
+
+
+                for (var k = 1; k <= table_column; k++) {
+                  var a = String.fromCharCode(65 + k - 1);
+
+                  if (arr_cell_remove.indexOf(a) != -1) {
                     continue;
-                }
-                  var cell_index = vm.col_data_update_str[new_field][vm.spl_arr[j].trim()].index;
-  
-  
-                 
-                  var cell_current_value =  parseFloat(vm.field[new_field][cell_index]); 
-                  if(cell_current_value == '' || typeof cell_current_value === 'string'){
-                      vm.value_status = false;
                   }
-                  if(table_str[cell_index].type == 'Number' && table_str[cell_index].is_percentage == 1 ){
-                 
-                     if(cell_current_value == 0 || cell_current_value == '' || cell_current_value == undefined || isNaN(cell_current_value)){
-                       cell_current_value = 0;
-                     }
-                     else{
-                        
-                          cell_current_value = cell_current_value/100;
-                       
-                      
-                     }
-                    
-                      
-                     
-                  }
-                  vm.myString = vm.myString.replace(vm.spl_arr[j].trim(),cell_current_value);
-                  vm.value_status = true;
-               }
-  
-             
-             /**** */
-             if(vm.value_status){
-              vm.myString;
-              
-              
-              if(patValChk == 'AVG'){
-                 if(total_element != undefined){
-                    vm.myString = vm.myString+"/"+total_element;
-                   
-                 }
-               
+
+                  console.log(a + (p + 1));
+                  arr_cell_range.push(a + (p + 1))
+
                 }
-  
-              var formula_value = eval(vm.myString).toFixed(2);
-              if(!isNaN(formula_value)){
-                 vm.field[new_field][index] =  eval(vm.myString).toFixed(2);
+
               }
-              else{
-                vm.field[new_field][index] =  '';
+
+
+
+              var startPos = arr_cell_range.indexOf(firstval);
+              var endPos = arr_cell_range.indexOf(lastval);
+
+              var arr_cell_range = arr_cell_range.slice(startPos, endPos + 1);
+              // 
+
+              /******* */
+
+
+              var replaceStrPtrn = firstval + ":" + lastval
+              var newMyString = '';
+              var k = 1;
+              for (var p = 0; p < arr_cell_range.length; p++) {
+                if (k == 1) {
+                  newMyString = arr_cell_range[p];
+                }
+                else {
+                  newMyString += "+" + arr_cell_range[p];
+                }
+
+                // 
+                total_element = k;
+                k++;
+
+
               }
-             
-               
-             }
-             vm.myString;
-            
-  
+
+              vm.myString = vm.myString.replace(replaceStrPtrn, newMyString);
+
+              pattType = true;
+
+              //
+            }
+
+
+          }
+        }
+        else {
+          return;
+        }
+        //  
+
+        /***///
+        vm.myString = vm.myString.trim();
+        vm.spl_arr = vm.myString.split(/[*,/,+,-]+/);
+
+        var replace_chr = ['(', ')'];
+        var chr_len = replace_chr.length;
+        for (var k = 0; k < chr_len; k++) {
+
+          vm.spl_arr = vm.spl_arr.map(function (item, index) {
+            return item.replace(replace_chr[k].trim(), '')
+          })
+
+        }
+
+
+        var spl_arr_len = vm.spl_arr.length;
+
+
+        for (var j = 0; j < spl_arr_len; j++) {
+
+          if (!vm.col_data_update_str[new_field].hasOwnProperty(vm.spl_arr[j].trim())) {
+            continue;
+          }
+          var cell_index = vm.col_data_update_str[new_field][vm.spl_arr[j].trim()].index;
+
+
+
+          var cell_current_value = parseFloat(vm.field[new_field][cell_index]);
+
+          if (isNaN(cell_current_value) && pattType == true) {
+            if (vm.field[new_field][cell_index] == '' || (vm.field[new_field][cell_index] != '' && typeof cell_current_value === 'string')) {
+              vm.myString = vm.myString.replace(vm.spl_arr[j].trim(), '0');
+            }
+            else {
+              vm.myString = vm.myString.replace(vm.spl_arr[j].trim(), '');
+            }
+
+            vm.myString = vm.myString.replace("++", '+');
+            console.log('not a number');
+
+          }
+          if (cell_current_value == '' || typeof cell_current_value === 'string') {
+
+            vm.value_status = false;
+          }
+          if (table_str[cell_index].type == 'Number' && table_str[cell_index].is_percentage == 1) {
+            // 
+            if (cell_current_value == 0 || cell_current_value == '' || cell_current_value == undefined || isNaN(cell_current_value)) {
+              cell_current_value = 0;
+            }
+            else {
+
+              cell_current_value = cell_current_value / 100;
+
+
+            }
+
+
+            // 
+          }
+          vm.myString = vm.myString.replace(vm.spl_arr[j].trim(), cell_current_value);
+          vm.value_status = true;
+        }
+
+
+        /**** */
+        if (vm.value_status) {
+          vm.myString;
+          //
+
+          if (patValChk == 'AVG') {
+            if (total_element != undefined) {
+              vm.myString = vm.myString + "/" + total_element;
+
+            }
+
+          }
+
+          var formula_value = eval(vm.myString).toFixed(2);
+          if (!isNaN(formula_value)) {
+            vm.field[new_field][index] = eval(vm.myString).toFixed(2);
+          }
+          else {
+            vm.field[new_field][index] = '';
+          }
+
+
+        }
+        vm.myString;
+
+
       }
-      
-  
-      
+
+
+      // // 
     };
 
 
-
     function createDataTableSegment(what, name, to, type, info, item_type, alert, columns, rows, ev, table_id, table_str_data, heading) {
-      // debugger;
+
 
       /******************* */
       vm.table_id = table_id != undefined ? table_id : '';
@@ -4851,70 +6052,74 @@ var indexOf = [].indexOf || function (item) {
 
       /***************** */
 
-
+      console.log(what, name, to, type, info, item_type, alert, columns, rows, 'ev', table_id, table_str_data, heading)
 
       vm.section_id = to;
       vm.dataTableName = name;
       vm.data_table_structure = [];
 
-      $scope.cell_format = [
-
-        { "name": "None" }, { "name": "Date" }, { "name": "Label" }, { "name": "Text" }, { "name": "Number" }, { "name": "Currency" }, { "name": "Formula" }
-
-      ]
+      $scope.cell_format = dataTable.getValue('cell_format');
+      // [{ "name": "None" }, { "name": "Date" }, { "name": "Label" }, { "name": "Text" }, { "name": "Number" }, { "name": "Currency" }, { "name": "Formula" }]
 
 
       vm.model = $scope.cell_format[0].name;
-      //debugger;
+      //// //////;
 
 
-      $scope.decimal = [
-        { "value": 0 }, { "value": 1 }, { "value": 2 }
-
-      ]
-
-      vm.number_type = $scope.decimal[0].value;
-
-      $scope.currency = [
-        { "name": "$", "sign ": "Dollars" }, { "name": "€", "sign ": "Euros" }, { "name": "£", "sign ": "Pounds" }, { "name": "￥", "sign ": "Yen/Yuan" }
-      ]
+      $scope.decimal = dataTable.getValue('decimal');
 
 
-      vm.currency_type = $scope.currency[0].name;
+
+      // //////;
+      // $scope.decimal = [
+      //   { "value": 0 }, { "value": 1 }, { "value": 2 }
+
+      // ]
+
+      $rootScope.DataTableFields.number_type = $scope.decimal[0].value;
+
+      $scope.currency = dataTable.getValue('currency');
+
+      $scope.datapoint_functions = dataTable.getValue('datapoint_functions');
 
 
-      $scope.alignTextVal = [
-        { "name": "center" }, { "name": "left" }, { "name": "right" }
-      ]
+      // $scope.currency = [ { "name": "$", "sign ": "Dollars" }, { "name": "€", "sign ": "Euros" }, { "name": "£", "sign ": "Pounds" }, { "name": "￥", "sign ": "Yen/Yuan" }];
+
+
+      $rootScope.DataTableFields.currency_type = $scope.currency[0].name;
+
+
+      $scope.alignTextVal = dataTable.getValue('alignTextVal');
+
+      // [{ "name": "center" }, { "name": "left" }, { "name": "right" }]
 
       vm.alignTextStatus = $scope.alignTextVal[0].name;
 
-      $scope.TextPostition = [
-        { "name": "bottom", "pos": "fa-long-arrow-down" }, { "name": "middle", "pos": "fa-arrows-v" }, { "name": "top", "pos": "fa-long-arrow-up" }
-      ]
+      $scope.TextPostition = dataTable.getValue('TextPostition');
+      // [ { "name": "bottom", "pos": "fa-long-arrow-down" }, { "name": "middle", "pos": "fa-arrows-v" }, { "name": "top", "pos": "fa-long-arrow-up" }]
 
       vm.TextPostitionStatus = $scope.TextPostition[0].name;
 
 
 
 
-      $scope.decimal = [
-        { "value": 0 }, { "value": 1 }, { "value": 2 }
+      // $scope.decimal = [
+      //   { "value": 0 }, { "value": 1 }, { "value": 2 }
 
-      ]
+      // ]
 
-      vm.number_type = $scope.decimal[0].value;
+      $rootScope.DataTableFields.number_type = $scope.decimal[0].value;
 
       vm.formats = $scope.cell_format
-      
+
       var data_table_row = rows;
       var data_table_col = columns;
 
-      vm.toExcelHeader(data_table_col)
+      dataTable.toExcelHeader(data_table_col)
 
-      vm.header_names = vm.toExcelHeaderArray(data_table_col + 1)
+      vm.header_names = dataTable.toExcelHeaderArray(data_table_col + 1)
       vm.header_names.shift()
-
+      //////;
 
       $scope.rows = [];
       $scope.columns = [];
@@ -4951,23 +6156,26 @@ var indexOf = [].indexOf || function (item) {
           var tbd = vm.editDataTable[new_field]['table_str_data'][current_index];
           if (tbd == undefined) {
             return;
-            // debugger;
+            // // //////;
           }
 
           var new_val = tbd.value;
 
           col_data_update[row + column] = '';
           vm.myrecords.push(col_data_update);
-          //// debugger;
+          //// // //////;
 
 
-          vm.cell_stucture = { 'index': parseInt(tbd.index), 'cell_no': tbd.row_no + parseInt(tbd.col_no), 'type': tbd.type, 'row': tbd.row_no, 'column': parseInt(tbd.col_no), 'value': tbd.value, 'text_align': tbd.text_align, 'text_position': tbd.text_position }
+          // $rootScope.DataTableFields.cell_stucture = { 'index': parseInt(tbd.index), 'cell_no': tbd.row_no + parseInt(tbd.col_no), 'type': tbd.type, 'row': tbd.row_no, 'column': parseInt(tbd.col_no), 'value': tbd.value, 'text_align': tbd.text_align, 'text_position': tbd.text_position }
+
+          $rootScope.DataTableFields.cell_stucture = { 'index': parseInt(tbd.index), 'cell_no': tbd.col_no + parseInt(tbd.row_no), 'type': tbd.type, 'row': tbd.col_no, 'column': parseInt(tbd.row_no), 'value': tbd.value, 'text_align': tbd.text_align, 'text_position': tbd.text_position }
+
           if (tbd.type == 'Number') {
             if (tbd.is_percentage == 1) {
-              vm.cell_stucture['percentage'] = true;
+              $rootScope.DataTableFields.cell_stucture['percentage'] = true;
             }
             else {
-              vm.cell_stucture['percentage'] = false;
+              $rootScope.DataTableFields.cell_stucture['percentage'] = false;
             }
           }
           var tbd_value = tbd.value;
@@ -4976,7 +6184,7 @@ var indexOf = [].indexOf || function (item) {
             if (tbd.type != 'Label') {
 
               tbd_value = '';
-              // debugger;
+              // // //////;
             }
 
             vm.myrecords[current_index][row + column] = tbd_value;
@@ -4984,9 +6192,9 @@ var indexOf = [].indexOf || function (item) {
 
           }
 
-          //// debugger;
+          //// // //////;
           //vm.myrecords.push(col_data_update);
-          vm.data_table_structure[current_index] = vm.cell_stucture;
+          vm.data_table_structure[current_index] = $rootScope.DataTableFields.cell_stucture;
 
         }
         else {
@@ -5006,17 +6214,36 @@ var indexOf = [].indexOf || function (item) {
       };
 
 
-      vm.lable_show = false;
-      vm.formula_show = false;
-      vm.currency_show = false;
+      $rootScope.DataTableFields = {
+        lable_show: false,
+        formula_show: false,
+        currency_show: false,
+        number_show: false,
+        percentage: false,
+        textShow: false,
+        data_point_show: false
+      }
+      // vm. = false;
+      // vm. = false;
 
 
-      vm.text_show = false;
-      vm.number_show = false;
+      // vm. = false;
+      // vm. = false;
 
-      vm.percentage = false;
+      // vm. = false;
 
-      vm.textShow = false;
+      // vm. = false;
+
+      /*****New Updated **********/
+      vm.selectedRow = undefined;
+      vm.selectedColumn = undefined;
+      vm.selectedIndex = undefined;
+
+
+      vm.selectedHeaderName = undefined;
+      vm.selectedHeaderIndex = undefined;
+      /*****End New Updated **********/
+
 
 
 
@@ -5027,7 +6254,7 @@ var indexOf = [].indexOf || function (item) {
         parent: angular.element($document.find('#checklist')),
         targetEvent: ev,
         clickOutsideToClose: true,
-
+        autoWrap: false
       });
 
 
@@ -5035,53 +6262,66 @@ var indexOf = [].indexOf || function (item) {
 
     /*** Start Data Table Function */
 
+    // vm.toExcelHeaderArray = toExcelHeaderArray;
 
-    vm.toExcelHeaderArray = function (rows) {
-      var excelHeaderArr = [];
-      for (var index = 1; index <= rows; index++) {
-        excelHeaderArr.push(vm.toExcelHeader(index));
-      }
+    // function toExcelHeaderArray(rows) {
+    //   return  dataTable.toExcelHeaderArray(rows);
+    // }
+    // //////
+    // vm.toExcelHeaderArray = function (rows) {
+    //   var excelHeaderArr = [];
+    //   for (var index = 1; index <= rows; index++) {
+    //     excelHeaderArr.push(vm.toExcelHeader(index));
+    //   }
 
-      return excelHeaderArr;
-    }
+    //   return excelHeaderArr;
+    // }
 
-    vm.toExcelHeader = function (index) {
-      if (index <= 0) {
-        alert("row must be 1 or greater");
-      }
-      index--;
-      var charCodeOfA = ("a").charCodeAt(0); // you could hard code to 97
-      var charCodeOfZ = ("z").charCodeAt(0); // you could hard code to 122
-      var excelStr = "";
-      var base24Str = (index).toString(charCodeOfZ - charCodeOfA + 1);
-      for (var base24StrIndex = 0; base24StrIndex < base24Str.length; base24StrIndex++) {
-        var base24Char = base24Str[base24StrIndex];
-        var alphabetIndex = (base24Char * 1 == base24Char) ? base24Char : (base24Char.charCodeAt(0) - charCodeOfA + 10);
-        // bizarre thing, A==1 in first digit, A==0 in other digits
-        if (base24StrIndex == 0) {
-          alphabetIndex -= 1;
-        }
-        excelStr += String.fromCharCode(charCodeOfA * 1 + alphabetIndex * 1);
-      }
-      return excelStr.toUpperCase();
-    }
+    // vm.toExcelHeader = function (index) {
+    //   if (index <= 0) {
+    //     alert("row must be 1 or greater");
+    //   }
+    //   index--;
+    //   var charCodeOfA = ("a").charCodeAt(0); // you could hard code to 97
+    //   var charCodeOfZ = ("z").charCodeAt(0); // you could hard code to 122
+    //   var excelStr = "";
+    //   var base24Str = (index).toString(charCodeOfZ - charCodeOfA + 1);
+    //   for (var base24StrIndex = 0; base24StrIndex < base24Str.length; base24StrIndex++) {
+    //     var base24Char = base24Str[base24StrIndex];
+    //     var alphabetIndex = (base24Char * 1 == base24Char) ? base24Char : (base24Char.charCodeAt(0) - charCodeOfA + 10);
+    //     // bizarre thing, A==1 in first digit, A==0 in other digits
+    //     if (base24StrIndex == 0) {
+    //       alphabetIndex -= 1;
+    //     }
+    //     excelStr += String.fromCharCode(charCodeOfA * 1 + alphabetIndex * 1);
+    //   }
+    //   return excelStr.toUpperCase();
+    // }
 
+
+
+    /***** New Updated **********/
 
     vm.select = function (row, column, index, header_name, header_index) {
 
 
-      // // debugger;
-      vm.cellSelected = false;
       vm.label_name = ''
-      vm.lable_show = false;
-      vm.formula_show = false;
-      vm.currency_show = false;
-      vm.text_show = false;
-      vm.number_show = false;
 
 
-      vm.percentage = false;
-      vm.textShow = false;
+      $rootScope.DataTableFields = {
+        lable_show: false,
+        formula_show: false,
+        currency_show: false,
+        text_show: false,
+        number_show: false,
+        percentage: false,
+        textShow: false,
+        cellSelected: false,
+        data_point_show: false
+      }
+
+
+
 
       vm.model = $scope.cell_format[0].name;
 
@@ -5104,20 +6344,20 @@ var indexOf = [].indexOf || function (item) {
 
 
         vm.selectedIndex = index;
-        vm.cellSelected = true;
+        $rootScope.DataTableFields.cellSelected = true;
 
 
 
         vm.data_table_structure
         if (vm.data_table_structure[index] == undefined) {
-          // debugger;
+          // 
         }
         var getfcell_no = vm.data_table_structure[index].cell_no;
-        //// debugger;
+        //// 
         if (getfcell_no != undefined && getfcell_no == vm.selectedHeaderName + vm.selectedHeaderIndex) {
-          //// debugger;
+          //// 
           var getformat_type = vm.data_table_structure[index].type
-          // debugger;
+
 
           var text_align = vm.data_table_structure[index].text_align
           var text_position = vm.data_table_structure[index].text_position
@@ -5125,39 +6365,49 @@ var indexOf = [].indexOf || function (item) {
           var cell_structure = vm.data_table_structure[index];
           var cell_value = cell_structure.value
           vm.model = getformat_type
-          vm.selected_value = vm.model;
-          //// debugger;
-          vm.textShow = true;
-          vm.alignTextStatus = text_align
-          vm.TextPostitionStatus = text_position
-          // debugger;
+          $rootScope.DataTableFields.selected_value = vm.model;
+          //// 
+          $rootScope.DataTableFields.textShow = true;
+          vm.alignTextStatus = text_align;
+          vm.TextPostitionStatus = text_position;
+          // 
           switch (getformat_type) {
             case 'None':
+            case 'n-def':
+
+              vm.model = $scope.cell_format[0].name;
+              vm.alignTextStatus = $scope.alignTextVal[0].name;
+              vm.TextPostitionStatus = $scope.TextPostition[0].name;
+              break;
             case 'Date':
               break;
             case 'Label':
-              vm.lable_show = true;
-              vm.label_name = cell_value
+              $rootScope.DataTableFields.lable_show = true;
+              $rootScope.DataTableFields.label_name = cell_value;
 
               break;
             case 'Number':
-              vm.number_show = true;
-              vm.number_type = cell_value
+              $rootScope.DataTableFields.number_show = true;
+              $rootScope.DataTableFields.number_type = cell_value;
 
-              vm.percentage = cell_structure.percentage
+              $rootScope.DataTableFields.percentage = cell_structure.percentage;
 
               break;
             case 'Formula':
-              vm.formula_show = true;
-              vm.formula = cell_value
+              $rootScope.DataTableFields.formula_show = true;
+              $rootScope.DataTableFields.formula = cell_value;
               break;
             case 'Currency':
-              vm.currency_show = true;
-              vm.currency_type = cell_value
+              $rootScope.DataTableFields.currency_show = true;
+              $rootScope.DataTableFields.currency_type = cell_value;
               break;
             case 'Text':
-              vm.text_show = true;
-              vm.text = parseInt(cell_value);
+              $rootScope.DataTableFields.text_show = true;
+              $rootScope.DataTableFields.text = parseInt(cell_value);
+              break;
+            case 'Data Point':
+              $rootScope.DataTableFields.data_point_show = true;
+              $rootScope.DataTableFields.data_point_function = cell_value;
               break;
 
 
@@ -5165,7 +6415,7 @@ var indexOf = [].indexOf || function (item) {
               break;
           }
         }
-        // //// debugger;
+        // //// 
       }
 
 
@@ -5175,44 +6425,117 @@ var indexOf = [].indexOf || function (item) {
 
 
 
+    // vm.getdetails = function(){
+    //   console.log('here get details');
+    //   dataTable.getdetails(vm.model );
+    // }
 
-    vm.getdetails = function () {
-      vm.lable_show = false;
-      vm.formula_show = false;
-      vm.selected_value = vm.model;
-      vm.textShow = true;
-      vm.text_show = false;
-      if (vm.selected_value == 'None') {
-        vm.textShow = false;
-      }
-      else if (vm.selected_value == 'Date') {
 
-      }
 
-      else if (vm.selected_value == 'Formula') {
-        vm.formula_show = true;
-      }
+    // function () {
 
-      else if (vm.selected_value == 'Currency') {
-        vm.currency_show = true;
-        vm.number_show = false;
-      }
+    //   $rootScope.DataTableFields = {
+    //     lable_show : false,
+    //     formula_show : false,
+    //     currency_show : false,
+    //     textShow : true,
+    //     text_show : false,
+    //     number_show : false,
+    //   }
+    //   // vm.lable_show = false;
+    //   // vm.formula_show = false;
+    //   // vm.currency_show = false;
 
-      else if (vm.selected_value == 'Text') {
-        vm.text_show = true;
-      }
+    //   // vm.textShow = true;
+    //   // vm.text_show = false;
 
-      else if (vm.selected_value == 'Number') {
-        vm.currency_show = false;
-        vm.number_show = true;
-      }
+    //   // vm.number_show = false;
 
-      else if (vm.selected_value == 'Label') {
-        vm.lable_show = true;
-      }
-      ////// debugger;
+    //   vm.selected_value = vm.model;
 
-    }
+
+
+    //   if (vm.selected_value == 'None') {
+    //     $rootScope.DataTableFields.textShow = false;
+    //   }
+    //   else if (vm.selected_value == 'Date') {
+
+    //   }
+
+    //   else if (vm.selected_value == 'Formula') {
+    //     $rootScope.DataTableFields.formula_show = true;
+    //   }
+
+    //   else if (vm.selected_value == 'Currency') {
+    //     $rootScope.DataTableFields.currency_show = true;
+    //     $rootScope.DataTableFields.number_show = false;
+    //   }
+
+    //   else if (vm.selected_value == 'Text') {
+    //     $rootScope.DataTableFields.text_show = true;
+    //   }
+
+    //   else if (vm.selected_value == 'Number') {
+    //     $rootScope.DataTableFields.currency_show = false;
+    //     $rootScope.DataTableFields.number_show = true;
+    //   }
+
+    //   else if (vm.selected_value == 'Label') {
+    //     $rootScope.DataTableFields.lable_show = true;
+    //   }
+
+    //   $rootScope.DataTableFields.cellSelected = true;
+
+
+    // }
+
+
+
+
+
+    // vm.getdetails = function () {
+    //   vm.lable_show = false;
+    //   vm.formula_show = false;
+    //   vm.currency_show = false;
+    //   vm.selected_value = vm.model;
+    //   vm.textShow = true;
+    //   vm.text_show = false;
+
+    //   vm.number_show = false;
+
+
+
+    //   if (vm.selected_value == 'None') {
+    //     vm.textShow = false;
+    //   }
+    //   else if (vm.selected_value == 'Date') {
+
+    //   }
+
+    //   else if (vm.selected_value == 'Formula') {
+    //     vm.formula_show = true;
+    //   }
+
+    //   else if (vm.selected_value == 'Currency') {
+    //     vm.currency_show = true;
+    //     vm.number_show = false;
+    //   }
+
+    //   else if (vm.selected_value == 'Text') {
+    //     vm.text_show = true;
+    //   }
+
+    //   else if (vm.selected_value == 'Number') {
+    //     vm.currency_show = false;
+    //     vm.number_show = true;
+    //   }
+
+    //   else if (vm.selected_value == 'Label') {
+    //     vm.lable_show = true;
+    //   }
+    //   ////// // //////;
+
+    // }
 
     /****Duplicate Row and Delete Row*******/
 
@@ -5275,10 +6598,10 @@ var indexOf = [].indexOf || function (item) {
       var columns_no = vm.columns;
       vm.checklist_id = $stateParams.id_CHK;
 
-      // debugger
+      // // //////
       api.dataTable.changeTableRow(index, column, table_str, tab_id_update, request_type, rowIndex, headArr, currentTableData).success(function (res) {
         vm.isLoader = false;
-        ////// debugger;
+        ////// // //////;
         if (res.type == 'success') {
           var currentId = res.heading.id;
           // var pos = vm.headings.findIndex((obj, hib) => {obj.rid  ==currentId});
@@ -5292,7 +6615,7 @@ var indexOf = [].indexOf || function (item) {
               update_database_table_cell_values(res);
 
 
-              //// debugger;
+              //// // //////;
               /******************** */
 
               // vm['headings'][pos] = res.heading;
@@ -5303,15 +6626,15 @@ var indexOf = [].indexOf || function (item) {
 
               vm['headings'][pos]['datatable'][0].table_str = res.heading.datatable[0].table_str;
 
-              //// debugger;
+              //// // //////;
 
             }
 
           }
-          ////// debugger;
+          ////// // //////;
 
           console.log(" vm.dataTableArr=", res.heading);
-          ////// debugger;
+          ////// // //////;
           vm.closeDialog();
 
 
@@ -5326,13 +6649,13 @@ var indexOf = [].indexOf || function (item) {
 
 
       /******** */
-      //debugger;
+      //// //////;
 
     };
 
     function updateRow(arr, index, column) {
       arr.length;
-      //debugger;
+      //// //////;
       var myArr = [];
       for (var i = 0; i < arr.length; i++) {
         var index_no = arr[i].index;
@@ -5352,7 +6675,7 @@ var indexOf = [].indexOf || function (item) {
           var find = col_no;
           var re = new RegExp(find, 'g');
           myArr[new_index_no].value = row_value.replace(re, new_col);
-          //// debugger;          
+          //// // //////;          
         }
 
         myArr[new_index_no].cell_no = row_no + new_col;
@@ -5361,7 +6684,7 @@ var indexOf = [].indexOf || function (item) {
         myArr[new_index_no].index = new_index_no.toString();
 
       }
-      //// debugger;
+      //// // //////;
       return myArr;
 
     }
@@ -5370,9 +6693,52 @@ var indexOf = [].indexOf || function (item) {
 
     vm.saveFormat = function () {
 
-      // //// debugger;
-      vm.value = ''
-      vm.cell_stucture = '';
+
+
+      // giving error if submiting empty values
+      if (vm.model === "Formula") {
+        if (!$rootScope.DataTableFields.formula) {
+          $rootScope.message('Plese enter the Formula to continue', 'error');
+          return 0;
+        }
+
+      } else if (vm.model === "Text") {
+
+        if ($rootScope.DataTableFields.text === undefined || $rootScope.DataTableFields.text === false) {
+
+          $rootScope.message('Plese enter the Text characters to continue', 'error');
+          return 0;
+        }
+      } else if (vm.model === "Number") {
+
+        if ($rootScope.DataTableFields.number_type === undefined || $rootScope.DataTableFields.number_type === false) {
+
+          $rootScope.message('Plese enter the Decimals to continue', 'error');
+          return 0;
+        }
+
+      } else if (vm.model === "Currency") {
+
+        if (!$rootScope.DataTableFields.currency_type) {
+
+          $rootScope.message('Plese enter the Currency Type to continue', 'error');
+          return 0;
+        }
+      } else if (vm.model === "Data Point") {
+
+        if (!$rootScope.DataTableFields.data_point_function) {
+
+          $rootScope.message('Plese select the function to continue', 'error');
+          return 0;
+        }
+      }
+
+      var rootScopeDatafields = $rootScope.DataTableFields;
+
+
+
+      rootScopeDatafields.value = ''
+      rootScopeDatafields.cell_stucture = '';
 
       var table_key = vm.selectedHeaderName + vm.selectedHeaderIndex
 
@@ -5389,74 +6755,79 @@ var indexOf = [].indexOf || function (item) {
       }
 
 
-      ////// debugger;
+      ////// // //////;
       vm.selColIndex = vm.selectedHeaderIndex - 1
 
-      if (vm.selected_value == 'None') {
-        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': '', 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
+      dataTable.savingCellStructure(vm.selectedIndex, vm.selectedHeaderName, vm.selectedHeaderIndex, vm.alignTextStatus, vm.TextPostitionStatus)
+
+      // rootScopeDatafields.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'text_position': vm.TextPostitionStatus, 'text_align': vm.alignTextStatus }
+
+      // if (selected_value == 'None') {
+      //   rootScopeDatafields.cell_stucture.value = '';
+      // }
+      // else if (selected_value == 'Formula') {
+
+      //   rootScopeDatafields.value = rootScopeDatafields.formula
+      //   rootScopeDatafields.cell_stucture.value =  rootScopeDatafields.value ;
+
+      //   vm.value = ''
+
+      // }
+      // else if (selected_value == 'Currency') {
+      //   rootScopeDatafields.value = rootScopeDatafields.currency_type;
+
+      //   rootScopeDatafields.cell_stucture.value =  rootScopeDatafields.value ;
+
+      //   vm.value = '';
+
+      // }
+      // else if (selected_value == 'Date') {
+      //   rootScopeDatafields.value = ''
+
+      //   rootScopeDatafields.cell_stucture.value =  rootScopeDatafields.value ;
+
+      // }
+
+      // else if (selected_value == 'Text') {
+      //   rootScopeDatafields.value = rootScopeDatafields.text
+      //   rootScopeDatafields.cell_stucture.value =  rootScopeDatafields.value;
+      //   rootScopeDatafields.value = ''
+      // }
+
+      // else if (selected_value == 'Number') {
+      //   vm.value = rootScopeDatafields.number_type
+      //   rootScopeDatafields.cell_stucture.value =  vm.value;
+      //   rootScopeDatafields.cell_stucture.percentage = rootScopeDatafields.percentage;
+      //   rootScopeDatafields.value = ''
+      // }
+
+      // else {
+      //   rootScopeDatafields.value = rootScopeDatafields.label_name
+      //   rootScopeDatafields.cell_stucture.value =  rootScopeDatafields.value;
+
+      // }
+
+      console.log('rootScopeDatafields.cell_stucture', rootScopeDatafields.cell_stucture);
+      console.log('rootScopeDatafields.value', rootScopeDatafields.value);
+
+      //////;
+      vm.myrecords[vm.indexPos][vm.selectedHeaderName + vm.selectedHeaderIndex] = rootScopeDatafields.value;
+      vm.data_table_structure[vm.indexPos] = rootScopeDatafields.cell_stucture
 
 
-      }
-      else if (vm.selected_value == 'Formula') {
-        //// debugger;
-        vm.value = vm.formula
-        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
 
-        vm.value = ''
-        //// debugger;
-
-      }
-      else if (vm.selected_value == 'Currency') {
-        vm.value = vm.currency_type;
-
-        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_position': vm.TextPostitionStatus, 'text_align': vm.alignTextStatus }
-
-        vm.value = '';
-
-      }
-      else if (vm.selected_value == 'Date') {
-        vm.value = ''
-
-        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
-
-      }
-
-      else if (vm.selected_value == 'Text') {
-        vm.value = vm.text
-        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
-        vm.value = ''
-      }
-
-      else if (vm.selected_value == 'Number') {
-        vm.value = vm.number_type
-        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'percentage': vm.percentage, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
-        vm.value = ''
-      }
-
-      else {
-        vm.value = vm.label_name
-        vm.cell_stucture = { 'index': vm.selectedIndex, 'cell_no': vm.selectedHeaderName + vm.selectedHeaderIndex, 'type': vm.selected_value, 'row': vm.selectedHeaderName, 'column': vm.selectedHeaderIndex, 'value': vm.value, 'text_align': vm.alignTextStatus, 'text_position': vm.TextPostitionStatus }
-        vm.myrecords[vm.indexPos][vm.selectedHeaderName + vm.selectedHeaderIndex]
-        // //// debugger;
+      // rootScopeDatafields.label_name = ''
 
 
-
-
-      }
-
-      vm.myrecords[vm.indexPos][vm.selectedHeaderName + vm.selectedHeaderIndex] = vm.value
-      vm.data_table_structure[vm.indexPos] = vm.cell_stucture
-
-      ////// debugger;
-      vm.cellSelected = false
-      vm.lable_show = false;
-      vm.label_name = ''
-      vm.formula_show = false;
-      vm.currency_show = false;
-
-      vm.text_show = false;
-      vm.number_show = false;
-      vm.textShow = false;
+      // rootScopeDatafields = {
+      //   lable_show : false,
+      //   text_show : false,
+      //   formula_show : false,
+      //   number_show : false,
+      //   textShow : false,
+      //   cellSelected : false,
+      //   label_name : ''
+      // }
 
 
 
@@ -5464,34 +6835,28 @@ var indexOf = [].indexOf || function (item) {
       vm.alignTextStatus = $scope.alignTextVal[0].name;
       vm.TextPostitionStatus = $scope.TextPostition[0].name;
 
-
-
-
-
-
-
-      ////// debugger;
-
     }
 
 
 
-    vm.selectPercentage = function () {
-      if (vm.percentage) {
-        vm.percentage = false;
-      }
-      else {
-        vm.percentage = true;
-      }
+    // vm.selectPercentage = function () {
 
-      ////// debugger;
-    };
+    //   dataTable.selectPercentage();
 
+    // if ($rootScope.DataTableFields.percentage) {
+    //   $rootScope.DataTableFields.percentage = false;
+    // }
+    // else {
+    //   $rootScope.DataTableFields.percentage = true;
+    // }
+
+    ////// // //////;
+    // };
+
+
+    /***** New Updated **********/
     vm.saveDone = function (tbl_id) {
 
-
-
-      //// debugger;
       var tab_id_update = tbl_id != '' ? tbl_id : '';
 
       vm.isLoader = true;
@@ -5500,12 +6865,9 @@ var indexOf = [].indexOf || function (item) {
       var columns_no = vm.columns;
       vm.checklist_id = $stateParams.id_CHK;
 
-      // debugger
       api.dataTable.add(vm.dataTableName, row_no, columns_no, section_id, vm.data_table_structure, tab_id_update).success(function (res) {
         vm.isLoader = false;
-        ////// debugger;
         if (res.type == 'success') {
-          //// debugger;
           if (tab_id_update != '') {
 
             var currentId = res.heading.id;
@@ -5519,13 +6881,7 @@ var indexOf = [].indexOf || function (item) {
 
                 var new_field = "datatable_" + section_id + "_" + heading_id;
 
-                //// debugger;
-                if (vm.field[new_field]) {
-                  //// debugger;
-                  for (var key in vm.field[new_field]) {
-                    vm.field[new_field][key] = null;
-                  }
-                }
+                update_database_table_cell_values(res);
 
 
                 vm['headings'][pos]['datatable'][0].header = res.heading.datatable[0].header
@@ -5535,19 +6891,14 @@ var indexOf = [].indexOf || function (item) {
             }
           }
           else {
-            //// debugger;
             var getHeadingIndex = vm['headings'].length;
             vm['headings'].push(res.heading);
-
             window.location.reload();
           }
 
-
-
           console.log(" vm.dataTableArr=", res.heading);
-          ////// debugger;
-          vm.closeDialog();
 
+          vm.closeDialog();
 
         }
         else {
@@ -5556,13 +6907,12 @@ var indexOf = [].indexOf || function (item) {
 
       })
 
-
-
     };
+    /*****End New Updated **********/
 
     vm.saveTableData = function ($event, id, datatable_id, heading) {
       var currentTableData = vm.field['datatable_' + heading.id_parent + '_' + heading.id];
-      // debugger;   
+      // // //////;   
 
 
       var $proceed = false;
@@ -5582,9 +6932,9 @@ var indexOf = [].indexOf || function (item) {
 
       api.dataTable.saveTable(id, datatable_id, currentTableData).success(function (res) {
         vm.isLoader = false;
-        ////// debugger;
+        ////// // //////;
         if (res.type == 'success') {
-          //// debugger;
+          //// // //////;
 
           var currentId = res.heading.id;
           var pos = vm.headings.findIndex(function (obj) {
@@ -5608,10 +6958,10 @@ var indexOf = [].indexOf || function (item) {
 
           }
 
-          ////// debugger;
+          ////// // //////;
 
           console.log(" vm.dataTableArr=", res.heading);
-          ////// debugger;
+          ////// // //////;
           vm.closeDialog();
 
 
@@ -5622,7 +6972,7 @@ var indexOf = [].indexOf || function (item) {
 
       })
 
-      ////// debugger;
+      ////// // //////;
 
 
 
@@ -5637,19 +6987,17 @@ var indexOf = [].indexOf || function (item) {
 
       var new_field = "datatable_" + section_id + "_" + heading_id;
 
-      //// debugger;
+      //// // //////;
       if (vm.field[new_field]) {
-        //// debugger;
+        //// // //////;
         for (var key in res.heading.datatable[0].table_str) {
           if (res.heading.datatable[0].table_str[key].cell_value) {
-            //// debugger;
+            //// // //////;
             var cell_new_val = res.heading.datatable[0].table_str[key].cell_value;
             vm.field[new_field][key] = cell_new_val;
-            vm.col_data_update_str[new_field][key] = cell_new_val;
           }
           else {
             vm.field[new_field][key] = null
-            vm.col_data_update_str[new_field][key] = null;
           }
 
         }
@@ -5679,7 +7027,7 @@ var indexOf = [].indexOf || function (item) {
       vm.add_from_db_rowIndex = rowIndex;
       vm.add_from_db_rowHeader = rowHeader;
 
-      //// debugger;
+      //// // //////;
 
       // console.log(rowIndex, rowHeader);
       // console.log(vm.add_from_db_rowIndex, vm.add_from_db_rowHeader);
@@ -5722,7 +7070,7 @@ var indexOf = [].indexOf || function (item) {
         } else {
           vm.all_spreadsheets = d.data.spreadsheets;
 
-          vm.excels.progress = false;
+          // vm.excels.progress = false;
 
         }
       });
@@ -5758,7 +7106,7 @@ var indexOf = [].indexOf || function (item) {
 
           var key = vm.add_from_db_rowHeader[i];
           var key_find = key.toLowerCase();
-          //// debugger;
+          //// // //////;
           if (key_find in record) {
 
             var getIndex = vm.add_from_db_rowIndex[i];
@@ -5786,7 +7134,7 @@ var indexOf = [].indexOf || function (item) {
 
       vm.table_section_id = section_id;
       console.log('createTableFromTemplate');
-      debugger;
+      // //////;
       api.dataTable.getDataTableTemplate().error(function (res) {
         return $rootScope.message('Unknown error creating Table from selected Template.', 'warning');
       }).success(function (res) {
@@ -5814,14 +7162,14 @@ var indexOf = [].indexOf || function (item) {
 
     vm.downloadTable = function (temp_id) {
 
-      //// debugger;
+      //// // //////;
 
       vm.isLoader = true;
 
       api.dataTable.downloadTable(vm.table_section_id, temp_id).success(function (res) {
         vm.isLoader = false;
         if (res.type == 'success') {
-          //// debugger;
+          //// // //////;
           var current_section_id = res.heading.id_parent;
           var pos = vm.sections.findIndex(function (obj) {
             return obj.rid == current_section_id;
@@ -5861,12 +7209,12 @@ var indexOf = [].indexOf || function (item) {
     vm.saveTableAsTemplate = function () {
       vm.table_template_name;
       vm.table_template_description;
-      //// debugger;
+      //// // //////;
       vm.isLoader = true;
       api.dataTable.saveTableAsTemplate(vm.table_id, vm.table_template_name, vm.table_template_description).success(function (res) {
         vm.isLoader = false;
         if (res.type == 'success') {
-          //// debugger;
+          //// // //////;
           vm.closeDialog();
         }
 
@@ -5876,12 +7224,30 @@ var indexOf = [].indexOf || function (item) {
 
     /*****Add from database ends******/
     /*** End Data Table Function */
-    
 
-    function changeUppercase(input){
-      console.log('vm.formula', vm.formula);
-      vm.formula = vm.formula.toUpperCase();
+
+    function changeUppercase(input) {
+      console.log('$rootScope.DataTableFields.formula', $rootScope.DataTableFields.formula);
+      $rootScope.DataTableFields.formula = $rootScope.DataTableFields.formula.toUpperCase();
     }
+
+
+
+
+    // reports starts
+
+    //   $rootScope.$on("createReportDataTableSegment", function(event, what, name, to, type, info, item_type, alert, column, row, ev){
+
+    //     console.log('createReportDataTableSegment check',what, name, to, type, info, item_type, alert, column, row, ev)
+    //     // vm.type.title = 'Create/Edit Table';
+    //     // vm.type.label = 'Add Name and Number of Columns and Rows';
+    //     // vm.type.rows = 'Rows';
+    //     // vm.type.columns = 'Columns';
+    //     // vm.type.type = '';
+
+    //     $scope.createDataTableSegment();
+    //  });
+    // reports ends
 
   }
 

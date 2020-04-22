@@ -14,9 +14,9 @@
         <label ng-show="vm.title == 'Table'"  translate="Table Name">Table Name</label>
 
         <label ng-show="vm.title != 'Table'" translate="CHECKLIST.HEADING.NAME">{{vm.heading.name}} Name</label>
-        <input name="name" ng-model="vm.heading.name" required md-autofocus>
+        <input name="name" ng-model="vm.headingName" required md-autofocus>
         
-        <div ng-messages="checklistForm.name.$error" ng-show="checklistForm.name.$touched" role="alert">
+        <div ng-messages="checklistForm.name.index" ng-show="checklistForm.name.$touched" role="alert">
           <div ng-message="required">
             <span translate="CHECKLIST.ERRORS.HEADER_NAME_REQUIRED">Header Name field is required</span>
           </div>

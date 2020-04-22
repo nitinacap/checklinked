@@ -68,6 +68,7 @@
             record: res[what]
           };
           console.log('emitting data', packet);
+          // 
           $rootScope.socketio.emit('data', packet);
           notifyItem = $.extend({}, res[what], {
             type: 'data'

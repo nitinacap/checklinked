@@ -3,7 +3,8 @@
 
   angular
     .module('app.dashboard', [
-      'chart.js'
+      'chart.js',
+      'dndLists'
     ])
     .config(config);
 

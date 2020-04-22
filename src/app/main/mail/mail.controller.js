@@ -1039,7 +1039,7 @@
 
         }
       }).error(function (err) {
-        console.log('Error loading headings', err);
+        console.log('Error loading items', err);
         vm.loading = false;
 
       })["finally"](function () {
@@ -1199,10 +1199,10 @@
 
     // Content sub menu
     vm.submenu = [
-      { link: '#', title: 'Alerts' },
-      { link: 'invitations', title: 'Action Items' },
-      { link: 'chat', title: 'Messages' },
-      { link: '', title: 'Notifications' }
+      { link: 'alerts', title: 'Alerts', active : false },
+      { link: 'invitations', title: 'Action Items', active : true },
+      { link: 'chat', title: 'Messages', active : false },
+      { link: 'notification', title: 'Notifications', active : false }
 
     ];
 

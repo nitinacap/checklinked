@@ -1,0 +1,91 @@
+<div class="simple-table-container md-background-bg md-whiteframe-1dp pt-30">
+
+    <div layout="row" layout-align="start center" class="pl-25" ng-hide="!vm.reports.progress">
+        <md-progress-circular ng-disabled="!vm.reports.progress" md-mode="indeterminate" md-diameter="20">
+        </md-progress-circular>
+    </div>
+
+    <table class="simple row-border hover bordered-table" cellpadding="0" cellspacing="0">
+        <tbody>
+            <tr layout="row" layout-align="center center">
+
+                <td flex=100 class="text-center table-header-padding"> <b>Dashboard</b></td>
+                <td class="text-right">
+                    <md-menu>
+                        <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button table-md-icon-button"
+                            aria-label="Sort" translate translate-attr-aria-label="DASHBOARD.ARRANGE">
+                            <md-icon md-font-icon="icon-dots-horizontal s18"></md-icon>
+
+                        </md-button>
+
+                        <md-menu-content width="3">
+
+
+                            <md-menu-item >
+                                <md-button ng-click="openGroupDialog($event, 'arrange')"
+                                    translate-attr-aria-label="DASHBOARD.ARRANGE">
+
+                                    <md-icon ng-if="AllowDragAndDrop" class="md-accent-fg s18"
+                                    md-font-icon="icon-checkbox-marked-outline"></md-icon>
+                                    <md-icon ng-if="!AllowDragAndDrop" class="md-accent-fg s18" md-font-icon="icon-checkbox-blank-outline">
+                                    </md-icon>
+
+                                    <span translate="DASHBOARD.ARRANGE">Arrange</span>
+                                </md-button>
+                            </md-menu-item>
+
+                            <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
+                                <md-button ng-click="vm.openGroupDialog($event, 'pdf')" aria-label="Paste"
+                                    translate-attr-aria-label="DASHBOARD.DOWNLOAD_PDF">
+                                    <md-icon class="md-accent-fg s18" md-font-icon="icon-file-pdf"></md-icon>
+                                    <span translate="DASHBOARD.DOWNLOAD_PDF"></span>
+                                </md-button>
+                            </md-menu-item>
+
+                            <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
+                                <md-button ng-click="vm.openGroupDialog($event, 'edit')" aria-label="Paste"
+                                    translate-attr-aria-label="DASHBOARD.EDIT_NAME">
+                                    <md-icon class="md-accent-fg s18" md-font-icon="icon-pencil"></md-icon>
+                                    <span translate="DASHBOARD.EDIT_NAME"></span>
+                                </md-button>
+                            </md-menu-item>
+
+                            <md-menu-item ng-show="vm.checkIsPermission.indexOf('create-workflows') !== -1">
+                                <md-button ng-click="vm.openGroupDialog($event, 'delete')" aria-label="Paste"
+                                    translate-attr-aria-label="DASHBOARD.DELETE_TILE">
+                                    <md-icon class="md-accent-fg s18" md-font-icon="icon-trash"></md-icon>
+                                    <span translate="DASHBOARD.DELETE_TILE"></span>
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+
+
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+
+    <!-- in case if allowed to drag and drop starts-->
+    <div ng-if="AllowDragAndDrop" ng-repeat="chart in api_response" class=" chart-class pt-20" drag-to-reorder="api_response" layout="column"
+        flex="50">
+        <canvas id=bar class="chart chart-base" chart-type="chart.chartType" chart-data="chart.graphdata"
+            chart-labels="chart.labels" chart-series="chart.series" chart-colors="chart.ColorBar"
+            chart-options="chart.options" chart-hover="chart.hoverme"></canvas>
+
+    </div>
+    <!-- in case if allowed to drag and drop ends --> 
+
+    <!-- in case if not allowed to drag and drop starts -->
+    <div ng-if="!AllowDragAndDrop" ng-repeat="chart in api_response" class=" chart-class pt-20"  layout="column"
+        flex="50">
+        <canvas id=bar class="chart chart-base" chart-type="chart.chartType" chart-data="chart.graphdata"
+            chart-labels="chart.labels" chart-series="chart.series" chart-colors="chart.ColorBar"
+            chart-options="chart.options" chart-hover="chart.hoverme"></canvas>
+
+    </div>
+    <!-- in case if not allowed to drag and drop ends -->
+
+
+</div>

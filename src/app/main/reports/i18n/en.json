@@ -1,6 +1,7 @@
 {
     "REPORTS": {
         "PLACEHOLDER": "placeholder",
+        "OK": "OK",
 	"ERRORS": {
             "PLACEHOLDER": "placeholder"
         }
